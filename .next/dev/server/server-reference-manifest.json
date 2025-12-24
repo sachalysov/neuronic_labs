@@ -1,0 +1,21 @@
+{
+  "node": {
+    "404241235172893ea97fb2c0f7f9e33905d0f913f6": {
+      "workers": {
+        "app/page": {
+          "moduleId": "[project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => \"[project]/app/actions/chat.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false,
+          "exportedName": "sendChatMessage",
+          "filename": "app/actions/chat.ts"
+        }
+      },
+      "layer": {
+        "app/page": "action-browser"
+      },
+      "filename": "app/actions/chat.ts",
+      "exportedName": "sendChatMessage"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "6yYy83MBpSi7vZ2vCMBXexJV7DXWym4UQMPSb1RGC3M="
+}

@@ -1,0 +1,158 @@
+"use client"
+
+import type React from "react"
+
+import { useState, useRef, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Send, Loader2 } from "lucide-react"
+import { sendChatMessage } from "@/services/chat"
+
+interface Message {
+  id: string
+  text: string
+  sender: "user" | "bot"
+  timestamp: Date
+}
+
+export function DemoChat() {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      text: "ИИ-продавец - это умный чат-бот, который работает 24/7",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+    {
+      id: "2",
+      text: "Мультиканален - это когда сайт построен на множестве портов для связи с клиентом. Исходя из запроса пользователя, сайт адаптирован под ключевые запросы. Доступны юридич, доставка люкса...",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+    {
+      id: "3",
+      text: "ИИ-продавец - это умный чат-бот на базе нейросетей, который ведет диалог с клиентом, правильно отвечает. Консультирует по каталогу товаров, расходов, отвечает на технические вопросы, закрывает типовые возражения. Работает с клиентами и заданиями",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+  ])
+  const [input, setInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: input,
+      sender: "user",
+      timestamp: new Date(),
+    }
+
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
+    setIsLoading(true)
+
+    try {
+      const response = await sendChatMessage(input)
+
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: response.message,
+        sender: "bot",
+        timestamp: new Date(),
+      }
+
+      setMessages((prev) => [...prev, botMessage])
+    } catch (error) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "Извините, произошла ошибка. Попробуйте позже.",
+        sender: "bot",
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, errorMessage])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  return (
+    <Card className="w-full max-w-4xl mx-auto shadow-2xl border-border/50">
+      <CardHeader className="border-b border-border bg-card/50 backdrop-blur">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold">ИИ-продавец NeuroModul</h3>
+            <p className="text-sm text-muted-foreground">Онлайн • Отвечает мгновенно</p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0">
+        <div className="h-[500px] overflow-y-auto p-6 space-y-4 bg-secondary/20">
+          {messages.map((message) => (
+            <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
+              <div
+                className={`max-w-[75%] rounded-2xl px-5 py-3 ${
+                  message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-card border border-border"
+                }`}
+              >
+                <p className="text-sm leading-relaxed">{message.text}</p>
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-card border border-border rounded-2xl px-5 py-3">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="p-4 border-t border-border bg-card/50 backdrop-blur">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleSend()
+            }}
+            className="flex gap-2"
+          >
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Напишите нам свой вопрос..."
+              disabled={isLoading}
+              className="flex-1 bg-background border-border"
+            />
+            <Button type="submit" disabled={isLoading || !input.trim()} size="icon" className="shrink-0">
+              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+            </Button>
+          </form>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
