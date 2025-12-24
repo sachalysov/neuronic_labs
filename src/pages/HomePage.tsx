@@ -43,8 +43,8 @@ export default function HomePage() {
             <div className="space-y-8">
               <div className="inline-block">
                 <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-2">
-                  <span className="text-primary">NEURO</span>
-                  <span className="text-muted-foreground">MODUL</span>
+                  <span className="text-primary">NEURONIC</span>
+                  <span className="text-muted-foreground">LABS</span>
                 </h1>
                 <p className="text-muted-foreground text-sm uppercase tracking-wider">
                   Агентство по внедрению
