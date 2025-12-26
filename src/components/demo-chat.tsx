@@ -1,8 +1,6 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -95,25 +93,25 @@ export function DemoChat() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto shadow-2xl border-border/50">
-      <CardHeader className="border-b border-border bg-card/50 backdrop-blur">
+    <Card className="w-full max-w-4xl mx-auto shadow-2xl border-gray-200 bg-white">
+      <CardHeader className="border-b border-gray-200 bg-white backdrop-blur">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
             <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
           </div>
           <div>
-            <h3 className="text-lg font-bold">ИИ-продавец NeuroModul</h3>
-            <p className="text-sm text-muted-foreground">Онлайн • Отвечает мгновенно</p>
+            <h3 className="text-lg font-bold text-gray-900">ИИ-продавец NeuroModul</h3>
+            <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="h-[500px] overflow-y-auto p-6 space-y-4 bg-secondary/20">
+        <div className="h-[500px] overflow-y-auto p-6 space-y-4 bg-gray-50">
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[75%] rounded-2xl px-5 py-3 ${
-                  message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-card border border-border"
+                  message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-white border border-gray-200 text-gray-900"
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.text}</p>
@@ -122,15 +120,15 @@ export function DemoChat() {
           ))}
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-card border border-border rounded-2xl px-5 py-3">
-                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              <div className="bg-white border border-gray-200 rounded-2xl px-5 py-3">
+                <Loader2 className="h-5 w-5 animate-spin text-gray-600" />
               </div>
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="p-4 border-t border-border bg-card/50 backdrop-blur">
+        <div className="p-4 border-t border-gray-200 bg-white backdrop-blur">
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -144,7 +142,7 @@ export function DemoChat() {
               onKeyPress={handleKeyPress}
               placeholder="Напишите нам свой вопрос..."
               disabled={isLoading}
-              className="flex-1 bg-background border-border"
+              className="flex-1 bg-white border-gray-200 text-gray-900"
             />
             <Button type="submit" disabled={isLoading || !input.trim()} size="icon" className="shrink-0">
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
