@@ -30,8 +30,8 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img src="/images/robot-hero-2.jpeg" alt="" className="w-full h-full object-cover object-center" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-background" />
+          <div className="absolute inset-0 hero-image-overlay" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 hero-bottom-fade" />
         </div>
 
         {/* Pattern Overlay */}
@@ -43,12 +43,12 @@ export default function HomePage() {
             <div className="space-y-8">
               <div className="inline-block">
                 <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-2">
-                  <span className="text-primary">NEURONIC</span>
+                  <span className="text-primary">NEURONIC</span> <br />
                   <span className="text-muted-foreground">LABS</span>
                 </h1>
-                <p className="text-muted-foreground text-sm uppercase tracking-wider">
+                <p className="text-muted-foreground text-[20px] uppercase tracking-wider">
                   Агентство по внедрению
-                  <br />
+               
                   автоматизации в бизнес
                 </p>
               </div>
