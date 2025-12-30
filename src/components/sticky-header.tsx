@@ -55,6 +55,12 @@ export function StickyHeader() {
             
             <nav className="hidden lg:flex items-center gap-8">
               <button
+                onClick={() => scrollToSection("demo-chat")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Чат-бот
+              </button>
+              <button
                 onClick={() => scrollToSection("product")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
@@ -132,6 +138,12 @@ export function StickyHeader() {
         {isMobileMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-border bg-background">
             <div className="flex flex-col space-y-4">
+              <button
+                onClick={() => scrollToSection("demo-chat")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Чат-бот
+              </button>
               <button
                 onClick={() => scrollToSection("product")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"

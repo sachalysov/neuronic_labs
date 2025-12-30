@@ -83,7 +83,7 @@ export default function HomePage() {
       </section>
 
       {/* Demo Chat Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
+      <section id="demo-chat" className="py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center space-y-8 mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-balance">Попробуйте ИИ-продавца прямо сейчас</h2>
