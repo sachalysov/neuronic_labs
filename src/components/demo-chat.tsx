@@ -21,19 +21,13 @@ export function DemoChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "ИИ-продавец - это умный чат-бот, который работает 24/7",
+      text: "Добавь в чат ссылку на свой сайт и протестируй то как будет работать ИИ-продавец на твоей нише",
       sender: "bot",
       timestamp: new Date(),
     },
     {
       id: "2",
-      text: "Мультиканален - это когда сайт построен на множестве портов для связи с клиентом. Исходя из запроса пользователя, сайт адаптирован под ключевые запросы. Доступны юридич, доставка люкса...",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-    {
-      id: "3",
-      text: "ИИ-продавец - это умный чат-бот на базе нейросетей, который ведет диалог с клиентом, правильно отвечает. Консультирует по каталогу товаров, расходов, отвечает на технические вопросы, закрывает типовые возражения. Работает с клиентами и заданиями",
+      text: "Так же можешь описать свою нишу, ответь всего на пару вопросов:\n 1. Какая твоя ниша?\n2. Топ 3 твоих продукта?\n3. Опиши кратко преимущества твоего продукта",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -120,7 +114,7 @@ export function DemoChat() {
                   message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-white border border-gray-200 text-gray-900"
                 }`}
               >
-                <p className="text-sm leading-relaxed">{message.text}</p>
+                <p className="text-sm leading-relaxed whitespace-pre-line">{message.text}</p>
               </div>
             </div>
           ))}
