@@ -5,6 +5,7 @@ import { ThemeToggle } from "./theme-toggle"
 
 export function StickyHeader() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +20,7 @@ export function StickyHeader() {
     const element = document.getElementById(id)
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" })
+      setIsMobileMenuOpen(false) // Закрываем меню после клика
     }
   }
 
@@ -83,27 +85,86 @@ export function StickyHeader() {
                 О нас
               </button>
             </nav>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden text-foreground p-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden text-foreground p-2"
+              aria-label="Toggle mobile menu"
             >
-              <line x1="3" y1="12" x2="21" y2="12"></line>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-          </button>
+              {isMobileMenuOpen ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <nav className="lg:hidden py-4 border-t border-border">
+            <div className="flex flex-col space-y-4">
+              <button
+                onClick={() => scrollToSection("product")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                О продукте
+              </button>
+              <button
+                onClick={() => scrollToSection("cases")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Кейсы бизнеса
+              </button>
+              <button
+                onClick={() => scrollToSection("process")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Этапы работ
+              </button>
+              <button
+                onClick={() => scrollToSection("services")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Услуги
+              </button>
+              <button
+                onClick={() => scrollToSection("about")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                О нас
+              </button>
+            </div>
+          </nav>
+        )}
       </div>
     </header>
   )
