@@ -19,6 +19,25 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
 
   if (!isOpen) return null
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value
+    
+    // Если начинается с 8, заменяем на +7
+    if (value.startsWith("8")) {
+      value = "+7" + value.slice(1)
+    }
+    // Если начинается с 9 (без +7), добавляем +7
+    else if (value.match(/^9/)) {
+      value = "+7" + value
+    }
+    // Если вводят просто 7, заменяем на +7
+    else if (value === "7") {
+      value = "+7"
+    }
+    
+    setPhone(value)
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Здесь можно добавить отправку данных на сервер
@@ -76,7 +95,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
                   type="tel"
                   placeholder="+7 (___) ___-__-__"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={handlePhoneChange}
                   required
                   className="bg-background border-border"
                 />
