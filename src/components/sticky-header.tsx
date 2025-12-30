@@ -61,28 +61,28 @@ export function StickyHeader() {
                 О продукте
               </button>
               <button
-                onClick={() => scrollToSection("cases")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Кейсы бизнеса
-              </button>
-              <button
                 onClick={() => scrollToSection("process")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 Этапы работ
               </button>
               <button
-                onClick={() => scrollToSection("services")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Услуги
-              </button>
-              <button
                 onClick={() => scrollToSection("about")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 О нас
+              </button>
+              <button
+                onClick={() => scrollToSection("cases")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Кейсы бизнеса
+              </button>
+              <button
+                onClick={() => scrollToSection("services")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Услуги
               </button>
             </nav>
 
@@ -139,28 +139,28 @@ export function StickyHeader() {
                 О продукте
               </button>
               <button
-                onClick={() => scrollToSection("cases")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Кейсы бизнеса
-              </button>
-              <button
                 onClick={() => scrollToSection("process")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 Этапы работ
               </button>
               <button
-                onClick={() => scrollToSection("services")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Услуги
-              </button>
-              <button
                 onClick={() => scrollToSection("about")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 О нас
+              </button>
+              <button
+                onClick={() => scrollToSection("cases")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Кейсы бизнеса
+              </button>
+              <button
+                onClick={() => scrollToSection("services")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Услуги
               </button>
             </div>
           </nav>
