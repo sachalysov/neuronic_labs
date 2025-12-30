@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "deploy": "bash deploy.sh",
+    "deploy:preview": "HOSTING=timeweb bash deploy.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
