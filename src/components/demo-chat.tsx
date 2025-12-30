@@ -15,6 +15,9 @@ interface Message {
 }
 
 export function DemoChat() {
+  // Генерируем уникальный sessionId при монтировании компонента
+  const [sessionId] = useState(() => 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9))
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -65,7 +68,7 @@ export function DemoChat() {
     setIsLoading(true)
 
     try {
-      const response = await sendChatMessage(input)
+      const response = await sendChatMessage(input, 'demo', sessionId)
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),

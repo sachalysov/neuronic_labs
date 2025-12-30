@@ -16,6 +16,9 @@ interface Message {
 }
 
 export function ChatWidget() {
+  // Генерируем уникальный sessionId при монтировании компонента
+  const [sessionId] = useState(() => 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9))
+  
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -66,7 +69,7 @@ export function ChatWidget() {
     setError(null)
 
     try {
-      const response = await sendChatMessage(userMessage.text)
+      const response = await sendChatMessage(userMessage.text, 'widget', sessionId)
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
