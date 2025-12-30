@@ -93,7 +93,7 @@ export function DemoChat() {
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto shadow-2xl border-gray-200 bg-white">
+    <Card className="w-full max-w-[717px] mx-auto shadow-2xl border-gray-200 bg-white">
       <CardHeader className="border-b border-gray-200 bg-white backdrop-blur">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
