@@ -20,10 +20,16 @@ import {
   Target,
   Award,
   Zap,
+  Send,
+  CheckCircle,
 } from "lucide-react"
 
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [phone, setPhone] = useState("")
+  const [email, setEmail] = useState("")
+  const [telegram, setTelegram] = useState("")
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   useEffect(() => {
     // Очищаем hash из URL
@@ -33,6 +39,40 @@ export default function HomePage() {
     // Скроллим в начало страницы
     window.scrollTo(0, 0)
   }, [])
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value
+    
+    // Если начинается с 8, заменяем на +7
+    if (value.startsWith("8")) {
+      value = "+7" + value.slice(1)
+    }
+    // Если начинается с 9 (без +7), добавляем +7
+    else if (value.match(/^9/)) {
+      value = "+7" + value
+    }
+    // Если вводят просто 7, заменяем на +7
+    else if (value === "7") {
+      value = "+7"
+    }
+    
+    setPhone(value)
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Здесь можно добавить отправку данных на сервер
+    console.log({ phone, email, telegram })
+    setIsSubmitted(true)
+    
+    // Сбросить форму через 5 секунд после успешной отправки
+    setTimeout(() => {
+      setIsSubmitted(false)
+      setPhone("")
+      setEmail("")
+      setTelegram("")
+    }, 5000)
+  }
 
   return (
     <main className="min-h-screen">
@@ -366,19 +406,62 @@ export default function HomePage() {
                   автоматизации вашего бизнеса
                 </p>
 
-                <form className="max-w-md mx-auto space-y-4">
-                  <Input type="text" placeholder="Ваше имя" className="bg-background border-border" />
-                  <Input type="tel" placeholder="Телефон" className="bg-background border-border" />
-                  <Input type="email" placeholder="Email" className="bg-background border-border" />
-                  <Button size="lg" className="w-full text-lg py-6">
-                    Получить бесплатную консультацию
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </form>
+                {!isSubmitted ? (
+                  <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+                    <div className="space-y-2">
+                      <Input
+                        type="tel"
+                        placeholder="+7 (___) ___-__-__"
+                        value={phone}
+                        onChange={handlePhoneChange}
+                        required
+                        className="bg-background border-border"
+                      />
+                    </div>
 
-                <p className="text-sm text-muted-foreground">
-                  Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-                </p>
+                    <div className="space-y-2">
+                      <Input
+                        type="email"
+                        placeholder="example@mail.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="bg-background border-border"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Input
+                        type="text"
+                        placeholder="@username (Telegram - опционально)"
+                        value={telegram}
+                        onChange={(e) => setTelegram(e.target.value)}
+                        className="bg-background border-border"
+                      />
+                    </div>
+
+                    <Button type="submit" size="lg" className="w-full text-lg py-6">
+                      Получить бесплатную консультацию
+                      <Send className="ml-2 h-5 w-5" />
+                    </Button>
+
+                    <p className="text-sm text-muted-foreground">
+                      Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
+                    </p>
+                  </form>
+                ) : (
+                  <div className="py-8 text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
+                    <div className="flex justify-center">
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                        <CheckCircle className="h-10 w-10 text-primary" />
+                      </div>
+                    </div>
+                    <h4 className="text-xl font-bold text-foreground">Заявка отправлена!</h4>
+                    <p className="text-muted-foreground">
+                      Наш менеджер свяжется с вами в течение 15 минут
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
