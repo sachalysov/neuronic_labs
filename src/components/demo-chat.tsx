@@ -38,9 +38,12 @@ export function DemoChat() {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    }
   }
 
   useEffect(() => {
@@ -100,13 +103,13 @@ export function DemoChat() {
             <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900">ИИ-продавец NeuroModul</h3>
+            <h3 className="text-lg font-bold text-gray-900">ИИ-продавец NEURONIC LABS</h3>
             <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="h-[500px] overflow-y-auto p-6 space-y-4 bg-gray-50">
+        <div ref={messagesContainerRef} className="h-[500px] overflow-y-auto p-6 space-y-4 bg-gray-50">
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
