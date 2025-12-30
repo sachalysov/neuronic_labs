@@ -5,6 +5,7 @@ import { ChatWidget } from "@/components/chat-widget"
 import { StickyHeader } from "@/components/sticky-header"
 import { DemoChat } from "@/components/demo-chat"
 import { BusinessCasesCarousel } from "@/components/business-cases-carousel"
+import { useEffect } from "react"
 import {
   Bot,
   Clock,
@@ -21,6 +22,15 @@ import {
 } from "lucide-react"
 
 export default function HomePage() {
+  useEffect(() => {
+    // Очищаем hash из URL
+    if (window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+    // Скроллим в начало страницы
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <main className="min-h-screen">
       <StickyHeader />
