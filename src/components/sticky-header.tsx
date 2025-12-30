@@ -49,10 +49,8 @@ export function StickyHeader() {
             </div>
           </a>
 
-          {/* Theme Toggle & Navigation */}
+          {/* Navigation & Theme Toggle */}
           <div className="flex items-center gap-6">
-            <ThemeToggle />
-            
             <nav className="hidden lg:flex items-center gap-8">
               <button
                 onClick={() => scrollToSection("demo-chat")}
@@ -91,6 +89,8 @@ export function StickyHeader() {
                 Услуги
               </button>
             </nav>
+
+            <ThemeToggle />
 
             {/* Mobile Menu Button */}
             <button 
