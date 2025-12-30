@@ -5,7 +5,8 @@ import { ChatWidget } from "@/components/chat-widget"
 import { StickyHeader } from "@/components/sticky-header"
 import { DemoChat } from "@/components/demo-chat"
 import { BusinessCasesCarousel } from "@/components/business-cases-carousel"
-import { useEffect } from "react"
+import { ConsultationModal } from "@/components/consultation-modal"
+import { useEffect, useState } from "react"
 import {
   Bot,
   Clock,
@@ -22,6 +23,8 @@ import {
 } from "lucide-react"
 
 export default function HomePage() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
   useEffect(() => {
     // Очищаем hash из URL
     if (window.location.hash) {
@@ -72,7 +75,7 @@ export default function HomePage() {
               </p>
 
               <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="text-lg px-8 py-6">
+                <Button size="lg" className="text-lg px-8 py-6" onClick={() => setIsModalOpen(true)}>
                   Получить консультацию
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -294,7 +297,7 @@ export default function HomePage() {
 
           <div className="text-center mt-12">
             <p className="text-muted-foreground mb-6">Хотите получить такие же результаты для вашего бизнеса?</p>
-            <Button size="lg" className="text-lg px-8 py-6">
+            <Button size="lg" className="text-lg px-8 py-6" onClick={() => setIsModalOpen(true)}>
               Обсудить ваш проект
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -395,6 +398,9 @@ export default function HomePage() {
 
       {/* Chat Widget */}
       <ChatWidget />
+
+      {/* Consultation Modal */}
+      <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </main>
   )
 }
