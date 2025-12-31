@@ -412,34 +412,34 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <div className="grid md:grid-cols-3 gap-3 md:gap-8 mb-12">
               <Card className="bg-card/10 border-border text-center">
-                <CardContent className="p-8 space-y-4">
-                  <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                    <Target className="h-8 w-8 text-primary" />
+                <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
+                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                    <Target className="h-5 w-5 md:h-8 md:w-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold">200+</h3>
-                  <p className="text-muted-foreground">Успешно внедренных проектов</p>
+                  <h3 className="text-lg md:text-2xl font-bold">200+</h3>
+                  <p className="text-sm md:text-base text-muted-foreground">Успешно внедренных проектов</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-card/10 border-border text-center">
-                <CardContent className="p-8 space-y-4">
-                  <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                    <Award className="h-8 w-8 text-primary" />
+                <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
+                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                    <Award className="h-5 w-5 md:h-8 md:w-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold">5 лет</h3>
-                  <p className="text-muted-foreground">Опыта в разработке ИИ-решений</p>
+                  <h3 className="text-lg md:text-2xl font-bold">5 лет</h3>
+                  <p className="text-sm md:text-base text-muted-foreground">Опыта в разработке ИИ-решений</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-card/10 border-border text-center">
-                <CardContent className="p-8 space-y-4">
-                  <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                    <Zap className="h-8 w-8 text-primary" />
+                <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
+                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                    <Zap className="h-5 w-5 md:h-8 md:w-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold">14 дней</h3>
-                  <p className="text-muted-foreground">Среднее время внедрения</p>
+                  <h3 className="text-lg md:text-2xl font-bold">14 дней</h3>
+                  <p className="text-sm md:text-base text-muted-foreground">Среднее время внедрения</p>
                 </CardContent>
               </Card>
             </div>
@@ -534,44 +534,44 @@ export default function HomePage() {
         <div className="container mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">Сценарии использования</h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-6 space-y-4 text-center">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <ShoppingCart className="h-7 w-7 text-primary" />
+              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <ShoppingCart className="h-5 w-5 md:h-7 md:w-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Продажи</h3>
-                <p className="text-muted-foreground">Консультация клиентов, презентация продуктов, закрытие сделок</p>
+                <h3 className="text-lg md:text-xl font-bold">Продажи</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Консультация клиентов, презентация продуктов, закрытие сделок</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-6 space-y-4 text-center">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <HeadphonesIcon className="h-7 w-7 text-primary" />
+              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <HeadphonesIcon className="h-5 w-5 md:h-7 md:w-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Поддержка</h3>
-                <p className="text-muted-foreground">Ответы на частые вопросы, решение проблем клиентов 24/7</p>
+                <h3 className="text-lg md:text-xl font-bold">Поддержка</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Ответы на частые вопросы, решение проблем клиентов 24/7</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-6 space-y-4 text-center">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <Users className="h-7 w-7 text-primary" />
+              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Users className="h-5 w-5 md:h-7 md:w-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Лидогенерация</h3>
-                <p className="text-muted-foreground">Квалификация лидов, сбор контактов, запись на встречи</p>
+                <h3 className="text-lg md:text-xl font-bold">Лидогенерация</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Квалификация лидов, сбор контактов, запись на встречи</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-6 space-y-4 text-center">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <Lightbulb className="h-7 w-7 text-primary" />
+              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Lightbulb className="h-5 w-5 md:h-7 md:w-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Консультации</h3>
-                <p className="text-muted-foreground">Экспертные советы, подбор решений, персональные рекомендации</p>
+                <h3 className="text-lg md:text-xl font-bold">Консультации</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Экспертные советы, подбор решений, персональные рекомендации</p>
               </CardContent>
             </Card>
           </div>
