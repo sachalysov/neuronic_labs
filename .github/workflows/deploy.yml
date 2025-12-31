@@ -42,6 +42,10 @@ jobs:
 
           # Запускаем rsync с паролем из secrets
           sshpass -p "$TIMEWEB_PASS" rsync -avz --delete \
+            --exclude='.bash*' \
+            --exclude='.cache' \
+            --exclude='.ssh' \
+            --exclude='.*_history' \
             -e "ssh -o StrictHostKeyChecking=no" \
             dist/ \
             cc374250@vh434.timeweb.ru:~/public_html/
