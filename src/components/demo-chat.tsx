@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Send, Loader2 } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
+import { formatMessageText } from "@/lib/text-formatter"
 
 interface Message {
   id: string
@@ -114,7 +115,7 @@ export function DemoChat() {
                   message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-white border border-gray-200 text-gray-900"
                 }`}
               >
-                <p className="text-sm leading-relaxed whitespace-pre-line">{message.text}</p>
+                <p className="text-sm leading-relaxed whitespace-pre-line">{formatMessageText(message.text)}</p>
               </div>
             </div>
           ))}
