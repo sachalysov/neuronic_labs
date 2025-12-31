@@ -6,6 +6,7 @@ import { StickyHeader } from "@/components/sticky-header"
 import { DemoChat } from "@/components/demo-chat"
 import { BusinessCasesCarousel } from "@/components/business-cases-carousel"
 import { ConsultationModal } from "@/components/consultation-modal"
+import { SpaceDust } from "@/components/space-dust"
 import { useEffect, useState } from "react"
 import {
   Bot,
@@ -167,6 +168,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen">
+      <SpaceDust />
       <StickyHeader />
 
       {/* Hero Section */}
