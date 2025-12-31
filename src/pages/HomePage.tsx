@@ -23,10 +23,14 @@ import {
   Zap,
   Send,
   CheckCircle,
+  MessageCircle,
+  Sparkles,
+  X,
 } from "lucide-react"
 
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDemoChatOpen, setIsDemoChatOpen] = useState(false)
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
   const [telegram, setTelegram] = useState("")
@@ -227,8 +231,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Demo Chat Section */}
-      <section id="demo-chat" className="py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
+      {/* Demo Chat Section - Desktop */}
+      <section id="demo-chat" className="hidden md:block py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center space-y-8 mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-balance">Попробуйте ИИ-продавца прямо сейчас</h2>
@@ -243,6 +247,29 @@ export default function HomePage() {
           <p className="text-center text-muted-foreground mt-8 text-sm">
             Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
           </p>
+        </div>
+      </section>
+
+      {/* Demo Chat Section - Mobile with Button */}
+      <section className="md:hidden py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
+        <div className="container mx-auto">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <h2 className="text-3xl font-bold text-balance">Попробуйте ИИ-продавца прямо сейчас</h2>
+            <p className="text-lg text-muted-foreground">
+              Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
+              закрывает возражения 24/7.
+            </p>
+            
+            <Button
+              onClick={() => setIsDemoChatOpen(true)}
+              className="h-14 px-8 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-3 text-base font-semibold mx-auto"
+              size="lg"
+            >
+              <Sparkles className="h-5 w-5 animate-pulse" />
+              Протестировать ИИ-чат
+              <MessageCircle className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -665,6 +692,32 @@ export default function HomePage() {
 
       {/* Chat Widget */}
       <ChatWidget />
+
+      {/* Mobile Demo Chat Modal */}
+      {isDemoChatOpen && (
+        <div className="md:hidden fixed inset-0 bg-background z-50 flex flex-col">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-border bg-background">
+            <h2 className="text-xl font-bold">Попробуйте ИИ-продавца</h2>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsDemoChatOpen(false)}
+              className="hover:bg-muted"
+            >
+              <X className="h-6 w-6" />
+            </Button>
+          </div>
+
+          {/* Demo Chat Content */}
+          <div className="flex-1 overflow-y-auto p-4">
+            <DemoChat />
+            <p className="text-center text-muted-foreground mt-6 text-sm">
+              Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Consultation Modal */}
       <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
