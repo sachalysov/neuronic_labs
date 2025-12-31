@@ -33,7 +33,7 @@ jobs:
 
       - name: Deploy to Timeweb via rsync
         env:
-          TIMEWEB_PASS: ${{ secrets.NbL6!9v$dgwz }}
+          TIMEWEB_PASS: ${{ secrets.TIMEWEB_PASS }}
         run: |
           # Добавляем хост в known_hosts, чтобы избежать ошибки проверки ключа
           mkdir -p ~/.ssh
