@@ -1,12 +1,65 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, Star } from "lucide-react"
+import { CheckCircle, Star, ChevronLeft, ChevronRight } from "lucide-react"
+import { useRef, useState, useEffect } from "react"
 
 interface PricingProps {
   onContactClick: () => void
 }
 
 export function Pricing({ onContactClick }: PricingProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  const checkScroll = () => {
+    const container = scrollContainerRef.current
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0)
+      setCanScrollRight(
+        container.scrollLeft < container.scrollWidth - container.clientWidth - 1
+      )
+    }
+  }
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (container && isMobile) {
+      // Scroll to Business plan (middle card) on mount
+      const cardWidth = container.children[0]?.clientWidth || 0
+      const gap = 32 // 2rem gap
+      container.scrollLeft = cardWidth + gap
+      
+      checkScroll()
+      container.addEventListener('scroll', checkScroll)
+      return () => container.removeEventListener('scroll', checkScroll)
+    }
+  }, [isMobile])
+
+  const scroll = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current
+    if (container) {
+      const cardWidth = container.children[0]?.clientWidth || 0
+      const gap = 32
+      const scrollAmount = cardWidth + gap
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      })
+    }
+  }
 
   const plans = [
     {
@@ -77,7 +130,101 @@ export function Pricing({ onContactClick }: PricingProps) {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {/* Mobile: Slider */}
+        <div className="md:hidden relative">
+          {/* Scroll indicators */}
+          {canScrollLeft && (
+            <button
+              onClick={() => scroll('left')}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-primary text-primary-foreground rounded-full p-2 shadow-lg"
+              aria-label="Предыдущий тариф"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+          )}
+          {canScrollRight && (
+            <button
+              onClick={() => scroll('right')}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-primary text-primary-foreground rounded-full p-2 shadow-lg"
+              aria-label="Следующий тариф"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+          )}
+          
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-8 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-4"
+            style={{
+              scrollPaddingLeft: '1rem',
+              scrollPaddingRight: '1rem'
+            }}
+          >
+            {plans.map((plan) => (
+              <Card
+                key={plan.id}
+                className="relative flex-shrink-0 w-[85vw] max-w-[380px] snap-center bg-card/50"
+              >
+                
+                <CardContent className="p-8 space-y-6">
+                  <div className="text-center space-y-2">
+                    <h3 className="text-2xl font-bold">{plan.name}</h3>
+                    <p className="text-sm text-muted-foreground">{plan.description}</p>
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-5xl font-bold text-primary">{plan.price}</span>
+                      <span className="text-xl text-muted-foreground">₽{plan.period}</span>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    className={`w-full ${plan.highlighted ? "shadow-lg" : ""}`}
+                    variant={plan.highlighted ? "default" : "outline"}
+                    size="lg"
+                    onClick={onContactClick}
+                  >
+                    {plan.highlighted ? "Начать сейчас" : "Связаться"}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          {/* Dots indicator */}
+          <div className="flex justify-center gap-2 mt-6">
+            {plans.map((plan, idx) => (
+              <button
+                key={plan.id}
+                onClick={() => {
+                  const container = scrollContainerRef.current
+                  if (container) {
+                    const cardWidth = container.children[0]?.clientWidth || 0
+                    const gap = 32
+                    container.scrollTo({
+                      left: idx * (cardWidth + gap),
+                      behavior: 'smooth'
+                    })
+                  }
+                }}
+                className={`h-2 rounded-full transition-all ${
+                  plan.highlighted ? 'w-8 bg-primary' : 'w-2 bg-muted-foreground/30'
+                }`}
+                aria-label={`Перейти к тарифу ${plan.name}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: Grid */}
+        <div className="hidden md:grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {plans.map((plan) => (
             <Card
               key={plan.id}
