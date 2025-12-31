@@ -6,6 +6,9 @@ import { ThemeToggle } from "./theme-toggle"
 export function StickyHeader() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<Array<{ id: string; title: string; text: string }>>([])
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +25,57 @@ export function StickyHeader() {
       element.scrollIntoView({ behavior: "smooth", block: "start" })
       setIsMobileMenuOpen(false) // Закрываем меню после клика
     }
+  }
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query)
+    
+    if (query.trim().length < 2) {
+      setSearchResults([])
+      return
+    }
+
+    const sections = [
+      { id: "demo-chat", title: "Чат-бот", selector: "#demo-chat" },
+      { id: "product", title: "О продукте", selector: "#product" },
+      { id: "process", title: "Этапы работ", selector: "#process" },
+      { id: "about", title: "О нас", selector: "#about" },
+      { id: "cases", title: "Кейсы бизнеса", selector: "#cases" },
+      { id: "services", title: "Услуги", selector: "#services" },
+    ]
+
+    const results: Array<{ id: string; title: string; text: string }> = []
+    const lowerQuery = query.toLowerCase()
+
+    sections.forEach((section) => {
+      const element = document.querySelector(section.selector)
+      if (element) {
+        const text = element.textContent || ""
+        const lowerText = text.toLowerCase()
+        
+        if (lowerText.includes(lowerQuery) || section.title.toLowerCase().includes(lowerQuery)) {
+          const index = lowerText.indexOf(lowerQuery)
+          const start = Math.max(0, index - 40)
+          const end = Math.min(text.length, index + query.length + 40)
+          const snippet = text.substring(start, end).trim()
+          
+          results.push({
+            id: section.id,
+            title: section.title,
+            text: snippet || text.substring(0, 100),
+          })
+        }
+      }
+    })
+
+    setSearchResults(results)
+  }
+
+  const selectSearchResult = (id: string) => {
+    scrollToSection(id)
+    setSearchQuery("")
+    setSearchResults([])
+    setIsSearchOpen(false)
   }
 
   return (
@@ -43,6 +97,52 @@ export function StickyHeader() {
               </div>
             </div>
           </a>
+
+          {/* Search Bar */}
+          <div className="flex flex-1 max-w-md mx-2 md:mx-8 relative">
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Поиск..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                onFocus={() => setIsSearchOpen(true)}
+                onBlur={() => setTimeout(() => setIsSearchOpen(false), 200)}
+                className="w-full px-3 py-1.5 pl-8 md:px-4 md:py-2 md:pl-10 text-sm md:text-base rounded-full bg-background/50 border border-border/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+              />
+              <svg
+                className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-foreground/50"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="11" cy="11" r="8" strokeWidth="2" />
+                <path d="m21 21-4.35-4.35" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+              
+              {/* Search Results */}
+              {isSearchOpen && searchResults.length > 0 && (
+                <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50">
+                  {searchResults.map((result) => (
+                    <button
+                      key={result.id}
+                      onClick={() => selectSearchResult(result.id)}
+                      className="w-full text-left px-4 py-3 hover:bg-primary/10 transition-colors border-b border-border last:border-0"
+                    >
+                      <div className="font-medium text-foreground">{result.title}</div>
+                      <div className="text-sm text-foreground/60 mt-1 line-clamp-2">{result.text}</div>
+                    </button>
+                  ))}
+                </div>
+              )}
+              
+              {isSearchOpen && searchQuery.length >= 2 && searchResults.length === 0 && (
+                <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 px-4 py-3 text-foreground/60">
+                  Ничего не найдено
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Navigation & Theme Toggle */}
           <div className="flex items-center gap-6">
