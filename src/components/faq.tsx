@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { ChevronDown } from "lucide-react"
 
 interface FAQItem {
@@ -10,7 +11,7 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: "Как быстро можно внедрить ИИ-продавца?",
-    answer: "Базовое внедрение занимает 7-14 дней. Это включает анализ вашего бизнеса, настройку ИИ, обучение на ваших данных, интеграцию с системами и тестирование. Для сложных проектов срок может увеличиться до 3-4 недель."
+    answer: "Базовое внедрение занимает ≈7-14 дней. Это включает анализ вашего бизнеса, настройку ИИ, обучение на ваших данных, интеграцию с системами и тестирование. Для сложных проектов срок может увеличиться до 3-4 недель."
   },
   {
     question: "Нужны ли технические знания для работы с ИИ-продавцом?",
@@ -52,6 +53,7 @@ const faqData: FAQItem[] = [
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const [isMobileFAQOpen, setIsMobileFAQOpen] = useState(false)
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
@@ -60,27 +62,50 @@ export function FAQ() {
   return (
     <section id="faq" className="py-20 px-4">
       <div className="container mx-auto">
-        <div className="text-center space-y-4 mb-16">
+        <div className="text-center space-y-4 mb-8 md:mb-16">
           <h2 className="text-4xl md:text-5xl font-bold">Частые вопросы</h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Ответы на самые популярные вопросы о внедрении ИИ-продавца
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto space-y-4">
+        {/* Mobile: Collapsible FAQ Button */}
+        <div className="md:hidden mb-4">
+          <Button
+            variant="outline"
+            className="w-full flex items-center justify-between p-4 h-auto"
+            onClick={() => setIsMobileFAQOpen(!isMobileFAQOpen)}
+          >
+            <span className="font-bold text-base">
+              {isMobileFAQOpen ? "Скрыть вопросы" : "Показать"}
+            </span>
+            <ChevronDown
+              className={`h-5 w-5 transition-transform duration-300 ${
+                isMobileFAQOpen ? "rotate-180" : ""
+              }`}
+            />
+          </Button>
+        </div>
+
+        {/* FAQ List - Hidden on mobile when collapsed */}
+        <div className={`max-w-4xl mx-auto space-y-3 ${
+          isMobileFAQOpen ? "block" : "hidden md:block"
+        }`}>
           {faqData.map((item, index) => (
             <Card
               key={index}
               className="cursor-pointer hover:border-primary/50 transition-all"
               onClick={() => toggleFAQ(index)}
             >
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-lg md:text-xl font-bold text-balance flex-1">
+              <CardContent className={`transition-all duration-300 ${
+                openIndex === index ? "py-0.5 px-6" : "py-0 px-3 md:py-0 md:px-4"
+              }`}>
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="text-xs md:text-xl font-bold flex-1 leading-tight">
                     {item.question}
                   </h3>
                   <ChevronDown
-                    className={`h-6 w-6 flex-shrink-0 transition-transform duration-300 ${
+                    className={`h-4 w-4 md:h-6 md:w-6 flex-shrink-0 transition-transform duration-300 ${
                       openIndex === index ? "rotate-180" : ""
                     }`}
                   />
