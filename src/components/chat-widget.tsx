@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Send, Smile, X } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
+import { parseMarkdown } from "@/lib/markdown-parser"
 
 interface Message {
   id: string
@@ -139,7 +140,7 @@ export function ChatWidget() {
                     : "bg-primary text-primary-foreground rounded-tl-sm"
                 }`}
               >
-                <p className="text-sm leading-relaxed">{message.text}</p>
+                <p className="text-sm leading-relaxed">{parseMarkdown(message.text)}</p>
               </div>
             </div>
           </div>
