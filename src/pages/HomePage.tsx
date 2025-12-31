@@ -502,9 +502,9 @@ export default function HomePage() {
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full text-lg py-6">
+                    <Button type="submit" size="lg" className="w-full text-base md:text-lg py-1 md:py-3 px-4 h-auto min-h-[60px] whitespace-normal leading-tight">
                       Получить бесплатную консультацию
-                      <Send className="ml-2 h-5 w-5" />
+                      <Send className="ml-2 h-5 w-5 flex-shrink-0" />
                     </Button>
 
                     <p className="text-sm text-muted-foreground">
