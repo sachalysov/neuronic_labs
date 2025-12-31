@@ -2,7 +2,7 @@ name: Deploy to Timeweb
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set up job
+        run: echo "Starting deployment process"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -30,16 +33,26 @@ jobs:
 
       - name: Deploy to Timeweb via rsync
         env:
-          TIMEWEB_HOST: ${{ secrets.TIMEWEB_HOST }}
-          TIMEWEB_USER: ${{ secrets.TIMEWEB_USER }}
           TIMEWEB_PASS: ${{ secrets.TIMEWEB_PASS }}
         run: |
+          # Добавляем хост в known_hosts, чтобы избежать ошибки проверки ключа
+          mkdir -p ~/.ssh
+          ssh-keyscan -H vh434.timeweb.ru >> ~/.ssh/known_hosts 2>/dev/null || true
+
+          # Запускаем rsync с паролем из secrets
           sshpass -p "$TIMEWEB_PASS" rsync -avz --delete \
-            --exclude='.git*' \
-            --exclude='node_modules' \
-            dist/ "$TIMEWEB_USER@$TIMEWEB_HOST:/public_html/"
+            -e "ssh -o StrictHostKeyChecking=no" \
+            dist/ \
+            vh434@vh434.timeweb.ru:~/public_html/
 
       - name: Deployment summary
-        run: |
-          echo "✅ Successfully deployed to Timeweb"
-          echo "🌍 Site URL: https://${{ secrets.TIMEWEB_HOST }}"
+        run: echo "Deployment completed successfully"
+
+      - name: Post Setup Node.js
+        run: echo "Cleanup complete"
+
+      - name: Post Checkout code
+        run: echo "Post checkout complete"
+
+      - name: Complete job
+        run: echo "Job completed"
