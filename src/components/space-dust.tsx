@@ -16,6 +16,7 @@ export function SpaceDust() {
   const particlesRef = useRef<Particle[]>([])
   const mouseRef = useRef({ x: 0, y: 0 })
   const animationRef = useRef<number>()
+  const isDarkRef = useRef(true)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -23,6 +24,12 @@ export function SpaceDust() {
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+
+    // Определяем текущую тему
+    const checkTheme = () => {
+      isDarkRef.current = document.documentElement.dataset.theme === 'dark'
+    }
+    checkTheme()
 
     // Устанавливаем размер canvas
     const resizeCanvas = () => {
@@ -98,8 +105,11 @@ export function SpaceDust() {
         if (particle.y < 0) particle.y = 0
         if (particle.y > canvas.height) particle.y = canvas.height
 
+        // Определяем цвет частиц в зависимости от темы
+        const particleColor = isDarkRef.current ? '255, 255, 255' : '20, 20, 20'
+        
         // Рисуем частицу
-        ctx.fillStyle = `rgba(255, 255, 255, ${particle.opacity})`
+        ctx.fillStyle = `rgba(${particleColor}, ${particle.opacity})`
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
         ctx.fill()
@@ -109,8 +119,8 @@ export function SpaceDust() {
           particle.x, particle.y, 0,
           particle.x, particle.y, particle.size * 3
         )
-        gradient.addColorStop(0, `rgba(255, 255, 255, ${particle.opacity * 0.3})`)
-        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)')
+        gradient.addColorStop(0, `rgba(${particleColor}, ${particle.opacity * 0.3})`)
+        gradient.addColorStop(1, `rgba(${particleColor}, 0)`)
         
         ctx.fillStyle = gradient
         ctx.beginPath()
@@ -126,9 +136,20 @@ export function SpaceDust() {
     window.addEventListener('mousemove', handleMouseMove)
     animate()
 
+    // Отслеживаем изменения темы
+    const observer = new MutationObserver(() => {
+      checkTheme()
+    })
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    })
+
     return () => {
       window.removeEventListener('resize', resizeCanvas)
       window.removeEventListener('mousemove', handleMouseMove)
+      observer.disconnect()
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }
