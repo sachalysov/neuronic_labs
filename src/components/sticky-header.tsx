@@ -30,7 +30,8 @@ export function StickyHeader() {
   const handleSearch = (query: string) => {
     setSearchQuery(query)
     
-    if (query.trim().length < 2) {
+    const trimmedQuery = query.trim()
+    if (trimmedQuery.length < 2) {
       setSearchResults([])
       return
     }
@@ -45,18 +46,19 @@ export function StickyHeader() {
     ]
 
     const results: Array<{ id: string; title: string; text: string }> = []
-    const lowerQuery = query.toLowerCase()
+    const normalizedQuery = trimmedQuery.toLowerCase().replace(/\s+/g, '')
 
     sections.forEach((section) => {
       const element = document.querySelector(section.selector)
       if (element) {
         const text = element.textContent || ""
-        const lowerText = text.toLowerCase()
+        const normalizedText = text.toLowerCase().replace(/\s+/g, '')
+        const normalizedTitle = section.title.toLowerCase().replace(/\s+/g, '')
         
-        if (lowerText.includes(lowerQuery) || section.title.toLowerCase().includes(lowerQuery)) {
-          const index = lowerText.indexOf(lowerQuery)
-          const start = Math.max(0, index - 40)
-          const end = Math.min(text.length, index + query.length + 40)
+        if (normalizedText.includes(normalizedQuery) || normalizedTitle.includes(normalizedQuery)) {
+          const index = text.toLowerCase().indexOf(trimmedQuery.toLowerCase())
+          const start = Math.max(0, index > -1 ? index - 40 : 0)
+          const end = Math.min(text.length, index > -1 ? index + trimmedQuery.length + 40 : 100)
           const snippet = text.substring(start, end).trim()
           
           results.push({
