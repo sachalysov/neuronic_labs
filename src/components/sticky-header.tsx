@@ -108,7 +108,8 @@ export function StickyHeader() {
                 onChange={(e) => handleSearch(e.target.value)}
                 onFocus={() => setIsSearchOpen(true)}
                 onBlur={() => setTimeout(() => setIsSearchOpen(false), 200)}
-                className="w-full px-3 py-1.5 pl-8 md:px-4 md:py-2 md:pl-10 text-sm md:text-base rounded-full bg-background/50 border border-border/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full px-3 py-1.5 pl-8 pr-8 md:px-4 md:py-2 md:pl-10 md:pr-10 rounded-full bg-background/50 border border-border/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                style={{ fontSize: '16px' }}
               />
               <svg
                 className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-foreground/50"
@@ -119,6 +120,27 @@ export function StickyHeader() {
                 <circle cx="11" cy="11" r="8" strokeWidth="2" />
                 <path d="m21 21-4.35-4.35" strokeWidth="2" strokeLinecap="round" />
               </svg>
+              
+              {/* Clear Button */}
+              {searchQuery && (
+                <button
+                  onClick={() => {
+                    setSearchQuery("")
+                    setSearchResults([])
+                    setIsSearchOpen(false)
+                  }}
+                  className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-foreground transition-colors p-1"
+                >
+                  <svg
+                    className="w-3.5 h-3.5 md:w-4 md:h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
               
               {/* Search Results */}
               {isSearchOpen && searchResults.length > 0 && (
