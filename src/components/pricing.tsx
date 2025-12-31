@@ -1,14 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, Star } from "lucide-react"
-import { useState } from "react"
 
 interface PricingProps {
   onContactClick: () => void
 }
 
 export function Pricing({ onContactClick }: PricingProps) {
-  const [selectedPlan, setSelectedPlan] = useState<string>("business")
 
   const plans = [
     {
@@ -88,7 +86,6 @@ export function Pricing({ onContactClick }: PricingProps) {
                   ? "border-primary border-2 shadow-2xl scale-105 bg-primary/5"
                   : "bg-card/50 hover:border-primary/50 transition-all"
               }`}
-              onClick={() => setSelectedPlan(plan.id)}
             >
               {plan.badge && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1">
