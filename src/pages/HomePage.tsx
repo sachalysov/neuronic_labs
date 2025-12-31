@@ -492,40 +492,6 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-
-            <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
-              <CardContent className="p-8 md:p-12">
-                <div className="space-y-6">
-                  <h3 className="text-2xl md:text-3xl font-bold">Наша миссия</h3>
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    Мы помогаем бизнесу расти, внедряя передовые технологии искусственного интеллекта. Наша цель —
-                    сделать ИИ-автоматизацию доступной для компаний любого масштаба, от стартапов до крупных корпораций.
-                  </p>
-                  <p className="text-lg text-muted-foreground leading-relaxed">
-                    За годы работы мы разработали проверенную методологию внедрения, которая гарантирует результат за 14
-                    дней. Мы не просто создаем ИИ-ассистентов — мы интегрируем их в бизнес-процессы так, чтобы они
-                    приносили реальную прибыль с первого дня работы.
-                  </p>
-                  <div className="pt-4">
-                    <h4 className="text-xl font-bold mb-4">Наши ценности:</h4>
-                    <ul className="space-y-2 text-muted-foreground">
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary mt-1">✓</span>
-                        <span>Прозрачность — вы всегда знаете, на каком этапе находится проект</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary mt-1">✓</span>
-                        <span>Результативность — фокусируемся на метриках, которые важны для вашего бизнеса</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="text-primary mt-1">✓</span>
-                        <span>Инновации — используем только проверенные и эффективные технологии</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
