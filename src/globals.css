@@ -199,3 +199,48 @@ html[data-theme="dark"] .hero-image-overlay {
   animation: slideInRight 0.3s ease-out;
 }
 
+/* Mobile optimization for new AIDA sections */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem !important;
+    line-height: 1.2;
+  }
+  
+  .hero h2 {
+    font-size: 1.75rem !important;
+    line-height: 1.3;
+  }
+  
+  .hero p {
+    font-size: 1rem !important;
+  }
+
+  /* Countdown timer mobile */
+  [class*="countdown"] {
+    font-size: 1.5rem;
+  }
+
+  /* Pricing cards mobile spacing */
+  [id="pricing"] .grid {
+    gap: 1rem;
+  }
+
+  /* FAQ mobile text */
+  [id="faq"] h3 {
+    font-size: 1rem;
+  }
+
+  /* Testimonials mobile */
+  [id="testimonials"] blockquote {
+    font-size: 1rem !important;
+  }
+}
+
+/* Touch-friendly buttons */
+@media (hover: none) and (pointer: coarse) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
