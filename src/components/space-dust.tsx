@@ -11,7 +11,13 @@ interface Particle {
   opacity: number
 }
 
-export function SpaceDust() {
+interface SpaceDustProps {
+  className?: string
+  style?: React.CSSProperties
+  particleDensity?: number
+}
+
+export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDustProps = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const particlesRef = useRef<Particle[]>([])
   const mouseRef = useRef({ x: 0, y: 0 })
@@ -41,7 +47,7 @@ export function SpaceDust() {
     // Инициализация частиц
     const initParticles = () => {
       particlesRef.current = []
-      const particleCount = Math.floor((canvas.width * canvas.height) / 8000) // Плотность частиц
+      const particleCount = Math.floor((canvas.width * canvas.height) / particleDensity) // Плотность частиц
       
       for (let i = 0; i < particleCount; i++) {
         particlesRef.current.push({
@@ -159,8 +165,8 @@ export function SpaceDust() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[-1]"
-      style={{ opacity: 0.6 }}
+      className={className || "fixed inset-0 pointer-events-none z-[-1]"}
+      style={style || { opacity: 0.6 }}
     />
   )
 }

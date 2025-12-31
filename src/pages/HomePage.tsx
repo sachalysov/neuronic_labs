@@ -183,6 +183,15 @@ export default function HomePage() {
         {/* Pattern Overlay */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDIpIi8+PC9nPjwvc3ZnPg==')] opacity-20 z-[1]" />
 
+        {/* Space Dust Effect - Hero Section */}
+        <div className="absolute inset-0 z-[5] pointer-events-none">
+          <SpaceDust 
+            className="absolute inset-0 pointer-events-none"
+            style={{ opacity: 0.9 }}
+            particleDensity={5000}
+          />
+        </div>
+
         {/* Content */}
         <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="max-w-3xl">
