@@ -37,13 +37,8 @@ export function StickyHeader() {
             <div className="flex items-center gap-4">
               <div className="flex flex-col items-start">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-primary">NEURONIC</span>
-                  <span className="text-2xl font-bold text-foreground">LABS</span>
-                </div>
-                <div className="text-[10px] text-muted-foreground uppercase tracking-wide leading-tight">
-                  Агентство по внедрению
-                  <br />
-                  автоматизации в бизнес
+                  <span className="text-2xl font-bold text-primary">N</span>
+                  <span className="text-2xl font-bold text-foreground">L</span>
                 </div>
               </div>
             </div>
