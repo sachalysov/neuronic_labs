@@ -30,6 +30,34 @@ export default function HomePage() {
   const [email, setEmail] = useState("")
   const [telegram, setTelegram] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [currentSlide, setCurrentSlide] = useState(1) // Начинаем с 1 (первый реальный слайд)
+  const [isTransitioning, setIsTransitioning] = useState(true)
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
+
+  const totalSlides = 4
+  const benefitsData = [
+    {
+      icon: Bot,
+      title: "ИИ-сотрудник работает 24/7, пока конкуренты спят",
+      description: "Мгновенно отвечает на любые вопросы, 24/7 - круглосуточная коммуникация, недоступная вашим конкурентам"
+    },
+    {
+      icon: TrendingUp,
+      title: "В 2-3 раза больше клиентов",
+      description: "Грамотно внедренный ИИ-продавец + мультиканален + Яндекс. Директ может увеличить конверсию в заявку в 2-3 раза"
+    },
+    {
+      icon: DollarSign,
+      title: "Сокращение фонда оплаты труда",
+      description: "Один ИИ-продавец способен полностью заменить линейных менеджеров, которые занимаются первичной обработкой лидов и справляется с любым объемом заявок"
+    },
+    {
+      icon: Clock,
+      title: "Мгновенные ответы клиентам",
+      description: "ИИ отвечает мгновенно, не заставляя клиентов ждать. Быстрая реакция повышает доверие и увеличивает конверсию"
+    }
+  ]
 
   useEffect(() => {
     // Очищаем hash из URL
@@ -39,6 +67,69 @@ export default function HomePage() {
     // Скроллим в начало страницы
     window.scrollTo(0, 0)
   }, [])
+
+  // Автопрокрутка слайдера на мобильных
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTransitioning(true)
+      setCurrentSlide((prev) => prev + 1)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Обработка бесшовного зацикливания
+  useEffect(() => {
+    if (!isTransitioning) return
+
+    if (currentSlide === 0) {
+      // Перепрыгиваем на последний реальный слайд
+      setTimeout(() => {
+        setIsTransitioning(false)
+        setCurrentSlide(totalSlides)
+      }, 500)
+    } else if (currentSlide === totalSlides + 1) {
+      // Перепрыгиваем на первый реальный слайд
+      setTimeout(() => {
+        setIsTransitioning(false)
+        setCurrentSlide(1)
+      }, 500)
+    }
+  }, [currentSlide, isTransitioning])
+
+  const goToNextSlide = () => {
+    setIsTransitioning(true)
+    setCurrentSlide((prev) => prev + 1)
+  }
+
+  const goToPrevSlide = () => {
+    setIsTransitioning(true)
+    setCurrentSlide((prev) => prev - 1)
+  }
+
+  const goToSlide = (index: number) => {
+    setIsTransitioning(true)
+    setCurrentSlide(index + 1) // +1 потому что 0 - это клон
+  }
+
+  // Обработка свайпа
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > 75) {
+      // Свайп влево
+      goToNextSlide()
+    }
+    if (touchStart - touchEnd < -75) {
+      // Свайп вправо
+      goToPrevSlide()
+    }
+  }
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
@@ -155,57 +246,113 @@ export default function HomePage() {
             раза
           </p>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-card border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <Bot className="h-7 w-7 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">ИИ-сотрудник работает 24/7, пока конкуренты спят</h3>
-                <p className="text-muted-foreground">
-                  Мгновенно отвечает на любые вопросы, 24/7 - круглосуточная коммуникация, недоступная вашим конкурентам
-                </p>
-              </CardContent>
-            </Card>
+          {/* Desktop Grid */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {benefitsData.map((benefit, index) => {
+              const Icon = benefit.icon
+              return (
+                <Card key={index} className="bg-card border-border hover:border-primary transition-all duration-300">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <Icon className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-bold">{benefit.title}</h3>
+                    <p className="text-muted-foreground">
+                      {benefit.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
 
-            <Card className="bg-card border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <TrendingUp className="h-7 w-7 text-primary" />
+          {/* Mobile Slider */}
+          <div className="md:hidden">
+            <div 
+              className="relative overflow-hidden"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div 
+                className={`flex ${isTransitioning ? 'transition-transform duration-500 ease-out' : ''}`}
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {/* Клон последнего слайда в начале */}
+                <div className="w-full flex-shrink-0 px-4">
+                  <Card className="bg-card border-border">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
+                        {(() => {
+                          const Icon = benefitsData[benefitsData.length - 1].icon
+                          return <Icon className="h-7 w-7 text-primary" />
+                        })()}
+                      </div>
+                      <h3 className="text-xl font-bold">{benefitsData[benefitsData.length - 1].title}</h3>
+                      <p className="text-muted-foreground">
+                        {benefitsData[benefitsData.length - 1].description}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
-                <h3 className="text-xl font-bold">В 2-3 раза больше клиентов</h3>
-                <p className="text-muted-foreground">
-                  Грамотно внедренный ИИ-продавец + мультиканален + Яндекс. Директ может увеличить конверсию в заявку в
-                  2-3 раза
-                </p>
-              </CardContent>
-            </Card>
 
-            <Card className="bg-card border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <DollarSign className="h-7 w-7 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Сокращение фонда оплаты труда</h3>
-                <p className="text-muted-foreground">
-                  Один ИИ-продавец способен полностью заменить линейных менеджеров, которые занимаются первичной
-                  обработкой лидов и справляется с любым объемом заявок
-                </p>
-              </CardContent>
-            </Card>
+                {/* Реальные слайды */}
+                {benefitsData.map((benefit, index) => {
+                  const Icon = benefit.icon
+                  return (
+                    <div key={index} className="w-full flex-shrink-0 px-4">
+                      <Card className="bg-card border-border">
+                        <CardContent className="p-6 space-y-4">
+                          <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
+                            <Icon className="h-7 w-7 text-primary" />
+                          </div>
+                          <h3 className="text-xl font-bold">{benefit.title}</h3>
+                          <p className="text-muted-foreground">
+                            {benefit.description}
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )
+                })}
 
-            <Card className="bg-card border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <Clock className="h-7 w-7 text-primary" />
+                {/* Клон первого слайда в конце */}
+                <div className="w-full flex-shrink-0 px-4">
+                  <Card className="bg-card border-border">
+                    <CardContent className="p-6 space-y-4">
+                      <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
+                        {(() => {
+                          const Icon = benefitsData[0].icon
+                          return <Icon className="h-7 w-7 text-primary" />
+                        })()}
+                      </div>
+                      <h3 className="text-xl font-bold">{benefitsData[0].title}</h3>
+                      <p className="text-muted-foreground">
+                        {benefitsData[0].description}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
-                <h3 className="text-xl font-bold">Мгновенные ответы клиентам</h3>
-                <p className="text-muted-foreground">
-                  ИИ отвечает мгновенно, не заставляя клиентов ждать. Быстрая реакция повышает доверие и увеличивает
-                  конверсию
-                </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+
+            {/* Pagination Dots */}
+            <div className="flex justify-center gap-2 mt-6">
+              {benefitsData.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    (currentSlide === index + 1) || 
+                    (currentSlide === 0 && index === totalSlides - 1) || 
+                    (currentSlide === totalSlides + 1 && index === 0)
+                      ? 'bg-primary w-8' 
+                      : 'bg-muted-foreground/30'
+                  }`}
+                  aria-label={`Перейти к слайду ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
