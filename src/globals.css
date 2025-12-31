@@ -239,8 +239,8 @@ html[data-theme="dark"] .hero-image-overlay {
 /* Touch-friendly buttons */
 @media (hover: none) and (pointer: coarse) {
   button, a {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 5px;
+    min-width: 5px;
   }
 }
 
