@@ -287,66 +287,64 @@ export default function HomePage() {
             </div>
 
             {/* Video and Product Description */}
-            <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 mb-12">
-              <CardContent className="p-8 md:p-12">
-                <div className="flex flex-col gap-8">
-                  {/* Video Section - Full Width */}
-                  <div className="w-full px-5">
-                    <div className="relative rounded-xl overflow-hidden shadow-2xl w-full" style={{ aspectRatio: '16/9' }}>
-                      <iframe
-                        src="https://drive.google.com/file/d/1WPOhATh5rgSd4U0XVElvYKBNJoZNiBTM/preview"
-                        className="absolute inset-0 w-full h-full"
-                        allow="autoplay"
-                        title="Презентация продукта"
-                      />
-                    </div>
+            <div className="mb-12">
+              <div className="flex flex-col gap-8">
+                {/* Video Section - Full Width */}
+                <div className="w-full">
+                  <div className="relative rounded-xl overflow-hidden shadow-2xl w-full" style={{ aspectRatio: '16/9' }}>
+                    <iframe
+                      src="https://drive.google.com/file/d/1WPOhATh5rgSd4U0XVElvYKBNJoZNiBTM/preview"
+                      className="absolute inset-0 w-full h-full"
+                      allow="autoplay"
+                      title="Презентация продукта"
+                    />
                   </div>
+                </div>
 
-                  {/* Text Section - Below Video */}
-                  <div className="w-full space-y-6">
-                    <h3 className="text-2xl md:text-3xl font-bold">О нашем продукте</h3>
-                    <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
-                      <p>
-                        Наш ИИ-ассистент — это не просто чат-бот. Это полноценный виртуальный сотрудник, который понимает
-                        контекст вашего бизнеса, знает ваши продукты и услуги, и способен вести диалог с клиентами на уровне
-                        опытного менеджера.
-                      </p>
-                      <p>
-                        Технология построена на базе передовых языковых моделей, адаптированных под специфику вашей отрасли.
-                        Мы обучаем систему на ваших данных: прайс-листах, описаниях услуг, типовых вопросах клиентов и
-                        скриптах продаж.
-                      </p>
-                      <p>
-                        Результат — ИИ-сотрудник, который работает 24/7, никогда не устает, не уходит в отпуск и обрабатывает
-                        неограниченное количество обращений одновременно. При этом каждый клиент получает персонализированный
-                        подход и мгновенные ответы на свои вопросы.
-                      </p>
-                      <div className="pt-4 border-t border-primary/20">
-                        <h4 className="text-xl font-bold mb-3">Ключевые возможности:</h4>
-                        <ul className="space-y-2">
-                          <li className="flex items-start gap-2">
-                            <span className="text-primary mt-1">✓</span>
-                            <span>Интеграция со всеми популярными мессенджерами и CRM-системами</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-primary mt-1">✓</span>
-                            <span>Автоматическая квалификация лидов и передача горячих заявок менеджерам</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-primary mt-1">✓</span>
-                            <span>Аналитика и отчеты по всем взаимодействиям с клиентами</span>
-                          </li>
-                          <li className="flex items-start gap-2">
-                            <span className="text-primary mt-1">✓</span>
-                            <span>Постоянное обучение и улучшение на основе реальных диалогов</span>
-                          </li>
-                        </ul>
-                      </div>
+                {/* Text Section - Below Video */}
+                <div className="w-full space-y-6">
+                  <h3 className="text-2xl md:text-3xl font-bold">О нашем продукте</h3>
+                  <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
+                    <p>
+                      Наш ИИ-ассистент — это не просто чат-бот. Это полноценный виртуальный сотрудник, который понимает
+                      контекст вашего бизнеса, знает ваши продукты и услуги, и способен вести диалог с клиентами на уровне
+                      опытного менеджера.
+                    </p>
+                    <p>
+                      Технология построена на базе передовых языковых моделей, адаптированных под специфику вашей отрасли.
+                      Мы обучаем систему на ваших данных: прайс-листах, описаниях услуг, типовых вопросах клиентов и
+                      скриптах продаж.
+                    </p>
+                    <p>
+                      Результат — ИИ-сотрудник, который работает 24/7, никогда не устает, не уходит в отпуск и обрабатывает
+                      неограниченное количество обращений одновременно. При этом каждый клиент получает персонализированный
+                      подход и мгновенные ответы на свои вопросы.
+                    </p>
+                    <div className="pt-4 border-t border-border">
+                      <h4 className="text-xl font-bold mb-3">Ключевые возможности:</h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-1">✓</span>
+                          <span>Интеграция со всеми популярными мессенджерами и CRM-системами</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-1">✓</span>
+                          <span>Автоматическая квалификация лидов и передача горячих заявок менеджерам</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-1">✓</span>
+                          <span>Аналитика и отчеты по всем взаимодействиям с клиентами</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-1">✓</span>
+                          <span>Постоянное обучение и улучшение на основе реальных диалогов</span>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30">
               <CardContent className="p-8 md:p-12">
