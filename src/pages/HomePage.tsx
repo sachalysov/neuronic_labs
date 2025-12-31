@@ -262,7 +262,7 @@ export default function HomePage() {
             {benefitsData.map((benefit, index) => {
               const Icon = benefit.icon
               return (
-                <Card key={index} className="bg-card border-border hover:border-primary transition-all duration-300">
+                <Card key={index} className="bg-card/10 border-border hover:border-primary transition-all duration-300">
                   <CardContent className="p-6 space-y-4">
                     <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
                       <Icon className="h-7 w-7 text-primary" />
@@ -291,7 +291,7 @@ export default function HomePage() {
               >
                 {/* Клон последнего слайда в начале */}
                 <div className="w-full flex-shrink-0 px-4">
-                  <Card className="bg-card border-border">
+                  <Card className="bg-card/10 border-border">
                     <CardContent className="p-6 space-y-4">
                       <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
                         {(() => {
@@ -312,7 +312,7 @@ export default function HomePage() {
                   const Icon = benefit.icon
                   return (
                     <div key={index} className="w-full flex-shrink-0 px-4">
-                      <Card className="bg-card border-border">
+                      <Card className="bg-card/10 border-border">
                         <CardContent className="p-6 space-y-4">
                           <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
                             <Icon className="h-7 w-7 text-primary" />
@@ -329,7 +329,7 @@ export default function HomePage() {
 
                 {/* Клон первого слайда в конце */}
                 <div className="w-full flex-shrink-0 px-4">
-                  <Card className="bg-card border-border">
+                  <Card className="bg-card/10 border-border">
                     <CardContent className="p-6 space-y-4">
                       <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
                         {(() => {
@@ -413,7 +413,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 mb-12">
-              <Card className="bg-card border-border text-center">
+              <Card className="bg-card/10 border-border text-center">
                 <CardContent className="p-8 space-y-4">
                   <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
                     <Target className="h-8 w-8 text-primary" />
@@ -423,7 +423,7 @@ export default function HomePage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border-border text-center">
+              <Card className="bg-card/10 border-border text-center">
                 <CardContent className="p-8 space-y-4">
                   <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
                     <Award className="h-8 w-8 text-primary" />
@@ -433,7 +433,7 @@ export default function HomePage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border-border text-center">
+              <Card className="bg-card/10 border-border text-center">
                 <CardContent className="p-8 space-y-4">
                   <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
                     <Zap className="h-8 w-8 text-primary" />
@@ -535,7 +535,7 @@ export default function HomePage() {
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">Сценарии использования</h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-card border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
               <CardContent className="p-6 space-y-4 text-center">
                 <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
                   <ShoppingCart className="h-7 w-7 text-primary" />
@@ -545,7 +545,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
               <CardContent className="p-6 space-y-4 text-center">
                 <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
                   <HeadphonesIcon className="h-7 w-7 text-primary" />
@@ -555,7 +555,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
               <CardContent className="p-6 space-y-4 text-center">
                 <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
                   <Users className="h-7 w-7 text-primary" />
@@ -565,7 +565,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
               <CardContent className="p-6 space-y-4 text-center">
                 <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
                   <Lightbulb className="h-7 w-7 text-primary" />
