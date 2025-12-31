@@ -33,14 +33,14 @@ jobs:
 
       - name: Deploy to Timeweb via rsync
         env:
-          TIMEWEB_PASS: ${{ secrets.NbL6!9v$dgwz }}
+          TIMEWEB_PASS: ${{ secrets.TIMEWEB_PASS }}
         run: |
           # Добавляем хост в known_hosts, чтобы избежать ошибки проверки ключа
           mkdir -p ~/.ssh
           ssh-keyscan -H cc374250.tw1.ru >> ~/.ssh/known_hosts 2>/dev/null || true
 
           # Запускаем rsync с паролем из secrets
-          sshpass -p "$NbL6!9v$dgwz" rsync -avz --delete \
+          sshpass -p "$TIMEWEB_PASS" rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             dist/ \
             cc374250.tw1.ru:~/public_html/
