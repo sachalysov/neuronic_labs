@@ -97,7 +97,7 @@ export default function HomePage() {
               <div className="inline-block">
                 <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-2">
                   <span className="text-primary">NEURONIC</span> <br />
-                  <span className="text-muted-foreground">LABS</span>
+                  <span className="text-muted-foreground">LAB</span>
                 </h1>
                 <p className="text-muted-foreground text-[20px] uppercase tracking-wider">
                   Агентство по внедрению
