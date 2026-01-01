@@ -35,29 +35,27 @@ jobs:
         env:
           TIMEWEB_PASS: ${{ secrets.TIMEWEB_PASS }}
         run: |
-          # Добавляем хост в known_hosts, чтобы избежать ошибки проверки ключа
+          # Добавляем хосты в known_hosts, чтобы избежать ошибки проверки ключа
           mkdir -p ~/.ssh
           ssh-keyscan -H neuroniclabs.ru >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh-keyscan -H vh434.timeweb.ru >> ~/.ssh/known_hosts 2>/dev/null || true
           ssh-keyscan -H 87.249.38.179 >> ~/.ssh/known_hosts 2>/dev/null || true
 
-          # Запускаем rsync с паролем из secrets
+          # Проверяем, что dist/ существует и содержит файлы
+          if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
+            echo "Error: dist/ directory is empty or doesn't exist"
+            exit 1
+          fi
+
+          # Запускаем rsync с паролем из secrets на домен neuroniclabs.ru
           sshpass -p "$TIMEWEB_PASS" rsync -avz --delete \
             --exclude='.bash*' \
             --exclude='.cache' \
             --exclude='.ssh' \
             --exclude='.*_history' \
-            -e "ssh -o StrictHostKeyChecking=no" \
+            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts" \
             dist/ \
             cc374250@neuroniclabs.ru:~/public_html/
 
       - name: Deployment summary
-        run: echo "Deployment completed successfully"
-
-      - name: Post Setup Node.js
-        run: echo "Cleanup complete"
-
-      - name: Post Checkout code
-        run: echo "Post checkout complete"
-
-      - name: Complete job
-        run: echo "Job completed"
+        run: echo "✅ Deployment completed successfully"
