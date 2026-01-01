@@ -48,13 +48,14 @@ jobs:
           fi
 
           # Запускаем rsync с паролем из secrets на домен neuroniclabs.ru
+          # Деплоим содержимое dist/ в public_html (стандартная директория для веб-сайтов на Timeweb)
           sshpass -p "$TIMEWEB_PASS" rsync -avz --delete \
             --exclude='.bash*' \
             --exclude='.cache' \
             --exclude='.ssh' \
             --exclude='.*_history' \
             -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=~/.ssh/known_hosts" \
-            dist/ \
+            dist/. \
             cc374250@neuroniclabs.ru:~/public_html/
 
       - name: Deployment summary
