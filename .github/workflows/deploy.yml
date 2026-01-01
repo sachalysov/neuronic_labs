@@ -48,7 +48,7 @@ jobs:
             --exclude='.*_history' \
             -e "ssh -o StrictHostKeyChecking=no" \
             dist/ \
-            cc374250@vh434.timeweb.ru:~/public_html/
+            neuroniclabs.ru:~/public_html/
 
       - name: Deployment summary
         run: echo "Deployment completed successfully"
