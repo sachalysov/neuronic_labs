@@ -167,11 +167,15 @@ export function Testimonials() {
                     <button
                       key={index}
                       onClick={() => goToSlide(index)}
-                      className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 ${
+                      className={`rounded-full transition-all duration-300 bg-muted-foreground/30 hover:bg-muted-foreground/50 ${
                         index === currentIndex
-                          ? "bg-primary w-6 sm:w-8"
-                          : "bg-muted-foreground/30 w-2 sm:w-2.5 hover:bg-muted-foreground/50"
+                          ? "bg-primary"
+                          : ""
                       }`}
+                      style={{
+                        width: index === currentIndex ? '0.5rem' : '0.17rem',
+                        height: '0.17rem'
+                      }}
                       aria-label={`Перейти к отзыву ${index + 1}`}
                     />
                   ))}

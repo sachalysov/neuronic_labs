@@ -214,9 +214,13 @@ export function Pricing({ onContactClick }: PricingProps) {
                     })
                   }
                 }}
-                className={`h-2 rounded-full transition-all ${
-                  plan.highlighted ? 'w-8 bg-primary' : 'w-2 bg-muted-foreground/30'
+                className={`rounded-full transition-all ${
+                  plan.highlighted ? 'bg-primary' : 'bg-muted-foreground/30'
                 }`}
+                style={{
+                  width: plan.highlighted ? '0.67rem' : '0.17rem',
+                  height: '0.17rem'
+                }}
                 aria-label={`Перейти к тарифу ${plan.name}`}
               />
             ))}

@@ -256,6 +256,69 @@ html[data-theme="dark"] .hero-bottom-fade {
   }
 }
 
+/* Адаптация для экранов 320-475px (без изменения текстов и изображения робота) */
+@media (min-width: 320px) and (max-width: 475px) {
+  /* Контейнеры - уменьшаем горизонтальные отступы */
+  .container {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Секции - уменьшаем вертикальные отступы для py-12 и py-20 */
+  section {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  /* Hero секция - уменьшаем padding контента, но не трогаем изображение робота */
+  section:first-of-type .container {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  /* Карточки - компактные отступы */
+  [class*="CardContent"] {
+    padding: 1rem !important;
+  }
+
+  /* Gap между элементами в grid и flex - общие правила */
+  .grid,
+  .flex {
+    gap: 0.75rem !important;
+  }
+
+  /* Space-y - общие правила для уменьшения отступов */
+  [class*="space-y"] > * + * {
+    margin-top: 0.75rem !important;
+  }
+
+  [class*="space-y-2"] > * + *,
+  [class*="space-y-3"] > * + * {
+    margin-top: 0.5rem !important;
+  }
+
+  [class*="space-y-6"] > * + *,
+  [class*="space-y-8"] > * + * {
+    margin-top: 1rem !important;
+  }
+
+  /* Margin bottom - общие правила */
+  [class*="mb-"] {
+    margin-bottom: 1.5rem !important;
+  }
+
+  [class*="mb-12"],
+  [class*="mb-16"] {
+    margin-bottom: 2rem !important;
+  }
+
+  /* Input поля - только padding, не размер шрифта */
+  input,
+  textarea {
+    padding: 0.625rem !important;
+  }
+}
+
 /* Extra small devices (320px and below) */
 @media (max-width: 375px) {
   /* Container padding reduction */

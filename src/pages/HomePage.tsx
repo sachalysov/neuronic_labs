@@ -465,13 +465,21 @@ export default function HomePage() {
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  className={`rounded-full transition-all duration-300 ${
                     (currentSlide === index + 1) || 
                     (currentSlide === 0 && index === totalSlides - 1) || 
                     (currentSlide === totalSlides + 1 && index === 0)
-                      ? 'bg-primary w-8' 
+                      ? 'bg-primary' 
                       : 'bg-muted-foreground/30'
                   }`}
+                  style={{
+                    width: (currentSlide === index + 1) || 
+                           (currentSlide === 0 && index === totalSlides - 1) || 
+                           (currentSlide === totalSlides + 1 && index === 0)
+                      ? '0.67rem' 
+                      : '0.21rem',
+                    height: '0.21rem'
+                  }}
                   aria-label={`Перейти к слайду ${index + 1}`}
                 />
               ))}

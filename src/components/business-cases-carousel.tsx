@@ -181,11 +181,15 @@ export function BusinessCasesCarousel() {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`transition-all duration-300 rounded-full ${
+            className={`transition-all duration-300 rounded-full bg-muted-foreground/30 hover:bg-muted-foreground/50 ${
               index === currentIndex
-                ? "w-6 sm:w-8 h-2 bg-primary"
-                : "w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                ? "bg-primary"
+                : ""
             }`}
+            style={{
+              width: index === currentIndex ? '0.5rem' : '0.17rem',
+              height: '0.17rem'
+            }}
             aria-label={`Перейти к кейсу ${index + 1}`}
           />
         ))}
