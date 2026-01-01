@@ -114,7 +114,7 @@ export function StickyHeader() {
                 style={{ fontSize: '16px' }}
               />
               <svg
-                className="absolute left-1.5 sm:left-2 md:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-foreground/50"
+                className="hidden sm:block absolute left-1.5 sm:left-2 md:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-foreground/50"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
