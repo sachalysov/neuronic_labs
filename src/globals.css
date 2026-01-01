@@ -381,3 +381,61 @@ html[data-theme="dark"] .hero-bottom-fade {
   display: none;
 }
 
+/* Декоративные линии по бокам заголовков */
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::before,
+.section-title::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 2px;
+  background-color: currentColor;
+  opacity: 0.3;
+  transform: translateY(-50%);
+}
+
+.section-title::before {
+  right: calc(100% + 16px);
+}
+
+.section-title::after {
+  left: calc(100% + 16px);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+  .section-title::before,
+  .section-title::after {
+    width: 24px;
+  }
+  
+  .section-title::before {
+    right: calc(100% + 12px);
+  }
+  
+  .section-title::after {
+    left: calc(100% + 12px);
+  }
+}
+
+/* Для очень маленьких экранов скрываем линии */
+@media (max-width: 480px) {
+  .section-title::before,
+  .section-title::after {
+    width: 20px;
+  }
+  
+  .section-title::before {
+    right: calc(100% + 8px);
+  }
+  
+  .section-title::after {
+    left: calc(100% + 8px);
+  }
+}
+

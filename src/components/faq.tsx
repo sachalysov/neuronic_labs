@@ -66,7 +66,7 @@ export function FAQ() {
     <section id="faq" className="py-12 sm:py-20 px-3 sm:px-4">
       <div className="container mx-auto">
         <div className="text-center space-y-3 sm:space-y-4 mb-6 sm:mb-8 md:mb-16">
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">Частые вопросы</h2>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Частые вопросы</h2>
           <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             Ответы на самые популярные вопросы о внедрении ИИ-продавца
           </p>

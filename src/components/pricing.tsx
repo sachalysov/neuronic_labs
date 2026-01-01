@@ -124,7 +124,7 @@ export function Pricing({ onContactClick }: PricingProps) {
     <section id="pricing" className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background">
       <div className="container mx-auto">
         <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">Тарифы и цены</h2>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Тарифы и цены</h2>
           <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             Выберите оптимальный план для вашего бизнеса. Все тарифы включают полную настройку и внедрение
           </p>

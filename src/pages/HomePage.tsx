@@ -307,7 +307,7 @@ export default function HomePage() {
       <section id="demo-chat" className="hidden md:block py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center space-y-8 mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-balance">Попробуйте ИИ-продавца прямо сейчас</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-balance section-title">Попробуйте ИИ-продавца прямо сейчас</h2>
             <p className="text-xl text-muted-foreground">
               Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
               закрывает возражения 24/7.
@@ -326,7 +326,7 @@ export default function HomePage() {
       <section className="md:hidden py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-balance">Попробуйте ИИ-продавца прямо сейчас</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-balance section-title">Попробуйте ИИ-продавца прямо сейчас</h2>
             <p className="text-base sm:text-lg text-muted-foreground">
               Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
               закрывает возражения 24/7.
@@ -348,9 +348,11 @@ export default function HomePage() {
       {/* Benefits Section */}
       <section id="product" className="py-12 sm:py-20 px-3 sm:px-4">
         <div className="container mx-auto">
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-center mb-3 sm:mb-4 text-balance">
-            Внедряем решение под ключ за 14 дней
-          </h2>
+          <div className="text-center mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-balance section-title">
+              Внедряем решение под ключ за 14 дней
+            </h2>
+          </div>
           <p className="text-base sm:text-xl text-center text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto">
             Грамотно внедренный ИИ-продавец + мультиканален + Яндекс. Директ может увеличить конверсию в заявку в 2-3
             раза
@@ -481,7 +483,9 @@ export default function HomePage() {
       {/* How It Works Section */}
       <section id="process" className="py-12 sm:py-20 px-3 sm:px-4 bg-secondary/30">
         <div className="container mx-auto">
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-center mb-10 sm:mb-16">Как мы работаем</h2>
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Как мы работаем</h2>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             <div className="text-center space-y-3 sm:space-y-4">
@@ -519,7 +523,7 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="max-w-5xl mx-auto">
             <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">О нас</h2>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">О нас</h2>
               <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
                 Мы команда экспертов в области искусственного интеллекта и автоматизации бизнес-процессов
               </p>
@@ -636,7 +640,7 @@ export default function HomePage() {
       <section id="cases" className="py-12 sm:py-20 px-3 sm:px-4 bg-secondary/30">
         <div className="container mx-auto">
           <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">Кейсы бизнеса</h2>
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Кейсы бизнеса</h2>
             <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
               Реальные результаты внедрения ИИ-автоматизации в различных отраслях
             </p>
@@ -660,7 +664,9 @@ export default function HomePage() {
       {/* Use Cases Section */}
       <section id="services" className="py-12 sm:py-20 px-3 sm:px-4">
         <div className="container mx-auto">
-          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-center mb-10 sm:mb-16">Сценарии использования</h2>
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Сценарии использования</h2>
+          </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
