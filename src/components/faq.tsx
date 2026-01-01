@@ -53,11 +53,14 @@ const faqData: FAQItem[] = [
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
-  const [isMobileFAQOpen, setIsMobileFAQOpen] = useState(false)
+  const [showAll, setShowAll] = useState(false)
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
   }
+
+  const visibleItems = faqData.slice(0, 4)
+  const hiddenItems = faqData.slice(4)
 
   return (
     <section id="faq" className="py-12 sm:py-20 px-3 sm:px-4">
@@ -69,29 +72,9 @@ export function FAQ() {
           </p>
         </div>
 
-        {/* Mobile: Collapsible FAQ Button */}
-        <div className="md:hidden mb-4">
-          <Button
-            variant="outline"
-            className="w-full flex items-center justify-between p-3 sm:p-4 h-auto"
-            onClick={() => setIsMobileFAQOpen(!isMobileFAQOpen)}
-          >
-            <span className="font-bold text-sm sm:text-base">
-              {isMobileFAQOpen ? "Скрыть вопросы" : "Показать"}
-            </span>
-            <ChevronDown
-              className={`h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 ${
-                isMobileFAQOpen ? "rotate-180" : ""
-              }`}
-            />
-          </Button>
-        </div>
-
-        {/* FAQ List - Hidden on mobile when collapsed */}
-        <div className={`max-w-4xl mx-auto space-y-3 ${
-          isMobileFAQOpen ? "block" : "hidden md:block"
-        }`}>
-          {faqData.map((item, index) => (
+        {/* FAQ List */}
+        <div className="max-w-4xl mx-auto space-y-3">
+          {visibleItems.map((item, index) => (
             <Card
               key={index}
               className="cursor-pointer hover:border-primary/50 transition-all"
@@ -123,6 +106,76 @@ export function FAQ() {
               </CardContent>
             </Card>
           ))}
+
+          {/* Hidden items - показаны только когда showAll = true */}
+          {showAll && hiddenItems.map((item, index) => {
+            const actualIndex = 4 + index
+            return (
+              <Card
+                key={actualIndex}
+                className="cursor-pointer hover:border-primary/50 transition-all"
+                onClick={() => toggleFAQ(actualIndex)}
+              >
+                <CardContent className={`transition-all duration-300 ${
+                  openIndex === actualIndex ? "py-3 px-3 sm:py-4 sm:px-6" : "py-3 px-3 sm:py-4 sm:px-4 md:py-0 md:px-4"
+                }`}>
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="text-sm sm:text-base md:text-xl font-bold flex-1 leading-tight">
+                      {item.question}
+                    </h3>
+                    <ChevronDown
+                      className={`h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 flex-shrink-0 transition-transform duration-300 ${
+                        openIndex === actualIndex ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                  
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      openIndex === actualIndex ? "max-h-96 opacity-100 mt-3 sm:mt-4" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                      {item.answer}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+
+          {/* Show All / Hide Button */}
+          {!showAll && hiddenItems.length > 0 && (
+            <div className="flex justify-center mt-4">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => setShowAll(true)}
+              >
+                <span>Показать все</span>
+                <ChevronDown className="h-4 w-4 transition-transform duration-300" />
+              </Button>
+            </div>
+          )}
+
+          {showAll && hiddenItems.length > 0 && (
+            <div className="flex justify-center mt-4">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => {
+                  setShowAll(false)
+                  // Закрываем открытые вопросы из скрытой части при сворачивании
+                  if (openIndex !== null && openIndex >= 4) {
+                    setOpenIndex(null)
+                  }
+                }}
+              >
+                <span>Скрыть</span>
+                <ChevronDown className="h-4 w-4 rotate-180 transition-transform duration-300" />
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </section>
