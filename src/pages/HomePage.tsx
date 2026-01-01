@@ -30,6 +30,8 @@ import {
   MessageCircle,
   Sparkles,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -43,6 +45,9 @@ export default function HomePage() {
   const [isTransitioning, setIsTransitioning] = useState(true)
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
+  const [mouseStart, setMouseStart] = useState(0)
+  const [mouseEnd, setMouseEnd] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
 
   const totalSlides = 4
   const benefitsData = [
@@ -77,14 +82,6 @@ export default function HomePage() {
     window.scrollTo(0, 0)
   }, [])
 
-  // Автопрокрутка слайдера на мобильных
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsTransitioning(true)
-      setCurrentSlide((prev) => prev + 1)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [])
 
   // Обработка бесшовного зацикливания
   useEffect(() => {
@@ -137,6 +134,43 @@ export default function HomePage() {
     if (touchStart - touchEnd < -75) {
       // Свайп вправо
       goToPrevSlide()
+    }
+  }
+
+  // Обработка перетаскивания мышью
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true)
+    setMouseStart(e.clientX)
+    setMouseEnd(e.clientX)
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return
+    setMouseEnd(e.clientX)
+  }
+
+  const handleMouseUp = () => {
+    if (!isDragging) return
+    const diff = mouseStart - mouseEnd
+    if (Math.abs(diff) > 75) {
+      if (diff > 0) {
+        // Перетаскивание влево - следующий слайд
+        goToNextSlide()
+      } else {
+        // Перетаскивание вправо - предыдущий слайд
+        goToPrevSlide()
+      }
+    }
+    setIsDragging(false)
+    setMouseStart(0)
+    setMouseEnd(0)
+  }
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false)
+      setMouseStart(0)
+      setMouseEnd(0)
     }
   }
 
@@ -390,12 +424,32 @@ export default function HomePage() {
           </div>
 
           {/* Mobile Slider */}
-          <div className="md:hidden">
+          <div className="md:hidden relative">
+            {/* Navigation Arrows */}
+            <button
+              onClick={goToPrevSlide}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-primary text-primary-foreground rounded-full p-2 shadow-lg"
+              aria-label="Предыдущий слайд"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </button>
+            <button
+              onClick={goToNextSlide}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-primary text-primary-foreground rounded-full p-2 shadow-lg"
+              aria-label="Следующий слайд"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </button>
+
             <div 
-              className="relative overflow-hidden"
+              className="relative overflow-hidden cursor-grab active:cursor-grabbing"
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
             >
               <div 
                 className={`flex ${isTransitioning ? 'transition-transform duration-500 ease-out' : ''}`}
@@ -403,7 +457,7 @@ export default function HomePage() {
               >
                 {/* Клон последнего слайда в начале */}
                 <div className="w-full flex-shrink-0 px-4">
-                  <Card className="bg-card/10 border-border">
+                  <Card className="bg-card/10 border-border mx-auto max-w-sm">
                     <CardContent className="p-6 space-y-4">
                       <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
                         {(() => {
@@ -424,7 +478,7 @@ export default function HomePage() {
                   const Icon = benefit.icon
                   return (
                     <div key={index} className="w-full flex-shrink-0 px-4">
-                      <Card className="bg-card/10 border-border">
+                      <Card className="bg-card/10 border-border mx-auto max-w-sm">
                         <CardContent className="p-6 space-y-4">
                           <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
                             <Icon className="h-7 w-7 text-primary" />
@@ -441,7 +495,7 @@ export default function HomePage() {
 
                 {/* Клон первого слайда в конце */}
                 <div className="w-full flex-shrink-0 px-4">
-                  <Card className="bg-card/10 border-border">
+                  <Card className="bg-card/10 border-border mx-auto max-w-sm">
                     <CardContent className="p-6 space-y-4">
                       <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
                         {(() => {
