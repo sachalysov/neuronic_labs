@@ -183,12 +183,12 @@ export function StickyHeader() {
               >
                 О продукте
               </button>
-              <button
+              {/* <button
                 onClick={() => scrollToSection("process")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 Этапы работ
-              </button>
+              </button> */}
               <button
                 onClick={() => scrollToSection("about")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
@@ -210,6 +210,21 @@ export function StickyHeader() {
             </nav>
 
             <ThemeToggle />
+
+            <a 
+              href="tel:+79930799177" 
+              className="hidden md:flex items-center gap-2 text-foreground/90 hover:text-primary transition-colors font-medium"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <span className="text-sm sm:text-base">+7 993 079 91 77</span>
+            </a>
 
             {/* Mobile Menu Button */}
             <button 
@@ -293,6 +308,20 @@ export function StickyHeader() {
               >
                 Услуги
               </button>
+              <a 
+                href="tel:+79930799177" 
+                className="flex items-center gap-2 text-foreground/90 hover:text-primary transition-colors font-medium px-2 py-2"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span>+7 993 079 91 77</span>
+              </a>
             </div>
           </nav>
         )}
