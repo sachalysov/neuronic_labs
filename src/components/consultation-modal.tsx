@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { X, Send, CheckCircle } from "lucide-react"
 
@@ -15,6 +16,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
   const [telegram, setTelegram] = useState("")
+  const [comment, setComment] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   if (!isOpen) return null
@@ -41,7 +43,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Здесь можно добавить отправку данных на сервер
-    console.log({ phone, email, telegram })
+    console.log({ phone, email, telegram, comment })
     setIsSubmitted(true)
     
     // Закрыть модальное окно через 3 секунды после успешной отправки
@@ -51,6 +53,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
       setPhone("")
       setEmail("")
       setTelegram("")
+      setComment("")
     }, 3000)
   }
 
@@ -130,6 +133,21 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
                   onChange={(e) => setTelegram(e.target.value)}
                   className="bg-background border-border text-sm sm:text-base"
                   style={{ fontSize: '16px' }}
+                />
+              </div>
+
+              <div className="space-y-1.5 sm:space-y-2">
+                <label htmlFor="comment" className="text-xs sm:text-sm font-medium text-foreground">
+                  Комментарий к письму <span className="text-muted-foreground text-xs">(опционально)</span>
+                </label>
+                <Textarea
+                  id="comment"
+                  placeholder="Ваш комментарий..."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="bg-background border-border text-sm sm:text-base"
+                  style={{ fontSize: '16px' }}
+                  rows={3}
                 />
               </div>
 

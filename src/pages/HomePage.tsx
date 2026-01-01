@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { ChatWidget } from "@/components/chat-widget"
 import { StickyHeader } from "@/components/sticky-header"
 import { DemoChat } from "@/components/demo-chat"
@@ -40,6 +41,7 @@ export default function HomePage() {
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
   const [telegram, setTelegram] = useState("")
+  const [comment, setComment] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(1) // Начинаем с 1 (первый реальный слайд)
   const [isTransitioning, setIsTransitioning] = useState(true)
@@ -196,7 +198,7 @@ export default function HomePage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Здесь можно добавить отправку данных на сервер
-    console.log({ phone, email, telegram })
+    console.log({ phone, email, telegram, comment })
     setIsSubmitted(true)
     
     // Сбросить форму через 5 секунд после успешной отправки
@@ -205,6 +207,7 @@ export default function HomePage() {
       setPhone("")
       setEmail("")
       setTelegram("")
+      setComment("")
     }, 5000)
   }
 
@@ -831,10 +834,20 @@ export default function HomePage() {
                     <div className="space-y-2">
                       <Input
                         type="text"
-                        placeholder="@username (Telegram - опционально)"
+                        placeholder="@username"
                         value={telegram}
                         onChange={(e) => setTelegram(e.target.value)}
                         className="bg-background border-border"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Textarea
+                        placeholder="Комментарий к письму"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        className="bg-background border-border"
+                        rows={3}
                       />
                     </div>
 
