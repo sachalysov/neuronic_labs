@@ -12,6 +12,7 @@ import { Pricing } from "@/components/pricing"
 import { FAQ } from "@/components/faq"
 import { Testimonials } from "@/components/testimonials"
 import { CountdownTimer } from "@/components/countdown-timer"
+import { submitFormData } from "@/services/form"
 import { useEffect, useState } from "react"
 import {
   Bot,
@@ -38,6 +39,7 @@ import {
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDemoChatOpen, setIsDemoChatOpen] = useState(false)
+  const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
   const [telegram, setTelegram] = useState("")
@@ -195,20 +197,36 @@ export default function HomePage() {
     setPhone(value)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Здесь можно добавить отправку данных на сервер
-    console.log({ phone, email, telegram, comment })
-    setIsSubmitted(true)
     
-    // Сбросить форму через 5 секунд после успешной отправки
-    setTimeout(() => {
-      setIsSubmitted(false)
-      setPhone("")
-      setEmail("")
-      setTelegram("")
-      setComment("")
-    }, 5000)
+    console.log('Начало отправки формы (HomePage):', { name, phone, email, telegram, comment })
+    
+    try {
+      await submitFormData({
+        name: name,
+        phone: phone,
+        email: email,
+        username: telegram,
+        comment: comment,
+      })
+      
+      console.log('Форма успешно отправлена (HomePage)')
+      setIsSubmitted(true)
+      
+      // Сбросить форму через 5 секунд после успешной отправки
+      setTimeout(() => {
+        setIsSubmitted(false)
+        setName("")
+        setPhone("")
+        setEmail("")
+        setTelegram("")
+        setComment("")
+      }, 5000)
+    } catch (error) {
+      console.error("Ошибка при отправке формы (HomePage):", error)
+      alert(error instanceof Error ? error.message : "Не удалось отправить форму. Пожалуйста, попробуйте позже.")
+    }
   }
 
   return (
@@ -809,6 +827,17 @@ export default function HomePage() {
 
                 {!isSubmitted ? (
                   <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
+                    <div className="space-y-2">
+                      <Input
+                        type="text"
+                        placeholder="Полное имя"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                        className="bg-background border-border"
+                      />
+                    </div>
+
                     <div className="space-y-2">
                       <Input
                         type="tel"

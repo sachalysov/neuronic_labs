@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
   readonly VITE_CHAT_WEBHOOK_URL?: string
+  readonly VITE_FORM_WEBHOOK_URL?: string
   // добавьте другие env переменные здесь
 }
 

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { X, Send, CheckCircle } from "lucide-react"
+import { submitFormData } from "@/services/form"
 
 interface ConsultationModalProps {
   isOpen: boolean
@@ -13,11 +14,13 @@ interface ConsultationModalProps {
 }
 
 export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
+  const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
   const [telegram, setTelegram] = useState("")
   const [comment, setComment] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   if (!isOpen) return null
 
@@ -40,21 +43,44 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
     setPhone(value)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Здесь можно добавить отправку данных на сервер
-    console.log({ phone, email, telegram, comment })
-    setIsSubmitted(true)
+    e.stopPropagation()
     
-    // Закрыть модальное окно через 3 секунды после успешной отправки
-    setTimeout(() => {
-      onClose()
-      setIsSubmitted(false)
-      setPhone("")
-      setEmail("")
-      setTelegram("")
-      setComment("")
-    }, 3000)
+    if (isSubmitting) return
+    
+    console.log('Начало отправки формы:', { name, phone, email, telegram, comment })
+    
+    setIsSubmitting(true)
+    
+    try {
+      await submitFormData({
+        name: name,
+        phone: phone,
+        email: email,
+        username: telegram,
+        comment: comment,
+      })
+      
+      console.log('Форма успешно отправлена')
+      setIsSubmitted(true)
+      
+      // Закрыть модальное окно через 3 секунды после успешной отправки
+      setTimeout(() => {
+        onClose()
+        setIsSubmitted(false)
+        setIsSubmitting(false)
+        setName("")
+        setPhone("")
+        setEmail("")
+        setTelegram("")
+        setComment("")
+      }, 3000)
+    } catch (error) {
+      console.error("Ошибка при отправке формы:", error)
+      setIsSubmitting(false)
+      alert(error instanceof Error ? error.message : "Не удалось отправить форму. Пожалуйста, попробуйте позже.")
+    }
   }
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -68,7 +94,10 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={handleBackdropClick}
     >
-      <Card className="w-full max-w-md shadow-2xl border-border bg-card animate-in zoom-in-95 duration-200">
+      <Card 
+        className="w-full max-w-md shadow-2xl border-border bg-card animate-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
         <CardHeader className="border-b border-border pb-3 sm:pb-4">
           <div className="flex items-center justify-between">
             <div>
@@ -88,7 +117,23 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
         
         <CardContent className="pt-4 sm:pt-6">
           {!isSubmitted ? (
-            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4" onClick={(e) => e.stopPropagation()}>
+              <div className="space-y-1.5 sm:space-y-2">
+                <label htmlFor="name" className="text-xs sm:text-sm font-medium text-foreground">
+                  Полное имя <span className="text-primary">*</span>
+                </label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Иванов Иван Иванович"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="bg-background border-border text-sm sm:text-base"
+                  style={{ fontSize: '16px' }}
+                />
+              </div>
+
               <div className="space-y-1.5 sm:space-y-2">
                 <label htmlFor="phone" className="text-xs sm:text-sm font-medium text-foreground">
                   Номер телефона <span className="text-primary">*</span>
@@ -151,8 +196,13 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
                 />
               </div>
 
-              <Button type="submit" size="lg" className="w-full text-sm sm:text-lg py-4 sm:py-6 mt-4 sm:mt-6">
-                Отправить заявку
+              <Button 
+                type="submit" 
+                size="lg" 
+                className="w-full text-sm sm:text-lg py-4 sm:py-6 mt-4 sm:mt-6"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Отправка..." : "Отправить заявку"}
                 <Send className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
 
