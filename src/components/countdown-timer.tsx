@@ -61,39 +61,39 @@ export function CountdownTimer({ hours = 48 }: CountdownTimerProps) {
   const formatNumber = (num: number) => num.toString().padStart(2, "0")
 
   return (
-    <div className="flex items-center justify-center gap-4 py-6">
-      <Clock className="h-6 w-6 text-primary animate-pulse" />
+    <div className="flex items-center justify-center gap-2 sm:gap-4 py-4 sm:py-6">
+      <Clock className="h-4 w-4 sm:h-6 sm:w-6 text-primary animate-pulse" />
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <div className="text-center">
-          <div className="bg-primary/10 border border-primary/30 rounded-lg px-3 py-2 min-w-[60px]">
-            <span className="text-2xl md:text-3xl font-bold text-primary">
+          <div className="bg-primary/10 border border-primary/30 rounded-lg px-2 py-1 sm:px-3 sm:py-2 min-w-[45px] sm:min-w-[60px]">
+            <span className="text-lg sm:text-2xl md:text-3xl font-bold text-primary">
               {formatNumber(timeLeft.hours)}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">часов</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">часов</p>
         </div>
 
-        <span className="text-2xl font-bold text-primary">:</span>
+        <span className="text-lg sm:text-2xl font-bold text-primary">:</span>
 
         <div className="text-center">
-          <div className="bg-primary/10 border border-primary/30 rounded-lg px-3 py-2 min-w-[60px]">
-            <span className="text-2xl md:text-3xl font-bold text-primary">
+          <div className="bg-primary/10 border border-primary/30 rounded-lg px-2 py-1 sm:px-3 sm:py-2 min-w-[45px] sm:min-w-[60px]">
+            <span className="text-lg sm:text-2xl md:text-3xl font-bold text-primary">
               {formatNumber(timeLeft.minutes)}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">минут</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">минут</p>
         </div>
 
-        <span className="text-2xl font-bold text-primary">:</span>
+        <span className="text-lg sm:text-2xl font-bold text-primary">:</span>
 
         <div className="text-center">
-          <div className="bg-primary/10 border border-primary/30 rounded-lg px-3 py-2 min-w-[60px]">
-            <span className="text-2xl md:text-3xl font-bold text-primary">
+          <div className="bg-primary/10 border border-primary/30 rounded-lg px-2 py-1 sm:px-3 sm:py-2 min-w-[45px] sm:min-w-[60px]">
+            <span className="text-lg sm:text-2xl md:text-3xl font-bold text-primary">
               {formatNumber(timeLeft.seconds)}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">секунд</p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">секунд</p>
         </div>
       </div>
     </div>

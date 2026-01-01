@@ -104,73 +104,73 @@ export function Testimonials() {
   const currentTestimonial = testimonials[currentIndex]
 
   return (
-    <section id="testimonials" className="py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
+    <section id="testimonials" className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto">
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold">Отзывы клиентов</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">Отзывы клиентов</h2>
+          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             Реальные истории бизнесов, которые увеличили продажи с нашим ИИ-продавцом
           </p>
         </div>
 
         <div className="max-w-5xl mx-auto">
           <Card className="bg-card/50 border-primary/20 shadow-xl">
-            <CardContent className="p-8 md:p-12">
+            <CardContent className="p-4 sm:p-8 md:p-12">
               <div className="relative">
                 {/* Quote Icon */}
-                <Quote className="absolute -top-4 -left-4 h-16 w-16 text-primary/20" />
+                <Quote className="absolute -top-2 -left-2 sm:-top-4 sm:-left-4 h-10 w-10 sm:h-16 sm:w-16 text-primary/20" />
 
                 {/* Rating */}
-                <div className="flex justify-center gap-1 mb-6">
+                <div className="flex justify-center gap-1 mb-4 sm:mb-6">
                   {Array.from({ length: currentTestimonial.rating }).map((_, i) => (
-                    <Star key={i} className="h-6 w-6 fill-primary text-primary" />
+                    <Star key={i} className="h-4 w-4 sm:h-6 sm:w-6 fill-primary text-primary" />
                   ))}
                 </div>
 
                 {/* Testimonial Text */}
-                <blockquote className="text-lg md:text-xl text-center mb-8 leading-relaxed">
+                <blockquote className="text-sm sm:text-lg md:text-xl text-center mb-6 sm:mb-8 leading-relaxed">
                   "{currentTestimonial.text}"
                 </blockquote>
 
                 {/* Result Badge */}
-                <div className="flex justify-center mb-8">
-                  <div className="bg-primary/10 border border-primary/30 rounded-full px-6 py-3">
-                    <p className="text-primary font-bold text-lg">
+                <div className="flex justify-center mb-6 sm:mb-8">
+                  <div className="bg-primary/10 border border-primary/30 rounded-full px-3 py-2 sm:px-6 sm:py-3">
+                    <p className="text-primary font-bold text-sm sm:text-lg">
                       {currentTestimonial.result}
                     </p>
                   </div>
                 </div>
 
                 {/* Author Info */}
-                <div className="text-center space-y-2">
-                  <p className="font-bold text-xl">{currentTestimonial.name}</p>
-                  <p className="text-muted-foreground">
+                <div className="text-center space-y-1 sm:space-y-2">
+                  <p className="font-bold text-base sm:text-xl">{currentTestimonial.name}</p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
                     {currentTestimonial.position}, {currentTestimonial.company}
                   </p>
                 </div>
               </div>
 
               {/* Navigation */}
-              <div className="flex items-center justify-between mt-12">
+              <div className="flex items-center justify-between mt-8 sm:mt-12">
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={goToPrev}
-                  className="hover:bg-primary/10"
+                  className="hover:bg-primary/10 h-8 w-8 sm:h-10 sm:w-10"
                 >
-                  <ChevronLeft className="h-6 w-6" />
+                  <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
                 </Button>
 
                 {/* Dots */}
-                <div className="flex gap-2">
+                <div className="flex gap-1.5 sm:gap-2">
                   {testimonials.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => goToSlide(index)}
-                      className={`h-2.5 rounded-full transition-all duration-300 ${
+                      className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 ${
                         index === currentIndex
-                          ? "bg-primary w-8"
-                          : "bg-muted-foreground/30 w-2.5 hover:bg-muted-foreground/50"
+                          ? "bg-primary w-6 sm:w-8"
+                          : "bg-muted-foreground/30 w-2 sm:w-2.5 hover:bg-muted-foreground/50"
                       }`}
                       aria-label={`Перейти к отзыву ${index + 1}`}
                     />
@@ -181,27 +181,27 @@ export function Testimonials() {
                   variant="outline"
                   size="icon"
                   onClick={goToNext}
-                  className="hover:bg-primary/10"
+                  className="hover:bg-primary/10 h-8 w-8 sm:h-10 sm:w-10"
                 >
-                  <ChevronRight className="h-6 w-6" />
+                  <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
                 </Button>
               </div>
             </CardContent>
           </Card>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 mt-12 max-w-3xl mx-auto">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-8 sm:mt-12 max-w-3xl mx-auto">
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-primary">98%</p>
-              <p className="text-sm text-muted-foreground mt-1">Довольных клиентов</p>
+              <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">98%</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Довольных клиентов</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-primary">4.9/5</p>
-              <p className="text-sm text-muted-foreground mt-1">Средняя оценка</p>
+              <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">4.9/5</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Средняя оценка</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl md:text-4xl font-bold text-primary">200+</p>
-              <p className="text-sm text-muted-foreground mt-1">Успешных проектов</p>
+              <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">200+</p>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Успешных проектов</p>
             </div>
           </div>
         </div>

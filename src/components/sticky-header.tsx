@@ -86,22 +86,22 @@ export function StickyHeader() {
         isScrolled || isMobileMenuOpen ? "bg-background/95 backdrop-blur-sm border-b border-border shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+      <div className="container mx-auto px-2 sm:px-4">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <div className="flex items-center gap-4">
+          <a href="#" className="flex items-center gap-1 sm:gap-3 hover:opacity-80 transition-opacity">
+            <div className="flex items-center gap-2 sm:gap-4">
               <div className="flex flex-col items-start">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-primary">N</span>
-                  <span className="text-2xl font-bold text-foreground">L</span>
+                <div className="flex items-baseline gap-0.5 sm:gap-1">
+                  <span className="text-xl sm:text-2xl font-bold text-primary">N</span>
+                  <span className="text-xl sm:text-2xl font-bold text-foreground">L</span>
                 </div>
               </div>
             </div>
           </a>
 
           {/* Search Bar */}
-          <div className="flex flex-1 max-w-md mx-2 md:mx-8 relative">
+          <div className="flex flex-1 max-w-xs sm:max-w-md mx-1 sm:mx-2 md:mx-8 relative">
             <div className="relative w-full">
               <input
                 type="text"
@@ -110,11 +110,11 @@ export function StickyHeader() {
                 onChange={(e) => handleSearch(e.target.value)}
                 onFocus={() => setIsSearchOpen(true)}
                 onBlur={() => setTimeout(() => setIsSearchOpen(false), 200)}
-                className="w-full px-3 py-1.5 pl-8 pr-8 md:px-4 md:py-2 md:pl-10 md:pr-10 rounded-full bg-background/50 border border-border/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full px-2 py-1.5 pl-6 pr-6 sm:px-3 sm:pl-8 sm:pr-8 md:px-4 md:py-2 md:pl-10 md:pr-10 rounded-full bg-background/50 border border-border/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm sm:text-base"
                 style={{ fontSize: '16px' }}
               />
               <svg
-                className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-foreground/50"
+                className="absolute left-1.5 sm:left-2 md:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-foreground/50"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -131,10 +131,10 @@ export function StickyHeader() {
                     setSearchResults([])
                     setIsSearchOpen(false)
                   }}
-                  className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-foreground transition-colors p-1"
+                  className="absolute right-1.5 sm:right-2 md:right-3 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-foreground transition-colors p-0.5 sm:p-1"
                 >
                   <svg
-                    className="w-3.5 h-3.5 md:w-4 md:h-4"
+                    className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -151,17 +151,17 @@ export function StickyHeader() {
                     <button
                       key={result.id}
                       onClick={() => selectSearchResult(result.id)}
-                      className="w-full text-left px-4 py-3 hover:bg-primary/10 transition-colors border-b border-border last:border-0"
+                      className="w-full text-left px-2 sm:px-4 py-2 sm:py-3 hover:bg-primary/10 transition-colors border-b border-border last:border-0"
                     >
-                      <div className="font-medium text-foreground">{result.title}</div>
-                      <div className="text-sm text-foreground/60 mt-1 line-clamp-2">{result.text}</div>
+                      <div className="font-medium text-foreground text-sm sm:text-base">{result.title}</div>
+                      <div className="text-xs sm:text-sm text-foreground/60 mt-1 line-clamp-2">{result.text}</div>
                     </button>
                   ))}
                 </div>
               )}
               
               {isSearchOpen && searchQuery.length >= 2 && searchResults.length === 0 && (
-                <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 px-4 py-3 text-foreground/60">
+                <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 px-2 sm:px-4 py-2 sm:py-3 text-foreground/60 text-xs sm:text-sm">
                   Ничего не найдено
                 </div>
               )}

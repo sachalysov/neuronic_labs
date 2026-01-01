@@ -103,52 +103,52 @@ export function BusinessCasesCarousel() {
           <CardContent className="p-0">
             <div className="grid lg:grid-cols-2 gap-0">
               {/* Image Side */}
-              <div className="relative h-64 lg:h-auto">
+              <div className="relative h-48 sm:h-64 lg:h-auto">
                 <img
                   src={currentCase.image || "/placeholder.svg"}
                   alt={currentCase.title}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <span className="inline-block px-3 py-1 bg-primary/90 text-xs font-semibold rounded-full mb-2">
+                <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4">
+                  <span className="inline-block px-2 py-0.5 sm:px-3 sm:py-1 bg-primary/90 text-[10px] sm:text-xs font-semibold rounded-full mb-1 sm:mb-2">
                     {currentCase.industry}
                   </span>
-                  <h3 className="text-2xl font-bold text-white">{currentCase.title}</h3>
+                  <h3 className="text-lg sm:text-2xl font-bold text-white">{currentCase.title}</h3>
                 </div>
               </div>
 
               {/* Content Side */}
-              <div className="p-8 space-y-6">
+              <div className="p-4 sm:p-8 space-y-4 sm:space-y-6">
                 {/* Results Grid */}
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4">
                   {currentCase.results.map((result, idx) => (
-                    <div key={idx} className="text-center space-y-2">
+                    <div key={idx} className="text-center space-y-1 sm:space-y-2">
                       <div className="flex justify-center">
-                        <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
-                          <result.icon className={`h-5 w-5 ${result.color}`} />
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-secondary flex items-center justify-center">
+                          <result.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${result.color}`} />
                         </div>
                       </div>
                       <div>
-                        <p className={`text-2xl font-bold ${result.color}`}>{result.value}</p>
-                        <p className="text-xs text-muted-foreground">{result.label}</p>
+                        <p className={`text-lg sm:text-2xl font-bold ${result.color}`}>{result.value}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">{result.label}</p>
                       </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Description */}
-                <p className="text-muted-foreground leading-relaxed">{currentCase.description}</p>
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{currentCase.description}</p>
 
                 {/* Challenge & Solution */}
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   <div className="space-y-1">
-                    <p className="text-sm font-semibold text-foreground">Вызов:</p>
-                    <p className="text-sm text-muted-foreground">{currentCase.challenge}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-foreground">Вызов:</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{currentCase.challenge}</p>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-semibold text-foreground">Решение:</p>
-                    <p className="text-sm text-muted-foreground">{currentCase.solution}</p>
+                    <p className="text-xs sm:text-sm font-semibold text-foreground">Решение:</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{currentCase.solution}</p>
                   </div>
                 </div>
               </div>
@@ -160,30 +160,30 @@ export function BusinessCasesCarousel() {
         <Button
           variant="outline"
           size="icon"
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm"
+          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm h-8 w-8 sm:h-10 sm:w-10"
           onClick={goToPrevious}
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-background/80 backdrop-blur-sm h-8 w-8 sm:h-10 sm:w-10"
           onClick={goToNext}
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
       </div>
 
       {/* Dots Navigation */}
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-center gap-1.5 sm:gap-2">
         {businessCases.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
             className={`transition-all duration-300 rounded-full ${
               index === currentIndex
-                ? "w-8 h-2 bg-primary"
+                ? "w-6 sm:w-8 h-2 bg-primary"
                 : "w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
             }`}
             aria-label={`Перейти к кейсу ${index + 1}`}
@@ -192,7 +192,7 @@ export function BusinessCasesCarousel() {
       </div>
 
       {/* Auto-play indicator */}
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-xs sm:text-sm text-muted-foreground">
         {isAutoPlaying ? "Автопрокрутка активна" : "Автопрокрутка приостановлена"}
       </p>
     </div>

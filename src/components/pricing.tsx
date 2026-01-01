@@ -121,11 +121,11 @@ export function Pricing({ onContactClick }: PricingProps) {
   ]
 
   return (
-    <section id="pricing" className="py-20 px-4 bg-gradient-to-b from-secondary/20 to-background">
+    <section id="pricing" className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background">
       <div className="container mx-auto">
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold">Тарифы и цены</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">Тарифы и цены</h2>
+          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             Выберите оптимальный план для вашего бизнеса. Все тарифы включают полную настройку и внедрение
           </p>
         </div>
@@ -154,39 +154,39 @@ export function Pricing({ onContactClick }: PricingProps) {
           
           <div
             ref={scrollContainerRef}
-            className="flex gap-8 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-4"
+            className="flex gap-4 sm:gap-8 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2 sm:px-4"
             style={{
-              scrollPaddingLeft: '1rem',
-              scrollPaddingRight: '1rem'
+              scrollPaddingLeft: '0.5rem',
+              scrollPaddingRight: '0.5rem'
             }}
           >
             {plans.map((plan) => (
               <Card
                 key={plan.id}
-                className="relative flex-shrink-0 w-[85vw] max-w-[380px] snap-center bg-card/50"
+                className="relative flex-shrink-0 w-[90vw] sm:w-[85vw] max-w-[380px] snap-center bg-card/50"
               >
                 
-                <CardContent className="p-8 space-y-6">
-                  <div className="text-center space-y-2">
-                    <h3 className="text-2xl font-bold">{plan.name}</h3>
-                    <p className="text-sm text-muted-foreground">{plan.description}</p>
+                <CardContent className="p-4 sm:p-8 space-y-4 sm:space-y-6">
+                  <div className="text-center space-y-1 sm:space-y-2">
+                    <h3 className="text-xl sm:text-2xl font-bold">{plan.name}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{plan.description}</p>
                     <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-5xl font-bold text-primary">{plan.price}</span>
-                      <span className="text-xl text-muted-foreground">₽{plan.period}</span>
+                      <span className="text-3xl sm:text-5xl font-bold text-primary">{plan.price}</span>
+                      <span className="text-base sm:text-xl text-muted-foreground">₽{plan.period}</span>
                     </div>
                   </div>
 
-                  <ul className="space-y-3">
+                  <ul className="space-y-2 sm:space-y-3">
                     {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
+                      <li key={idx} className="flex items-start gap-2 sm:gap-3">
+                        <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-xs sm:text-sm">{feature}</span>
                       </li>
                     ))}
                   </ul>
 
                   <Button
-                    className={`w-full ${plan.highlighted ? "shadow-lg" : ""}`}
+                    className={`w-full text-sm sm:text-base ${plan.highlighted ? "shadow-lg" : ""}`}
                     variant={plan.highlighted ? "default" : "outline"}
                     size="lg"
                     onClick={onContactClick}
@@ -273,11 +273,11 @@ export function Pricing({ onContactClick }: PricingProps) {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
-          <p className="text-muted-foreground mb-4">
+        <div className="mt-8 sm:mt-12 text-center">
+          <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 px-4">
             Не уверены, какой тариф выбрать? Закажите бесплатную консультацию
           </p>
-          <Button variant="outline" size="lg" onClick={onContactClick}>
+          <Button variant="outline" size="lg" onClick={onContactClick} className="text-sm sm:text-base w-full sm:w-auto">
             Получить консультацию
           </Button>
         </div>

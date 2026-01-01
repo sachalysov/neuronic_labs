@@ -60,11 +60,11 @@ export function FAQ() {
   }
 
   return (
-    <section id="faq" className="py-20 px-4">
+    <section id="faq" className="py-12 sm:py-20 px-3 sm:px-4">
       <div className="container mx-auto">
-        <div className="text-center space-y-4 mb-8 md:mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold">Частые вопросы</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        <div className="text-center space-y-3 sm:space-y-4 mb-6 sm:mb-8 md:mb-16">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">Частые вопросы</h2>
+          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             Ответы на самые популярные вопросы о внедрении ИИ-продавца
           </p>
         </div>
@@ -73,14 +73,14 @@ export function FAQ() {
         <div className="md:hidden mb-4">
           <Button
             variant="outline"
-            className="w-full flex items-center justify-between p-4 h-auto"
+            className="w-full flex items-center justify-between p-3 sm:p-4 h-auto"
             onClick={() => setIsMobileFAQOpen(!isMobileFAQOpen)}
           >
-            <span className="font-bold text-base">
+            <span className="font-bold text-sm sm:text-base">
               {isMobileFAQOpen ? "Скрыть вопросы" : "Показать"}
             </span>
             <ChevronDown
-              className={`h-5 w-5 transition-transform duration-300 ${
+              className={`h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 ${
                 isMobileFAQOpen ? "rotate-180" : ""
               }`}
             />
@@ -98,14 +98,14 @@ export function FAQ() {
               onClick={() => toggleFAQ(index)}
             >
               <CardContent className={`transition-all duration-300 ${
-                openIndex === index ? "py-0.5 px-6" : "py-0 px-3 md:py-0 md:px-4"
+                openIndex === index ? "py-3 px-3 sm:py-4 sm:px-6" : "py-3 px-3 sm:py-4 sm:px-4 md:py-0 md:px-4"
               }`}>
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-xs md:text-xl font-bold flex-1 leading-tight">
+                  <h3 className="text-sm sm:text-base md:text-xl font-bold flex-1 leading-tight">
                     {item.question}
                   </h3>
                   <ChevronDown
-                    className={`h-4 w-4 md:h-6 md:w-6 flex-shrink-0 transition-transform duration-300 ${
+                    className={`h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 flex-shrink-0 transition-transform duration-300 ${
                       openIndex === index ? "rotate-180" : ""
                     }`}
                   />
@@ -113,10 +113,10 @@ export function FAQ() {
                 
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    openIndex === index ? "max-h-96 opacity-100 mt-4" : "max-h-0 opacity-0"
+                    openIndex === index ? "max-h-96 opacity-100 mt-3 sm:mt-4" : "max-h-0 opacity-0"
                   }`}
                 >
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                     {item.answer}
                   </p>
                 </div>

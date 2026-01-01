@@ -208,39 +208,39 @@ export default function HomePage() {
         {/* Content */}
         <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="max-w-3xl">
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               <div className="inline-block">
-                <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-2">
+                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-2">
                   <span className="text-primary">NEURONIC</span> <br />
                   <span className="text-muted-foreground">LABS</span>
                 </h1>
-                <p className="text-muted-foreground text-[20px] uppercase tracking-wider">
+                <p className="text-muted-foreground text-sm sm:text-[20px] uppercase tracking-wider">
                   Агентство по внедрению
                
                   автоматизации в бизнес
                 </p>
               </div>
 
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
                 Автоматизируй продажи на 300% без кодинга за 7 дней
               </h2>
 
-              <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed">
+              <p className="text-base sm:text-xl md:text-2xl text-muted-foreground leading-relaxed">
                 Нейро-продавец для Telegram, WhatsApp, Avito — лиды 24/7 пока ты спишь
               </p>
 
-              <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="text-lg px-8 py-6 animate-pulse" onClick={() => setIsModalOpen(true)}>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+                <Button size="lg" className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 animate-pulse w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
                   Бесплатный аудит + демо за 5 минут
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="text-lg px-8 py-6 border-2 hover:scale-105 transition-transform" 
+                  className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 border-2 hover:scale-105 transition-transform w-full sm:w-auto" 
                   onClick={() => setIsDemoChatOpen(true)}
                 >
-                  <Sparkles className="mr-2 h-5 w-5" />
+                  <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Попробовать демо
                 </Button>
               </div>
@@ -250,39 +250,39 @@ export default function HomePage() {
       </section>
 
       {/* Problem Section - AIDA: Attention */}
-      <section className="py-20 px-4 bg-gradient-to-b from-secondary/20 to-background border-y border-border">
+      <section className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background border-y border-border">
         <div className="container mx-auto">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-bold text-center mb-12 text-balance">
+            <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-center mb-8 sm:mb-12 text-balance">
               80% лидов уходят к конкурентам из-за медленных менеджеров
             </h2>
             
-            <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <div className="grid md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
               <Card className="bg-destructive/10 border-destructive/30 hover:scale-105 transition-all">
-                <CardContent className="p-6 space-y-4 text-center">
-                  <div className="text-5xl">💸</div>
-                  <h3 className="text-2xl font-bold text-destructive">Теряешь 150к₽/мес</h3>
-                  <p className="text-muted-foreground">
+                <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
+                  <div className="text-3xl sm:text-5xl">💸</div>
+                  <h3 className="text-lg sm:text-2xl font-bold text-destructive">Теряешь 150к₽/мес</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
                     Каждый неотвеченный лид стоит тебе денег. Менеджеры отвечают через 2 часа — клиент уже купил у конкурента
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="bg-primary/10 border-primary/30 hover:scale-105 transition-all">
-                <CardContent className="p-6 space-y-4 text-center">
-                  <div className="text-5xl">⏱️</div>
-                  <h3 className="text-2xl font-bold text-primary">Ответ за 3 секунды</h3>
-                  <p className="text-muted-foreground">
+                <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
+                  <div className="text-3xl sm:text-5xl">⏱️</div>
+                  <h3 className="text-lg sm:text-2xl font-bold text-primary">Ответ за 3 секунды</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
                     ИИ-продавец отвечает мгновенно 24/7. Никаких обедов, выходных и отпусков. Клиенты не ждут
                   </p>
                 </CardContent>
               </Card>
 
               <Card className="bg-accent/10 border-accent/30 hover:scale-105 transition-all">
-                <CardContent className="p-6 space-y-4 text-center">
-                  <div className="text-5xl">📈</div>
-                  <h3 className="text-2xl font-bold">+200% конверсия</h3>
-                  <p className="text-muted-foreground">
+                <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
+                  <div className="text-3xl sm:text-5xl">📈</div>
+                  <h3 className="text-lg sm:text-2xl font-bold">+200% конверсия</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
                     Грамотный ИИ-продавец обрабатывает все лиды без исключения и конвертирует в 2-3 раза больше
                   </p>
                 </CardContent>
@@ -292,11 +292,11 @@ export default function HomePage() {
             <div className="text-center">
               <Button 
                 size="lg" 
-                className="text-lg px-8 py-6 shadow-lg hover:shadow-xl"
+                className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 shadow-lg hover:shadow-xl w-full sm:w-auto"
                 onClick={() => setIsModalOpen(true)}
               >
                 Узнать, как внедрить за 7 дней
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </div>
           </div>
@@ -323,47 +323,47 @@ export default function HomePage() {
       </section>
 
       {/* Demo Chat Section - Mobile with Button */}
-      <section className="md:hidden py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
+      <section className="md:hidden py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl font-bold text-balance">Попробуйте ИИ-продавца прямо сейчас</h2>
-            <p className="text-lg text-muted-foreground">
+          <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-balance">Попробуйте ИИ-продавца прямо сейчас</h2>
+            <p className="text-base sm:text-lg text-muted-foreground">
               Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
               закрывает возражения 24/7.
             </p>
             
             <Button
               onClick={() => setIsDemoChatOpen(true)}
-              className="h-14 px-8 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-3 text-base font-semibold mx-auto"
+              className="h-12 sm:h-14 px-6 sm:px-8 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2 sm:gap-3 text-sm sm:text-base font-semibold mx-auto"
               size="lg"
             >
-              <Sparkles className="h-5 w-5 animate-pulse" />
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
               Протестировать ИИ-чат
-              <MessageCircle className="h-5 w-5" />
+              <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section id="product" className="py-20 px-4">
+      <section id="product" className="py-12 sm:py-20 px-3 sm:px-4">
         <div className="container mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-balance">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-center mb-3 sm:mb-4 text-balance">
             Внедряем решение под ключ за 14 дней
           </h2>
-          <p className="text-xl text-center text-muted-foreground mb-12 max-w-3xl mx-auto">
+          <p className="text-base sm:text-xl text-center text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto">
             Грамотно внедренный ИИ-продавец + мультиканален + Яндекс. Директ может увеличить конверсию в заявку в 2-3
             раза
           </p>
 
-          <div className="text-center mb-16">
+          <div className="text-center mb-10 sm:mb-16">
             <Button 
               size="lg" 
-              className="text-lg px-8 py-6"
+              className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
               onClick={() => setIsModalOpen(true)}
             >
               Хочу увеличить продажи
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </div>
 
@@ -479,33 +479,33 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="process" className="py-20 px-4 bg-secondary/30">
+      <section id="process" className="py-12 sm:py-20 px-3 sm:px-4 bg-secondary/30">
         <div className="container mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">Как мы работаем</h2>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-center mb-10 sm:mb-16">Как мы работаем</h2>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
+            <div className="text-center space-y-3 sm:space-y-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold">
                 1
               </div>
-              <h3 className="text-xl font-bold">Анализ бизнеса</h3>
-              <p className="text-muted-foreground">Изучаем ваши процессы, потребности клиентов и точки автоматизации</p>
+              <h3 className="text-lg sm:text-xl font-bold">Анализ бизнеса</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Изучаем ваши процессы, потребности клиентов и точки автоматизации</p>
             </div>
 
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+            <div className="text-center space-y-3 sm:space-y-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold">
                 2
               </div>
-              <h3 className="text-xl font-bold">Разработка решения</h3>
-              <p className="text-muted-foreground">Создаем и обучаем ИИ-сотрудника под специфику вашего бизнеса</p>
+              <h3 className="text-lg sm:text-xl font-bold">Разработка решения</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Создаем и обучаем ИИ-сотрудника под специфику вашего бизнеса</p>
             </div>
 
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+            <div className="text-center space-y-3 sm:space-y-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold">
                 3
               </div>
-              <h3 className="text-xl font-bold">Внедрение и поддержка</h3>
-              <p className="text-muted-foreground">Интегрируем систему и обеспечиваем постоянную техподдержку</p>
+              <h3 className="text-lg sm:text-xl font-bold">Внедрение и поддержка</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Интегрируем систему и обеспечиваем постоянную техподдержку</p>
             </div>
           </div>
         </div>
@@ -515,12 +515,12 @@ export default function HomePage() {
       <Pricing onContactClick={() => setIsModalOpen(true)} />
 
       {/* About Us Section */}
-      <section id="about" className="py-20 px-4">
+      <section id="about" className="py-12 sm:py-20 px-3 sm:px-4">
         <div className="container mx-auto">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center space-y-4 mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold">О нас</h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">О нас</h2>
+              <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
                 Мы команда экспертов в области искусственного интеллекта и автоматизации бизнес-процессов
               </p>
             </div>
@@ -558,8 +558,8 @@ export default function HomePage() {
             </div>
 
             {/* Video and Product Description */}
-            <div className="mb-12">
-              <div className="flex flex-col gap-8">
+            <div className="mb-8 sm:mb-12">
+              <div className="flex flex-col gap-6 sm:gap-8">
                 {/* Video Section - Full Width */}
                 <div className="w-full">
                   <div className="relative rounded-xl overflow-hidden shadow-2xl w-full" style={{ aspectRatio: '16/9' }}>
@@ -573,9 +573,9 @@ export default function HomePage() {
                 </div>
 
                 {/* Text Section - Below Video */}
-                <div className="w-full space-y-6">
-                  <h3 className="text-2xl md:text-3xl font-bold">О нашем продукте</h3>
-                  <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
+                <div className="w-full space-y-4 sm:space-y-6">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold">О нашем продукте</h3>
+                  <div className="space-y-3 sm:space-y-4 text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">
                     <p>
                       Наш ИИ-ассистент — это не просто чат-бот. Это полноценный виртуальный сотрудник, который понимает
                       контекст вашего бизнеса, знает ваши продукты и услуги, и способен вести диалог с клиентами на уровне
@@ -591,9 +591,9 @@ export default function HomePage() {
                       неограниченное количество обращений одновременно. При этом каждый клиент получает персонализированный
                       подход и мгновенные ответы на свои вопросы.
                     </p>
-                    <div className="pt-4 border-t border-border">
-                      <h4 className="text-xl font-bold mb-3">Ключевые возможности:</h4>
-                      <ul className="space-y-2">
+                    <div className="pt-3 sm:pt-4 border-t border-border">
+                      <h4 className="text-base sm:text-lg md:text-xl font-bold mb-2 sm:mb-3">Ключевые возможности:</h4>
+                      <ul className="space-y-1.5 sm:space-y-2">
                         <li className="flex items-start gap-2">
                           <span className="text-primary mt-1">✓</span>
                           <span>Интеграция со всеми популярными мессенджерами и CRM-системами</span>
@@ -618,14 +618,14 @@ export default function HomePage() {
             </div>
 
             {/* CTA after video */}
-            <div className="text-center mt-12">
+            <div className="text-center mt-8 sm:mt-12">
               <Button 
                 size="lg" 
-                className="text-lg px-8 py-6"
+                className="text-sm sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
                 onClick={() => setIsModalOpen(true)}
               >
                 Узнать стоимость для моего бизнеса
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </div>
           </div>
@@ -633,22 +633,22 @@ export default function HomePage() {
       </section>
 
       {/* Business Cases Section */}
-      <section id="cases" className="py-20 px-4 bg-secondary/30">
+      <section id="cases" className="py-12 sm:py-20 px-3 sm:px-4 bg-secondary/30">
         <div className="container mx-auto">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold">Кейсы бизнеса</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold">Кейсы бизнеса</h2>
+            <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
               Реальные результаты внедрения ИИ-автоматизации в различных отраслях
             </p>
           </div>
 
           <BusinessCasesCarousel />
 
-          <div className="text-center mt-12">
-            <p className="text-muted-foreground mb-6">Хотите получить такие же результаты для вашего бизнеса?</p>
-            <Button size="lg" className="text-lg px-8 py-6" onClick={() => setIsModalOpen(true)}>
+          <div className="text-center mt-8 sm:mt-12">
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">Хотите получить такие же результаты для вашего бизнеса?</p>
+            <Button size="lg" className="text-sm sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
               Обсудить ваш проект
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </div>
         </div>
@@ -658,9 +658,9 @@ export default function HomePage() {
       <Testimonials />
 
       {/* Use Cases Section */}
-      <section id="services" className="py-20 px-4">
+      <section id="services" className="py-12 sm:py-20 px-3 sm:px-4">
         <div className="container mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">Сценарии использования</h2>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-center mb-10 sm:mb-16">Сценарии использования</h2>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
@@ -710,27 +710,27 @@ export default function HomePage() {
       <FAQ />
 
       {/* Final CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-secondary/20 to-background">
+      <section className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background">
         <div className="container mx-auto">
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 shadow-2xl">
-            <CardContent className="p-8 md:p-12">
-              <div className="max-w-3xl mx-auto text-center space-y-6">
+            <CardContent className="p-6 sm:p-8 md:p-12">
+              <div className="max-w-3xl mx-auto text-center space-y-4 sm:space-y-6">
                 {/* Special Offer Badge */}
-                <div className="inline-block bg-primary text-primary-foreground px-6 py-2 rounded-full font-bold text-sm md:text-base animate-pulse">
+                <div className="inline-block bg-primary text-primary-foreground px-4 py-1.5 sm:px-6 sm:py-2 rounded-full font-bold text-xs sm:text-sm md:text-base animate-pulse">
                   🔥 СПЕЦИАЛЬНОЕ ПРЕДЛОЖЕНИЕ
                 </div>
 
-                <h2 className="text-3xl md:text-5xl font-bold text-balance">
+                <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-balance">
                   Первым 5 клиентам — бесплатный аудит бизнеса на 50 000₽
                 </h2>
                 
-                <p className="text-lg md:text-xl text-muted-foreground">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
                   Закажите консультацию прямо сейчас и получите полный анализ вашего бизнеса + стратегию автоматизации в подарок
                 </p>
 
                 {/* Countdown Timer */}
-                <div className="bg-background/50 rounded-xl p-6 border border-primary/20">
-                  <p className="text-sm md:text-base text-muted-foreground mb-2">
+                <div className="bg-background/50 rounded-xl p-4 sm:p-6 border border-primary/20">
+                  <p className="text-xs sm:text-sm md:text-base text-muted-foreground mb-2">
                     До окончания предложения осталось:
                   </p>
                   <CountdownTimer hours={48} />
@@ -770,9 +770,9 @@ export default function HomePage() {
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full text-base md:text-lg py-1 md:py-3 px-4 h-auto min-h-[60px] whitespace-normal leading-tight">
+                    <Button type="submit" size="lg" className="w-full text-sm sm:text-base md:text-lg py-3 sm:py-3 md:py-3 px-4 h-auto min-h-[50px] sm:min-h-[60px] whitespace-normal leading-tight">
                       Получить бесплатную консультацию
-                      <Send className="ml-2 h-5 w-5 flex-shrink-0" />
+                      <Send className="ml-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                     </Button>
 
                     <p className="text-sm text-muted-foreground">
@@ -799,13 +799,13 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-border">
+      <footer className="py-8 sm:py-12 px-3 sm:px-4 border-t border-border">
         <div className="container mx-auto text-center text-muted-foreground">
-          <p className="text-lg mb-4">
+          <p className="text-base sm:text-lg mb-3 sm:mb-4">
             <span className="text-primary font-bold">NEURONIC</span>
             <span className="text-foreground font-bold">LABS</span>
           </p>
-          <p>&copy; 2025 NEURONIC LABS. Все права защищены.</p>
+          <p className="text-sm sm:text-base">&copy; 2025 NEURONIC LABS. Все права защищены.</p>
         </div>
       </footer>
 

@@ -236,6 +236,113 @@ html[data-theme="dark"] .hero-image-overlay {
   }
 }
 
+/* Extra small devices (320px and below) */
+@media (max-width: 375px) {
+  /* Container padding reduction */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Hero section adjustments */
+  .hero h1, h1 {
+    font-size: 2rem !important;
+    line-height: 1.1;
+  }
+  
+  .hero h2, h2 {
+    font-size: 1.35rem !important;
+    line-height: 1.25;
+  }
+  
+  .hero p, section p {
+    font-size: 0.9rem !important;
+  }
+
+  /* Button adjustments */
+  button, .btn, [class*="Button"] {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Card padding */
+  [class*="Card"] {
+    padding: 0.75rem !important;
+  }
+
+  /* Input fields */
+  input, textarea {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    padding: 0.5rem !important;
+  }
+
+  /* Countdown timer */
+  [class*="countdown"] {
+    font-size: 1.25rem !important;
+  }
+
+  /* Section spacing */
+  section {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  /* Text sizes */
+  .text-xl {
+    font-size: 1rem !important;
+  }
+
+  .text-2xl {
+    font-size: 1.25rem !important;
+  }
+
+  .text-3xl {
+    font-size: 1.5rem !important;
+  }
+
+  .text-4xl {
+    font-size: 1.75rem !important;
+  }
+
+  .text-5xl {
+    font-size: 2rem !important;
+  }
+
+  .text-6xl {
+    font-size: 2.25rem !important;
+  }
+
+  /* Icon sizes */
+  svg, [class*="Icon"] {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+
+  /* Spacing utilities */
+  .gap-4 {
+    gap: 0.5rem !important;
+  }
+
+  .gap-6 {
+    gap: 0.75rem !important;
+  }
+
+  .gap-8 {
+    gap: 1rem !important;
+  }
+
+  /* Remove excessive margins */
+  .mb-12, .mt-12 {
+    margin-bottom: 2rem !important;
+    margin-top: 2rem !important;
+  }
+
+  .mb-16, .mt-16 {
+    margin-bottom: 2.5rem !important;
+    margin-top: 2.5rem !important;
+  }
+}
+
 /* Touch-friendly buttons */
 @media (hover: none) and (pointer: coarse) {
   button, a {
