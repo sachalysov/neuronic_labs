@@ -190,7 +190,7 @@ export default function HomePage() {
             loading="eager"
           />
           <div className="absolute inset-0 hero-image-overlay" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 hero-bottom-fade" />
+          <div className="absolute bottom-0 left-0 right-0 hero-bottom-fade" />
         </div>
 
         {/* Pattern Overlay */}
@@ -210,7 +210,7 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <div className="space-y-6 sm:space-y-8">
               <div className="inline-block">
-                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-2">
+                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-2">
                   <span className="text-primary">NEURONIC</span> <br />
                   <span className="text-muted-foreground">LABS</span>
                 </h1>
