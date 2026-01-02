@@ -103,7 +103,7 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 w-[380px] h-[600px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden">
+    <div className="fixed bottom-8 right-8 w-[380px] h-[600px] bg-card/10 backdrop-blur-md border border-border/50 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden">
       {/* Header */}
       <div className="bg-primary text-primary-foreground p-4 flex items-center justify-between rounded-t-2xl">
         <h3 className="font-semibold text-lg">Добро пожаловать в чат!</h3>
@@ -181,7 +181,7 @@ export function ChatWidget() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Напишите нам свой вопрос..."
+            placeholder="Напишите свой вопрос..."
             disabled={isLoading}
             className="flex-1 bg-secondary border-border"
           />
