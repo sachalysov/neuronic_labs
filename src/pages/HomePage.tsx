@@ -605,7 +605,7 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             <div className="text-center space-y-3 sm:space-y-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold text-primary-foreground">
                 1
               </div>
               <h3 className="text-lg sm:text-xl font-bold">Анализ бизнеса</h3>
@@ -613,7 +613,7 @@ export default function HomePage() {
             </div>
 
             <div className="text-center space-y-3 sm:space-y-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold text-primary-foreground">
                 2
               </div>
               <h3 className="text-lg sm:text-xl font-bold">Разработка решения</h3>
@@ -621,7 +621,7 @@ export default function HomePage() {
             </div>
 
             <div className="text-center space-y-3 sm:space-y-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold text-primary-foreground">
                 3
               </div>
               <h3 className="text-lg sm:text-xl font-bold">Внедрение и поддержка</h3>
