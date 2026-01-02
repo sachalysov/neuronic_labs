@@ -9,7 +9,7 @@ export async function sendChatMessage(
   try {
     // Используем разные вебхуки для виджета и демо-чата
     const webhookUrl = chatType === 'widget' 
-      ? import.meta.env.VITE_WIDGET_WEBHOOK_URL 
+      ? (import.meta.env.VITE_WIDGET_WEBHOOK_URL || 'https://n8n.alexlysov.ru/webhook/bc12fe55-7a98-4d81-b4ec-d3d74650e28a/chat')
       : 'https://n8n.alexlysov.ru/webhook/b74adb23-9f9b-4b80-8dc3-7a2fe09e980e/chat'
 
     if (!webhookUrl) {
