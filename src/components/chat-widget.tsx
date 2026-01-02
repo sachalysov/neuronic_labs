@@ -150,9 +150,12 @@ export function ChatWidget() {
   return (
     <div className="fixed bottom-8 right-8 w-[380px] h-[600px] bg-card/10 backdrop-blur-md border border-border/50 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-4 flex items-center justify-between rounded-t-2xl">
-        <h3 className="font-semibold text-lg">Добро пожаловать в чат!</h3>
-        <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:bg-primary-foreground/20">
+      <div className="bg-destructive/10 border-b border-destructive/30 p-4 sm:p-6 flex items-center justify-between rounded-t-2xl">
+        <div className="flex items-center gap-3 flex-1">
+          <div className="text-2xl sm:text-3xl">💬</div>
+          <h3 className="font-semibold text-lg">Добро пожаловать в чат!</h3>
+        </div>
+        <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:bg-destructive/20 flex-shrink-0">
           <X className="h-5 w-5" />
         </Button>
       </div>
@@ -173,7 +176,7 @@ export function ChatWidget() {
             >
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  message.sender === "user" ? "bg-muted" : "bg-primary"
+                  message.sender === "user" ? "bg-muted/50" : "bg-primary/50"
                 }`}
               >
                 <span className="text-sm font-semibold">{message.sender === "user" ? "👤" : "🤖"}</span>
@@ -181,8 +184,8 @@ export function ChatWidget() {
               <div
                 className={`p-3 rounded-2xl ${
                   message.sender === "user"
-                    ? "bg-muted text-foreground rounded-tr-sm"
-                    : "bg-primary text-primary-foreground rounded-tl-sm"
+                    ? "bg-muted/50 text-foreground rounded-tr-sm"
+                    : "bg-primary/50 text-primary-foreground rounded-tl-sm"
                 }`}
               >
                 <p className="text-sm leading-relaxed">{formatMessageText(message.text)}</p>
@@ -193,10 +196,10 @@ export function ChatWidget() {
         {isLoading && (
           <div className="flex justify-start animate-slide-in-left">
             <div className="flex items-start gap-2">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-primary/50 flex items-center justify-center">
                 <span className="text-sm">🤖</span>
               </div>
-              <div className="bg-primary text-primary-foreground p-3 rounded-2xl rounded-tl-sm">
+              <div className="bg-primary/50 text-primary-foreground p-3 rounded-2xl rounded-tl-sm">
                 <div className="flex gap-1">
                   <span
                     className="w-2 h-2 bg-primary-foreground rounded-full animate-bounce"
