@@ -43,6 +43,17 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
     setPhone(value)
   }
 
+  const handleTelegramChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value
+    
+    // Если значение не пустое и не начинается с @, добавляем @ в начале
+    if (value && !value.startsWith("@")) {
+      value = "@" + value
+    }
+    
+    setTelegram(value)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -175,7 +186,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
                   type="text"
                   placeholder="@username"
                   value={telegram}
-                  onChange={(e) => setTelegram(e.target.value)}
+                  onChange={handleTelegramChange}
                   className="bg-background border-border text-sm sm:text-base"
                   style={{ fontSize: '16px' }}
                 />
