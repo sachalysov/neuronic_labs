@@ -261,7 +261,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen">
       <SpaceDust />
-      <StickyHeader />
+      <StickyHeader onOpenDemoChat={() => setIsDemoChatOpen(true)} />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-20">

@@ -3,7 +3,11 @@
 import { useState, useEffect } from "react"
 import { ThemeToggle } from "./theme-toggle"
 
-export function StickyHeader() {
+interface StickyHeaderProps {
+  onOpenDemoChat?: () => void
+}
+
+export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -24,6 +28,17 @@ export function StickyHeader() {
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" })
       setIsMobileMenuOpen(false) // Закрываем меню после клика
+    }
+  }
+
+  const handleChatBotClick = () => {
+    // На мобильных устройствах (меньше md breakpoint = 768px) открываем демо чат
+    // На более широких экранах скроллим к секции
+    if (window.innerWidth < 768 && onOpenDemoChat) {
+      onOpenDemoChat()
+      setIsMobileMenuOpen(false) // Закрываем меню после клика
+    } else {
+      scrollToSection("demo-chat")
     }
   }
 
@@ -273,7 +288,7 @@ export function StickyHeader() {
           <nav className="lg:hidden py-4 border-t border-border bg-background">
             <div className="flex flex-col space-y-4">
               <button
-                onClick={() => scrollToSection("demo-chat")}
+                onClick={handleChatBotClick}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 Чат-бот
