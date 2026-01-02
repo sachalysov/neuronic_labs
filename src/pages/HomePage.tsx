@@ -31,7 +31,6 @@ import {
   CheckCircle,
   MessageCircle,
   Sparkles,
-  X,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -410,6 +409,10 @@ export default function HomePage() {
               Протестировать ИИ-чат
               <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
+            
+            <p className="text-center text-muted-foreground mt-4 text-sm">
+              Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
+            </p>
           </div>
         </div>
       </section>
@@ -928,25 +931,9 @@ export default function HomePage() {
       {/* Mobile Demo Chat Modal */}
       {isDemoChatOpen && (
         <div className="md:hidden fixed inset-0 bg-background z-50 flex flex-col">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border bg-background">
-            <h2 className="text-xl font-bold">Попробуйте ИИ-продавца</h2>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsDemoChatOpen(false)}
-              className="hover:bg-muted"
-            >
-              <X className="h-6 w-6" />
-            </Button>
-          </div>
-
-          {/* Demo Chat Content */}
-          <div className="flex-1 overflow-y-auto p-4">
-            <DemoChat />
-            <p className="text-center text-muted-foreground mt-6 text-sm">
-              Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
-            </p>
+          {/* Demo Chat Content - Full Screen */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <DemoChat onClose={() => setIsDemoChatOpen(false)} isMobile={true} />
           </div>
         </div>
       )}

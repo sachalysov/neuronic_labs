@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Send, Loader2 } from "lucide-react"
+import { Send, Loader2, X } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 
@@ -15,7 +15,12 @@ interface Message {
   timestamp: Date
 }
 
-export function DemoChat() {
+interface DemoChatProps {
+  onClose?: () => void
+  isMobile?: boolean
+}
+
+export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   // Генерируем уникальный sessionId при монтировании компонента
   const [sessionId] = useState(() => 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9))
   
@@ -94,20 +99,32 @@ export function DemoChat() {
   }
 
   return (
-    <Card className="w-full max-w-[717px] mx-auto shadow-2xl border-gray-200 bg-white">
-      <CardHeader className="border-b border-gray-200 bg-white backdrop-blur">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-            <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
+    <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} mx-auto shadow-2xl border-gray-200 bg-white ${isMobile ? 'rounded-none' : ''} ${isMobile ? 'flex flex-col' : ''}`}>
+      <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+              <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">ИИ-продавец NEURONIC LABS</h3>
+              <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">ИИ-продавец NEURONIC LABS</h3>
-            <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
-          </div>
+          {isMobile && onClose && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="hover:bg-gray-100 flex-shrink-0"
+            >
+              <X className="h-5 w-5 text-gray-900" />
+            </Button>
+          )}
         </div>
       </CardHeader>
-      <CardContent className="p-0">
-        <div ref={messagesContainerRef} className="h-[500px] overflow-y-auto p-6 space-y-4 bg-gray-50">
+      <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0' : ''}`}>
+        <div ref={messagesContainerRef} className={`${isMobile ? 'flex-1 min-h-0' : 'h-[500px]'} overflow-y-auto p-6 space-y-4 bg-gray-50`}>
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
@@ -129,7 +146,7 @@ export function DemoChat() {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="p-4 border-t border-gray-200 bg-white backdrop-blur">
+        <div className={`p-4 border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
           <form
             onSubmit={(e) => {
               e.preventDefault()
