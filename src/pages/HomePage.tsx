@@ -610,7 +610,7 @@ export default function HomePage() {
                   <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
                     <Target className="h-5 w-5 md:h-8 md:w-8 text-primary" />
                   </div>
-                  <h3 className="text-lg md:text-2xl font-bold">200+</h3>
+                  <h3 className="text-lg md:text-2xl font-bold">90+</h3>
                   <p className="text-sm md:text-base text-muted-foreground">Успешно внедренных проектов</p>
                 </CardContent>
               </Card>

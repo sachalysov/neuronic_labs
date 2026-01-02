@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react"
+import { Star, Quote } from "lucide-react"
 
 interface Testimonial {
   id: number
@@ -72,36 +71,144 @@ const testimonials: Testimonial[] = [
 ]
 
 export function Testimonials() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0)
 
-  // Автопрокрутка
+  // Отслеживание активного слайда и бесконечная прокрутка
   useEffect(() => {
-    if (!isAutoPlaying) return
+    const container = scrollContainerRef.current
+    if (!container) return
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length)
-    }, 6000)
+    let isScrolling = false
 
-    return () => clearInterval(interval)
-  }, [isAutoPlaying])
+    const getRealIndex = (index: number): number => {
+      const total = testimonials.length
+      if (index < total) {
+        // Клоны в начале - последние слайды
+        return index
+      } else if (index >= total * 2) {
+        // Клоны в конце - первые слайды
+        return index - total * 2
+      } else {
+        // Реальные слайды в середине
+        return index - total
+      }
+    }
 
-  const goToNext = () => {
-    setIsAutoPlaying(false)
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length)
-  }
+    const handleScroll = () => {
+      if (isScrolling) return
 
-  const goToPrev = () => {
-    setIsAutoPlaying(false)
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
-  }
+      const scrollLeft = container.scrollLeft
+      
+      // Определяем ближайший слайд
+      let closestIndex = 0
+      let closestDistance = Infinity
 
-  const goToSlide = (index: number) => {
-    setIsAutoPlaying(false)
-    setCurrentIndex(index)
-  }
+      Array.from(container.children).forEach((child, index) => {
+        const card = child as HTMLElement
+        const cardLeft = card.offsetLeft
+        const cardCenter = cardLeft + card.offsetWidth / 2
+        const distance = Math.abs(scrollLeft + container.offsetWidth / 2 - cardCenter)
+        
+        if (distance < closestDistance) {
+          closestDistance = distance
+          closestIndex = index
+        }
+      })
 
-  const currentTestimonial = testimonials[currentIndex]
+      const realIndex = getRealIndex(closestIndex)
+      setActiveTestimonialIndex(realIndex)
+
+      // Бесконечная прокрутка: перепрыгиваем с клонов на реальные слайды
+      const firstRealIndex = testimonials.length
+      const lastRealIndex = testimonials.length * 2 - 1
+      const firstRealCard = container.children[firstRealIndex] as HTMLElement
+      const lastRealCard = container.children[lastRealIndex] as HTMLElement
+
+      if (!firstRealCard || !lastRealCard) return
+
+      const firstRealLeft = firstRealCard.offsetLeft
+      const lastRealLeft = lastRealCard.offsetLeft
+      const cardWidth = firstRealCard.offsetWidth
+      const threshold = cardWidth / 2
+
+      // Если доскроллили до начала (клоны последних слайдов)
+      if (scrollLeft < firstRealLeft - threshold) {
+        isScrolling = true
+        container.scrollLeft = lastRealLeft - (container.offsetWidth - cardWidth) / 2
+        setTimeout(() => { isScrolling = false }, 50)
+      }
+      // Если доскроллили до конца (клоны первых слайдов)
+      else if (scrollLeft > lastRealLeft + threshold) {
+        isScrolling = true
+        container.scrollLeft = firstRealLeft - (container.offsetWidth - cardWidth) / 2
+        setTimeout(() => { isScrolling = false }, 50)
+      }
+    }
+
+    // Инициализация: скроллим к первому реальному слайду (после клонов в начале)
+    const initScroll = () => {
+      const firstRealIndex = testimonials.length
+      const firstRealCard = container.children[firstRealIndex] as HTMLElement
+      if (firstRealCard) {
+        isScrolling = true
+        container.scrollLeft = firstRealCard.offsetLeft - (container.offsetWidth - firstRealCard.offsetWidth) / 2
+        setTimeout(() => {
+          isScrolling = false
+          handleScroll()
+        }, 100)
+      }
+    }
+
+    // Небольшая задержка для правильного расчета размеров
+    setTimeout(initScroll, 100)
+    
+    container.addEventListener('scroll', handleScroll, { passive: true })
+    return () => container.removeEventListener('scroll', handleScroll)
+  }, [testimonials.length])
+
+  const renderTestimonial = (testimonial: Testimonial, key: string) => (
+    <Card
+      key={key}
+      className="flex-shrink-0 w-full max-w-5xl snap-center bg-card/50 border-primary/20 shadow-xl"
+    >
+      <CardContent className="p-4 sm:p-8 md:p-12">
+        <div className="relative">
+          {/* Quote Icon */}
+          <Quote className="absolute -top-2 -left-2 sm:-top-4 sm:-left-4 h-10 w-10 sm:h-16 sm:w-16 text-primary/20" />
+
+          {/* Rating */}
+          <div className="flex justify-center gap-1 mb-4 sm:mb-6">
+            {Array.from({ length: testimonial.rating }).map((_, i) => (
+              <Star key={i} className="h-4 w-4 sm:h-6 sm:w-6 fill-primary text-primary" />
+            ))}
+          </div>
+
+          {/* Testimonial Text */}
+          <blockquote className="text-sm sm:text-lg md:text-xl text-center mb-6 sm:mb-8 leading-relaxed">
+            "{testimonial.text}"
+          </blockquote>
+
+          {/* Result Badge */}
+          <div className="flex justify-center mb-6 sm:mb-8">
+            <div className="bg-primary/10 border border-primary/30 rounded-full px-3 py-2 sm:px-6 sm:py-3">
+              <p className="text-primary font-bold text-sm sm:text-lg">
+                {testimonial.result}
+              </p>
+            </div>
+          </div>
+
+          {/* Author Info */}
+          <div className="text-center space-y-1 sm:space-y-2">
+            <p className="font-bold text-base sm:text-xl">{testimonial.name}</p>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              {testimonial.position}, {testimonial.company}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
 
   return (
     <section id="testimonials" className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
@@ -114,84 +221,60 @@ export function Testimonials() {
         </div>
 
         <div className="max-w-5xl mx-auto">
-          <Card className="bg-card/50 border-primary/20 shadow-xl">
-            <CardContent className="p-4 sm:p-8 md:p-12">
-              <div className="relative">
-                {/* Quote Icon */}
-                <Quote className="absolute -top-2 -left-2 sm:-top-4 sm:-left-4 h-10 w-10 sm:h-16 sm:w-16 text-primary/20" />
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
+            style={{
+              scrollPaddingLeft: '0.5rem',
+              scrollPaddingRight: '0.5rem'
+            }}
+          >
+            {/* Клоны последних слайдов в начале для бесконечной прокрутки */}
+            {testimonials.slice(-testimonials.length).map((testimonial, index) => 
+              renderTestimonial(testimonial, `clone-start-${index}`)
+            )}
+            
+            {/* Реальные слайды */}
+            {testimonials.map((testimonial, index) => 
+              renderTestimonial(testimonial, `real-${index}`)
+            )}
 
-                {/* Rating */}
-                <div className="flex justify-center gap-1 mb-4 sm:mb-6">
-                  {Array.from({ length: currentTestimonial.rating }).map((_, i) => (
-                    <Star key={i} className="h-4 w-4 sm:h-6 sm:w-6 fill-primary text-primary" />
-                  ))}
-                </div>
+            {/* Клоны первых слайдов в конце для бесконечной прокрутки */}
+            {testimonials.slice(0, testimonials.length).map((testimonial, index) => 
+              renderTestimonial(testimonial, `clone-end-${index}`)
+            )}
+          </div>
 
-                {/* Testimonial Text */}
-                <blockquote className="text-sm sm:text-lg md:text-xl text-center mb-6 sm:mb-8 leading-relaxed">
-                  "{currentTestimonial.text}"
-                </blockquote>
-
-                {/* Result Badge */}
-                <div className="flex justify-center mb-6 sm:mb-8">
-                  <div className="bg-primary/10 border border-primary/30 rounded-full px-3 py-2 sm:px-6 sm:py-3">
-                    <p className="text-primary font-bold text-sm sm:text-lg">
-                      {currentTestimonial.result}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Author Info */}
-                <div className="text-center space-y-1 sm:space-y-2">
-                  <p className="font-bold text-base sm:text-xl">{currentTestimonial.name}</p>
-                  <p className="text-sm sm:text-base text-muted-foreground">
-                    {currentTestimonial.position}, {currentTestimonial.company}
-                  </p>
-                </div>
-              </div>
-
-              {/* Navigation */}
-              <div className="flex items-center justify-between mt-8 sm:mt-12">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={goToPrev}
-                  className="hover:bg-primary/10 h-8 w-8 sm:h-10 sm:w-10"
-                >
-                  <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
-                </Button>
-
-                {/* Dots */}
-                <div className="flex gap-1.5 sm:gap-2">
-                  {testimonials.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`rounded-full transition-all duration-300 bg-muted-foreground/30 hover:bg-muted-foreground/50 ${
-                        index === currentIndex
-                          ? "bg-primary"
-                          : ""
-                      }`}
-                      style={{
-                        width: index === currentIndex ? '0.5rem' : '0.17rem',
-                        height: '0.17rem'
-                      }}
-                      aria-label={`Перейти к отзыву ${index + 1}`}
-                    />
-                  ))}
-                </div>
-
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={goToNext}
-                  className="hover:bg-primary/10 h-8 w-8 sm:h-10 sm:w-10"
-                >
-                  <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Dots Navigation */}
+          <div className="flex justify-center gap-3 mt-6">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  const container = scrollContainerRef.current
+                  if (container) {
+                    // Реальный слайд находится после клонов в начале
+                    const realIndex = index + testimonials.length
+                    const card = container.children[realIndex] as HTMLElement
+                    if (card) {
+                      container.scrollTo({
+                        left: card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2,
+                        behavior: 'smooth'
+                      })
+                    }
+                  }
+                }}
+                className={`transition-all duration-300 rounded-full ${
+                  activeTestimonialIndex === index ? 'bg-primary' : 'bg-muted-foreground/30'
+                }`}
+                style={{
+                  width: activeTestimonialIndex === index ? '1.25rem' : '0.5rem',
+                  height: '0.5rem'
+                }}
+                aria-label={`Перейти к отзыву ${index + 1}`}
+              />
+            ))}
+          </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-8 sm:mt-12 max-w-3xl mx-auto">
@@ -204,7 +287,7 @@ export function Testimonials() {
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">Средняя оценка</p>
             </div>
             <div className="text-center">
-              <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">200+</p>
+              <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">90+</p>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1">Успешных проектов</p>
             </div>
           </div>
