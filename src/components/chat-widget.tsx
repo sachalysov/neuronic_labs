@@ -16,19 +16,59 @@ interface Message {
   timestamp: Date
 }
 
+// Вспомогательная функция для безопасной работы с localStorage
+const getLocalStorage = (key: string): string | null => {
+  if (typeof window === 'undefined' || !window.localStorage) return null
+  try {
+    return localStorage.getItem(key)
+  } catch (e) {
+    return null
+  }
+}
+
+const setLocalStorage = (key: string, value: string): void => {
+  if (typeof window === 'undefined' || !window.localStorage) return
+  try {
+    localStorage.setItem(key, value)
+  } catch (e) {
+    // Игнорируем ошибки (например, переполнение хранилища)
+  }
+}
+
 export function ChatWidget() {
   // Генерируем уникальный sessionId при монтировании компонента
-  const [sessionId] = useState(() => 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9))
+  const [sessionId] = useState(() => {
+    const stored = getLocalStorage('chat-widget-session-id')
+    if (stored) return stored
+    const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+    setLocalStorage('chat-widget-session-id', newId)
+    return newId
+  })
   
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "Ответим моментально на любой вопрос",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-  ])
+  // Загружаем сообщения из localStorage или используем начальные
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const stored = getLocalStorage('chat-widget-messages')
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        return parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }))
+      } catch (e) {
+        console.error('Error parsing stored messages:', e)
+      }
+    }
+    return [
+      {
+        id: "1",
+        text: "Ответим моментально на любой вопрос",
+        sender: "bot",
+        timestamp: new Date(),
+      },
+    ]
+  })
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -40,6 +80,11 @@ export function ChatWidget() {
 
   useEffect(() => {
     scrollToBottom()
+  }, [messages])
+
+  // Сохраняем сообщения в localStorage при каждом изменении
+  useEffect(() => {
+    setLocalStorage('chat-widget-messages', JSON.stringify(messages))
   }, [messages])
 
   const handleSendMessage = async () => {
