@@ -20,24 +20,64 @@ interface DemoChatProps {
   isMobile?: boolean
 }
 
+// Вспомогательная функция для безопасной работы с localStorage
+const getLocalStorage = (key: string): string | null => {
+  if (typeof window === 'undefined' || !window.localStorage) return null
+  try {
+    return localStorage.getItem(key)
+  } catch (e) {
+    return null
+  }
+}
+
+const setLocalStorage = (key: string, value: string): void => {
+  if (typeof window === 'undefined' || !window.localStorage) return
+  try {
+    localStorage.setItem(key, value)
+  } catch (e) {
+    // Игнорируем ошибки (например, переполнение хранилища)
+  }
+}
+
 export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   // Генерируем уникальный sessionId при монтировании компонента
-  const [sessionId] = useState(() => 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9))
+  const [sessionId] = useState(() => {
+    const stored = getLocalStorage('demo-chat-session-id')
+    if (stored) return stored
+    const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+    setLocalStorage('demo-chat-session-id', newId)
+    return newId
+  })
   
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      text: "Добавь в чат ссылку на свой сайт и протестируй то как будет работать ИИ-продавец на твоей нише",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-    {
-      id: "2",
-      text: "Так же можешь описать свою нишу, ответь всего на пару вопросов:\n 1. Какая твоя ниша?\n2. Топ 3 твоих продукта?\n3. Опиши кратко преимущества твоего продукта",
-      sender: "bot",
-      timestamp: new Date(),
-    },
-  ])
+  // Загружаем сообщения из localStorage или используем начальные
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const stored = getLocalStorage('demo-chat-messages')
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        return parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }))
+      } catch (e) {
+        console.error('Error parsing stored messages:', e)
+      }
+    }
+    return [
+      {
+        id: "1",
+        text: "Добавь в чат ссылку на свой сайт и протестируй то как будет работать ИИ-продавец на твоей нише",
+        sender: "bot",
+        timestamp: new Date(),
+      },
+      {
+        id: "2",
+        text: "Так же можешь описать свою нишу, ответь всего на пару вопросов:\n 1. Какая твоя ниша?\n2. Топ 3 твоих продукта?\n3. Опиши кратко преимущества твоего продукта",
+        sender: "bot",
+        timestamp: new Date(),
+      },
+    ]
+  })
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -51,6 +91,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   useEffect(() => {
     scrollToBottom()
+  }, [messages])
+
+  // Сохраняем сообщения в localStorage при каждом изменении
+  useEffect(() => {
+    setLocalStorage('demo-chat-messages', JSON.stringify(messages))
   }, [messages])
 
   const handleSend = async () => {
