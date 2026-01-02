@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, Star, ChevronLeft, ChevronRight } from "lucide-react"
+import { CheckCircle, Star } from "lucide-react"
 import { useRef, useState, useEffect } from "react"
 
 interface PricingProps {
@@ -9,19 +9,7 @@ interface PricingProps {
 
 export function Pricing({ onContactClick }: PricingProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-
-  const checkScroll = () => {
-    const container = scrollContainerRef.current
-    if (container) {
-      setCanScrollLeft(container.scrollLeft > 0)
-      setCanScrollRight(
-        container.scrollLeft < container.scrollWidth - container.clientWidth - 1
-      )
-    }
-  }
 
   useEffect(() => {
     const checkMobile = () => {
@@ -41,25 +29,8 @@ export function Pricing({ onContactClick }: PricingProps) {
       const cardWidth = container.children[0]?.clientWidth || 0
       const gap = 32 // 2rem gap
       container.scrollLeft = cardWidth + gap
-      
-      checkScroll()
-      container.addEventListener('scroll', checkScroll)
-      return () => container.removeEventListener('scroll', checkScroll)
     }
   }, [isMobile])
-
-  const scroll = (direction: 'left' | 'right') => {
-    const container = scrollContainerRef.current
-    if (container) {
-      const cardWidth = container.children[0]?.clientWidth || 0
-      const gap = 32
-      const scrollAmount = cardWidth + gap
-      container.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      })
-    }
-  }
 
   const plans = [
     {
@@ -132,26 +103,6 @@ export function Pricing({ onContactClick }: PricingProps) {
 
         {/* Mobile: Slider */}
         <div className="md:hidden relative">
-          {/* Scroll indicators */}
-          {canScrollLeft && (
-            <button
-              onClick={() => scroll('left')}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-primary text-primary-foreground rounded-full p-2 shadow-lg"
-              aria-label="Предыдущий тариф"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-          )}
-          {canScrollRight && (
-            <button
-              onClick={() => scroll('right')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-primary text-primary-foreground rounded-full p-2 shadow-lg"
-              aria-label="Следующий тариф"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-          )}
-          
           <div
             ref={scrollContainerRef}
             className="flex gap-4 sm:gap-8 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2 sm:px-4"

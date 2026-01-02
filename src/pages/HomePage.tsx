@@ -13,7 +13,7 @@ import { FAQ } from "@/components/faq"
 import { Testimonials } from "@/components/testimonials"
 import { CountdownTimer } from "@/components/countdown-timer"
 import { submitFormData } from "@/services/form"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import {
   Bot,
   Clock,
@@ -32,8 +32,6 @@ import {
   MessageCircle,
   Sparkles,
   X,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -45,15 +43,8 @@ export default function HomePage() {
   const [telegram, setTelegram] = useState("")
   const [comment, setComment] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [currentSlide, setCurrentSlide] = useState(1) // Начинаем с 1 (первый реальный слайд)
-  const [isTransitioning, setIsTransitioning] = useState(true)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
-  const [mouseStart, setMouseStart] = useState(0)
-  const [mouseEnd, setMouseEnd] = useState(0)
-  const [isDragging, setIsDragging] = useState(false)
-
-  const totalSlides = 4
+  const benefitsScrollRef = useRef<HTMLDivElement>(null)
+  const [activeBenefitIndex, setActiveBenefitIndex] = useState(0)
   const benefitsData = [
     {
       icon: Bot,
@@ -86,97 +77,37 @@ export default function HomePage() {
     window.scrollTo(0, 0)
   }, [])
 
-
-  // Обработка бесшовного зацикливания
+  // Отслеживание активного слайда для точек навигации
   useEffect(() => {
-    if (!isTransitioning) return
+    const container = benefitsScrollRef.current
+    if (!container) return
 
-    if (currentSlide === 0) {
-      // Перепрыгиваем на последний реальный слайд
-      setTimeout(() => {
-        setIsTransitioning(false)
-        setCurrentSlide(totalSlides)
-      }, 500)
-    } else if (currentSlide === totalSlides + 1) {
-      // Перепрыгиваем на первый реальный слайд
-      setTimeout(() => {
-        setIsTransitioning(false)
-        setCurrentSlide(1)
-      }, 500)
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft
+      let closestIndex = 0
+      let closestDistance = Infinity
+
+      Array.from(container.children).forEach((child, index) => {
+        const card = child as HTMLElement
+        const cardLeft = card.offsetLeft
+        const cardCenter = cardLeft + card.offsetWidth / 2
+        const distance = Math.abs(scrollLeft + container.offsetWidth / 2 - cardCenter)
+        
+        if (distance < closestDistance) {
+          closestDistance = distance
+          closestIndex = index
+        }
+      })
+
+      setActiveBenefitIndex(Math.min(closestIndex, benefitsData.length - 1))
     }
-  }, [currentSlide, isTransitioning])
 
-  const goToNextSlide = () => {
-    setIsTransitioning(true)
-    setCurrentSlide((prev) => prev + 1)
-  }
-
-  const goToPrevSlide = () => {
-    setIsTransitioning(true)
-    setCurrentSlide((prev) => prev - 1)
-  }
-
-  const goToSlide = (index: number) => {
-    setIsTransitioning(true)
-    setCurrentSlide(index + 1) // +1 потому что 0 - это клон
-  }
-
-  // Обработка свайпа
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX)
-  }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  }
-
-  const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 75) {
-      // Свайп влево
-      goToNextSlide()
-    }
-    if (touchStart - touchEnd < -75) {
-      // Свайп вправо
-      goToPrevSlide()
-    }
-  }
-
-  // Обработка перетаскивания мышью
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true)
-    setMouseStart(e.clientX)
-    setMouseEnd(e.clientX)
-  }
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return
-    setMouseEnd(e.clientX)
-  }
-
-  const handleMouseUp = () => {
-    if (!isDragging) return
-    const diff = mouseStart - mouseEnd
-    if (Math.abs(diff) > 75) {
-      if (diff > 0) {
-        // Перетаскивание влево - следующий слайд
-        goToNextSlide()
-      } else {
-        // Перетаскивание вправо - предыдущий слайд
-        goToPrevSlide()
-      }
-    }
-    setIsDragging(false)
-    setMouseStart(0)
-    setMouseEnd(0)
-  }
-
-  const handleMouseLeave = () => {
-    if (isDragging) {
-      setIsDragging(false)
-      setMouseStart(0)
-      setMouseEnd(0)
-    }
-  }
+    // Инициализация при монтировании
+    handleScroll()
+    
+    container.addEventListener('scroll', handleScroll)
+    return () => container.removeEventListener('scroll', handleScroll)
+  }, [benefitsData.length])
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
@@ -457,92 +388,33 @@ export default function HomePage() {
 
           {/* Mobile Slider */}
           <div className="md:hidden relative">
-            {/* Navigation Arrows */}
-            <button
-              onClick={goToPrevSlide}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-primary text-primary-foreground rounded-full p-2 shadow-lg"
-              aria-label="Предыдущий слайд"
+            <div
+              ref={benefitsScrollRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
+              style={{
+                scrollPaddingLeft: '0.5rem',
+                scrollPaddingRight: '0.5rem'
+              }}
             >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-            <button
-              onClick={goToNextSlide}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-primary text-primary-foreground rounded-full p-2 shadow-lg"
-              aria-label="Следующий слайд"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-
-            <div 
-              className="relative overflow-hidden cursor-grab active:cursor-grabbing"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div 
-                className={`flex ${isTransitioning ? 'transition-transform duration-500 ease-out' : ''}`}
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {/* Клон последнего слайда в начале */}
-                <div className="w-full flex-shrink-0 px-4">
-                  <Card className="bg-card/10 border-border mx-auto max-w-sm">
+              {benefitsData.map((benefit, index) => {
+                const Icon = benefit.icon
+                return (
+                  <Card
+                    key={index}
+                    className="flex-shrink-0 w-[85vw] max-w-sm snap-center bg-card/10 border-border"
+                  >
                     <CardContent className="p-6 space-y-4">
                       <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                        {(() => {
-                          const Icon = benefitsData[benefitsData.length - 1].icon
-                          return <Icon className="h-7 w-7 text-primary" />
-                        })()}
+                        <Icon className="h-7 w-7 text-primary" />
                       </div>
-                      <h3 className="text-xl font-bold">{benefitsData[benefitsData.length - 1].title}</h3>
+                      <h3 className="text-xl font-bold">{benefit.title}</h3>
                       <p className="text-muted-foreground">
-                        {benefitsData[benefitsData.length - 1].description}
+                        {benefit.description}
                       </p>
                     </CardContent>
                   </Card>
-                </div>
-
-                {/* Реальные слайды */}
-                {benefitsData.map((benefit, index) => {
-                  const Icon = benefit.icon
-                  return (
-                    <div key={index} className="w-full flex-shrink-0 px-4">
-                      <Card className="bg-card/10 border-border mx-auto max-w-sm">
-                        <CardContent className="p-6 space-y-4">
-                          <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                            <Icon className="h-7 w-7 text-primary" />
-                          </div>
-                          <h3 className="text-xl font-bold">{benefit.title}</h3>
-                          <p className="text-muted-foreground">
-                            {benefit.description}
-                          </p>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )
-                })}
-
-                {/* Клон первого слайда в конце */}
-                <div className="w-full flex-shrink-0 px-4">
-                  <Card className="bg-card/10 border-border mx-auto max-w-sm">
-                    <CardContent className="p-6 space-y-4">
-                      <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                        {(() => {
-                          const Icon = benefitsData[0].icon
-                          return <Icon className="h-7 w-7 text-primary" />
-                        })()}
-                      </div>
-                      <h3 className="text-xl font-bold">{benefitsData[0].title}</h3>
-                      <p className="text-muted-foreground">
-                        {benefitsData[0].description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
+                )
+              })}
             </div>
 
             {/* Pagination Dots */}
@@ -550,20 +422,21 @@ export default function HomePage() {
               {benefitsData.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`rounded-full transition-all duration-300 ${
-                    (currentSlide === index + 1) || 
-                    (currentSlide === 0 && index === totalSlides - 1) || 
-                    (currentSlide === totalSlides + 1 && index === 0)
-                      ? 'bg-primary' 
-                      : 'bg-muted-foreground/30'
+                  onClick={() => {
+                    const container = benefitsScrollRef.current
+                    if (container && container.children[index]) {
+                      const card = container.children[index] as HTMLElement
+                      container.scrollTo({
+                        left: card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2,
+                        behavior: 'smooth'
+                      })
+                    }
+                  }}
+                  className={`rounded-full transition-all ${
+                    activeBenefitIndex === index ? 'bg-primary' : 'bg-muted-foreground/30'
                   }`}
                   style={{
-                    width: (currentSlide === index + 1) || 
-                           (currentSlide === 0 && index === totalSlides - 1) || 
-                           (currentSlide === totalSlides + 1 && index === 0)
-                      ? '0.67rem' 
-                      : '0.21rem',
+                    width: activeBenefitIndex === index ? '0.67rem' : '0.21rem',
                     height: '0.21rem'
                   }}
                   aria-label={`Перейти к слайду ${index + 1}`}
