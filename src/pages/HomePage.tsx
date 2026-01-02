@@ -76,6 +76,33 @@ export default function HomePage() {
     window.scrollTo(0, 0)
   }, [])
 
+  // Блокировка скролла при открытии демо-чата на мобильных устройствах
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const isMobile = window.innerWidth < 768 // md breakpoint в Tailwind
+
+    if (isDemoChatOpen && isMobile) {
+      // Сохраняем текущую позицию скролла
+      const scrollY = window.scrollY
+      
+      // Блокируем скролл
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollY}px`
+      document.body.style.width = '100%'
+      document.body.style.overflow = 'hidden'
+
+      return () => {
+        // Восстанавливаем скролл при закрытии
+        document.body.style.position = ''
+        document.body.style.top = ''
+        document.body.style.width = ''
+        document.body.style.overflow = ''
+        window.scrollTo(0, scrollY)
+      }
+    }
+  }, [isDemoChatOpen])
+
   // Отслеживание активного слайда и бесконечная прокрутка
   useEffect(() => {
     const container = benefitsScrollRef.current

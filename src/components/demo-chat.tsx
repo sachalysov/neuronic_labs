@@ -82,6 +82,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const inputContainerRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -143,6 +145,65 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     }
   }
 
+  // Прокрутка к полю ввода при фокусе на мобильных устройствах
+  useEffect(() => {
+    if (!isMobile || typeof window === 'undefined') return
+
+    const input = inputRef.current
+    if (!input) return
+
+    const scrollToInput = () => {
+      if (inputContainerRef.current) {
+        // Используем visualViewport для точного позиционирования
+        if (window.visualViewport) {
+          const viewport = window.visualViewport
+          const inputRect = inputContainerRef.current.getBoundingClientRect()
+          const viewportHeight = viewport.height
+          
+          // Если поле ввода находится ниже видимой области (закрыто клавиатурой)
+          if (inputRect.bottom > viewportHeight) {
+            inputContainerRef.current.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'end',
+              inline: 'nearest'
+            })
+          }
+        } else {
+          // Fallback для браузеров без visualViewport
+          inputContainerRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'end',
+            inline: 'nearest'
+          })
+        }
+      }
+    }
+
+    const handleFocus = () => {
+      // Даем клавиатуре время открыться, затем прокручиваем
+      setTimeout(scrollToInput, 300)
+    }
+
+    const handleViewportResize = () => {
+      if (document.activeElement === input) {
+        scrollToInput()
+      }
+    }
+
+    input.addEventListener('focus', handleFocus)
+    
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportResize)
+    }
+
+    return () => {
+      input.removeEventListener('focus', handleFocus)
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleViewportResize)
+      }
+    }
+  }, [isMobile])
+
   return (
     <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} mx-auto shadow-2xl border-gray-200 bg-white ${isMobile ? 'rounded-none' : ''} ${isMobile ? 'flex flex-col' : ''}`}>
       <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
@@ -191,7 +252,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className={`p-4 border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
+        <div 
+          ref={inputContainerRef}
+          className={`p-4 border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -200,6 +264,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
             className="flex gap-2"
           >
             <Input
+              ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
