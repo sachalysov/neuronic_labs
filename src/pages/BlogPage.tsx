@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Link } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
@@ -6,7 +6,7 @@ import { ChatWidget } from "@/components/chat-widget"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { fetchBlogPosts, type BlogPost } from "@/services/blog"
-import { Calendar, ArrowRight, Loader2 } from "lucide-react"
+import { Calendar, ArrowRight, Loader2, Tag } from "lucide-react"
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([])
@@ -29,6 +29,41 @@ export default function BlogPage() {
 
     loadPosts()
   }, [])
+
+  // Группировка статей по темам (тегам)
+  const postsByTag = useMemo(() => {
+    const grouped: Record<string, BlogPost[]> = {}
+    
+    posts.forEach(post => {
+      if (post.tags && post.tags.length > 0) {
+        post.tags.forEach(tag => {
+          if (!grouped[tag]) {
+            grouped[tag] = []
+          }
+          grouped[tag].push(post)
+        })
+      } else {
+        // Статьи без тегов помещаем в общую категорию
+        if (!grouped['Все статьи']) {
+          grouped['Все статьи'] = []
+        }
+        grouped['Все статьи'].push(post)
+      }
+    })
+    
+    return grouped
+  }, [posts])
+
+  // Получаем список всех уникальных тегов
+  const allTags = useMemo(() => {
+    const tags = new Set<string>()
+    posts.forEach(post => {
+      if (post.tags && post.tags.length > 0) {
+        post.tags.forEach(tag => tags.add(tag))
+      }
+    })
+    return Array.from(tags).sort()
+  }, [posts])
 
   const formatDate = (dateString: string) => {
     try {
@@ -102,71 +137,128 @@ export default function BlogPage() {
           )}
 
           {!loading && !error && posts.length > 0 && (
-            <div className="max-w-5xl mx-auto">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {posts.map((post) => (
-                  <Card
-                    key={post.id}
-                    className="bg-card/10 border-border hover:border-primary transition-all duration-300 hover:scale-105 flex flex-col"
-                  >
-                    {post.imageUrl && (
-                      <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
-                        <img
-                          src={post.imageUrl}
-                          alt={post.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <CardContent className="p-6 flex-1 flex flex-col">
-                      <div className="flex-1">
-                        <h2 className="text-xl font-bold mb-3 line-clamp-2">{post.title}</h2>
-                        {post.excerpt && (
-                          <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
-                        )}
-                        {!post.excerpt && post.content && (
-                          <p className="text-muted-foreground mb-4 line-clamp-3">
-                            {post.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
-                          </p>
-                        )}
-                      </div>
-                      
-                      <div className="mt-4 pt-4 border-t border-border">
-                        <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4" />
-                            <span>{formatDate(post.publishedAt)}</span>
+            <div className="grid lg:grid-cols-[280px_1fr] gap-8 max-w-7xl mx-auto">
+              {/* Боковая колонка с навигацией по темам */}
+              <aside className="hidden lg:block">
+                <div className="sticky top-24">
+                  <Card className="bg-card/10 border-border">
+                    <CardContent className="p-6">
+                      <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                        <Tag className="h-5 w-5 text-primary" />
+                        Статьи по темам
+                      </h2>
+                      <nav className="space-y-4">
+                        {allTags.length > 0 ? (
+                          allTags.map((tag) => {
+                            const tagPosts = postsByTag[tag] || []
+                            return (
+                              <div key={tag} className="border-b border-border pb-4 last:border-0 last:pb-0">
+                                <h3 className="font-semibold text-sm mb-2 text-foreground flex items-center gap-2">
+                                  <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs">
+                                    {tagPosts.length}
+                                  </span>
+                                  {tag}
+                                </h3>
+                                <ul className="space-y-2">
+                                  {tagPosts.slice(0, 5).map((post) => (
+                                    <li key={post.id}>
+                                      <Link
+                                        to={`/blog/${post.id}`}
+                                        className="block text-sm text-muted-foreground hover:text-primary transition-colors line-clamp-2"
+                                      >
+                                        {post.title}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                  {tagPosts.length > 5 && (
+                                    <li>
+                                      <span className="text-xs text-muted-foreground">
+                                        и еще {tagPosts.length - 5}...
+                                      </span>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            )
+                          })
+                        ) : (
+                          <div className="text-sm text-muted-foreground">
+                            <p>Статьи пока не имеют тегов</p>
                           </div>
-                          {post.author && (
-                            <div className="flex items-center gap-2">
-                              <span>{post.author}</span>
-                            </div>
+                        )}
+                      </nav>
+                    </CardContent>
+                  </Card>
+                </div>
+              </aside>
+
+              {/* Основной контент со статьями */}
+              <div>
+                <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {posts.map((post) => (
+                    <Card
+                      key={post.id}
+                      className="bg-card/10 border-border hover:border-primary transition-all duration-300 hover:scale-105 flex flex-col"
+                    >
+                      {post.imageUrl && (
+                        <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
+                          <img
+                            src={post.imageUrl}
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <CardContent className="p-6 flex-1 flex flex-col">
+                        <div className="flex-1">
+                          <h2 className="text-xl font-bold mb-3 line-clamp-2">{post.title}</h2>
+                          {post.excerpt && (
+                            <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+                          )}
+                          {!post.excerpt && post.content && (
+                            <p className="text-muted-foreground mb-4 line-clamp-3">
+                              {post.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                            </p>
                           )}
                         </div>
                         
-                        {post.tags && post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {post.tags.slice(0, 3).map((tag, index) => (
-                              <span
-                                key={index}
-                                className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full"
-                              >
-                                {tag}
-                              </span>
-                            ))}
+                        <div className="mt-4 pt-4 border-t border-border">
+                          <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4" />
+                              <span>{formatDate(post.publishedAt)}</span>
+                            </div>
+                            {post.author && (
+                              <div className="flex items-center gap-2">
+                                <span>{post.author}</span>
+                              </div>
+                            )}
                           </div>
-                        )}
-                        
-                        <Link to={`/blog/${post.id}`}>
-                          <Button variant="outline" className="w-full">
-                            Читать далее
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                          
+                          {post.tags && post.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {post.tags.slice(0, 3).map((tag, index) => (
+                                <span
+                                  key={index}
+                                  className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          
+                          <Link to={`/blog/${post.id}`}>
+                            <Button variant="outline" className="w-full">
+                              Читать далее
+                              <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
+                          </Link>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
           )}

@@ -6,7 +6,7 @@ import { ChatWidget } from "@/components/chat-widget"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { fetchBlogPostById, type BlogPost } from "@/services/blog"
-import { Calendar, ArrowLeft, Loader2, Home } from "lucide-react"
+import { Calendar, ArrowLeft, Loader2 } from "lucide-react"
 
 export default function BlogPostPage() {
   const { id } = useParams<{ id: string }>()
