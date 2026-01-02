@@ -150,7 +150,7 @@ export function Pricing({ onContactClick }: PricingProps) {
           </div>
           
           {/* Dots indicator */}
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="flex justify-center gap-3 mt-6">
             {plans.map((plan, idx) => (
               <button
                 key={plan.id}
@@ -169,8 +169,8 @@ export function Pricing({ onContactClick }: PricingProps) {
                   plan.highlighted ? 'bg-primary' : 'bg-muted-foreground/30'
                 }`}
                 style={{
-                  width: plan.highlighted ? '0.67rem' : '0.17rem',
-                  height: '0.17rem'
+                  width: plan.highlighted ? '1.25rem' : '0.5rem',
+                  height: '0.5rem'
                 }}
                 aria-label={`Перейти к тарифу ${plan.name}`}
               />

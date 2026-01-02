@@ -522,7 +522,7 @@ export default function HomePage() {
             </div>
 
             {/* Pagination Dots */}
-            <div className="flex justify-center gap-2 mt-6">
+            <div className="flex justify-center gap-3 mt-6">
               {benefitsData.map((_, index) => (
                 <button
                   key={index}
@@ -544,8 +544,8 @@ export default function HomePage() {
                     activeBenefitIndex === index ? 'bg-primary' : 'bg-muted-foreground/30'
                   }`}
                   style={{
-                    width: activeBenefitIndex === index ? '0.67rem' : '0.21rem',
-                    height: '0.21rem'
+                    width: activeBenefitIndex === index ? '1.25rem' : '0.5rem',
+                    height: '0.5rem'
                   }}
                   aria-label={`Перейти к слайду ${index + 1}`}
                 />

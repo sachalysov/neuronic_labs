@@ -252,7 +252,7 @@ export function BusinessCasesCarousel() {
       </div>
 
       {/* Dots Navigation */}
-      <div className="flex justify-center gap-1.5 sm:gap-2">
+      <div className="flex justify-center gap-3 mt-6">
         {businessCases.map((_, index) => (
           <button
             key={index}
@@ -274,8 +274,8 @@ export function BusinessCasesCarousel() {
               activeCaseIndex === index ? 'bg-primary' : 'bg-muted-foreground/30'
             }`}
             style={{
-              width: activeCaseIndex === index ? '0.5rem' : '0.17rem',
-              height: '0.17rem'
+              width: activeCaseIndex === index ? '1.25rem' : '0.5rem',
+              height: '0.5rem'
             }}
             aria-label={`Перейти к кейсу ${index + 1}`}
           />
