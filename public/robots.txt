@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Яндекс
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Mail.ru
+User-agent: Mail.Ru
+Allow: /
+
+# Sitemap
+Sitemap: https://neuroniclabs.ru/sitemap.xml
+
+# Disallow admin and private areas (если будут)
+# Disallow: /admin/
+# Disallow: /private/
+
