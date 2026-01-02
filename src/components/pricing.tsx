@@ -145,10 +145,10 @@ export function Pricing({ onContactClick }: PricingProps) {
             {plans.map((plan) => (
               <Card
                 key={plan.id}
-                className="relative flex-shrink-0 w-[90vw] sm:w-[85vw] max-w-[380px] snap-center bg-card/50"
+                className="relative flex-shrink-0 w-[90vw] sm:w-[85vw] max-w-[380px] snap-center bg-card/50 flex flex-col"
               >
                 
-                <CardContent className="p-4 sm:p-8 space-y-4 sm:space-y-6">
+                <CardContent className="p-4 sm:p-8 flex flex-col flex-1 space-y-4 sm:space-y-6">
                   <div className="text-center space-y-1 sm:space-y-2">
                     <h3 className="text-xl sm:text-2xl font-bold">{plan.name}</h3>
                     <p className="text-xs sm:text-sm text-muted-foreground">{plan.description}</p>
@@ -158,7 +158,7 @@ export function Pricing({ onContactClick }: PricingProps) {
                     </div>
                   </div>
 
-                  <ul className="space-y-2 sm:space-y-3">
+                  <ul className="space-y-2 sm:space-y-3 flex-1">
                     {plan.features.map((feature, idx) => (
                       <li key={idx} className="flex items-start gap-2 sm:gap-3">
                         <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -168,7 +168,7 @@ export function Pricing({ onContactClick }: PricingProps) {
                   </ul>
 
                   <Button
-                    className={`w-full text-sm sm:text-base ${plan.highlighted ? "shadow-lg" : ""}`}
+                    className={`w-full text-sm sm:text-base mt-auto ${plan.highlighted ? "shadow-lg" : ""}`}
                     variant={plan.highlighted ? "default" : "outline"}
                     size="lg"
                     onClick={onContactClick}
@@ -213,7 +213,7 @@ export function Pricing({ onContactClick }: PricingProps) {
           {plans.map((plan) => (
             <Card
               key={plan.id}
-              className={`relative ${
+              className={`relative flex flex-col ${
                 plan.highlighted
                   ? "border-primary border-2 shadow-2xl scale-105 bg-primary/5"
                   : "bg-card/50 hover:border-primary/50 transition-all"
@@ -226,7 +226,7 @@ export function Pricing({ onContactClick }: PricingProps) {
                 </div>
               )}
               
-              <CardContent className="p-8 space-y-6">
+              <CardContent className="p-8 flex flex-col flex-1 space-y-6">
                 <div className="text-center space-y-2">
                   <h3 className="text-2xl font-bold">{plan.name}</h3>
                   <p className="text-sm text-muted-foreground">{plan.description}</p>
@@ -236,7 +236,7 @@ export function Pricing({ onContactClick }: PricingProps) {
                   </div>
                 </div>
 
-                <ul className="space-y-3">
+                <ul className="space-y-3 flex-1">
                   {plan.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -246,7 +246,7 @@ export function Pricing({ onContactClick }: PricingProps) {
                 </ul>
 
                 <Button
-                  className={`w-full ${plan.highlighted ? "shadow-lg" : ""}`}
+                  className={`w-full mt-auto ${plan.highlighted ? "shadow-lg" : ""}`}
                   variant={plan.highlighted ? "default" : "outline"}
                   size="lg"
                   onClick={onContactClick}
