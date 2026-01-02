@@ -310,7 +310,7 @@ export default function HomePage() {
               </h2>
 
               <p className="text-base sm:text-xl md:text-2xl text-muted-foreground leading-relaxed">
-                Нейро-продавец для Telegram, WhatsApp, Avito — лиды 24/7 пока ты спишь
+                Создаём ИИ-агента и чат-бота для Telegram, WhatsApp, Avito. Интеллектуальная автоматизация бизнеса — лиды 24/7 пока ты спишь
               </p>
 
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
@@ -447,14 +447,13 @@ export default function HomePage() {
       {/* Benefits Section */}
       <section id="product" className="py-12 sm:py-20 px-3 sm:px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-3 sm:mb-4">
+            <div className="text-center mb-3 sm:mb-4">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-balance section-title">
-              Внедряем решение под ключ за 14 дней
+              Создаём ИИ-агента и автоматизируем бизнес-процессы за 14 дней
             </h2>
           </div>
           <p className="text-base sm:text-xl text-center text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto">
-            Грамотно внедренный ИИ-продавец + мультиканален + Яндекс. Директ может увеличить конверсию в заявку в 2-3
-            раза
+            Интеллектуальная автоматизация с ИИ: создаём ИИ-агента, чат-бота, автоматизируем рутинные задачи, счета и отчёты. Интеграция ИИ в работу увеличивает конверсию в 2-3 раза
           </p>
 
           <div className="text-center mb-10 sm:mb-16">
@@ -616,16 +615,16 @@ export default function HomePage() {
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold text-primary-foreground">
                 2
               </div>
-              <h3 className="text-lg sm:text-xl font-bold">Разработка решения</h3>
-              <p className="text-sm sm:text-base text-muted-foreground">Создаем и обучаем ИИ-сотрудника под специфику вашего бизнеса</p>
+              <h3 className="text-lg sm:text-xl font-bold">Создание ИИ-агента</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Создаём ИИ-помощника, чат-бота и обучаем под специфику вашего бизнеса. Интеллектуальная автоматизация процессов</p>
             </div>
 
             <div className="text-center space-y-3 sm:space-y-4">
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold text-primary-foreground">
                 3
               </div>
-              <h3 className="text-lg sm:text-xl font-bold">Внедрение и поддержка</h3>
-              <p className="text-sm sm:text-base text-muted-foreground">Интегрируем систему и обеспечиваем постоянную техподдержку</p>
+              <h3 className="text-lg sm:text-xl font-bold">Интеграция ИИ в работу</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Интегрируем ИИ-агента с вашими системами, автоматизируем счета и отчёты. Обеспечиваем постоянную техподдержку</p>
             </div>
           </div>
         </div>
@@ -641,7 +640,7 @@ export default function HomePage() {
             <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">О нас</h2>
               <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-                Мы команда экспертов в области искусственного интеллекта и автоматизации бизнес-процессов
+                Мы команда экспертов по созданию ИИ-агентов, чат-ботов и интеллектуальной автоматизации бизнес-процессов. Интеграция ИИ в работу, автоматизация рутинных задач, счетов и отчётов
               </p>
             </div>
 
@@ -697,38 +696,32 @@ export default function HomePage() {
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-bold">О нашем продукте</h3>
                   <div className="space-y-3 sm:space-y-4 text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">
                     <p>
-                      Наш ИИ-ассистент — это не просто чат-бот. Это полноценный виртуальный сотрудник, который понимает
-                      контекст вашего бизнеса, знает ваши продукты и услуги, и способен вести диалог с клиентами на уровне
-                      опытного менеджера.
+                      Наш ИИ-агент и чат-бот — это не просто автоматизация. Это интеллектуальная автоматизация бизнеса с помощью нейросети. Создаём ИИ-помощника, который понимает контекст вашего бизнеса, знает ваши продукты и услуги, и способен вести диалог с клиентами на уровне опытного менеджера.
                     </p>
                     <p>
-                      Технология построена на базе передовых языковых моделей, адаптированных под специфику вашей отрасли.
-                      Мы обучаем систему на ваших данных: прайс-листах, описаниях услуг, типовых вопросах клиентов и
-                      скриптах продаж.
+                      Технология построена на базе передовых языковых моделей, адаптированных под специфику вашей отрасли. Мы создаём ИИ-агента, обучая систему на ваших данных: прайс-листах, описаниях услуг, типовых вопросах клиентов и скриптах продаж. Интеграция ИИ в работу позволяет автоматизировать не только продажи, но и рутинные задачи, генерацию контента, создание счетов и отчётов.
                     </p>
                     <p>
-                      Результат — ИИ-сотрудник, который работает 24/7, никогда не устает, не уходит в отпуск и обрабатывает
-                      неограниченное количество обращений одновременно. При этом каждый клиент получает персонализированный
-                      подход и мгновенные ответы на свои вопросы.
+                      Результат — ИИ-агент для бизнеса, который работает 24/7, никогда не устает, не уходит в отпуск и обрабатывает неограниченное количество обращений одновременно. Автоматизация с ИИ охватывает все бизнес-процессы: от обработки лидов до автоматизации счетов и отчётов. При этом каждый клиент получает персонализированный подход и мгновенные ответы на свои вопросы.
                     </p>
                     <div className="pt-3 sm:pt-4 border-t border-border">
                       <h4 className="text-base sm:text-lg md:text-xl font-bold mb-2 sm:mb-3">Ключевые возможности:</h4>
                       <ul className="space-y-1.5 sm:space-y-2">
                         <li className="flex items-start gap-2">
                           <span className="text-primary mt-1">✓</span>
-                          <span>Интеграция со всеми популярными мессенджерами и CRM-системами</span>
+                          <span>Создание ИИ-агента и чат-бота с интеграцией во все популярные мессенджеры и CRM-системы</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-primary mt-1">✓</span>
-                          <span>Автоматическая квалификация лидов и передача горячих заявок менеджерам</span>
+                          <span>Интеллектуальная автоматизация: квалификация лидов, автоматизация рутинных задач, передача горячих заявок менеджерам</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-primary mt-1">✓</span>
-                          <span>Аналитика и отчеты по всем взаимодействиям с клиентами</span>
+                          <span>Автоматизация отчётов, счетов и генерация контента с помощью ИИ</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-primary mt-1">✓</span>
-                          <span>Постоянное обучение и улучшение на основе реальных диалогов</span>
+                          <span>Интеграция ИИ в работу: нейросеть для бизнеса постоянно обучается и улучшается на основе реальных диалогов</span>
                         </li>
                       </ul>
                     </div>
