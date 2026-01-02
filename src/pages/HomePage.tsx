@@ -296,7 +296,18 @@ export default function HomePage() {
                   size="lg" 
                   variant="outline" 
                   className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 border-2 hover:scale-105 transition-transform w-full sm:w-auto" 
-                  onClick={() => setIsDemoChatOpen(true)}
+                  onClick={() => {
+                    // На мобильных устройствах (меньше md breakpoint = 768px) открываем демо чат
+                    // На более широких экранах скроллим к секции
+                    if (window.innerWidth < 768) {
+                      setIsDemoChatOpen(true)
+                    } else {
+                      const demoSection = document.getElementById('demo-chat')
+                      if (demoSection) {
+                        demoSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                      }
+                    }
+                  }}
                 >
                   <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Попробовать демо
