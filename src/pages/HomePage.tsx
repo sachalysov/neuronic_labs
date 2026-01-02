@@ -68,12 +68,28 @@ export default function HomePage() {
   ]
 
   useEffect(() => {
-    // Очищаем hash из URL
+    // Обрабатываем hash из URL (если есть)
     if (window.location.hash) {
-      window.history.replaceState(null, '', window.location.pathname)
+      const hash = window.location.hash.substring(1) // убираем #
+      const element = document.getElementById(hash)
+      if (element) {
+        // Небольшая задержка для завершения рендера
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "start" })
+          // Убираем hash из URL после скролла
+          setTimeout(() => {
+            window.history.replaceState(null, '', window.location.pathname)
+          }, 1000)
+        }, 100)
+      } else {
+        // Если элемент не найден, просто убираем hash
+        window.history.replaceState(null, '', window.location.pathname)
+        window.scrollTo(0, 0)
+      }
+    } else {
+      // Если hash нет, скроллим в начало страницы
+      window.scrollTo(0, 0)
     }
-    // Скроллим в начало страницы
-    window.scrollTo(0, 0)
   }, [])
 
   // Блокировка скролла при открытии демо-чата на мобильных устройствах

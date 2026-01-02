@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Link, useLocation } from "react-router-dom"
 import { ThemeToggle } from "./theme-toggle"
 
 interface StickyHeaderProps {
@@ -8,6 +9,7 @@ interface StickyHeaderProps {
 }
 
 export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
+  const location = useLocation()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -31,14 +33,25 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
     }
   }
 
+  const navigateToSection = (id: string) => {
+    if (location.pathname === '/') {
+      // Если мы на главной, скроллим к секции
+      scrollToSection(id)
+    } else {
+      // Если мы не на главной, переходим на главную с hash
+      window.location.href = `/#${id}`
+    }
+    setIsMobileMenuOpen(false)
+  }
+
   const handleChatBotClick = () => {
     // На мобильных устройствах (меньше md breakpoint = 768px) открываем демо чат
-    // На более широких экранах скроллим к секции
-    if (window.innerWidth < 768 && onOpenDemoChat) {
+    // На более широких экранах переходим к секции
+    if (window.innerWidth < 768 && onOpenDemoChat && location.pathname === '/') {
       onOpenDemoChat()
-      setIsMobileMenuOpen(false) // Закрываем меню после клика
+      setIsMobileMenuOpen(false)
     } else {
-      scrollToSection("demo-chat")
+      navigateToSection("demo-chat")
     }
   }
 
@@ -104,7 +117,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-1 sm:gap-3 hover:opacity-80 transition-opacity">
+          <Link to="/" className="flex items-center gap-1 sm:gap-3 hover:opacity-80 transition-opacity">
             <div className="flex items-center gap-2 sm:gap-4">
               <div className="flex flex-col items-start">
                 <div className="flex items-baseline gap-0.5 sm:gap-1">
@@ -113,7 +126,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                 </div>
               </div>
             </div>
-          </a>
+          </Link>
 
           {/* Search Bar */}
           <div className="flex flex-1 max-w-xs sm:max-w-md mx-1 sm:mx-2 md:mx-8 relative">
@@ -187,41 +200,41 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
           <div className="flex items-center gap-6">
             <nav className="hidden lg:flex items-center gap-8">
               <button
-                onClick={() => scrollToSection("demo-chat")}
+                onClick={() => navigateToSection("demo-chat")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 Чат-бот
               </button>
               <button
-                onClick={() => scrollToSection("product")}
+                onClick={() => navigateToSection("product")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 О продукте
               </button>
-              {/* <button
-                onClick={() => scrollToSection("process")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Этапы работ
-              </button> */}
               <button
-                onClick={() => scrollToSection("about")}
+                onClick={() => navigateToSection("about")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 О нас
               </button>
               <button
-                onClick={() => scrollToSection("cases")}
+                onClick={() => navigateToSection("cases")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 Кейсы бизнеса
               </button>
               <button
-                onClick={() => scrollToSection("services")}
+                onClick={() => navigateToSection("services")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 Услуги
               </button>
+              <Link
+                to="/blog"
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Блог
+              </Link>
             </nav>
 
             <ThemeToggle />
@@ -294,35 +307,42 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                 Чат-бот
               </button>
               <button
-                onClick={() => scrollToSection("product")}
+                onClick={() => navigateToSection("product")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 О продукте
               </button>
               <button
-                onClick={() => scrollToSection("process")}
+                onClick={() => navigateToSection("process")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 Этапы работ
               </button>
               <button
-                onClick={() => scrollToSection("about")}
+                onClick={() => navigateToSection("about")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 О нас
               </button>
               <button
-                onClick={() => scrollToSection("cases")}
+                onClick={() => navigateToSection("cases")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 Кейсы бизнеса
               </button>
               <button
-                onClick={() => scrollToSection("services")}
+                onClick={() => navigateToSection("services")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 Услуги
               </button>
+              <Link
+                to="/blog"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Блог
+              </Link>
               <a 
                 href="tel:+79930799177" 
                 className="flex items-center gap-2 text-foreground/90 hover:text-primary transition-colors font-medium px-2 py-2"
