@@ -830,7 +830,7 @@ export default function HomePage() {
                     <div className="space-y-2">
                       <Input
                         type="text"
-                        placeholder="Полное имя"
+                        placeholder="Имя"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required

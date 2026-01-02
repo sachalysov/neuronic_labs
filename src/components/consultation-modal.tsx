@@ -120,7 +120,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
             <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4" onClick={(e) => e.stopPropagation()}>
               <div className="space-y-1.5 sm:space-y-2">
                 <label htmlFor="name" className="text-xs sm:text-sm font-medium text-foreground">
-                  Полное имя <span className="text-primary">*</span>
+                  Имя <span className="text-primary">*</span>
                 </label>
                 <Input
                   id="name"
@@ -168,7 +168,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
 
               <div className="space-y-1.5 sm:space-y-2">
                 <label htmlFor="telegram" className="text-xs sm:text-sm font-medium text-foreground">
-                  Ник в Telegram <span className="text-muted-foreground text-xs">(опционально)</span>
+                  Ник в Telegram <span className="text-muted-foreground text-xs"></span>
                 </label>
                 <Input
                   id="telegram"
@@ -183,7 +183,7 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
 
               <div className="space-y-1.5 sm:space-y-2">
                 <label htmlFor="comment" className="text-xs sm:text-sm font-medium text-foreground">
-                  Комментарий к письму <span className="text-muted-foreground text-xs">(опционально)</span>
+                  Комментарий к письму <span className="text-muted-foreground text-xs"></span>
                 </label>
                 <Textarea
                   id="comment"
