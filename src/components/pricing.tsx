@@ -68,7 +68,7 @@ export function Pricing({ onContactClick }: PricingProps) {
       id: "basic",
       name: "Basic",
       price: "15 000",
-      period: "/мес",
+      period: "",
       description: "Для малого бизнеса и старта",
       features: [
         "До 50 лидов/мес",
@@ -85,7 +85,7 @@ export function Pricing({ onContactClick }: PricingProps) {
       id: "business",
       name: "Business",
       price: "30 000",
-      period: "/мес",
+      period: "",
       description: "Оптимальный выбор для роста",
       features: [
         "До 200 лидов/мес",
@@ -104,7 +104,7 @@ export function Pricing({ onContactClick }: PricingProps) {
       id: "pro",
       name: "Enterprise",
       price: "50 000",
-      period: "/мес",
+      period: "",
       description: "Для крупного бизнеса",
       features: [
         "Безлимитные лиды",
