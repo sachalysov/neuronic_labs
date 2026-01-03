@@ -65,24 +65,16 @@ export default function BlogPostPage() {
       <SpaceDust />
       <StickyHeader />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[30vh] flex items-center pt-20 bg-gradient-to-b from-secondary/20 to-background">
-        <div className="container mx-auto px-4 py-12 relative z-10">
+      {/* Post Content Section */}
+      <section className="pt-32 pb-12 sm:pb-20 px-3 sm:px-4">
+        <div className="container mx-auto">
           <div className="max-w-4xl mx-auto">
             <Link to="/blog">
-              <Button variant="ghost" className="mb-6">
+              <Button variant="ghost" className="mb-4">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Назад к блогу
               </Button>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Post Content Section */}
-      <section className="py-12 sm:py-20 px-3 sm:px-4">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto">
             {loading && (
               <div className="flex justify-center items-center py-20">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -108,65 +100,61 @@ export default function BlogPostPage() {
             )}
 
             {!loading && !error && post && (
-              <article>
-                <Card className="bg-card/10 border-border">
-                  <CardContent className="p-6 sm:p-8 md:p-12">
-                    <div className="mb-6">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                        <Calendar className="h-4 w-4" />
-                        <span>{formatDate(post.publishedAt)}</span>
-                        {post.author && (
-                          <>
-                            <span>•</span>
-                            <span>{post.author}</span>
-                          </>
-                        )}
-                      </div>
-                      
-                      {post.tags && post.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {post.tags.map((tag, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
-
-                    {post.imageUrl && (
-                      <div className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
-                        <img
-                          src={post.imageUrl}
-                          alt={post.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
+              <article className="pb-6 sm:pb-8 md:pb-12">
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                    <Calendar className="h-4 w-4" />
+                    <span>{formatDate(post.publishedAt)}</span>
+                    {post.author && (
+                      <>
+                        <span>•</span>
+                        <span>{post.author}</span>
+                      </>
                     )}
-
-                    <div className="mt-8">
-                      {post.content ? (
-                        renderContent(post.content)
-                      ) : (
-                        <p className="text-muted-foreground text-lg leading-relaxed">{post.excerpt}</p>
-                      )}
+                  </div>
+                  
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {post.tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
                     </div>
+                  )}
+                </div>
 
-                    <div className="mt-12 pt-8 border-t border-border">
-                      <Link to="/blog">
-                        <Button variant="outline">
-                          <ArrowLeft className="mr-2 h-4 w-4" />
-                          Вернуться к блогу
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
+
+                {post.imageUrl && (
+                  <div className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
+                    <img
+                      src={post.imageUrl}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div className="mt-8">
+                  {post.content ? (
+                    renderContent(post.content)
+                  ) : (
+                    <p className="text-muted-foreground text-lg leading-relaxed">{post.excerpt}</p>
+                  )}
+                </div>
+
+                <div className="mt-12 pt-8 border-t border-border">
+                  <Link to="/blog">
+                    <Button variant="outline">
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      Вернуться к блогу
+                    </Button>
+                  </Link>
+                </div>
               </article>
             )}
           </div>

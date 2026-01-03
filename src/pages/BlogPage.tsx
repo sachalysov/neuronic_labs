@@ -54,15 +54,21 @@ export default function BlogPage() {
     return grouped
   }, [posts])
 
-  // Получаем список всех уникальных тегов
+  // Получаем список всех уникальных тегов (только разрешенные темы)
+  const allowedTags = ['Автоматизация', 'Чат боты', 'Технологии', 'Бизнес', 'ИИ']
   const allTags = useMemo(() => {
     const tags = new Set<string>()
     posts.forEach(post => {
       if (post.tags && post.tags.length > 0) {
-        post.tags.forEach(tag => tags.add(tag))
+        post.tags.forEach(tag => {
+          if (allowedTags.includes(tag)) {
+            tags.add(tag)
+          }
+        })
       }
     })
-    return Array.from(tags).sort()
+    // Сортируем в порядке allowedTags
+    return allowedTags.filter(tag => tags.has(tag))
   }, [posts])
 
   const formatDate = (dateString: string) => {
@@ -196,67 +202,68 @@ export default function BlogPage() {
               <div>
                 <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                   {posts.map((post) => (
-                    <Card
+                    <Link
                       key={post.id}
-                      className="bg-card/10 border-border hover:border-primary transition-all duration-300 hover:scale-105 flex flex-col"
+                      to={`/blog/${post.id}`}
+                      className="block"
                     >
-                      {post.imageUrl && (
-                        <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
-                          <img
-                            src={post.imageUrl}
-                            alt={post.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <CardContent className="p-6 flex-1 flex flex-col">
-                        <div className="flex-1">
-                          <h2 className="text-xl font-bold mb-3 line-clamp-2">{post.title}</h2>
-                          {post.excerpt && (
-                            <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
-                          )}
-                          {!post.excerpt && post.content && (
-                            <p className="text-muted-foreground mb-4 line-clamp-3">
-                              {post.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
-                            </p>
-                          )}
-                        </div>
-                        
-                        <div className="mt-4 pt-4 border-t border-border">
-                          <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4" />
-                              <span>{formatDate(post.publishedAt)}</span>
-                            </div>
-                            {post.author && (
-                              <div className="flex items-center gap-2">
-                                <span>{post.author}</span>
-                              </div>
+                      <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 hover:scale-105 flex flex-col cursor-pointer h-full">
+                        {post.imageUrl && (
+                          <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
+                            <img
+                              src={post.imageUrl}
+                              alt={post.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <CardContent className="p-6 flex-1 flex flex-col">
+                          <div className="flex-1">
+                            <h2 className="text-xl font-bold mb-3 line-clamp-2">{post.title}</h2>
+                            {post.excerpt && (
+                              <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+                            )}
+                            {!post.excerpt && post.content && (
+                              <p className="text-muted-foreground mb-4 line-clamp-3">
+                                {post.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
+                              </p>
                             )}
                           </div>
                           
-                          {post.tags && post.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-3">
-                              {post.tags.slice(0, 3).map((tag, index) => (
-                                <span
-                                  key={index}
-                                  className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full"
-                                >
-                                  {tag}
-                                </span>
-                              ))}
+                          <div className="mt-4 pt-4 border-t border-border">
+                            <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
+                              <div className="flex items-center gap-2">
+                                <Calendar className="h-4 w-4" />
+                                <span>{formatDate(post.publishedAt)}</span>
+                              </div>
+                              {post.author && (
+                                <div className="flex items-center gap-2">
+                                  <span>{post.author}</span>
+                                </div>
+                              )}
                             </div>
-                          )}
-                          
-                          <Link to={`/blog/${post.id}`}>
-                            <Button variant="outline" className="w-full">
+                            
+                            {post.tags && post.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-3">
+                                {post.tags.slice(0, 3).map((tag, index) => (
+                                  <span
+                                    key={index}
+                                    className="px-2 py-1 bg-primary/10 text-primary text-xs rounded-full"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            
+                            <Button variant="outline" className="w-full pointer-events-none">
                               Читать далее
                               <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
-                          </Link>
-                        </div>
-                      </CardContent>
-                    </Card>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
                   ))}
                 </div>
               </div>
