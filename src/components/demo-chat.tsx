@@ -1,10 +1,10 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Send, Loader2, X } from "lucide-react"
+import { Send, Loader2, X, RotateCcw } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 
@@ -39,18 +39,78 @@ const setLocalStorage = (key: string, value: string): void => {
   }
 }
 
+const removeLocalStorage = (key: string): void => {
+  if (typeof window === 'undefined' || !window.localStorage) return
+  try {
+    localStorage.removeItem(key)
+  } catch (e) {
+    // Игнорируем ошибки
+  }
+}
+
+const INACTIVITY_TIMEOUT = 60 * 60 * 1000 // 60 минут в миллисекундах
+
+const getInitialMessages = (): Message[] => [
+  {
+    id: "1",
+    text: "Добавь в чат ссылку на свой сайт и протестируй то как будет работать ИИ-продавец на твоей нише",
+    sender: "bot",
+    timestamp: new Date(),
+  },
+  {
+    id: "2",
+    text: "Так же можешь описать свою нишу, ответь всего на пару вопросов:\n 1. Какая твоя ниша?\n2. Топ 3 твоих продукта?\n3. Опиши кратко преимущества твоего продукта",
+    sender: "bot",
+    timestamp: new Date(),
+  },
+]
+
 export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   // Генерируем уникальный sessionId при монтировании компонента
-  const [sessionId] = useState(() => {
+  const [sessionId, setSessionId] = useState(() => {
     const stored = getLocalStorage('demo-chat-session-id')
-    if (stored) return stored
+    const lastActivity = getLocalStorage('demo-chat-last-activity')
+    
+    // Проверяем неактивность при загрузке
+    if (lastActivity) {
+      const lastActivityTime = parseInt(lastActivity, 10)
+      const now = Date.now()
+      if (now - lastActivityTime > INACTIVITY_TIMEOUT) {
+        // Сессия истекла, очищаем и создаем новую
+        removeLocalStorage('demo-chat-session-id')
+        removeLocalStorage('demo-chat-messages')
+        removeLocalStorage('demo-chat-last-activity')
+        const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+        setLocalStorage('demo-chat-session-id', newId)
+        setLocalStorage('demo-chat-last-activity', Date.now().toString())
+        return newId
+      }
+    }
+    
+    if (stored) {
+      // Обновляем время последней активности при загрузке
+      setLocalStorage('demo-chat-last-activity', Date.now().toString())
+      return stored
+    }
     const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
     setLocalStorage('demo-chat-session-id', newId)
+    setLocalStorage('demo-chat-last-activity', Date.now().toString())
     return newId
   })
   
   // Загружаем сообщения из localStorage или используем начальные
   const [messages, setMessages] = useState<Message[]>(() => {
+    const lastActivity = getLocalStorage('demo-chat-last-activity')
+    
+    // Если сессия истекла, возвращаем начальные сообщения
+    if (lastActivity) {
+      const lastActivityTime = parseInt(lastActivity, 10)
+      const now = Date.now()
+      if (now - lastActivityTime > INACTIVITY_TIMEOUT) {
+        return getInitialMessages()
+      }
+    }
+    
     const stored = getLocalStorage('demo-chat-messages')
     if (stored) {
       try {
@@ -63,20 +123,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         console.error('Error parsing stored messages:', e)
       }
     }
-    return [
-      {
-        id: "1",
-        text: "Добавь в чат ссылку на свой сайт и протестируй то как будет работать ИИ-продавец на твоей нише",
-        sender: "bot",
-        timestamp: new Date(),
-      },
-      {
-        id: "2",
-        text: "Так же можешь описать свою нишу, ответь всего на пару вопросов:\n 1. Какая твоя ниша?\n2. Топ 3 твоих продукта?\n3. Опиши кратко преимущества твоего продукта",
-        sender: "bot",
-        timestamp: new Date(),
-      },
-    ]
+    return getInitialMessages()
   })
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -84,6 +131,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const inputContainerRef = useRef<HTMLDivElement>(null)
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const handleResetChatRef = useRef<() => void>()
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -95,10 +144,74 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     scrollToBottom()
   }, [messages])
 
+  // Функция для сброса чата
+  const handleResetChat = useCallback(() => {
+    // Генерируем новый sessionId
+    const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+    setSessionId(newId)
+    
+    // Очищаем localStorage
+    removeLocalStorage('demo-chat-session-id')
+    removeLocalStorage('demo-chat-messages')
+    removeLocalStorage('demo-chat-last-activity')
+    
+    // Сохраняем новый sessionId и время активности
+    setLocalStorage('demo-chat-session-id', newId)
+    setLocalStorage('demo-chat-last-activity', Date.now().toString())
+    
+    // Сбрасываем сообщения на начальные
+    setMessages(getInitialMessages())
+    
+    // Сбрасываем таймер неактивности
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current)
+    }
+    inactivityTimerRef.current = setTimeout(() => {
+      if (handleResetChatRef.current) {
+        handleResetChatRef.current()
+      }
+    }, INACTIVITY_TIMEOUT)
+  }, [])
+
+  // Сохраняем ссылку на функцию в ref
+  useEffect(() => {
+    handleResetChatRef.current = handleResetChat
+  }, [handleResetChat])
+
+  // Функция для обновления времени последней активности
+  const updateLastActivity = useCallback(() => {
+    setLocalStorage('demo-chat-last-activity', Date.now().toString())
+    
+    // Сбрасываем таймер неактивности
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current)
+    }
+    
+    // Устанавливаем новый таймер на 60 минут
+    inactivityTimerRef.current = setTimeout(() => {
+      if (handleResetChatRef.current) {
+        handleResetChatRef.current()
+      }
+    }, INACTIVITY_TIMEOUT)
+  }, [])
+
   // Сохраняем сообщения в localStorage при каждом изменении
   useEffect(() => {
     setLocalStorage('demo-chat-messages', JSON.stringify(messages))
-  }, [messages])
+    // Обновляем время активности при изменении сообщений
+    updateLastActivity()
+  }, [messages, updateLastActivity])
+
+  // Инициализация таймера неактивности при монтировании
+  useEffect(() => {
+    updateLastActivity()
+    
+    return () => {
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current)
+      }
+    }
+  }, [updateLastActivity])
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
@@ -113,6 +226,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setMessages((prev) => [...prev, userMessage])
     setInput("")
     setIsLoading(true)
+    updateLastActivity() // Обновляем активность при отправке сообщения
 
     try {
       const response = await sendChatMessage(input, 'demo', sessionId)
@@ -125,6 +239,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       }
 
       setMessages((prev) => [...prev, botMessage])
+      updateLastActivity() // Обновляем активность при получении ответа
     } catch (error) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -217,16 +332,27 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
             </div>
           </div>
-          {isMobile && onClose && (
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="hover:bg-gray-100 flex-shrink-0"
+              size={isMobile ? "icon" : "sm"}
+              onClick={handleResetChat}
+              className="hover:bg-gray-100 flex-shrink-0 text-gray-700"
             >
-              <X className="h-5 w-5 text-gray-900" />
+              <RotateCcw className="h-4 w-4" />
+              {!isMobile && <span className="ml-2">Начать сначала</span>}
             </Button>
-          )}
+            {isMobile && onClose && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="hover:bg-gray-100 flex-shrink-0"
+              >
+                <X className="h-5 w-5 text-gray-900" />
+              </Button>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0' : ''}`}>
