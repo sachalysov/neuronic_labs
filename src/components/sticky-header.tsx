@@ -70,7 +70,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       { id: "process", title: "Этапы работ", selector: "#process" },
       { id: "about", title: "О нас", selector: "#about" },
       { id: "cases", title: "Кейсы бизнеса", selector: "#cases" },
-      { id: "services", title: "Услуги", selector: "#services" },
+      { id: "pricing", title: "Тарифы и цены", selector: "#pricing" },
     ]
 
     const results: Array<{ id: string; title: string; text: string }> = []
@@ -211,7 +211,14 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 О продукте
               </button>
-              <button
+             
+               <button
+                onClick={() => navigateToSection("pricing")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Тарифы и цены
+              </button>
+               <button
                 onClick={() => navigateToSection("about")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
@@ -223,12 +230,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Кейсы бизнеса
               </button>
-              <button
-                onClick={() => navigateToSection("services")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Услуги
-              </button>
+             
               <Link
                 to="/blog"
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
@@ -331,10 +333,10 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                 Кейсы бизнеса
               </button>
               <button
-                onClick={() => navigateToSection("services")}
+                onClick={() => navigateToSection("pricing")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
-                Услуги
+                Тарифы и цены
               </button>
               <Link
                 to="/blog"
