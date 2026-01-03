@@ -395,7 +395,6 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Напишите нам свой вопрос..."
-              disabled={isLoading}
               className="flex-1 bg-white border-gray-200 text-gray-900"
             />
             <Button type="submit" disabled={isLoading || !input.trim()} size="icon" className="shrink-0">
