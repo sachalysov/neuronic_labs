@@ -132,7 +132,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const inputContainerRef = useRef<HTMLDivElement>(null)
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const handleResetChatRef = useRef<() => void>()
+  const handleResetChatRef = useRef<(() => void) | null>(null)
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
