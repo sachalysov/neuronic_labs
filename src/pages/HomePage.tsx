@@ -281,29 +281,22 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-20">
-        {/* Background Image */}
+        {/* Background Image - eager для hero изображения (LCP optimization) */}
         <div className="absolute inset-0 z-0">
           <img 
             src="/images/robot-hero-2.jpeg" 
             alt="Автоматизация бизнеса с ИИ - NEURONIC LABS" 
             className="w-full h-full object-cover object-center"
             loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           <div className="absolute inset-0 hero-image-overlay" />
           <div className="absolute bottom-0 left-0 right-0 hero-bottom-fade" />
         </div>
 
-        {/* Pattern Overlay */}
+        {/* Pattern Overlay - удален дублирующий SpaceDust для оптимизации производительности */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDIpIi8+PC9nPjwvc3ZnPg==')] opacity-20 z-[1]" />
-
-        {/* Space Dust Effect - Hero Section */}
-        <div className="absolute inset-0 z-[5] pointer-events-none">
-          <SpaceDust 
-            className="absolute inset-0 pointer-events-none"
-            style={{ opacity: 0.9 }}
-            particleDensity={5000}
-          />
-        </div>
 
         {/* Content */}
         <div className="container mx-auto px-4 py-20 relative z-10">

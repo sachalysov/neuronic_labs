@@ -167,12 +167,14 @@ export function BusinessCasesCarousel() {
     >
       <CardContent className="p-0">
         <div className="grid lg:grid-cols-2 gap-0">
-          {/* Image Side */}
+          {/* Image Side - lazy loading для изображений вне viewport */}
           <div className="relative h-48 sm:h-64 lg:h-auto">
             <img
               src={caseData.image || "/placeholder.svg"}
               alt={caseData.title}
               className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
             <div className="absolute bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4">

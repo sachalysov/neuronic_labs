@@ -124,25 +124,33 @@ html[data-theme="dark"] {
   
   body {
     @apply bg-background text-foreground;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    /* Оптимизация: сокращаем время transition для лучшей производительности */
+    transition: background-color 0.15s ease, color 0.15s ease;
   }
   
-  /* Плавные переходы для всех элементов при смене темы */
-  *,
-  *::before,
-  *::after {
-    transition-property: background-color, border-color, color, fill, stroke;
-    transition-duration: 0.25s;
+  /* Оптимизация переходов: убираем transitions для всех элементов, оставляем только критичные */
+  /* Это улучшает производительность рендеринга, особенно на слабых устройствах */
+  
+  /* Переходы только для интерактивных элементов */
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, transform, box-shadow;
+    transition-duration: 0.15s;
     transition-timing-function: ease;
   }
   
-  /* Исключения для элементов, которые не должны иметь transition */
-  input,
-  textarea,
-  select,
-  button,
-  a {
-    transition-property: background-color, border-color, color, fill, stroke, opacity, transform, box-shadow;
+  /* Уважаем пользовательские предпочтения по уменьшению анимации (accessibility) */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 

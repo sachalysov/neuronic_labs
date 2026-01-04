@@ -23,13 +23,37 @@ export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDus
   const mouseRef = useRef({ x: 0, y: 0 })
   const animationRef = useRef<number | undefined>(undefined)
   const isDarkRef = useRef(true)
+  const lastMouseUpdateRef = useRef(0)
 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true })
     if (!ctx) return
+
+    // Проверка prefers-reduced-motion для отключения анимации (accessibility)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) {
+      // Если пользователь предпочитает уменьшенную анимацию, просто рисуем статичные частицы
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      const particleCount = Math.floor((canvas.width * canvas.height) / particleDensity)
+      
+      for (let i = 0; i < particleCount; i++) {
+        const x = Math.random() * canvas.width
+        const y = Math.random() * canvas.height
+        const size = Math.random() * 1.5 + 0.5
+        const opacity = Math.random() * 0.3 + 0.1
+        const particleColor = document.documentElement.dataset.theme === 'dark' ? '255, 255, 255' : '20, 20, 20'
+        
+        ctx.fillStyle = `rgba(${particleColor}, ${opacity})`
+        ctx.beginPath()
+        ctx.arc(x, y, size, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      return
+    }
 
     // Определяем текущую тему
     const checkTheme = () => {
@@ -63,14 +87,23 @@ export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDus
       }
     }
 
-    // Обработка движения мыши
+    // Обработка движения мыши с throttling (оптимизация CPU нагрузки)
     const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY }
+      const now = Date.now()
+      // Throttling: обновляем позицию мыши не чаще чем раз в 16ms (~60fps)
+      if (now - lastMouseUpdateRef.current >= 16) {
+        mouseRef.current = { x: e.clientX, y: e.clientY }
+        lastMouseUpdateRef.current = now
+      }
     }
 
-    // Анимация
+    // Анимация с оптимизацией отрисовки
     const animate = () => {
+      // Используем clearRect для оптимальной производительности
       ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+      // Кэшируем цвет частиц для оптимизации
+      const particleColor = isDarkRef.current ? '255, 255, 255' : '20, 20, 20'
 
       particlesRef.current.forEach((particle) => {
         // Расстояние до курсора
@@ -110,27 +143,11 @@ export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDus
         if (particle.x > canvas.width) particle.x = canvas.width
         if (particle.y < 0) particle.y = 0
         if (particle.y > canvas.height) particle.y = canvas.height
-
-        // Определяем цвет частиц в зависимости от темы
-        const particleColor = isDarkRef.current ? '255, 255, 255' : '20, 20, 20'
         
-        // Рисуем частицу
+        // Рисуем частицу (упрощенная версия для лучшей производительности)
         ctx.fillStyle = `rgba(${particleColor}, ${particle.opacity})`
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-        ctx.fill()
-
-        // Добавляем легкое свечение вокруг частицы
-        const gradient = ctx.createRadialGradient(
-          particle.x, particle.y, 0,
-          particle.x, particle.y, particle.size * 3
-        )
-        gradient.addColorStop(0, `rgba(${particleColor}, ${particle.opacity * 0.3})`)
-        gradient.addColorStop(1, `rgba(${particleColor}, 0)`)
-        
-        ctx.fillStyle = gradient
-        ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2)
         ctx.fill()
       })
 
@@ -166,7 +183,11 @@ export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDus
     <canvas
       ref={canvasRef}
       className={className || "fixed inset-0 pointer-events-none z-[-1]"}
-      style={style || { opacity: 0.6 }}
+      style={{ 
+        ...(style || { opacity: 0.6 }),
+        // Оптимизация: will-change для GPU-ускорения (осторожно - используем только для анимированных элементов)
+        willChange: 'auto'
+      }}
     />
   )
 }

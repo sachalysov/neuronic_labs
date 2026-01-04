@@ -12,13 +12,40 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false,
+    sourcemap: false, // Отключены sourcemaps для уменьшения размера сборки
+    // Оптимизация: минификация для продакшена (esbuild встроен в Vite, быстрее чем terser)
+    minify: 'esbuild',
+    // Оптимизация размера чанков
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor': ['react', 'react-dom'],
-          'ui': ['@radix-ui/react-accordion', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu']
-        }
+        // Оптимизация code splitting: разделяем vendor и UI библиотеки
+        manualChunks: (id) => {
+          // Vendor chunks (React, React DOM)
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'vendor-react'
+          }
+          // Router chunk
+          if (id.includes('node_modules/react-router')) {
+            return 'vendor-router'
+          }
+          // Radix UI components
+          if (id.includes('node_modules/@radix-ui')) {
+            return 'vendor-ui'
+          }
+          // Lucide icons
+          if (id.includes('node_modules/lucide-react')) {
+            return 'vendor-icons'
+          }
+          // Остальные node_modules
+          if (id.includes('node_modules')) {
+            return 'vendor'
+          }
+        },
+        // Оптимизация имен файлов для кэширования
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
       }
     }
   },

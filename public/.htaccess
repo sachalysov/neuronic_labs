@@ -1,30 +1,54 @@
+# Оптимизация производительности: Cache-Control заголовки для статических ресурсов
+# Этот файл нужен для Apache серверов. Для Nginx используйте соответствующие директивы.
+
+<IfModule mod_headers.c>
+  # Кэширование статических ресурсов на 1 год (оптимизация: уменьшает количество запросов)
+  <FilesMatch "\.(jpg|jpeg|png|gif|webp|avif|svg|ico|woff|woff2|ttf|eot)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Кэширование JS и CSS на 1 год (с хэшем в имени файла)
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # HTML файлы без кэширования (всегда свежая версия)
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # Preload для критических ресурсов (оптимизация загрузки)
+  <FilesMatch "index\.html$">
+    Header add Link "</assets/index-*.css>; rel=preload; as=style"
+    Header add Link "</assets/index-*.js>; rel=preload; as=script"
+  </FilesMatch>
+</IfModule>
+
+# Сжатие GZIP/Brotli для текстовых файлов (оптимизация: уменьшает размер передаваемых данных)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Включение Brotli сжатия (если модуль доступен)
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
+  AddOutputFilterByType BROTLI_COMPRESS image/svg+xml
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Перенаправление на index.html для SPA (React Router)
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  
-  # Если файл или директория существуют, используем их
+  RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  
-  # Иначе перенаправляем на index.html
   RewriteRule . /index.html [L]
 </IfModule>
-
-# Кэширование статических ресурсов
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType image/jpg "access plus 1 year"
-  ExpiresByType image/jpeg "access plus 1 year"
-  ExpiresByType image/gif "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType image/svg+xml "access plus 1 year"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
-  ExpiresByType text/javascript "access plus 1 month"
-</IfModule>
-
-# Gzip сжатие
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
-</IfModule>
-
