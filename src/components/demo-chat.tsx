@@ -50,6 +50,12 @@ const removeLocalStorage = (key: string): void => {
 
 const INACTIVITY_TIMEOUT = 60 * 60 * 1000 // 60 минут в миллисекундах
 
+const formatTime = (date: Date): string => {
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  return `${hours}:${minutes}`
+}
+
 const getInitialMessages = (): Message[] => [
   {
     id: "1",
@@ -365,6 +371,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 }`}
               >
                 <p className="text-sm leading-relaxed whitespace-pre-line">{formatMessageText(message.text)}</p>
+                <p className={`text-xs mt-2 ${message.sender === "user" ? "text-primary-foreground/70" : "text-gray-500"}`}>
+                  {formatTime(message.timestamp)}
+                </p>
               </div>
             </div>
           ))}
