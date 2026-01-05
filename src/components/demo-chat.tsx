@@ -343,7 +343,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               variant="ghost"
               size={isMobile ? "icon" : "sm"}
               onClick={handleResetChat}
-              className="hover:bg-gray-100 flex-shrink-0 text-gray-700"
+              className="hover:bg-gray-100 hover:text-black flex-shrink-0 text-gray-700"
             >
               <RotateCcw className="h-4 w-4" />
               {!isMobile && <span className="ml-2">Начать сначала</span>}
