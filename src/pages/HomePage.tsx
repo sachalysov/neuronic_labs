@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { PhoneInput } from "@/components/ui/phone-input"
 import { ChatWidget } from "@/components/chat-widget"
 import { StickyHeader } from "@/components/sticky-header"
 import { DemoChat } from "@/components/demo-chat"
@@ -16,6 +17,7 @@ import { submitFormData } from "@/services/form"
 import { useEffect, useState, useRef } from "react"
 import { useMeta } from "@/hooks/useMeta"
 import { createHomeMetaTags } from "@/lib/meta"
+import { validatePhone, validateName, validateComment, CIS_COUNTRIES, type Country } from "@/lib/phone-validation"
 import {
   Bot,
   Clock,
@@ -46,6 +48,12 @@ export default function HomePage() {
   const [telegram, setTelegram] = useState("")
   const [comment, setComment] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [selectedCountry, setSelectedCountry] = useState<Country>(CIS_COUNTRIES[0])
+  const [errors, setErrors] = useState<{
+    name?: string
+    phone?: string
+    comment?: string
+  }>({})
   const benefitsScrollRef = useRef<HTMLDivElement>(null)
   const [activeBenefitIndex, setActiveBenefitIndex] = useState(0)
   const benefitsData = [
@@ -216,23 +224,78 @@ export default function HomePage() {
     return () => container.removeEventListener('scroll', handleScroll)
   }, [benefitsData.length])
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setName(value)
     
-    // Если начинается с 8, заменяем на +7
-    if (value.startsWith("8")) {
-      value = "+7" + value.slice(1)
+    // Валидация в реальном времени
+    if (value) {
+      const validation = validateName(value)
+      if (!validation.valid) {
+        setErrors(prev => ({ ...prev, name: validation.error }))
+      } else {
+        setErrors(prev => {
+          const newErrors = { ...prev }
+          delete newErrors.name
+          return newErrors
+        })
+      }
+    } else {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors.name
+        return newErrors
+      })
     }
-    // Если начинается с 9 (без +7), добавляем +7
-    else if (value.match(/^9/)) {
-      value = "+7" + value
-    }
-    // Если вводят просто 7, заменяем на +7
-    else if (value === "7") {
-      value = "+7"
-    }
-    
+  }
+
+  const handlePhoneChange = (value: string) => {
     setPhone(value)
+    
+    // Валидация в реальном времени
+    if (value && value !== selectedCountry.dialCode) {
+      const validation = validatePhone(value, selectedCountry)
+      if (!validation.valid) {
+        setErrors(prev => ({ ...prev, phone: validation.error }))
+      } else {
+        setErrors(prev => {
+          const newErrors = { ...prev }
+          delete newErrors.phone
+          return newErrors
+        })
+      }
+    } else {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors.phone
+        return newErrors
+      })
+    }
+  }
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value
+    setComment(value)
+    
+    // Валидация в реальном времени
+    if (value) {
+      const validation = validateComment(value, 1500)
+      if (!validation.valid) {
+        setErrors(prev => ({ ...prev, comment: validation.error }))
+      } else {
+        setErrors(prev => {
+          const newErrors = { ...prev }
+          delete newErrors.comment
+          return newErrors
+        })
+      }
+    } else {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors.comment
+        return newErrors
+      })
+    }
   }
 
   const handleTelegramChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -248,6 +311,27 @@ export default function HomePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Валидация всех полей
+    const nameValidation = validateName(name)
+    const phoneValidation = validatePhone(phone, selectedCountry)
+    const commentValidation = validateComment(comment, 1500)
+    
+    const newErrors: typeof errors = {}
+    if (!nameValidation.valid) {
+      newErrors.name = nameValidation.error
+    }
+    if (!phoneValidation.valid) {
+      newErrors.phone = phoneValidation.error
+    }
+    if (!commentValidation.valid) {
+      newErrors.comment = commentValidation.error
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
     
     console.log('Начало отправки формы (HomePage):', { name, phone, email, telegram, comment })
     
@@ -271,6 +355,8 @@ export default function HomePage() {
         setEmail("")
         setTelegram("")
         setComment("")
+        setErrors({})
+        setSelectedCountry(CIS_COUNTRIES[0])
       }, 5000)
     } catch (error) {
       console.error("Ошибка при отправке формы (HomePage):", error)
@@ -849,20 +935,24 @@ export default function HomePage() {
                         type="text"
                         placeholder="Имя"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={handleNameChange}
                         required
-                        className="bg-background border-border"
+                        className={`bg-background border-border ${errors.name ? 'border-destructive' : ''}`}
+                        aria-invalid={errors.name ? 'true' : 'false'}
                       />
+                      {errors.name && (
+                        <p className="text-xs text-destructive">{errors.name}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
-                      <Input
-                        type="tel"
-                        placeholder="+7 (___) ___-__-__"
+                      <PhoneInput
                         value={phone}
                         onChange={handlePhoneChange}
+                        onCountryChange={setSelectedCountry}
+                        placeholder=" (___) ___-__-__"
                         required
-                        className="bg-background border-border"
+                        error={errors.phone}
                       />
                     </div>
 
@@ -889,12 +979,22 @@ export default function HomePage() {
 
                     <div className="space-y-2">
                       <Textarea
-                        placeholder="Комментарий к письму"
+                        placeholder="Комментарий к письму (макс. 1500 символов)"
                         value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        className="bg-background border-border"
+                        onChange={handleCommentChange}
+                        className={`bg-background border-border ${errors.comment ? 'border-destructive' : ''}`}
                         rows={3}
+                        maxLength={1500}
+                        aria-invalid={errors.comment ? 'true' : 'false'}
                       />
+                      <div className="flex justify-between items-center">
+                        {errors.comment && (
+                          <p className="text-xs text-destructive">{errors.comment}</p>
+                        )}
+                        <p className={`text-xs ml-auto ${comment.length > 1500 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                          {comment.length}/1500
+                        </p>
+                      </div>
                     </div>
 
                     <Button type="submit" size="lg" className="w-full text-sm sm:text-base md:text-lg py-3 sm:py-3 md:py-3 px-4 h-auto min-h-[50px] sm:min-h-[60px] whitespace-normal leading-tight">
