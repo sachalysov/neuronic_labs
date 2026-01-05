@@ -7,8 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { fetchBlogPostById, type BlogPost } from "@/services/blog"
 import { Calendar, ArrowLeft, Loader2 } from "lucide-react"
-import { useMeta } from "@/lib/useMeta"
-import { createBlogPostMeta } from "@/config/meta"
+import { useMeta } from "@/hooks/useMeta"
+import { createBlogMetaTags } from "@/lib/meta"
 
 export default function BlogPostPage() {
   const { id } = useParams<{ id: string }>()
@@ -16,14 +16,21 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  // Создаем мета-теги для статьи с мемоизацией
-  const postMeta = useMemo(() => {
-    return post ? createBlogPostMeta(post) : {}
-  }, [post])
-
-  // Устанавливаем мета-теги для статьи
-  useMeta(postMeta)
+  
+  // Устанавливаем мета-теги на основе загруженной статьи
+  const metaTags = useMemo(() => {
+    if (post) {
+      return createBlogMetaTags(
+        post.title,
+        post.excerpt || post.content?.replace(/<[^>]*>/g, '').substring(0, 160) || 'Статья блога NEURONIC LABS',
+        post.imageUrl,
+        `/blog/${post.id}`
+      )
+    }
+    return createBlogMetaTags('Загрузка статьи...', undefined, undefined, id ? `/blog/${id}` : '/blog')
+  }, [post, id])
+  
+  useMeta(metaTags)
 
   useEffect(() => {
     if (!id) {

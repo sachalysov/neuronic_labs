@@ -14,8 +14,8 @@ import { Testimonials } from "@/components/testimonials"
 import { CountdownTimer } from "@/components/countdown-timer"
 import { submitFormData } from "@/services/form"
 import { useEffect, useState, useRef } from "react"
-import { useMeta } from "@/lib/useMeta"
-import { homeMeta } from "@/config/meta"
+import { useMeta } from "@/hooks/useMeta"
+import { createHomeMetaTags } from "@/lib/meta"
 import {
   Bot,
   Clock,
@@ -36,7 +36,7 @@ import {
 } from "lucide-react"
 
 export default function HomePage() {
-  useMeta(homeMeta)
+  useMeta(createHomeMetaTags())
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDemoChatOpen, setIsDemoChatOpen] = useState(false)

@@ -7,11 +7,16 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { fetchBlogPosts, type BlogPost } from "@/services/blog"
 import { Calendar, ArrowRight, Loader2, Tag } from "lucide-react"
-import { useMeta } from "@/lib/useMeta"
-import { blogMeta } from "@/config/meta"
+import { useMeta } from "@/hooks/useMeta"
+import { createBlogMetaTags } from "@/lib/meta"
 
 export default function BlogPage() {
-  useMeta(blogMeta)
+  useMeta(createBlogMetaTags(
+    'Блог | Полезные статьи об автоматизации бизнеса и ИИ',
+    'Полезные статьи об автоматизации бизнеса, ИИ-технологиях и эффективных решениях. Узнайте, как внедрить ИИ-агентов и чат-ботов в ваш бизнес.',
+    undefined,
+    '/blog'
+  ))
   
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)

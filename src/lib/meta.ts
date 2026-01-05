@@ -3,92 +3,93 @@ export interface MetaTags {
   description?: string
   keywords?: string
   author?: string
-  canonical?: string
   robots?: string
+  canonical?: string
   
   // Open Graph
-  ogType?: string
-  ogUrl?: string
   ogTitle?: string
   ogDescription?: string
   ogImage?: string
-  ogImageWidth?: string
-  ogImageHeight?: string
-  ogImageAlt?: string
+  ogUrl?: string
+  ogType?: string
   ogSiteName?: string
   ogLocale?: string
   
   // Twitter
   twitterCard?: string
-  twitterUrl?: string
   twitterTitle?: string
   twitterDescription?: string
   twitterImage?: string
   
-  // Дополнительные мета-теги
-  subject?: string
-  classification?: string
-  category?: string
-  language?: string
+  // Дополнительные
+  image?: string
+  url?: string
+}
+
+const DEFAULT_META: MetaTags = {
+  title: 'Автоматизация бизнеса с ИИ | Создать ИИ-агента и чат-бота | Интеллектуальная автоматизация процессов | NEURONIC LABS',
+  description: 'Создаем ИИ-агентов и чат-ботов для автоматизации бизнеса. Интеллектуальная автоматизация процессов, интеграция ИИ в работу, автоматизация рутинных задач, счетов и отчётов. Нейросеть для бизнеса, генерация контента ИИ. Внедрение за 7-14 дней без кодинга.',
+  keywords: 'автоматизация, чат бот, создать ИИ-помощника, интеллектуальная автоматизация, ИИ в работу, ИИ агенты, автоматизация бизнеса, автоматизация бизнес процессов, автоматизация с ИИ, интеграция ИИ, ИИ в бизнес, автоматизация счетов, автоматизация рутинных задач, нейросеть для бизнеса, генерация контента ИИ, автоматизация отчётов, создать ИИ агента, ИИ продавец, нейро-продавец, чат-бот для продаж, автоматизация продаж, Telegram бот, WhatsApp автоматизация, Avito автоматизация, AI для бизнеса, внедрение ИИ, автоматизация в Москве, автоматизация в СПб, n8n автоматизация, ИИ-сотрудник, виртуальный продавец',
+  author: 'NEURONIC LABS',
+  robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+  canonical: 'https://neuroniclabs.ru',
+  ogTitle: 'Автоматизация бизнеса с ИИ | Создать ИИ-агента и чат-бота | NEURONIC LABS',
+  ogDescription: 'Создаем ИИ-агентов и чат-ботов для автоматизации бизнеса. Интеллектуальная автоматизация процессов, интеграция ИИ в работу, автоматизация рутинных задач. Внедрение за 7-14 дней.',
+  ogImage: 'https://neuroniclabs.ru/images/robot-hero-2.jpeg',
+  ogUrl: 'https://neuroniclabs.ru',
+  ogType: 'website',
+  ogSiteName: 'NEURONIC LABS',
+  ogLocale: 'ru_RU',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'Автоматизация бизнеса с ИИ | Создать ИИ-агента и чат-бота | NEURONIC LABS',
+  twitterDescription: 'Создаем ИИ-агентов и чат-ботов для автоматизации бизнеса. Интеллектуальная автоматизация процессов, интеграция ИИ в работу.',
+  twitterImage: 'https://neuroniclabs.ru/images/robot-hero-2.jpeg',
 }
 
 const BASE_URL = 'https://neuroniclabs.ru'
-const DEFAULT_SITE_NAME = 'NEURONIC LABS'
 
 /**
- * Устанавливает или обновляет мета-тег
+ * Устанавливает или обновляет мета-тег в head документа
  */
-function setMetaTag(attribute: string, value: string, property = false) {
-  if (!value) return
-  
-  const selector = property 
-    ? `meta[property="${attribute}"]`
-    : `meta[name="${attribute}"]`
-  
-  let element = document.querySelector(selector) as HTMLMetaElement
+function setMetaTag(name: string, content: string, attribute: string = 'name') {
+  let element = document.querySelector(`meta[${attribute}="${name}"]`) as HTMLMetaElement
   
   if (!element) {
     element = document.createElement('meta')
-    if (property) {
-      element.setAttribute('property', attribute)
-    } else {
-      element.setAttribute('name', attribute)
-    }
+    element.setAttribute(attribute, name)
     document.head.appendChild(element)
   }
   
-  element.setAttribute('content', value)
+  element.setAttribute('content', content)
 }
 
 /**
- * Удаляет мета-тег
+ * Устанавливает или обновляет property мета-тег (для Open Graph)
  */
-function removeMetaTag(attribute: string, property = false) {
-  const selector = property
-    ? `meta[property="${attribute}"]`
-    : `meta[name="${attribute}"]`
+function setPropertyTag(property: string, content: string) {
+  let element = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement
   
-  const element = document.querySelector(selector)
-  if (element) {
-    element.remove()
+  if (!element) {
+    element = document.createElement('meta')
+    element.setAttribute('property', property)
+    document.head.appendChild(element)
   }
+  
+  element.setAttribute('content', content)
 }
 
 /**
  * Устанавливает title страницы
  */
-export function setTitle(title: string) {
-  if (title) {
-    document.title = title
-  }
+function setTitle(title: string) {
+  document.title = title
+  setMetaTag('title', title)
 }
 
 /**
- * Устанавливает canonical ссылку
+ * Устанавливает canonical URL
  */
 function setCanonical(url: string) {
-  if (!url) return
-  
   let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement
   
   if (!link) {
@@ -101,103 +102,131 @@ function setCanonical(url: string) {
 }
 
 /**
- * Применяет мета-теги к документу
+ * Устанавливает мета-теги на странице
  */
-export function applyMetaTags(meta: MetaTags) {
+export function setMetaTags(meta: Partial<MetaTags>) {
+  const merged = { ...DEFAULT_META, ...meta }
+  
   // Title
-  if (meta.title) {
-    setTitle(meta.title)
+  if (merged.title) {
+    setTitle(merged.title)
   }
   
-  // Основные мета-теги
-  if (meta.description !== undefined) {
-    setMetaTag('description', meta.description)
+  // Description
+  if (merged.description) {
+    setMetaTag('description', merged.description)
   }
-  if (meta.keywords !== undefined) {
-    setMetaTag('keywords', meta.keywords)
+  
+  // Keywords
+  if (merged.keywords) {
+    setMetaTag('keywords', merged.keywords)
   }
-  if (meta.author !== undefined) {
-    setMetaTag('author', meta.author)
+  
+  // Author
+  if (merged.author) {
+    setMetaTag('author', merged.author)
   }
-  if (meta.robots !== undefined) {
-    setMetaTag('robots', meta.robots)
+  
+  // Robots
+  if (merged.robots) {
+    setMetaTag('robots', merged.robots)
+    setMetaTag('googlebot', merged.robots)
+    setMetaTag('yandex', merged.robots)
   }
-  if (meta.canonical !== undefined) {
-    setCanonical(meta.canonical)
+  
+  // Canonical
+  const canonicalUrl = merged.canonical || merged.url || DEFAULT_META.canonical
+  if (canonicalUrl) {
+    setCanonical(canonicalUrl)
   }
   
   // Open Graph
-  if (meta.ogType !== undefined) {
-    setMetaTag('og:type', meta.ogType, true)
+  const ogTitle = merged.ogTitle || merged.title || DEFAULT_META.ogTitle
+  const ogDescription = merged.ogDescription || merged.description || DEFAULT_META.ogDescription
+  const ogImage = merged.ogImage || merged.image || DEFAULT_META.ogImage
+  const ogUrl = merged.ogUrl || merged.url || DEFAULT_META.ogUrl
+  
+  if (ogTitle) {
+    setPropertyTag('og:title', ogTitle)
   }
-  if (meta.ogUrl !== undefined) {
-    setMetaTag('og:url', meta.ogUrl, true)
+  if (ogDescription) {
+    setPropertyTag('og:description', ogDescription)
   }
-  if (meta.ogTitle !== undefined) {
-    setMetaTag('og:title', meta.ogTitle, true)
+  if (ogImage) {
+    setPropertyTag('og:image', ogImage)
+    setPropertyTag('og:image:width', '1200')
+    setPropertyTag('og:image:height', '630')
+    setPropertyTag('og:image:alt', ogTitle || 'NEURONIC LABS - Автоматизация бизнеса с ИИ')
   }
-  if (meta.ogDescription !== undefined) {
-    setMetaTag('og:description', meta.ogDescription, true)
+  if (ogUrl) {
+    setPropertyTag('og:url', ogUrl)
   }
-  if (meta.ogImage !== undefined) {
-    setMetaTag('og:image', meta.ogImage, true)
+  if (merged.ogType) {
+    setPropertyTag('og:type', merged.ogType)
   }
-  if (meta.ogImageWidth !== undefined) {
-    setMetaTag('og:image:width', meta.ogImageWidth, true)
+  if (merged.ogSiteName) {
+    setPropertyTag('og:site_name', merged.ogSiteName)
   }
-  if (meta.ogImageHeight !== undefined) {
-    setMetaTag('og:image:height', meta.ogImageHeight, true)
-  }
-  if (meta.ogImageAlt !== undefined) {
-    setMetaTag('og:image:alt', meta.ogImageAlt, true)
-  }
-  if (meta.ogSiteName !== undefined) {
-    setMetaTag('og:site_name', meta.ogSiteName, true)
-  }
-  if (meta.ogLocale !== undefined) {
-    setMetaTag('og:locale', meta.ogLocale, true)
+  if (merged.ogLocale) {
+    setPropertyTag('og:locale', merged.ogLocale)
   }
   
   // Twitter
-  if (meta.twitterCard !== undefined) {
-    setMetaTag('twitter:card', meta.twitterCard)
-  }
-  if (meta.twitterUrl !== undefined) {
-    setMetaTag('twitter:url', meta.twitterUrl)
-  }
-  if (meta.twitterTitle !== undefined) {
-    setMetaTag('twitter:title', meta.twitterTitle)
-  }
-  if (meta.twitterDescription !== undefined) {
-    setMetaTag('twitter:description', meta.twitterDescription)
-  }
-  if (meta.twitterImage !== undefined) {
-    setMetaTag('twitter:image', meta.twitterImage)
-  }
+  const twitterTitle = merged.twitterTitle || merged.title || DEFAULT_META.twitterTitle
+  const twitterDescription = merged.twitterDescription || merged.description || DEFAULT_META.twitterDescription
+  const twitterImage = merged.twitterImage || merged.image || DEFAULT_META.twitterImage
   
-  // Дополнительные мета-теги
-  if (meta.subject !== undefined) {
-    setMetaTag('subject', meta.subject)
+  if (merged.twitterCard) {
+    setMetaTag('twitter:card', merged.twitterCard)
   }
-  if (meta.classification !== undefined) {
-    setMetaTag('classification', meta.classification)
+  if (twitterTitle) {
+    setMetaTag('twitter:title', twitterTitle)
   }
-  if (meta.category !== undefined) {
-    setMetaTag('category', meta.category)
+  if (twitterDescription) {
+    setMetaTag('twitter:description', twitterDescription)
   }
-  if (meta.language !== undefined) {
-    setMetaTag('language', meta.language)
+  if (twitterImage) {
+    setMetaTag('twitter:image', twitterImage)
+  }
+  if (merged.ogUrl || merged.url) {
+    setMetaTag('twitter:url', merged.ogUrl || merged.url || DEFAULT_META.ogUrl || '')
   }
 }
 
 /**
- * Нормализует URL (добавляет базовый URL если нужно)
+ * Сбрасывает мета-теги к значениям по умолчанию
  */
-export function normalizeUrl(path: string): string {
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path
-  }
-  return `${BASE_URL}${path.startsWith('/') ? path : `/${path}`}`
+export function resetMetaTags() {
+  setMetaTags(DEFAULT_META)
 }
 
-export { BASE_URL, DEFAULT_SITE_NAME }
+/**
+ * Хелпер для создания мета-тегов для страницы блога
+ */
+export function createBlogMetaTags(title: string, description?: string, image?: string, url?: string): MetaTags {
+  const fullUrl = url ? `${BASE_URL}${url}` : `${BASE_URL}/blog`
+  
+  return {
+    title: `${title} | Блог | NEURONIC LABS`,
+    description: description || 'Полезные статьи об автоматизации бизнеса, ИИ-технологиях и эффективных решениях',
+    keywords: 'блог, статьи, автоматизация, ИИ, чат-боты, бизнес, технологии',
+    canonical: fullUrl,
+    ogTitle: title,
+    ogDescription: description,
+    ogImage: image || `${BASE_URL}/images/robot-hero-2.jpeg`,
+    ogUrl: fullUrl,
+    ogType: 'article',
+    twitterTitle: title,
+    twitterDescription: description,
+    twitterImage: image || `${BASE_URL}/images/robot-hero-2.jpeg`,
+    url: fullUrl,
+  }
+}
+
+/**
+ * Хелпер для создания мета-тегов для главной страницы
+ */
+export function createHomeMetaTags(): MetaTags {
+  return DEFAULT_META
+}
+
