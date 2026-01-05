@@ -3,18 +3,14 @@ import { useParams, Link, useNavigate } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { ChatWidget } from "@/components/chat-widget"
+import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { fetchBusinessCaseById, type BusinessCase } from "@/services/business-cases"
-import { ArrowLeft, Loader2, TrendingUp, Users, Clock } from "lucide-react"
+import { ArrowLeft, Loader2, Users } from "lucide-react"
 import { useMeta } from "@/hooks/useMeta"
 import { createBusinessCaseMetaTags } from "@/lib/meta"
-
-const iconMap: Record<string, typeof Users> = {
-  Users,
-  TrendingUp,
-  Clock,
-}
+import { iconMap } from "@/lib/constants"
 
 export default function BusinessCasePage() {
   const { id } = useParams<{ id: string }>()
@@ -196,16 +192,7 @@ export default function BusinessCasePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 sm:py-12 px-3 sm:px-4 border-t border-border mt-20">
-        <div className="container mx-auto text-center text-muted-foreground">
-          <p className="text-base sm:text-lg mb-3 sm:mb-4">
-            <span className="text-primary font-bold">NEURONIC</span>
-            <span className="text-foreground font-bold">LABS</span>
-          </p>
-          <p className="text-sm sm:text-base">&copy; 2025 NEURONIC LABS. Все права защищены.</p>
-        </div>
-      </footer>
+      <Footer />
 
       <ChatWidget />
     </main>

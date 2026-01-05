@@ -7,54 +7,15 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Send, Loader2, X, RotateCcw } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
-
-interface Message {
-  id: string
-  text: string
-  sender: "user" | "bot"
-  timestamp: Date
-}
+import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
+import { Message } from "@/lib/types"
 
 interface DemoChatProps {
   onClose?: () => void
   isMobile?: boolean
 }
 
-// Вспомогательная функция для безопасной работы с localStorage
-const getLocalStorage = (key: string): string | null => {
-  if (typeof window === 'undefined' || !window.localStorage) return null
-  try {
-    return localStorage.getItem(key)
-  } catch (e) {
-    return null
-  }
-}
-
-const setLocalStorage = (key: string, value: string): void => {
-  if (typeof window === 'undefined' || !window.localStorage) return
-  try {
-    localStorage.setItem(key, value)
-  } catch (e) {
-    // Игнорируем ошибки (например, переполнение хранилища)
-  }
-}
-
-const removeLocalStorage = (key: string): void => {
-  if (typeof window === 'undefined' || !window.localStorage) return
-  try {
-    localStorage.removeItem(key)
-  } catch (e) {
-    // Игнорируем ошибки
-  }
-}
-
 const INACTIVITY_TIMEOUT = 60 * 60 * 1000 // 60 минут в миллисекундах
-
-const formatTime = (date: Date): string => {
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-  return `${hours}:${minutes}`
-}
 
 const getInitialMessages = (): Message[] => [
   {

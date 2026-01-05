@@ -5,13 +5,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { ChatWidget } from "@/components/chat-widget"
 import { StickyHeader } from "@/components/sticky-header"
 import { DemoChat } from "@/components/demo-chat"
-import { BusinessCasesCarousel } from "@/components/business-cases-carousel"
 import { ConsultationModal } from "@/components/consultation-modal"
 import { SpaceDust } from "@/components/space-dust"
 import { Pricing } from "@/components/pricing"
 import { FAQ } from "@/components/faq"
 import { Testimonials } from "@/components/testimonials"
 import { CountdownTimer } from "@/components/countdown-timer"
+import { Footer } from "@/components/footer"
 import { submitFormData } from "@/services/form"
 import { useEffect, useState, useRef } from "react"
 import { useMeta } from "@/hooks/useMeta"
@@ -809,28 +809,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Business Cases Section */}
-      <section id="cases" className="py-12 sm:py-20 px-3 sm:px-4 bg-secondary/30">
-        <div className="container mx-auto">
-          <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Кейсы бизнеса</h2>
-            <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Реальные результаты внедрения ИИ-автоматизации в различных отраслях
-            </p>
-          </div>
-
-          <BusinessCasesCarousel />
-
-          <div className="text-center mt-8 sm:mt-12">
-            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">Хотите получить такие же результаты для вашего бизнеса?</p>
-            <Button size="lg" className="text-sm sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
-              Обсудить ваш проект
-              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Testimonials Section */}
       <Testimonials />
 
@@ -947,16 +925,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 sm:py-12 px-3 sm:px-4 border-t border-border">
-        <div className="container mx-auto text-center text-muted-foreground">
-          <p className="text-base sm:text-lg mb-3 sm:mb-4">
-            <span className="text-primary font-bold">NEURONIC</span>
-            <span className="text-foreground font-bold">LABS</span>
-          </p>
-          <p className="text-sm sm:text-base">&copy; 2025 NEURONIC LABS. Все права защищены.</p>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Chat Widget */}
       <ChatWidget />

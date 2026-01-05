@@ -3,12 +3,14 @@ import { useParams, Link, useNavigate } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { ChatWidget } from "@/components/chat-widget"
+import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { fetchBlogPostById, type BlogPost } from "@/services/blog"
 import { Calendar, ArrowLeft, Loader2 } from "lucide-react"
 import { useMeta } from "@/hooks/useMeta"
 import { createBlogMetaTags } from "@/lib/meta"
+import { formatDate } from "@/lib/utils"
 
 export default function BlogPostPage() {
   const { id } = useParams<{ id: string }>()
@@ -59,18 +61,6 @@ export default function BlogPostPage() {
     loadPost()
   }, [id])
 
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString)
-      return date.toLocaleDateString('ru-RU', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    } catch {
-      return dateString
-    }
-  }
 
   const renderContent = (content: string) => {
     // Рендеринг HTML контента с кастомными стилями для секций
@@ -178,16 +168,7 @@ export default function BlogPostPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 sm:py-12 px-3 sm:px-4 border-t border-border mt-20">
-        <div className="container mx-auto text-center text-muted-foreground">
-          <p className="text-base sm:text-lg mb-3 sm:mb-4">
-            <span className="text-primary font-bold">NEURONIC</span>
-            <span className="text-foreground font-bold">LABS</span>
-          </p>
-          <p className="text-sm sm:text-base">&copy; 2025 NEURONIC LABS. Все права защищены.</p>
-        </div>
-      </footer>
+      <Footer />
 
       <ChatWidget />
     </main>
