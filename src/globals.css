@@ -142,6 +142,11 @@ html[data-theme="dark"] {
     transition-timing-function: ease;
   }
   
+  /* Курсор pointer для всех кнопок */
+  button {
+    cursor: pointer;
+  }
+  
   /* Уважаем пользовательские предпочтения по уменьшению анимации (accessibility) */
   @media (prefers-reduced-motion: reduce) {
     *,
