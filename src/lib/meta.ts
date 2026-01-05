@@ -230,3 +230,26 @@ export function createHomeMetaTags(): MetaTags {
   return DEFAULT_META
 }
 
+/**
+ * Хелпер для создания мета-тегов для страницы кейсов
+ */
+export function createBusinessCaseMetaTags(title: string, description?: string, image?: string, url?: string): MetaTags {
+  const fullUrl = url ? `${BASE_URL}${url}` : `${BASE_URL}/business-cases`
+  
+  return {
+    title: `${title} | Кейсы бизнеса | NEURONIC LABS`,
+    description: description || 'Реальные кейсы внедрения ИИ-автоматизации в бизнес. Узнайте, как компании увеличили продажи и оптимизировали процессы.',
+    keywords: 'кейсы, бизнес-кейсы, автоматизация, ИИ, успешные проекты, внедрение ИИ',
+    canonical: fullUrl,
+    ogTitle: title,
+    ogDescription: description,
+    ogImage: image || `${BASE_URL}/images/robot-hero-2.jpeg`,
+    ogUrl: fullUrl,
+    ogType: 'article',
+    twitterTitle: title,
+    twitterDescription: description,
+    twitterImage: image || `${BASE_URL}/images/robot-hero-2.jpeg`,
+    url: fullUrl,
+  }
+}
+

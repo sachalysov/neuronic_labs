@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage'
 // Code splitting: Lazy loading для страниц блога (контент ниже первого экрана)
 const BlogPage = lazy(() => import('./pages/BlogPage'))
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
+const BusinessCasesPage = lazy(() => import('./pages/BusinessCasesPage'))
+const BusinessCasePage = lazy(() => import('./pages/BusinessCasePage'))
 
 // Fallback компонент для загрузки (минимальный, чтобы не блокировать рендер)
 const PageLoader = () => (
@@ -31,6 +33,22 @@ function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <BlogPostPage />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/business-cases" 
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <BusinessCasesPage />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/business-cases/:id" 
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <BusinessCasePage />
             </Suspense>
           } 
         />

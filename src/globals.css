@@ -681,3 +681,169 @@ html[data-theme="dark"] .hero-bottom-fade {
   }
 }
 
+/* Business Case Content Styles */
+.business-case-content {
+  color: var(--foreground);
+  line-height: 1.8;
+}
+
+.business-case-content h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.business-case-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.business-case-content h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--foreground);
+}
+
+.business-case-content p {
+  margin-bottom: 1.25rem;
+  color: var(--muted-foreground);
+  line-height: 1.8;
+}
+
+.business-case-content ul,
+.business-case-content ol {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  padding-left: 1.75rem;
+}
+
+.business-case-content ul li,
+.business-case-content ol li {
+  margin-bottom: 0.75rem;
+  color: var(--muted-foreground);
+  line-height: 1.7;
+}
+
+.business-case-content ul li::marker {
+  color: var(--primary);
+}
+
+.business-case-content ol li::marker {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.business-case-content strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.business-case-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.2s;
+}
+
+.business-case-content a:hover {
+  opacity: 0.8;
+}
+
+.business-case-content blockquote {
+  border-left: 4px solid var(--primary);
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+
+.business-case-content code {
+  background-color: var(--secondary);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--foreground);
+}
+
+.business-case-content pre {
+  background-color: var(--secondary);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.business-case-content pre code {
+  background: none;
+  padding: 0;
+}
+
+.business-case-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.business-case-content hr {
+  border: none;
+  border-top: 2px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+.business-case-content table {
+  width: 100%;
+  margin: 1.5rem 0;
+  border-collapse: collapse;
+}
+
+.business-case-content th,
+.business-case-content td {
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.business-case-content th {
+  background-color: var(--secondary);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+  .business-case-content h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .business-case-content h3 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .business-case-content h4 {
+    font-size: 1.125rem;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .business-case-content p,
+  .business-case-content ul,
+  .business-case-content ol {
+    margin-bottom: 1rem;
+  }
+}
+

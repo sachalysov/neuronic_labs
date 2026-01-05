@@ -224,12 +224,12 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 О нас
               </button>
-              <button
-                onClick={() => navigateToSection("cases")}
+              <Link
+                to="/business-cases"
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 Кейсы бизнеса
-              </button>
+              </Link>
              
               <Link
                 to="/blog"
@@ -326,12 +326,13 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 О нас
               </button>
-              <button
-                onClick={() => navigateToSection("cases")}
+              <Link
+                to="/business-cases"
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 Кейсы бизнеса
-              </button>
+              </Link>
               <button
                 onClick={() => navigateToSection("pricing")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
