@@ -127,12 +127,12 @@ export function PhoneInput({
     <div className="relative">
       <div 
         ref={containerRef}
-        className={`flex border rounded-md transition-[border-color,box-shadow] ${
+        className={`flex border rounded-md bg-background transition-[border-color,box-shadow] ${
           error 
             ? 'border-destructive' 
             : isFocused || isDropdownOpen
             ? 'border-ring ring-ring/50 ring-[3px]'
-            : 'border-input'
+            : 'border-border'
         }`}
       >
         {/* Dropdown для выбора страны */}
@@ -147,7 +147,7 @@ export function PhoneInput({
                 setTimeout(() => setIsFocused(false), 100)
               }
             }}
-            className="px-2 h-9 border-r border-input bg-transparent hover:bg-secondary/50 focus:outline-none text-sm flex items-center justify-center gap-0.5 min-w-[50px] rounded-l-md"
+            className="px-2 h-9 border-r border-border bg-transparent hover:bg-secondary/50 focus:outline-none text-sm flex items-center justify-center gap-0.5 min-w-[50px] rounded-l-md"
             aria-label="Выбрать страну"
           >
             <span className="text-xs font-medium">{selectedCountry.dialCode}</span>
@@ -193,10 +193,6 @@ export function PhoneInput({
           aria-invalid={error ? 'true' : 'false'}
         />
       </div>
-      
-      {error && (
-        <p className="mt-1 text-sm text-destructive">{error}</p>
-      )}
     </div>
   )
 }

@@ -954,6 +954,9 @@ export default function HomePage() {
                         required
                         error={errors.phone}
                       />
+                      {errors.phone && (
+                        <p className="text-xs text-destructive">{errors.phone}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
