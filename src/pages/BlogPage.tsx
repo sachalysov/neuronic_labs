@@ -7,8 +7,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { fetchBlogPosts, type BlogPost } from "@/services/blog"
 import { Calendar, ArrowRight, Loader2, Tag } from "lucide-react"
+import { useMeta } from "@/lib/useMeta"
+import { blogMeta } from "@/config/meta"
 
 export default function BlogPage() {
+  useMeta(blogMeta)
+  
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

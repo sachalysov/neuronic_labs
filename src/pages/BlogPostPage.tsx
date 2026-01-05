@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { fetchBlogPostById, type BlogPost } from "@/services/blog"
 import { Calendar, ArrowLeft, Loader2 } from "lucide-react"
+import { useMeta } from "@/lib/useMeta"
+import { createBlogPostMeta } from "@/config/meta"
 
 export default function BlogPostPage() {
   const { id } = useParams<{ id: string }>()
@@ -14,6 +16,14 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Создаем мета-теги для статьи с мемоизацией
+  const postMeta = useMemo(() => {
+    return post ? createBlogPostMeta(post) : {}
+  }, [post])
+
+  // Устанавливаем мета-теги для статьи
+  useMeta(postMeta)
 
   useEffect(() => {
     if (!id) {

@@ -167,14 +167,27 @@ export function Pricing({ onContactClick }: PricingProps) {
                     ))}
                   </ul>
 
-                  <Button
-                    className={`w-full text-sm sm:text-base mt-auto ${plan.highlighted ? "shadow-lg" : ""}`}
-                    variant={plan.highlighted ? "default" : "outline"}
-                    size="lg"
-                    onClick={onContactClick}
-                  >
-                    {plan.highlighted ? "Начать сейчас" : "Связаться"}
-                  </Button>
+                  <div className="space-y-2 mt-auto">
+                    <Button
+                      className={`w-full text-sm sm:text-base ${plan.highlighted ? "shadow-lg" : ""}`}
+                      variant={plan.highlighted ? "default" : "outline"}
+                      size="lg"
+                      onClick={onContactClick}
+                    >
+                      {plan.highlighted ? "Начать сейчас" : "Связаться"}
+                    </Button>
+                    <Button
+                      className="w-full text-sm sm:text-base"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        // TODO: Добавить обработчик для подробностей о тарифе
+                        console.log(`Подробнее о тарифе ${plan.name}`)
+                      }}
+                    >
+                      Подробнее о тарифе
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -245,14 +258,27 @@ export function Pricing({ onContactClick }: PricingProps) {
                   ))}
                 </ul>
 
-                <Button
-                  className={`w-full mt-auto ${plan.highlighted ? "shadow-lg" : ""}`}
-                  variant={plan.highlighted ? "default" : "outline"}
-                  size="lg"
-                  onClick={onContactClick}
-                >
-                  {plan.highlighted ? "Начать сейчас" : "Связаться"}
-                </Button>
+                <div className="space-y-2 mt-auto">
+                  <Button
+                    className={`w-full ${plan.highlighted ? "shadow-lg" : ""}`}
+                    variant={plan.highlighted ? "default" : "outline"}
+                    size="lg"
+                    onClick={onContactClick}
+                  >
+                    {plan.highlighted ? "Начать сейчас" : "Связаться"}
+                  </Button>
+                  <Button
+                    className="w-full"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      // TODO: Добавить обработчик для подробностей о тарифе
+                      console.log(`Подробнее о тарифе ${plan.name}`)
+                    }}
+                  >
+                    Подробнее о тарифе
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
