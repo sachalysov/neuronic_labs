@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, Star } from "lucide-react"
+import { CheckCircle, Star, ChevronRight } from "lucide-react"
 import { useRef, useState, useEffect } from "react"
 import { PricingDetailModal } from "@/components/pricing-detail-modal"
 
@@ -149,7 +149,12 @@ export function Pricing({ onContactClick }: PricingProps) {
             {plans.map((plan) => (
               <Card
                 key={plan.id}
-                className="relative flex-shrink-0 w-[90vw] sm:w-[85vw] max-w-[380px] snap-center bg-card/50 flex flex-col"
+                className="relative flex-shrink-0 w-[90vw] sm:w-[85vw] max-w-[380px] snap-center bg-card/50 flex flex-col cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => {
+                  setSelectedPlanId(plan.id)
+                  setSelectedPlanName(plan.name)
+                  setIsDetailModalOpen(true)
+                }}
               >
                 
                 <CardContent className="p-4 sm:p-8 flex flex-col flex-1 space-y-4 sm:space-y-6">
@@ -176,7 +181,10 @@ export function Pricing({ onContactClick }: PricingProps) {
                       className={`w-full text-sm sm:text-base ${plan.highlighted ? "shadow-lg" : ""}`}
                       variant={plan.highlighted ? "default" : "outline"}
                       size="lg"
-                      onClick={onContactClick}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onContactClick()
+                      }}
                     >
                       {plan.highlighted ? "Начать сейчас" : "Связаться"}
                     </Button>
@@ -184,13 +192,15 @@ export function Pricing({ onContactClick }: PricingProps) {
                       className="w-full text-sm sm:text-base"
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation()
                         setSelectedPlanId(plan.id)
                         setSelectedPlanName(plan.name)
                         setIsDetailModalOpen(true)
                       }}
                     >
                       Подробнее о тарифе
+                      <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
                   </div>
                 </CardContent>
@@ -231,11 +241,16 @@ export function Pricing({ onContactClick }: PricingProps) {
           {plans.map((plan) => (
             <Card
               key={plan.id}
-              className={`relative flex flex-col ${
+              className={`relative flex flex-col cursor-pointer ${
                 plan.highlighted
                   ? "border-primary border-2 shadow-2xl scale-105 bg-primary/5"
                   : "bg-card/50 hover:border-primary/50 transition-all"
-              }`}
+              } hover:shadow-lg`}
+              onClick={() => {
+                setSelectedPlanId(plan.id)
+                setSelectedPlanName(plan.name)
+                setIsDetailModalOpen(true)
+              }}
             >
               {plan.badge && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1">
@@ -268,7 +283,10 @@ export function Pricing({ onContactClick }: PricingProps) {
                     className={`w-full ${plan.highlighted ? "shadow-lg" : ""}`}
                     variant={plan.highlighted ? "default" : "outline"}
                     size="lg"
-                    onClick={onContactClick}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onContactClick()
+                    }}
                   >
                     {plan.highlighted ? "Начать сейчас" : "Связаться"}
                   </Button>
@@ -276,13 +294,15 @@ export function Pricing({ onContactClick }: PricingProps) {
                     className="w-full"
                     variant="ghost"
                     size="sm"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation()
                       setSelectedPlanId(plan.id)
                       setSelectedPlanName(plan.name)
                       setIsDetailModalOpen(true)
                     }}
                   >
                     Подробнее о тарифе
+                    <ChevronRight className="h-4 w-4 ml-1" />
                   </Button>
                 </div>
               </CardContent>
