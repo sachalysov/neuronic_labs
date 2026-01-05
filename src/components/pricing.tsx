@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, Star } from "lucide-react"
 import { useRef, useState, useEffect } from "react"
+import { PricingDetailModal } from "@/components/pricing-detail-modal"
 
 interface PricingProps {
   onContactClick: () => void
@@ -11,6 +12,9 @@ export function Pricing({ onContactClick }: PricingProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
   const [activePlanIndex, setActivePlanIndex] = useState(1) // Начинаем с Business плана (индекс 1)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+  const [selectedPlanId, setSelectedPlanId] = useState<string>("")
+  const [selectedPlanName, setSelectedPlanName] = useState<string>("")
 
   useEffect(() => {
     const checkMobile = () => {
@@ -181,8 +185,9 @@ export function Pricing({ onContactClick }: PricingProps) {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        // TODO: Добавить обработчик для подробностей о тарифе
-                        console.log(`Подробнее о тарифе ${plan.name}`)
+                        setSelectedPlanId(plan.id)
+                        setSelectedPlanName(plan.name)
+                        setIsDetailModalOpen(true)
                       }}
                     >
                       Подробнее о тарифе
@@ -272,8 +277,9 @@ export function Pricing({ onContactClick }: PricingProps) {
                     variant="ghost"
                     size="sm"
                     onClick={() => {
-                      // TODO: Добавить обработчик для подробностей о тарифе
-                      console.log(`Подробнее о тарифе ${plan.name}`)
+                      setSelectedPlanId(plan.id)
+                      setSelectedPlanName(plan.name)
+                      setIsDetailModalOpen(true)
                     }}
                   >
                     Подробнее о тарифе
@@ -293,6 +299,13 @@ export function Pricing({ onContactClick }: PricingProps) {
           </Button>
         </div>
       </div>
+
+      <PricingDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        planId={selectedPlanId}
+        planName={selectedPlanName}
+      />
     </section>
   )
 }
