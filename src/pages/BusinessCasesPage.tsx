@@ -102,8 +102,6 @@ export default function BusinessCasesPage() {
           {!loading && !error && cases.length > 0 && (
             <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 max-w-6xl mx-auto">
               {cases.map((businessCase) => {
-                const IconComponent = iconMap[businessCase.results[0]?.icon] || Users
-                
                 return (
                   <Link
                     key={businessCase.id}

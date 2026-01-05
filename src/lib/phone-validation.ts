@@ -150,7 +150,6 @@ export function formatPhone(phone: string, country: Country): string {
   }
   
   // Ограничиваем длину - только цифры после кода страны
-  const dialCodeDigits = country.dialCode.replace(/\+/g, '')
   const digitsOnly = cleaned.replace(/\+/g, '')
   
   // Проверяем, что номер не превышает максимальную длину
