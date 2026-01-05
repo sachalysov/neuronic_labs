@@ -92,7 +92,7 @@ export function PricingDetailModal({ isOpen, onClose, planId, planName }: Pricin
                 
                 return (
                   <div key={index} className="mb-4 sm:mb-6">
-                    <h4 className="text-lg sm:text-xl font-bold text-primary mb-2 sm:mb-3">{title}</h4>
+                    <h4 className="text-lg sm:text-xl font-bold text-primary" style={{ marginBottom: '0.25rem' }}>{title}</h4>
                     {rest && (
                       <p className="text-sm sm:text-base leading-relaxed text-foreground">
                         {rest}
@@ -110,7 +110,7 @@ export function PricingDetailModal({ isOpen, onClose, planId, planName }: Pricin
                 
                 return (
                   <div key={index} className="mb-3 sm:mb-4">
-                    <h5 className="text-sm sm:text-base font-semibold text-foreground mb-1 sm:mb-2">
+                    <h5 className="text-sm sm:text-base font-semibold text-foreground" style={{ marginBottom: '0.125rem' }}>
                       {title}:
                     </h5>
                     <p className="text-sm sm:text-base leading-relaxed text-muted-foreground pl-2 sm:pl-3">
