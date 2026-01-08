@@ -205,6 +205,16 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
           {/* Navigation & Theme Toggle */}
           <div className="flex items-center gap-6">
             <nav className="hidden lg:flex items-center gap-8">
+              <Link
+                to="/"
+                onClick={() => {
+                  setIsMobileMenuOpen(false)
+                  window.scrollTo({ top: 0, behavior: "auto" })
+                }}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Главная
+              </Link>
               <button
                 onClick={() => navigateToSection("demo-chat")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
@@ -347,6 +357,16 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
         {isMobileMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-border bg-background">
             <div className="flex flex-col space-y-4">
+              <Link
+                to="/"
+                onClick={() => {
+                  setIsMobileMenuOpen(false)
+                  window.scrollTo({ top: 0, behavior: "auto" })
+                }}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Главная
+              </Link>
               <button
                 onClick={handleChatBotClick}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"

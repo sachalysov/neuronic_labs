@@ -24,7 +24,7 @@ export function Footer() {
               onClick={() => navigateToSection("demo-chat")}
               className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
             >
-              Чат-бот
+              Протестировать чат-бота
             </button>
             <button
               onClick={() => navigateToSection("product")}
