@@ -336,6 +336,13 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                       >
                         О нас
                       </button>
+                      <Link
+                        to="/contacts"
+                        onClick={() => setIsMenuDropdownOpen(false)}
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Контакты
+                      </Link>
                     </div>
                   </div>
                 )}
@@ -457,6 +464,16 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                     >
                       О нас
                     </button>
+                    <Link
+                      to="/contacts"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        setIsMenuDropdownOpen(false)
+                      }}
+                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Контакты
+                    </Link>
                   </div>
                 )}
               </div>

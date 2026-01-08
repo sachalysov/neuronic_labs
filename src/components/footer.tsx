@@ -62,6 +62,12 @@ export function Footer() {
             >
               Партнерская программа
             </Link>
+            <Link
+              to="/contacts"
+              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
+            >
+              Контакты
+            </Link>
           </nav>
         </div>
 

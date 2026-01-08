@@ -276,3 +276,26 @@ export function createPartnerMetaTags(): MetaTags {
   }
 }
 
+/**
+ * Хелпер для создания мета-тегов для страницы контактов
+ */
+export function createContactsMetaTags(): MetaTags {
+  const fullUrl = `${BASE_URL}/contacts`
+  
+  return {
+    title: 'Контакты | NEURONIC LABS',
+    description: 'Свяжитесь с нами любым удобным способом. Телефон, email, Telegram. NEURONIC LABS — агентство по внедрению нейро-продавцов и автоматизации бизнеса.',
+    keywords: 'контакты, связаться, телефон, email, telegram, агентство, автоматизация, ИИ',
+    canonical: fullUrl,
+    ogTitle: 'Контакты | NEURONIC LABS',
+    ogDescription: 'Свяжитесь с нами любым удобным способом. Телефон, email, Telegram.',
+    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    ogUrl: fullUrl,
+    ogType: 'website',
+    twitterTitle: 'Контакты | NEURONIC LABS',
+    twitterDescription: 'Свяжитесь с нами любым удобным способом. Телефон, email, Telegram.',
+    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    url: fullUrl,
+  }
+}
+
