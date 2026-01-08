@@ -17,6 +17,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const [searchResults, setSearchResults] = useState<Array<{ id: string; title: string; text: string }>>([])
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
+  const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -221,19 +222,75 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Протестировать чат-бот
               </button>
-             
-               <button
-                onClick={() => navigateToSection("pricing")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              <div
+                className="relative"
+                onMouseEnter={() => setIsProductDropdownOpen(true)}
+                onMouseLeave={() => setIsProductDropdownOpen(false)}
               >
-                Тарифы и цены
-              </button>
-              <Link
-                to="/business-cases"
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Кейсы бизнеса
-              </Link>
+                <button
+                  onClick={() => setIsProductDropdownOpen(!isProductDropdownOpen)}
+                  className="text-foreground/90 hover:text-primary transition-colors font-medium flex items-center gap-1"
+                >
+                  О продукте
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isProductDropdownOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isProductDropdownOpen && (
+                  <div className="absolute top-full left-0 pt-2 w-48 z-50">
+                    <div className="bg-background border border-border rounded-lg shadow-lg overflow-hidden">
+                      <button
+                        onClick={() => {
+                          navigateToSection("product")
+                          setIsProductDropdownOpen(false)
+                        }}
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        О продукте
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigateToSection("pricing")
+                          setIsProductDropdownOpen(false)
+                        }}
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Тарифы и цены
+                      </button>
+                      <Link
+                        to="/business-cases"
+                        onClick={() => setIsProductDropdownOpen(false)}
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Кейсы бизнеса
+                      </Link>
+                      <button
+                        onClick={() => {
+                          navigateToSection("testimonials")
+                          setIsProductDropdownOpen(false)
+                        }}
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Отзывы клиентов
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigateToSection("faq")
+                          setIsProductDropdownOpen(false)
+                        }}
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Частые вопросы
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
              
               <Link
                 to="/blog"
@@ -250,7 +307,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   onClick={() => setIsMenuDropdownOpen(!isMenuDropdownOpen)}
                   className="text-foreground/90 hover:text-primary transition-colors font-medium flex items-center gap-1"
                 >
-                  Остальное
+                  О нас
                   <svg
                     className={`w-4 h-4 transition-transform ${isMenuDropdownOpen ? "rotate-180" : ""}`}
                     fill="none"
@@ -278,15 +335,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                         className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
                       >
                         О нас
-                      </button>
-                      <button
-                        onClick={() => {
-                          navigateToSection("product")
-                          setIsMenuDropdownOpen(false)
-                        }}
-                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
-                      >
-                        О продукте
                       </button>
                     </div>
                   </div>
@@ -409,14 +457,75 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                     >
                       О нас
                     </button>
+                  </div>
+                )}
+              </div>
+              <div className="px-2">
+                <button
+                  onClick={() => setIsProductDropdownOpen(!isProductDropdownOpen)}
+                  className="text-foreground/90 hover:text-primary transition-colors font-medium text-left flex items-center justify-between w-full py-2"
+                >
+                  <span>О продукте</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isProductDropdownOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isProductDropdownOpen && (
+                  <div className="pl-4 mt-2 space-y-2 border-l border-border">
                     <button
                       onClick={() => {
                         navigateToSection("product")
-                        setIsMenuDropdownOpen(false)
+                        setIsMobileMenuOpen(false)
+                        setIsProductDropdownOpen(false)
                       }}
                       className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
                     >
                       О продукте
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigateToSection("pricing")
+                        setIsMobileMenuOpen(false)
+                        setIsProductDropdownOpen(false)
+                      }}
+                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Тарифы и цены
+                    </button>
+                    <Link
+                      to="/business-cases"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        setIsProductDropdownOpen(false)
+                      }}
+                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Кейсы бизнеса
+                    </Link>
+                    <button
+                      onClick={() => {
+                        navigateToSection("testimonials")
+                        setIsMobileMenuOpen(false)
+                        setIsProductDropdownOpen(false)
+                      }}
+                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Отзывы клиентов
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigateToSection("faq")
+                        setIsMobileMenuOpen(false)
+                        setIsProductDropdownOpen(false)
+                      }}
+                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Частые вопросы
                     </button>
                   </div>
                 )}
@@ -426,19 +535,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 Этапы работ
-              </button>
-              <Link
-                to="/business-cases"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Кейсы бизнеса
-              </Link>
-              <button
-                onClick={() => navigateToSection("pricing")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Тарифы и цены
               </button>
               <Link
                 to="/blog"
