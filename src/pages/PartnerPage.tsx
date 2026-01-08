@@ -7,15 +7,12 @@ import { Button } from "@/components/ui/button"
 import { useMeta } from "@/hooks/useMeta"
 import { createPartnerMetaTags } from "@/lib/meta"
 import {
-  TrendingUp,
   DollarSign,
   CheckCircle,
   Users,
   Briefcase,
-  Award,
   ArrowRight,
   FileText,
-  Gift,
   Zap,
 } from "lucide-react"
 
