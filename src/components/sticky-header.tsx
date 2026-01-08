@@ -206,6 +206,12 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
           {/* Navigation & Theme Toggle */}
           <div className="flex items-center gap-6">
             <nav className="hidden lg:flex items-center gap-8">
+              <button
+                onClick={() => navigateToSection("demo-chat")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Протестировать чат-бот
+              </button>
               <Link
                 to="/"
                 onClick={() => {
@@ -216,12 +222,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Главная
               </Link>
-              <button
-                onClick={() => navigateToSection("demo-chat")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Протестировать чат-бот
-              </button>
               <div
                 className="relative"
                 onMouseEnter={() => setIsProductDropdownOpen(true)}
@@ -292,12 +292,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                 )}
               </div>
              
-              <Link
-                to="/blog"
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Блог
-              </Link>
               <div
                 className="relative"
                 onMouseEnter={() => setIsMenuDropdownOpen(true)}
@@ -347,6 +341,12 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   </div>
                 )}
               </div>
+              <Link
+                to="/blog"
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Блог
+              </Link>
             </nav>
 
             <ThemeToggle />
@@ -412,6 +412,12 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
         {isMobileMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-border bg-background">
             <div className="flex flex-col space-y-4">
+              <button
+                onClick={handleChatBotClick}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Протестировать чат-бот
+              </button>
               <Link
                 to="/"
                 onClick={() => {
@@ -422,12 +428,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Главная
               </Link>
-              <button
-                onClick={handleChatBotClick}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Протестировать чат-бот
-              </button>
               <div className="px-2">
                 <button
                   onClick={() => setIsProductDropdownOpen(!isProductDropdownOpen)}
@@ -498,13 +498,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   </div>
                 )}
               </div>
-              <Link
-                to="/blog"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Блог
-              </Link>
               <div className="px-2">
                 <button
                   onClick={() => setIsMenuDropdownOpen(!isMenuDropdownOpen)}
@@ -554,6 +547,13 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   </div>
                 )}
               </div>
+              <Link
+                to="/blog"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
+              >
+                Блог
+              </Link>
               <a 
                 href="tel:+79930799177" 
                 className="flex items-center gap-2 text-foreground/90 hover:text-primary transition-colors font-medium px-2 py-2"
