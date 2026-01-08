@@ -173,12 +173,6 @@ export function Pricing({ onContactClick }: PricingProps) {
                   setIsDetailModalOpen(true)
                 }}
               >
-                {plan.badge && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1 whitespace-nowrap">
-                    <Star className="h-4 w-4" />
-                    {plan.badge}
-                  </div>
-                )}
                 
                 <CardContent className="p-4 sm:p-8 flex flex-col flex-1 space-y-4 sm:space-y-6">
                   <div className="text-center space-y-1 sm:space-y-2">
