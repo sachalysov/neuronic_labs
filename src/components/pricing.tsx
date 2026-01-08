@@ -11,7 +11,7 @@ interface PricingProps {
 export function Pricing({ onContactClick }: PricingProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
-  const [activePlanIndex, setActivePlanIndex] = useState(1) // Начинаем с Business плана (индекс 1)
+  const [activePlanIndex, setActivePlanIndex] = useState(1) // Начинаем с Basic плана (индекс 1)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [selectedPlanId, setSelectedPlanId] = useState<string>("")
   const [selectedPlanName, setSelectedPlanName] = useState<string>("")
@@ -30,11 +30,11 @@ export function Pricing({ onContactClick }: PricingProps) {
   useEffect(() => {
     const container = scrollContainerRef.current
     if (container && isMobile) {
-      // Scroll to Business plan (middle card) on mount
+      // Scroll to Basic plan (second card) on mount
       const cardWidth = container.children[0]?.clientWidth || 0
       const gap = 32 // 2rem gap
       container.scrollLeft = cardWidth + gap
-      setActivePlanIndex(1) // Business план
+      setActivePlanIndex(1) // Basic план
     }
   }, [isMobile])
 
@@ -69,6 +69,23 @@ export function Pricing({ onContactClick }: PricingProps) {
 
   const plans = [
     {
+      id: "lite",
+      name: "Lite",
+      price: "15 000",
+      period: "",
+      description: "Простой старт бизнеса",
+      features: [
+        "Общение на сайте",
+        "Консультирует и передает сложные диалоги человеку",
+        "База знаний из FAQ и прайса",
+        "GPT — ответы в тоне бренда",
+        "Отчеты в Google Sheets",
+        "Поддержка"
+      ],
+      highlighted: false,
+      badge: null
+    },
+    {
       id: "basic",
       name: "Basic",
       price: "30 000",
@@ -92,7 +109,7 @@ export function Pricing({ onContactClick }: PricingProps) {
       name: "Business",
       price: "60 000",
       period: "",
-      description: "Оптимальный выбор для роста",
+      description: "Оптимальный для роста",
       features: [
         "Всё из Basic",
         "3 канала связи",
@@ -105,7 +122,7 @@ export function Pricing({ onContactClick }: PricingProps) {
         "Мониторинг и A/B-тесты"
       ],
       highlighted: true,
-      badge: "⭐ Популярный"
+      badge: " Популярный"
     },
     {
       id: "pro",
@@ -149,13 +166,19 @@ export function Pricing({ onContactClick }: PricingProps) {
             {plans.map((plan) => (
               <Card
                 key={plan.id}
-                className="relative flex-shrink-0 w-[90vw] sm:w-[85vw] max-w-[380px] snap-center bg-card/50 flex flex-col cursor-pointer hover:shadow-lg transition-shadow"
+                className="relative flex-shrink-0 w-[90vw] sm:w-[85vw] max-w-[380px] snap-center bg-card/50 flex flex-col cursor-pointer hover:shadow-lg transition-shadow overflow-visible"
                 onClick={() => {
                   setSelectedPlanId(plan.id)
                   setSelectedPlanName(plan.name)
                   setIsDetailModalOpen(true)
                 }}
               >
+                {plan.badge && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1 whitespace-nowrap">
+                    <Star className="h-4 w-4" />
+                    {plan.badge}
+                  </div>
+                )}
                 
                 <CardContent className="p-4 sm:p-8 flex flex-col flex-1 space-y-4 sm:space-y-6">
                   <div className="text-center space-y-1 sm:space-y-2">
@@ -237,11 +260,11 @@ export function Pricing({ onContactClick }: PricingProps) {
         </div>
 
         {/* Desktop: Grid */}
-        <div className="hidden md:grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {plans.map((plan) => (
             <Card
               key={plan.id}
-              className={`relative flex flex-col cursor-pointer ${
+              className={`relative flex flex-col cursor-pointer overflow-visible ${
                 plan.highlighted
                   ? "border-primary border-2 shadow-2xl scale-105 bg-primary/5"
                   : "bg-card/50 hover:border-primary/50 transition-all"
@@ -253,7 +276,7 @@ export function Pricing({ onContactClick }: PricingProps) {
               }}
             >
               {plan.badge && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1 whitespace-nowrap">
                   <Star className="h-4 w-4" />
                   {plan.badge}
                 </div>
