@@ -221,6 +221,26 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Протестировать чат-бот
               </button>
+             
+               <button
+                onClick={() => navigateToSection("pricing")}
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Тарифы и цены
+              </button>
+              <Link
+                to="/business-cases"
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Кейсы бизнеса
+              </Link>
+             
+              <Link
+                to="/blog"
+                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              >
+                Блог
+              </Link>
               <div
                 className="relative"
                 onMouseEnter={() => setIsMenuDropdownOpen(true)}
@@ -230,7 +250,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   onClick={() => setIsMenuDropdownOpen(!isMenuDropdownOpen)}
                   className="text-foreground/90 hover:text-primary transition-colors font-medium flex items-center gap-1"
                 >
-                  Меню
+                  Остальное
                   <svg
                     className={`w-4 h-4 transition-transform ${isMenuDropdownOpen ? "rotate-180" : ""}`}
                     fill="none"
@@ -272,26 +292,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   </div>
                 )}
               </div>
-             
-               <button
-                onClick={() => navigateToSection("pricing")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Тарифы и цены
-              </button>
-              <Link
-                to="/business-cases"
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Кейсы бизнеса
-              </Link>
-             
-              <Link
-                to="/blog"
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Блог
-              </Link>
             </nav>
 
             <ThemeToggle />
@@ -378,7 +378,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   onClick={() => setIsMenuDropdownOpen(!isMenuDropdownOpen)}
                   className="text-foreground/90 hover:text-primary transition-colors font-medium text-left flex items-center justify-between w-full py-2"
                 >
-                  <span>Меню</span>
+                  <span>Остальное</span>
                   <svg
                     className={`w-4 h-4 transition-transform ${isMenuDropdownOpen ? "rotate-180" : ""}`}
                     fill="none"
