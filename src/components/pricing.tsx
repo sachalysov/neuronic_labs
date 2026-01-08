@@ -73,7 +73,7 @@ export function Pricing({ onContactClick }: PricingProps) {
       name: "Lite",
       price: "15 000",
       period: "",
-      description: "Простой старт бизнеса",
+      description: "Простой старт",
       features: [
         "Общение на сайте",
         "Консультирует и передает сложные диалоги человеку",
@@ -90,7 +90,7 @@ export function Pricing({ onContactClick }: PricingProps) {
       name: "Basic",
       price: "30 000",
       period: "",
-      description: "Для малого бизнеса и старта",
+      description: "Для малого бизнеса",
       features: [
         "1 канал связи",
         "Бот для общения 24/7",

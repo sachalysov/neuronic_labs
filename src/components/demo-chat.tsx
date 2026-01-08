@@ -331,7 +331,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                   message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-white border border-gray-200 text-gray-900"
                 }`}
               >
-                <p className="text-sm leading-relaxed whitespace-pre-line">{formatMessageText(message.text)}</p>
+                <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
                 <p className={`text-xs mt-2 ${message.sender === "user" ? "text-primary-foreground/70" : "text-gray-500"}`}>
                   {formatTime(message.timestamp)}
                 </p>

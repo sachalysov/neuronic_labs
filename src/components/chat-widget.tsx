@@ -289,7 +289,7 @@ export function ChatWidget() {
                     : "bg-primary/50 text-primary-foreground rounded-tl-sm"
                 }`}
               >
-                <p className="text-sm leading-relaxed">{formatMessageText(message.text)}</p>
+                <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
                 <p className={`text-xs mt-2 ${message.sender === "user" ? "text-foreground/70" : "text-primary-foreground/70"}`}>
                   {formatTime(message.timestamp)}
                 </p>
