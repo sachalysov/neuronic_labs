@@ -107,7 +107,7 @@ export default function PartnerPage() {
       total3Months: "от 19 950 ₽",
     },
     {
-      tariff: "100 000 ₽+",
+      tariff: "100 000 ₽",
       subscription: "25 000 ₽+",
       salePercent: "20%",
       oneTime: "от 20 000 ₽",
