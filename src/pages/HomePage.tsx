@@ -15,6 +15,7 @@ import { CountdownTimer } from "@/components/countdown-timer"
 import { Footer } from "@/components/footer"
 import { submitFormData } from "@/services/form"
 import { useEffect, useState, useRef } from "react"
+import { useLocation } from "react-router-dom"
 import { useMeta } from "@/hooks/useMeta"
 import { createHomeMetaTags } from "@/lib/meta"
 import { validatePhone, validateName, validateComment, CIS_COUNTRIES, type Country } from "@/lib/phone-validation"
@@ -39,6 +40,7 @@ import {
 
 export default function HomePage() {
   useMeta(createHomeMetaTags())
+  const location = useLocation()
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDemoChatOpen, setIsDemoChatOpen] = useState(false)
@@ -81,28 +83,32 @@ export default function HomePage() {
 
   useEffect(() => {
     // Обрабатываем hash из URL (если есть)
-    if (window.location.hash) {
-      const hash = window.location.hash.substring(1) // убираем #
+    const hash = location.hash.substring(1) // убираем #
+    if (hash) {
       const element = document.getElementById(hash)
       if (element) {
-        // Небольшая задержка для завершения рендера
+        // Минимальная задержка для завершения рендера
         setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth", block: "start" })
+          const headerOffset = 80
+          const elementPosition = element.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+          window.scrollTo({ top: offsetPosition, behavior: "auto" })
           // Убираем hash из URL после скролла
           setTimeout(() => {
             window.history.replaceState(null, '', window.location.pathname)
-          }, 1000)
-        }, 100)
+          }, 100)
+        }, 50)
       } else {
         // Если элемент не найден, просто убираем hash
         window.history.replaceState(null, '', window.location.pathname)
-        window.scrollTo(0, 0)
       }
     } else {
-      // Если hash нет, скроллим в начало страницы
-      window.scrollTo(0, 0)
+      // Если hash нет, скроллим в начало страницы только при первой загрузке
+      if (window.scrollY === 0) {
+        window.scrollTo(0, 0)
+      }
     }
-  }, [])
+  }, [location.hash])
 
   // Блокировка скролла при открытии демо-чата на мобильных устройствах
   useEffect(() => {

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { ThemeToggle } from "./theme-toggle"
 
 interface StickyHeaderProps {
@@ -10,6 +10,7 @@ interface StickyHeaderProps {
 
 export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const location = useLocation()
+  const navigate = useNavigate()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -43,7 +44,8 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       scrollToSection(id)
     } else {
       // Если мы не на главной, переходим на главную с hash
-      window.location.href = `/#${id}`
+      // HomePage сам обработает hash и прокрутит к секции
+      navigate(`/#${id}`)
     }
     setIsMobileMenuOpen(false)
   }

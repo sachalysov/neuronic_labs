@@ -138,7 +138,7 @@ export default function PartnerPage() {
       <section className="relative overflow-hidden min-h-[50vh] flex items-center pt-20 bg-gradient-to-b from-secondary/20 to-background">
         <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               <span className="text-primary">Партнёрская программа</span>
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-2">
