@@ -161,10 +161,14 @@ export default function PartnerPage() {
               <h2 className="text-2xl sm:text-3xl font-bold mb-6">Кратко о программе</h2>
               <div className="space-y-4 text-lg">
                 <p>
-                  <strong>Услуги:</strong> Мы внедряем ИИ-решения для автоматизации (нейро-продавцы, чат-боты, обработка лидов).
+                  <strong>Услуги:</strong>
+                  <br />
+                  Мы внедряем ИИ-решения для автоматизации (нейро-продавцы, чат-боты, обработка лидов).
                 </p>
                 <p>
-                  <strong>Комиссия:</strong> Партнеры рекомендуют нас своим клиентам и получают комиссию:{" "}
+                  <strong>Комиссия:</strong>
+                  <br />
+                  Партнеры рекомендуют нас своим клиентам и получают комиссию:{" "}
                   <span className="text-primary font-bold">5 400–31 500 ₽ за клиента</span> (разовое подключение + доход от подписки 3 месяца).
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
