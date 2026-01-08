@@ -253,3 +253,26 @@ export function createBusinessCaseMetaTags(title: string, description?: string, 
   }
 }
 
+/**
+ * Хелпер для создания мета-тегов для страницы партнерской программы
+ */
+export function createPartnerMetaTags(): MetaTags {
+  const fullUrl = `${BASE_URL}/partners`
+  
+  return {
+    title: 'Партнерская программа | NEURONIC LABS',
+    description: 'Привлекайте клиентов — получайте вознаграждение до 31 500 рублей за одного! Партнерская программа по внедрению нейро-продавцов и автоматизации бизнеса.',
+    keywords: 'партнерская программа, партнерство, агентство, автоматизация, ИИ, комиссия, вознаграждение',
+    canonical: fullUrl,
+    ogTitle: 'Партнерская программа | NEURONIC LABS',
+    ogDescription: 'Привлекайте клиентов — получайте вознаграждение до 31 500 рублей за одного!',
+    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    ogUrl: fullUrl,
+    ogType: 'website',
+    twitterTitle: 'Партнерская программа | NEURONIC LABS',
+    twitterDescription: 'Привлекайте клиентов — получайте вознаграждение до 31 500 рублей за одного!',
+    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    url: fullUrl,
+  }
+}
+
