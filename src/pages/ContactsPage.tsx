@@ -83,8 +83,8 @@ export default function ContactsPage() {
 
       {/* О компании */}
       <section className="py-8 sm:py-12 px-3 sm:px-4">
-        <div className="container mx-auto max-w-4xl">
-          <Card className="bg-card/10 border-border">
+        <div className="container mx-auto max-w-6xl">
+          <Card className="bg-card/10 border-0">
             <CardContent className="p-6 sm:p-8">
               <div className="flex items-start gap-4 mb-6">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
