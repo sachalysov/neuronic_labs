@@ -288,24 +288,24 @@ export default function PartnerPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="bg-secondary/50 border-b border-border">
-                      <th className="p-4 text-left font-semibold">Тариф клиента | Подписка</th>
-                      <th className="p-4 text-center font-semibold">% Выплат за продажу</th>
-                      <th className="p-4 text-center font-semibold">Сумма единоразовой выплаты</th>
-                      <th className="p-4 text-center font-semibold">% С подписки (пассивный доход)</th>
-                      <th className="p-4 text-center font-semibold">Общая выплата за 3 мес</th>
+                      <th className="p-2 sm:p-4 text-left font-semibold text-xs sm:text-sm">Тариф<br className="hidden sm:block" /> клиента | Подписка</th>
+                      <th className="p-2 sm:p-4 text-center font-semibold text-xs sm:text-sm whitespace-nowrap">% Выплат<br className="hidden sm:block" /> за продажу</th>
+                      <th className="p-2 sm:p-4 text-center font-semibold text-xs sm:text-sm">Единоразовая<br className="hidden sm:block" /> выплата</th>
+                      <th className="p-2 sm:p-4 text-center font-semibold text-xs sm:text-sm">% С подписки<br className="hidden sm:block" /> (пассивный)</th>
+                      <th className="p-2 sm:p-4 text-center font-semibold text-xs sm:text-sm whitespace-nowrap">Выплата<br className="hidden sm:block" /> за 3 мес</th>
                     </tr>
                   </thead>
                   <tbody>
                     {payoutTable.map((row, index) => (
                       <tr key={index} className="border-b border-border hover:bg-secondary/20 transition-colors">
-                        <td className="p-4">
-                          <div className="font-medium">{row.tariff}</div>
-                          <div className="text-sm text-muted-foreground">{row.subscription}</div>
+                        <td className="p-2 sm:p-4">
+                          <div className="font-medium whitespace-nowrap">{row.tariff}</div>
+                          <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">{row.subscription}</div>
                         </td>
-                        <td className="p-4 text-center font-medium">{row.salePercent}</td>
-                        <td className="p-4 text-center font-medium text-primary">{row.oneTime}</td>
-                        <td className="p-4 text-center font-medium text-primary">{row.subscriptionPercent}</td>
-                        <td className="p-4 text-center font-bold text-primary text-lg">{row.total3Months}</td>
+                        <td className="p-2 sm:p-4 text-center font-medium whitespace-nowrap">{row.salePercent}</td>
+                        <td className="p-2 sm:p-4 text-center font-medium text-primary whitespace-nowrap">{row.oneTime}</td>
+                        <td className="p-2 sm:p-4 text-center font-medium text-primary whitespace-nowrap">{row.subscriptionPercent}</td>
+                        <td className="p-2 sm:p-4 text-center font-bold text-primary text-base sm:text-lg whitespace-nowrap">{row.total3Months}</td>
                       </tr>
                     ))}
                   </tbody>
