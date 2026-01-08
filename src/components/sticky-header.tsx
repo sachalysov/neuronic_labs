@@ -15,6 +15,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<Array<{ id: string; title: string; text: string }>>([])
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -205,24 +206,63 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Чат-бот
               </button>
-              <button
-                onClick={() => navigateToSection("product")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              <div
+                className="relative"
+                onMouseEnter={() => setIsMenuDropdownOpen(true)}
+                onMouseLeave={() => setIsMenuDropdownOpen(false)}
               >
-                О продукте
-              </button>
+                <button
+                  onClick={() => setIsMenuDropdownOpen(!isMenuDropdownOpen)}
+                  className="text-foreground/90 hover:text-primary transition-colors font-medium flex items-center gap-1"
+                >
+                  Меню
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isMenuDropdownOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isMenuDropdownOpen && (
+                  <div className="absolute top-full left-0 pt-2 w-48 z-50">
+                    <div className="bg-background border border-border rounded-lg shadow-lg overflow-hidden">
+                      <Link
+                        to="/partners"
+                        onClick={() => setIsMenuDropdownOpen(false)}
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Партнерская программа
+                      </Link>
+                      <button
+                        onClick={() => {
+                          navigateToSection("about")
+                          setIsMenuDropdownOpen(false)
+                        }}
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        О нас
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigateToSection("product")
+                          setIsMenuDropdownOpen(false)
+                        }}
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        О продукте
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
              
                <button
                 onClick={() => navigateToSection("pricing")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
                 Тарифы и цены
-              </button>
-               <button
-                onClick={() => navigateToSection("about")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                О нас
               </button>
               <Link
                 to="/business-cases"
@@ -308,23 +348,59 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Чат-бот
               </button>
-              <button
-                onClick={() => navigateToSection("product")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                О продукте
-              </button>
+              <div className="px-2">
+                <button
+                  onClick={() => setIsMenuDropdownOpen(!isMenuDropdownOpen)}
+                  className="text-foreground/90 hover:text-primary transition-colors font-medium text-left flex items-center justify-between w-full py-2"
+                >
+                  <span>Меню</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isMenuDropdownOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isMenuDropdownOpen && (
+                  <div className="pl-4 mt-2 space-y-2 border-l border-border">
+                    <Link
+                      to="/partners"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        setIsMenuDropdownOpen(false)
+                      }}
+                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Партнерская программа
+                    </Link>
+                    <button
+                      onClick={() => {
+                        navigateToSection("about")
+                        setIsMenuDropdownOpen(false)
+                      }}
+                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      О нас
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigateToSection("product")
+                        setIsMenuDropdownOpen(false)
+                      }}
+                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      О продукте
+                    </button>
+                  </div>
+                )}
+              </div>
               <button
                 onClick={() => navigateToSection("process")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
               >
                 Этапы работ
-              </button>
-              <button
-                onClick={() => navigateToSection("about")}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                О нас
               </button>
               <Link
                 to="/business-cases"
