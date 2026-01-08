@@ -209,7 +209,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                 onClick={() => navigateToSection("demo-chat")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
               >
-                Чат-бот
+                Протестировать чат-бот
               </button>
               <div
                 className="relative"
