@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { ThemeToggle } from "./theme-toggle"
+import { search, type SearchResult } from "@/services/search"
 
 interface StickyHeaderProps {
   onOpenDemoChat?: () => void
@@ -14,10 +15,12 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [searchResults, setSearchResults] = useState<Array<{ id: string; title: string; text: string }>>([])
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
   const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false)
+  const [isSearchLoading, setIsSearchLoading] = useState(false)
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +29,15 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Очистка таймера при размонтировании
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current)
+      }
+    }
   }, [])
 
   const scrollToSection = (id: string) => {
@@ -65,51 +77,47 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const handleSearch = (query: string) => {
     setSearchQuery(query)
     
+    // Очищаем предыдущий таймер
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current)
+    }
+    
     const trimmedQuery = query.trim()
     if (trimmedQuery.length < 2) {
       setSearchResults([])
+      setIsSearchLoading(false)
       return
     }
 
-    const sections = [
-      { id: "demo-chat", title: "Чат-бот", selector: "#demo-chat" },
-      { id: "product", title: "О продукте", selector: "#product" },
-      { id: "process", title: "Этапы работ", selector: "#process" },
-      { id: "about", title: "О нас", selector: "#about" },
-      { id: "cases", title: "Кейсы бизнеса", selector: "#cases" },
-      { id: "pricing", title: "Тарифы и цены", selector: "#pricing" },
-    ]
-
-    const results: Array<{ id: string; title: string; text: string }> = []
-    const normalizedQuery = trimmedQuery.toLowerCase().replace(/\s+/g, '')
-
-    sections.forEach((section) => {
-      const element = document.querySelector(section.selector)
-      if (element) {
-        const text = element.textContent || ""
-        const normalizedText = text.toLowerCase().replace(/\s+/g, '')
-        const normalizedTitle = section.title.toLowerCase().replace(/\s+/g, '')
-        
-        if (normalizedText.includes(normalizedQuery) || normalizedTitle.includes(normalizedQuery)) {
-          const index = text.toLowerCase().indexOf(trimmedQuery.toLowerCase())
-          const start = Math.max(0, index > -1 ? index - 40 : 0)
-          const end = Math.min(text.length, index > -1 ? index + trimmedQuery.length + 40 : 100)
-          const snippet = text.substring(start, end).trim()
-          
-          results.push({
-            id: section.id,
-            title: section.title,
-            text: snippet || text.substring(0, 100),
-          })
-        }
+    // Debounce: ждем 300ms перед поиском
+    setIsSearchLoading(true)
+    
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const results = await search(query)
+        setSearchResults(results)
+      } catch (error) {
+        console.error('Ошибка поиска:', error)
+        setSearchResults([])
+      } finally {
+        setIsSearchLoading(false)
       }
-    })
-
-    setSearchResults(results)
+    }, 300)
   }
 
-  const selectSearchResult = (id: string) => {
-    scrollToSection(id)
+  const selectSearchResult = (result: SearchResult) => {
+    if (result.type === 'section') {
+      // Для секций главной страницы
+      if (location.pathname === '/') {
+        scrollToSection(result.id)
+      } else {
+        navigate(`/#${result.id}`)
+      }
+    } else {
+      // Для страниц, блогов и кейсов - навигация
+      navigate(result.url)
+    }
+    
     setSearchQuery("")
     setSearchResults([])
     setIsSearchOpen(false)
@@ -180,22 +188,60 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               )}
               
               {/* Search Results */}
-              {isSearchOpen && searchResults.length > 0 && (
-                <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50">
-                  {searchResults.map((result) => (
-                    <button
-                      key={result.id}
-                      onClick={() => selectSearchResult(result.id)}
-                      className="w-full text-left px-2 sm:px-4 py-2 sm:py-3 hover:bg-primary/10 transition-colors border-b border-border last:border-0"
-                    >
-                      <div className="font-medium text-foreground text-sm sm:text-base">{result.title}</div>
-                      <div className="text-xs sm:text-sm text-foreground/60 mt-1 line-clamp-2">{result.text}</div>
-                    </button>
-                  ))}
+              {isSearchOpen && (searchResults.length > 0 || isSearchLoading) && (
+                <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 max-h-[400px] overflow-y-auto">
+                  {isSearchLoading ? (
+                    <div className="px-2 sm:px-4 py-2 sm:py-3 text-foreground/60 text-xs sm:text-sm text-center">
+                      Поиск...
+                    </div>
+                  ) : (
+                    searchResults.map((result) => {
+                      const typeLabels: Record<SearchResult['type'], string> = {
+                        section: 'Секция',
+                        blog: 'Статья',
+                        case: 'Кейс',
+                        page: 'Страница'
+                      }
+                      
+                      return (
+                        <button
+                          key={result.id}
+                          onClick={() => selectSearchResult(result)}
+                          className="w-full text-left px-2 sm:px-4 py-2 sm:py-3 hover:bg-primary/10 transition-colors border-b border-border last:border-0"
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-foreground text-sm sm:text-base truncate">
+                                {result.title}
+                              </div>
+                              <div className="text-xs sm:text-sm text-foreground/60 mt-1 line-clamp-2">
+                                {result.text}
+                              </div>
+                              {result.metadata?.tags && result.metadata.tags.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {result.metadata.tags.slice(0, 2).map((tag, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="text-xs px-1.5 py-0.5 bg-primary/10 text-primary rounded"
+                                    >
+                                      {tag}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <span className="text-xs text-foreground/40 whitespace-nowrap ml-2">
+                              {typeLabels[result.type]}
+                            </span>
+                          </div>
+                        </button>
+                      )
+                    })
+                  )}
                 </div>
               )}
               
-              {isSearchOpen && searchQuery.length >= 2 && searchResults.length === 0 && (
+              {isSearchOpen && searchQuery.length >= 2 && !isSearchLoading && searchResults.length === 0 && (
                 <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50 px-2 sm:px-4 py-2 sm:py-3 text-foreground/60 text-xs sm:text-sm">
                   Ничего не найдено
                 </div>
