@@ -25,7 +25,7 @@ export function formatMessageText(text: string): React.ReactNode {
       }
       
       // Создаем элемент заголовка с соответствующим размером
-      const HeaderTag = `h${Math.min(level, 6)}` as keyof JSX.IntrinsicElements;
+      const HeaderTag = `h${Math.min(level, 6)}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
       const className = 
         level === 1 ? 'text-xl font-bold mt-2 mb-2' :
         level === 2 ? 'text-lg font-semibold mt-2 mb-2' :
@@ -37,9 +37,7 @@ export function formatMessageText(text: string): React.ReactNode {
       key += headerText.split('**').length - 1;
       
       parts.push(
-        <HeaderTag key={key++} className={className}>
-          {headerContent}
-        </HeaderTag>
+        React.createElement(HeaderTag, { key: key++, className }, headerContent)
       );
     } else if (line.trim()) {
       // Обычный текст - обрабатываем жирный текст
