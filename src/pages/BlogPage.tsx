@@ -199,7 +199,7 @@ export default function BlogPage() {
 
               {/* Основной контент со статьями */}
               <div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
                   {posts.map((post) => (
                     <Link
                       key={post.id}
@@ -230,13 +230,13 @@ export default function BlogPage() {
                           </div>
                           
                           <div className="mt-4 pt-4 border-t border-border">
-                            <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-                              <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4" />
+                            <div className="flex items-center justify-between text-sm text-muted-foreground mb-3 flex-wrap gap-2">
+                              <div className="flex items-center gap-2 whitespace-nowrap">
+                                <Calendar className="h-4 w-4 flex-shrink-0" />
                                 <span>{formatDate(post.publishedAt)}</span>
                               </div>
                               {post.author && (
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 whitespace-nowrap">
                                   <span>{post.author}</span>
                                 </div>
                               )}
