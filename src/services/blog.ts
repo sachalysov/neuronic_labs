@@ -1,3 +1,5 @@
+import { supabase } from '@/lib/supabase'
+
 export interface BlogPost {
   id: string
   title: string
@@ -10,6 +12,32 @@ export interface BlogPost {
 }
 
 const WEBHOOK_URL = import.meta.env.VITE_BLOG_WEBHOOK_URL || '/api/blog/posts'
+
+// Преобразование данных из Supabase в формат BlogPost
+function mapSupabasePost(post: any): BlogPost {
+  // Если ID это UUID, конвертируем в строку
+  const id = typeof post.id === 'string' ? post.id : String(post.id)
+  
+  // Преобразуем дату в ISO строку, если нужно
+  let publishedAt = post.published_at
+  if (publishedAt instanceof Date) {
+    publishedAt = publishedAt.toISOString()
+  } else if (typeof publishedAt === 'string' && !publishedAt.includes('T')) {
+    // Если дата в формате YYYY-MM-DD, добавляем время
+    publishedAt = publishedAt + 'T00:00:00Z'
+  }
+  
+  return {
+    id,
+    title: post.title,
+    content: post.content,
+    excerpt: post.excerpt || undefined,
+    author: post.author || undefined,
+    publishedAt: publishedAt || new Date().toISOString(),
+    imageUrl: post.image_url || undefined,
+    tags: post.tags || undefined,
+  }
+}
 
 // Тестовые статьи (используются если вебхук недоступен)
 const MOCK_POSTS: BlogPost[] = [
@@ -256,84 +284,118 @@ const MOCK_POSTS: BlogPost[] = [
 ]
 
 export async function fetchBlogPosts(): Promise<BlogPost[]> {
-  // Если вебхук не настроен (дефолтный путь), используем тестовые данные
-  const useMockData = WEBHOOK_URL === '/api/blog/posts' || !import.meta.env.VITE_BLOG_WEBHOOK_URL
-  
-  if (useMockData) {
-    // Имитируем асинхронную загрузку
-    await new Promise(resolve => setTimeout(resolve, 500))
-    return MOCK_POSTS
+  // Приоритет 1: Supabase
+  if (supabase) {
+    try {
+      console.log('Запрос к Supabase: загрузка статей блога...')
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .order('published_at', { ascending: false })
+
+      if (error) {
+        console.error('Ошибка Supabase:', error)
+        console.error('Детали ошибки:', JSON.stringify(error, null, 2))
+      } else if (data) {
+        console.log(`Получено постов из Supabase: ${data.length}`)
+        if (data.length > 0) {
+          const mapped = data.map(mapSupabasePost)
+          console.log('Успешно загружены посты из Supabase')
+          return mapped
+        } else {
+          console.log('Таблица blog_posts пуста')
+        }
+      }
+    } catch (error) {
+      console.error('Ошибка при получении статей из Supabase:', error)
+      if (error instanceof Error) {
+        console.error('Сообщение об ошибке:', error.message)
+        console.error('Stack:', error.stack)
+      }
+    }
+  } else {
+    console.warn('Supabase клиент не инициализирован. Проверьте переменные окружения VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY')
   }
 
-  try {
-    const response = await fetch(WEBHOOK_URL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+  // Приоритет 2: Вебхук (если настроен)
+  const useWebhook = WEBHOOK_URL !== '/api/blog/posts' && import.meta.env.VITE_BLOG_WEBHOOK_URL
+  if (useWebhook) {
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-    if (!response.ok) {
-      throw new Error(`Ошибка загрузки статей: ${response.statusText}`)
+      if (response.ok) {
+        const data = await response.json()
+        
+        if (Array.isArray(data)) {
+          return data
+        }
+        
+        if (data.posts && Array.isArray(data.posts)) {
+          return data.posts
+        }
+        
+        if (data.data && Array.isArray(data.data)) {
+          return data.data
+        }
+      }
+    } catch (error) {
+      console.error('Ошибка при получении статей из вебхука:', error)
     }
-
-    const data = await response.json()
-    
-    // Если данные приходят как массив, возвращаем их
-    if (Array.isArray(data)) {
-      return data
-    }
-    
-    // Если данные в обёртке (например, { posts: [...] })
-    if (data.posts && Array.isArray(data.posts)) {
-      return data.posts
-    }
-    
-    // Если данные в другой структуре
-    if (data.data && Array.isArray(data.data)) {
-      return data.data
-    }
-    
-    // Если вебхук вернул пустой массив, возвращаем тестовые данные
-    return MOCK_POSTS
-  } catch (error) {
-    console.error('Ошибка при получении статей блога:', error)
-    console.log('Используются тестовые данные')
-    // В случае ошибки возвращаем тестовые данные
-    return MOCK_POSTS
   }
+
+  // Fallback: Тестовые данные
+  await new Promise(resolve => setTimeout(resolve, 500))
+  return MOCK_POSTS
 }
 
 export async function fetchBlogPostById(id: string): Promise<BlogPost | null> {
-  // Если вебхук не настроен, используем тестовые данные
-  const useMockData = WEBHOOK_URL === '/api/blog/posts' || !import.meta.env.VITE_BLOG_WEBHOOK_URL
-  
-  if (useMockData) {
-    // Имитируем асинхронную загрузку
-    await new Promise(resolve => setTimeout(resolve, 300))
-    const post = MOCK_POSTS.find(p => p.id === id)
-    return post || null
-  }
+  // Приоритет 1: Supabase
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('id', id)
+        .single()
 
-  try {
-    const response = await fetch(`${WEBHOOK_URL}/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`Ошибка загрузки статьи: ${response.statusText}`)
+      if (error) {
+        console.error('Ошибка Supabase:', error)
+      } else if (data) {
+        return mapSupabasePost(data)
+      }
+    } catch (error) {
+      console.error('Ошибка при получении статьи из Supabase:', error)
     }
-
-    const data = await response.json()
-    return data.post || data.data || data
-  } catch (error) {
-    console.error('Ошибка при получении статьи:', error)
-    // В случае ошибки ищем в тестовых данных
-    const post = MOCK_POSTS.find(p => p.id === id)
-    return post || null
   }
+
+  // Приоритет 2: Вебхук (если настроен)
+  const useWebhook = WEBHOOK_URL !== '/api/blog/posts' && import.meta.env.VITE_BLOG_WEBHOOK_URL
+  if (useWebhook) {
+    try {
+      const response = await fetch(`${WEBHOOK_URL}/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const post = data.post || data.data || data
+        if (post) return post
+      }
+    } catch (error) {
+      console.error('Ошибка при получении статьи из вебхука:', error)
+    }
+  }
+
+  // Fallback: Тестовые данные
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return MOCK_POSTS.find(p => p.id === id) || null
 }
 
