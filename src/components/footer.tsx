@@ -1,16 +1,27 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 export function Footer() {
   const location = useLocation()
+  const navigate = useNavigate()
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+      const headerOffset = 80
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+      window.scrollTo({ top: offsetPosition, behavior: "auto" })
+    }
+  }
 
   const navigateToSection = (id: string) => {
     if (location.pathname === '/') {
-      const element = document.getElementById(id)
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
+      // Если мы на главной, скроллим к секции
+      scrollToSection(id)
     } else {
-      window.location.href = `/#${id}`
+      // Если мы не на главной, переходим на главную с hash
+      // HomePage сам обработает hash и прокрутит к секции
+      navigate(`/#${id}`)
     }
   }
 
