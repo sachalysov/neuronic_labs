@@ -1,8 +1,10 @@
 import { supabase } from '@/lib/supabase'
+import { generateSlug } from '@/lib/utils'
 
 export interface BlogPost {
   id: string
   title: string
+  slug: string
   content: string
   excerpt?: string
   author?: string
@@ -49,9 +51,12 @@ function mapSupabasePost(post: any): BlogPost {
     }
   }
   
+  const title = post.title || 'Без названия'
+  
   return {
     id,
-    title: post.title || 'Без названия',
+    title,
+    slug: post.slug || generateSlug(title), // Используем slug из БД или генерируем из title
     content: post.content || '',
     excerpt: post.excerpt || undefined,
     author: post.author || undefined,
@@ -66,6 +71,7 @@ const MOCK_POSTS: BlogPost[] = [
   {
     id: '1',
     title: 'Как ИИ-автоматизация увеличивает конверсию в 2-3 раза',
+    slug: 'kak-ii-avtomatizaciya-uvelichivaet-konversiyu-v-2-3-raza',
     excerpt: 'Узнайте, как правильно внедрить ИИ-продавца в ваш бизнес и получить максимальный результат уже в первые недели.',
     content: `<h2>Введение</h2>
       <p>В современном мире скорость реакции на запросы клиентов стала критическим фактором успеха. Исследования показывают, что 80% лидов уходят к конкурентам из-за медленного ответа менеджеров. Решение этой проблемы — интеллектуальная автоматизация с помощью ИИ-агентов.</p>
@@ -122,6 +128,7 @@ const MOCK_POSTS: BlogPost[] = [
   {
     id: '2',
     title: '5 способов автоматизации бизнес-процессов с помощью ИИ',
+    slug: '5-sposobov-avtomatizacii-biznes-processov-s-pomoshchyu-ii',
     excerpt: 'Практические кейсы использования искусственного интеллекта для автоматизации рутинных задач и повышения эффективности работы.',
     content: `<h2>Введение</h2>
       <p>Автоматизация бизнес-процессов с помощью искусственного интеллекта открывает новые возможности для оптимизации работы компании. В этой статье мы рассмотрим 5 эффективных способов внедрения ИИ в ваш бизнес.</p>
@@ -211,6 +218,7 @@ const MOCK_POSTS: BlogPost[] = [
   {
     id: '3',
     title: 'ИИ-чат-боты: выбор платформы и интеграция в бизнес',
+    slug: 'ii-chat-boty-vybor-platformy-i-integraciya-v-biznes',
     excerpt: 'Подробное руководство по выбору платформы для создания чат-бота, интеграции с мессенджерами и настройке под специфику вашего бизнеса.',
     content: `<h2>Введение</h2>
       <p>ИИ-чат-боты стали стандартом современного бизнеса. Они позволяют автоматизировать общение с клиентами, сократить затраты и улучшить качество сервиса. В этой статье мы разберем, как выбрать правильную платформу и успешно интегрировать чат-бота в ваш бизнес.</p>
@@ -462,5 +470,81 @@ export async function fetchBlogPostById(id: string): Promise<BlogPost | null> {
   // Fallback: Тестовые данные
   await new Promise(resolve => setTimeout(resolve, 300))
   return MOCK_POSTS.find(p => p.id === id) || null
+}
+
+export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+  // Приоритет 1: Supabase
+  if (supabase) {
+    try {
+      console.log(`Запрос к Supabase: загрузка статьи с slug ${slug}...`)
+      
+      // Сначала пытаемся найти по полю slug (если оно есть в БД)
+      let { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('slug', slug)
+        .single()
+
+      // Если поле slug отсутствует или не найдено, ищем по всем постам и сравниваем сгенерированный slug
+      if (error || !data) {
+        console.log('Статья не найдена по полю slug, ищем по всем постам...')
+        const { data: allPosts, error: allPostsError } = await supabase
+          .from('blog_posts')
+          .select('*')
+
+        if (!allPostsError && allPosts) {
+          // Ищем пост, у которого сгенерированный slug совпадает
+          for (const post of allPosts) {
+            const mappedPost = mapSupabasePost(post)
+            if (mappedPost.slug === slug) {
+              console.log('Статья найдена по сгенерированному slug')
+              return mappedPost
+            }
+          }
+        }
+        
+        console.log('Статья не найдена в Supabase')
+        return null
+      }
+      
+      if (data) {
+        console.log('Статья найдена в Supabase по полю slug')
+        return mapSupabasePost(data)
+      }
+      
+      return null
+    } catch (error) {
+      console.error('Ошибка при получении статьи из Supabase:', error)
+      if (error instanceof Error) {
+        console.error('Сообщение об ошибке:', error.message)
+      }
+      return null
+    }
+  }
+
+  // Приоритет 2: Вебхук (если настроен)
+  const useWebhook = WEBHOOK_URL !== '/api/blog/posts' && import.meta.env.VITE_BLOG_WEBHOOK_URL
+  if (useWebhook) {
+    try {
+      const response = await fetch(`${WEBHOOK_URL}/slug/${slug}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        const post = data.post || data.data || data
+        if (post) return post
+      }
+    } catch (error) {
+      console.error('Ошибка при получении статьи из вебхука:', error)
+    }
+  }
+
+  // Fallback: Тестовые данные
+  await new Promise(resolve => setTimeout(resolve, 300))
+  return MOCK_POSTS.find(p => p.slug === slug) || null
 }
 

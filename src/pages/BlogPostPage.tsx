@@ -6,14 +6,14 @@ import { ChatWidget } from "@/components/chat-widget"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { fetchBlogPostById, type BlogPost } from "@/services/blog"
+import { fetchBlogPostBySlug, type BlogPost } from "@/services/blog"
 import { Calendar, ArrowLeft, Loader2 } from "lucide-react"
 import { useMeta } from "@/hooks/useMeta"
 import { createBlogMetaTags } from "@/lib/meta"
 import { formatDate } from "@/lib/utils"
 
 export default function BlogPostPage() {
-  const { id } = useParams<{ id: string }>()
+  const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const [post, setPost] = useState<BlogPost | null>(null)
   const [loading, setLoading] = useState(true)
@@ -21,22 +21,23 @@ export default function BlogPostPage() {
   
   // Устанавливаем мета-теги на основе загруженной статьи
   const metaTags = useMemo(() => {
-    if (post) {
+    if (post && post.title) {
       return createBlogMetaTags(
         post.title,
         post.excerpt || post.content?.replace(/<[^>]*>/g, '').substring(0, 160) || 'Статья блога NEURONIC LABS',
         post.imageUrl,
-        `/blog/${post.id}`
+        `/blog/${post.slug}`
       )
     }
-    return createBlogMetaTags('Загрузка статьи...', undefined, undefined, id ? `/blog/${id}` : '/blog')
-  }, [post, id])
+    // Пока статья не загружена, используем дефолтный title
+    return createBlogMetaTags('Блог | NEURONIC LABS', undefined, undefined, '/blog')
+  }, [post])
   
   useMeta(metaTags)
 
   useEffect(() => {
-    if (!id) {
-      setError("ID статьи не указан")
+    if (!slug) {
+      setError("Slug статьи не указан")
       setLoading(false)
       return
     }
@@ -45,7 +46,7 @@ export default function BlogPostPage() {
       setLoading(true)
       setError(null)
       try {
-        const blogPost = await fetchBlogPostById(id)
+        const blogPost = await fetchBlogPostBySlug(slug)
         if (!blogPost) {
           setError("Статья не найдена")
         } else {
@@ -59,7 +60,7 @@ export default function BlogPostPage() {
     }
 
     loadPost()
-  }, [id])
+  }, [slug])
 
 
   const renderContent = (content: string) => {

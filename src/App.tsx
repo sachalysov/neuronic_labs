@@ -31,7 +31,7 @@ function App() {
           } 
         />
         <Route 
-          path="/blog/:id" 
+          path="/blog/:slug" 
           element={
             <Suspense fallback={<PageLoader />}>
               <BlogPostPage />

@@ -168,7 +168,7 @@ export default function BlogPage() {
                                   {tagPosts.slice(0, 5).map((post) => (
                                     <li key={post.id}>
                                       <Link
-                                        to={`/blog/${post.id}`}
+                                        to={`/blog/${post.slug}`}
                                         className="block text-sm text-muted-foreground hover:text-primary transition-colors line-clamp-2"
                                       >
                                         {post.title}
@@ -203,7 +203,7 @@ export default function BlogPage() {
                   {posts.map((post) => (
                     <Link
                       key={post.id}
-                      to={`/blog/${post.id}`}
+                      to={`/blog/${post.slug}`}
                       className="block"
                     >
                       <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 hover:scale-105 flex flex-col cursor-pointer h-full">
