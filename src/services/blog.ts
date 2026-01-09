@@ -22,20 +22,42 @@ function mapSupabasePost(post: any): BlogPost {
   let publishedAt = post.published_at
   if (publishedAt instanceof Date) {
     publishedAt = publishedAt.toISOString()
-  } else if (typeof publishedAt === 'string' && !publishedAt.includes('T')) {
-    // Если дата в формате YYYY-MM-DD, добавляем время
-    publishedAt = publishedAt + 'T00:00:00Z'
+  } else if (typeof publishedAt === 'string') {
+    if (!publishedAt.includes('T')) {
+      // Если дата в формате YYYY-MM-DD, добавляем время
+      publishedAt = publishedAt + 'T00:00:00Z'
+    }
+    // Иначе оставляем как есть (уже в ISO формате)
+  }
+  
+  // Обработка тегов: могут быть массивом, JSON строкой или null
+  let tags: string[] | undefined = undefined
+  if (post.tags) {
+    if (Array.isArray(post.tags)) {
+      tags = post.tags
+    } else if (typeof post.tags === 'string') {
+      try {
+        // Попытка парсинга JSON строки
+        const parsed = JSON.parse(post.tags)
+        if (Array.isArray(parsed)) {
+          tags = parsed
+        }
+      } catch {
+        // Если не JSON, возможно это просто строка с одним тегом
+        tags = [post.tags]
+      }
+    }
   }
   
   return {
     id,
-    title: post.title,
-    content: post.content,
+    title: post.title || 'Без названия',
+    content: post.content || '',
     excerpt: post.excerpt || undefined,
     author: post.author || undefined,
     publishedAt: publishedAt || new Date().toISOString(),
-    imageUrl: post.image_url || undefined,
-    tags: post.tags || undefined,
+    imageUrl: post.image_url || post.imageUrl || undefined,
+    tags,
   }
 }
 
@@ -284,37 +306,66 @@ const MOCK_POSTS: BlogPost[] = [
 ]
 
 export async function fetchBlogPosts(): Promise<BlogPost[]> {
+  console.log('[Blog Service] Начало загрузки статей блога...')
+  
   // Приоритет 1: Supabase
   if (supabase) {
     try {
-      console.log('Запрос к Supabase: загрузка статей блога...')
+      console.log('[Blog Service] Запрос к Supabase: загрузка статей блога...')
+      const startTime = performance.now()
+      
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
         .order('published_at', { ascending: false })
 
+      const endTime = performance.now()
+      console.log(`[Blog Service] Запрос выполнен за ${(endTime - startTime).toFixed(2)}ms`)
+
       if (error) {
-        console.error('Ошибка Supabase:', error)
-        console.error('Детали ошибки:', JSON.stringify(error, null, 2))
-      } else if (data) {
-        console.log(`Получено постов из Supabase: ${data.length}`)
+        console.error('[Blog Service] Ошибка Supabase:', error)
+        console.error('[Blog Service] Код ошибки:', error.code)
+        console.error('[Blog Service] Сообщение:', error.message)
+        console.error('[Blog Service] Детали ошибки:', JSON.stringify(error, null, 2))
+        
+        // При ошибке возвращаем пустой массив, не переходим к fallback
+        // чтобы не показывать моковые данные при проблемах с БД
+        console.warn('[Blog Service] Возвращаем пустой массив из-за ошибки')
+        return []
+      }
+      
+      if (data !== null && data !== undefined) {
+        console.log(`[Blog Service] Получено постов из Supabase: ${data.length}`)
         if (data.length > 0) {
+          console.log('[Blog Service] Пример первой записи:', {
+            id: data[0].id,
+            title: data[0].title,
+            hasContent: !!data[0].content,
+            tags: data[0].tags
+          })
+          
           const mapped = data.map(mapSupabasePost)
-          console.log('Успешно загружены посты из Supabase')
+          console.log(`[Blog Service] Успешно загружены и преобразованы ${mapped.length} постов из Supabase`)
           return mapped
         } else {
-          console.log('Таблица blog_posts пуста')
+          console.log('[Blog Service] Таблица blog_posts пуста, возвращаем пустой массив')
+          return []
         }
       }
+      
+      console.warn('[Blog Service] Supabase вернул null/undefined, возвращаем пустой массив')
+      return []
     } catch (error) {
-      console.error('Ошибка при получении статей из Supabase:', error)
+      console.error('[Blog Service] Исключение при получении статей из Supabase:', error)
       if (error instanceof Error) {
-        console.error('Сообщение об ошибке:', error.message)
-        console.error('Stack:', error.stack)
+        console.error('[Blog Service] Сообщение об ошибке:', error.message)
+        console.error('[Blog Service] Stack:', error.stack)
       }
+      // При исключении тоже возвращаем пустой массив
+      return []
     }
   } else {
-    console.warn('Supabase клиент не инициализирован. Проверьте переменные окружения VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY')
+    console.warn('[Blog Service] Supabase клиент не инициализирован. Проверьте переменные окружения VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY')
   }
 
   // Приоритет 2: Вебхук (если настроен)
@@ -357,6 +408,7 @@ export async function fetchBlogPostById(id: string): Promise<BlogPost | null> {
   // Приоритет 1: Supabase
   if (supabase) {
     try {
+      console.log(`Запрос к Supabase: загрузка статьи с ID ${id}...`)
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
@@ -365,11 +417,24 @@ export async function fetchBlogPostById(id: string): Promise<BlogPost | null> {
 
       if (error) {
         console.error('Ошибка Supabase:', error)
-      } else if (data) {
+        console.error('Код ошибки:', error.code)
+        // При ошибке (например, пост не найден) возвращаем null
+        return null
+      }
+      
+      if (data) {
+        console.log('Статья найдена в Supabase')
         return mapSupabasePost(data)
       }
+      
+      console.log('Статья не найдена в Supabase')
+      return null
     } catch (error) {
       console.error('Ошибка при получении статьи из Supabase:', error)
+      if (error instanceof Error) {
+        console.error('Сообщение об ошибке:', error.message)
+      }
+      return null
     }
   }
 
