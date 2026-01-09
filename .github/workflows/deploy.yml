@@ -26,6 +26,12 @@ jobs:
         run: npm ci
 
       - name: Build project
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_CHAT_WEBHOOK_URL: ${{ secrets.VITE_CHAT_WEBHOOK_URL }}
+          VITE_FORM_WEBHOOK_URL: ${{ secrets.VITE_FORM_WEBHOOK_URL }}
+          VITE_BLOG_WEBHOOK_URL: ${{ secrets.VITE_BLOG_WEBHOOK_URL }}
         run: npm run build
 
       - name: Install rsync
