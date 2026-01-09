@@ -19,56 +19,83 @@ export function Footer() {
       <div className="container mx-auto">
         {/* Верхняя часть - ссылки */}
         <div className="mb-8 sm:mb-12 pb-8 sm:pb-12 border-b border-border">
-          <nav className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8">
-            <button
-              onClick={() => navigateToSection("demo-chat")}
-              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
-            >
-              Протестировать чат-бота
-            </button>
-            <button
-              onClick={() => navigateToSection("product")}
-              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
-            >
-              О продукте
-            </button>
-            <button
-              onClick={() => navigateToSection("pricing")}
-              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
-            >
-              Тарифы и цены
-            </button>
-            <button
-              onClick={() => navigateToSection("about")}
-              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
-            >
-              О нас
-            </button>
-            <Link
-              to="/business-cases"
-              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
-            >
-              Кейсы бизнеса
-            </Link>
-            <Link
-              to="/blog"
-              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
-            >
-              Блог
-            </Link>
-            <Link
-              to="/partners"
-              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
-            >
-              Партнерская программа
-            </Link>
-            <Link
-              to="/contacts"
-              className="text-foreground/80 hover:text-primary transition-colors text-sm sm:text-base"
-            >
-              Контакты
-            </Link>
-          </nav>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6 sm:gap-8">
+            {/* Продукт */}
+            <div className="flex flex-col">
+              <h3 className="text-foreground font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Продукт</h3>
+              <nav className="flex flex-col gap-2 sm:gap-3">
+                <button
+                  onClick={() => navigateToSection("demo-chat")}
+                  className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+                >
+                  Протестировать чат-бота
+                </button>
+                <button
+                  onClick={() => navigateToSection("product")}
+                  className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+                >
+                  О продукте
+                </button>
+                <button
+                  onClick={() => navigateToSection("pricing")}
+                  className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+                >
+                  Тарифы и цены
+                </button>
+              </nav>
+            </div>
+
+            {/* О компании */}
+            <div className="flex flex-col">
+              <h3 className="text-foreground font-semibold mb-3 sm:mb-4 text-sm sm:text-base">О компании</h3>
+              <nav className="flex flex-col gap-2 sm:gap-3">
+                <button
+                  onClick={() => navigateToSection("about")}
+                  className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+                >
+                  О нас
+                </button>
+                <Link
+                  to="/blog"
+                  className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+                >
+                  Блог
+                </Link>
+              </nav>
+            </div>
+
+            {/* Клиентам */}
+            <div className="flex flex-col">
+              <h3 className="text-foreground font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Клиентам</h3>
+              <nav className="flex flex-col gap-2 sm:gap-3">
+                <Link
+                  to="/business-cases"
+                  className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+                >
+                  Кейсы бизнеса
+                </Link>
+                <Link
+                  to="/contacts"
+                  className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+                >
+                  Контакты
+                </Link>
+              </nav>
+            </div>
+
+            {/* Партнерам */}
+            <div className="flex flex-col">
+              <h3 className="text-foreground font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Партнерам</h3>
+              <nav className="flex flex-col gap-2 sm:gap-3">
+                <Link
+                  to="/partners"
+                  className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+                >
+                  Партнерская программа
+                </Link>
+              </nav>
+            </div>
+          </div>
         </div>
 
         {/* Нижняя часть - логотип и копирайт */}
