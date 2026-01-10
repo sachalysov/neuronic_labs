@@ -32,7 +32,7 @@ function mapSupabasePost(post: any): BlogPost {
     // Иначе оставляем как есть (уже в ISO формате)
   }
   
-  // Обработка тегов: могут быть массивом, JSON строкой или null
+  // Обработка тегов: могут быть массивом, JSON строкой или строкой с одинарными кавычками
   let tags: string[] | undefined = undefined
   if (post.tags) {
     if (Array.isArray(post.tags)) {
@@ -45,8 +45,30 @@ function mapSupabasePost(post: any): BlogPost {
           tags = parsed
         }
       } catch {
-        // Если не JSON, возможно это просто строка с одним тегом
-        tags = [post.tags]
+        // Если не JSON, проверяем строку с одинарными кавычками (например: "['tag1', 'tag2']")
+        const trimmed = post.tags.trim()
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+          try {
+            // Заменяем одинарные кавычки на двойные для парсинга JSON
+            const jsonString = trimmed.replace(/'/g, '"')
+            const parsed = JSON.parse(jsonString)
+            if (Array.isArray(parsed)) {
+              tags = parsed
+            }
+          } catch {
+            // Если не получилось, извлекаем элементы через регулярное выражение
+            const matches = trimmed.match(/'([^']+)'/g)
+            if (matches) {
+              tags = matches.map((match: string) => match.slice(1, -1)) // Убираем кавычки
+            } else {
+              // Если ничего не найдено, используем как один тег
+              tags = [post.tags]
+            }
+          }
+        } else {
+          // Если это просто строка без массива, используем как один тег
+          tags = [post.tags]
+        }
       }
     }
   }
