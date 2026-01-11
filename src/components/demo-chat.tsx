@@ -9,6 +9,7 @@ import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
 import { Message } from "@/lib/types"
+import { ConsultationModal } from "@/components/consultation-modal"
 
 interface DemoChatProps {
   onClose?: () => void
@@ -95,6 +96,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [linkButtonsVisible, setLinkButtonsVisible] = useState(true)
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -132,6 +134,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     
     // Показываем кнопки со ссылками снова
     setLinkButtonsVisible(true)
+    
+    // Закрываем модальное окно консультации при сбросе
+    setIsConsultationModalOpen(false)
     
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
@@ -433,6 +438,18 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               </Button>
             </div>
           )}
+          {messages.length >= 8 && (
+            <div className="mb-2">
+              <Button
+                type="button"
+                variant="default"
+                onClick={() => setIsConsultationModalOpen(true)}
+                className="w-full text-sm py-2"
+              >
+                Заказать внедрение бота
+              </Button>
+            </div>
+          )}
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -454,6 +471,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           </form>
         </div>
       </CardContent>
+      <ConsultationModal 
+        isOpen={isConsultationModalOpen}
+        onClose={() => setIsConsultationModalOpen(false)}
+      />
     </Card>
   )
 }
