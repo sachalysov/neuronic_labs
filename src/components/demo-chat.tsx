@@ -97,6 +97,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [linkButtonsVisible, setLinkButtonsVisible] = useState(true)
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
+  // Храним текущий webhook URL (по умолчанию стандартный для demo)
+  const [currentWebhookUrl, setCurrentWebhookUrl] = useState<string | undefined>(() => {
+    const stored = getLocalStorage('demo-chat-webhook-url')
+    return stored || undefined
+  })
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -124,6 +129,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     removeLocalStorage('demo-chat-session-id')
     removeLocalStorage('demo-chat-messages')
     removeLocalStorage('demo-chat-last-activity')
+    removeLocalStorage('demo-chat-webhook-url')
     
     // Сохраняем новый sessionId и время активности
     setLocalStorage('demo-chat-session-id', newId)
@@ -137,6 +143,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     
     // Закрываем модальное окно консультации при сбросе
     setIsConsultationModalOpen(false)
+    
+    // Сбрасываем webhook на исходный (undefined = стандартный для demo)
+    setCurrentWebhookUrl(undefined)
+    removeLocalStorage('demo-chat-webhook-url')
     
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
@@ -205,7 +215,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     updateLastActivity() // Обновляем активность при отправке сообщения
 
     try {
-      const response = await sendChatMessage(input, 'demo', sessionId)
+      const response = await sendChatMessage(input, 'demo', sessionId, currentWebhookUrl)
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -239,42 +249,99 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const handleSendLink = async (link: string) => {
     if (isLoading) return
 
-    // Скрываем кнопки после выбора ссылки
-    setLinkButtonsVisible(false)
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: link,
-      sender: "user",
-      timestamp: new Date(),
-    }
-
-    setMessages((prev) => [...prev, userMessage])
-    setIsLoading(true)
-    updateLastActivity()
-
-    try {
-      const response = await sendChatMessage(link, 'demo', sessionId)
-
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: response.message,
-        sender: "bot",
-        timestamp: new Date(),
-      }
-
-      setMessages((prev) => [...prev, botMessage])
+    // Если это кнопка vomoloko.ru, переключаемся на новый webhook
+    if (link === "vomoloko.ru") {
+      // Устанавливаем новый webhook
+      const newWebhookUrl = 'https://n8n.alexlysov.ru/webhook/cd9b5cc3-69e0-4742-9396-4a8b02e61270/chat'
+      setCurrentWebhookUrl(newWebhookUrl)
+      setLocalStorage('demo-chat-webhook-url', newWebhookUrl)
+      
+      // Скрываем кнопки после выбора ссылки
+      setLinkButtonsVisible(false)
+      
+      setIsLoading(true)
       updateLastActivity()
-    } catch (error) {
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "Извините, произошла ошибка. Попробуйте позже.",
-        sender: "bot",
+
+      try {
+        const messageText = "У меня есть пара вопросов"
+        
+        // Показываем отправленное сообщение в чате сразу
+        const userMessage: Message = {
+          id: Date.now().toString(),
+          text: messageText,
+          sender: "user",
+          timestamp: new Date(),
+        }
+        setMessages((prev) => [...prev, userMessage])
+        
+        console.log('Отправка запроса на webhook:', newWebhookUrl)
+        console.log('Данные запроса:', { messageText, sessionId })
+        
+        // Отправляем фиксированное сообщение на новый webhook
+        const response = await sendChatMessage(messageText, 'demo', sessionId, newWebhookUrl)
+
+        console.log('Ответ от webhook:', response)
+
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: response.message,
+          sender: "bot",
+          timestamp: new Date(),
+        }
+
+        setMessages((prev) => [...prev, botMessage])
+        updateLastActivity()
+      } catch (error) {
+        console.error('Ошибка при отправке на webhook:', error)
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже.",
+          sender: "bot",
+          timestamp: new Date(),
+        }
+        setMessages((prev) => [...prev, errorMessage])
+      } finally {
+        setIsLoading(false)
+      }
+    } else {
+      // Для других кнопок (protec.one) используем стандартную логику
+      // Скрываем кнопки после выбора ссылки
+      setLinkButtonsVisible(false)
+
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        text: link,
+        sender: "user",
         timestamp: new Date(),
       }
-      setMessages((prev) => [...prev, errorMessage])
-    } finally {
-      setIsLoading(false)
+
+      setMessages((prev) => [...prev, userMessage])
+      setIsLoading(true)
+      updateLastActivity()
+
+      try {
+        const response = await sendChatMessage(link, 'demo', sessionId, currentWebhookUrl)
+
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: response.message,
+          sender: "bot",
+          timestamp: new Date(),
+        }
+
+        setMessages((prev) => [...prev, botMessage])
+        updateLastActivity()
+      } catch (error) {
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: "Извините, произошла ошибка. Попробуйте позже.",
+          sender: "bot",
+          timestamp: new Date(),
+        }
+        setMessages((prev) => [...prev, errorMessage])
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 

@@ -4,13 +4,16 @@ type ChatType = 'widget' | 'demo'
 export async function sendChatMessage(
   messageText: string, 
   chatType: ChatType = 'widget',
-  sessionId: string
+  sessionId: string,
+  customWebhookUrl?: string
 ): Promise<{ message: string }> {
   try {
-    // Используем разные вебхуки для виджета и демо-чата
-    const webhookUrl = chatType === 'widget' 
-      ? (import.meta.env.VITE_WIDGET_WEBHOOK_URL || 'https://n8n.alexlysov.ru/webhook/bc12fe55-7a98-4d81-b4ec-d3d74650e28a/chat')
-      : 'https://n8n.alexlysov.ru/webhook/b74adb23-9f9b-4b80-8dc3-7a2fe09e980e/chat'
+    // Если передан кастомный webhook, используем его
+    const webhookUrl = customWebhookUrl || (
+      chatType === 'widget' 
+        ? (import.meta.env.VITE_WIDGET_WEBHOOK_URL || 'https://n8n.alexlysov.ru/webhook/bc12fe55-7a98-4d81-b4ec-d3d74650e28a/chat')
+        : 'https://n8n.alexlysov.ru/webhook/b74adb23-9f9b-4b80-8dc3-7a2fe09e980e/chat'
+    )
 
     if (!webhookUrl) {
       console.warn(`Webhook URL for ${chatType} not configured. Using mock response.`)
@@ -20,21 +23,30 @@ export async function sendChatMessage(
       }
     }
 
+    const requestBody = {
+      message: messageText,
+      sessionId: sessionId, // Уникальный идентификатор сессии
+      timestamp: new Date().toISOString(),
+      chatType: chatType, // Добавляем тип чата для различения на бэкенде
+    }
+    
+    console.log('Отправка запроса на webhook:', webhookUrl)
+    console.log('Тело запроса:', requestBody)
+    
     const response = await fetch(webhookUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        message: messageText,
-        sessionId: sessionId, // Уникальный идентификатор сессии
-        timestamp: new Date().toISOString(),
-        chatType: chatType, // Добавляем тип чата для различения на бэкенде
-      }),
+      body: JSON.stringify(requestBody),
     })
 
+    console.log('Статус ответа:', response.status, response.statusText)
+
     if (!response.ok) {
-      throw new Error(`Webhook returned status ${response.status}`)
+      const errorText = await response.text().catch(() => '')
+      console.error('Ошибка ответа webhook:', errorText)
+      throw new Error(`Webhook returned status ${response.status}: ${errorText || response.statusText}`)
     }
 
     const data = await response.json()
