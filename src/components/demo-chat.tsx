@@ -22,13 +22,13 @@ const INACTIVITY_TIMEOUT = 60 * 60 * 1000 // 60 минут в миллисеку
 const getInitialMessages = (): Message[] => [
   {
     id: "1",
-    text: "Добавь в чат ссылку на свой сайт и протестируй то как будет работать ИИ-продавец на твоей нише",
+    text: "**Добавь в чат ссылку на свой сайт** и протестируй то как будет работать ИИ-продавец на твоей сайте",
     sender: "bot",
     timestamp: new Date(),
   },
   {
     id: "2",
-    text: "Так же можешь описать свою нишу, ответь всего на пару вопросов:\n 1. Какая твоя ниша?\n2. Топ 3 твоих продукта?\n3. Опиши кратко преимущества твоего продукта",
+    text: "**Либо используй готовый вариант**\n\n 1.  Кнопки над строкой это выбор готового бота, который грамотно настроен, **идеальный пример**\n 2.  Что бы начать сначала, в шапке чата есть значок **Начать сначала**\n3.  Ознакомься с контекстом сайта указанного в кнопке, окно с контекстом появится само.",
     sender: "bot",
     timestamp: new Date(),
   },
@@ -442,7 +442,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900">ИИ-продавец NEURONIC LABS</h3>
+              <h3 className="text-lg font-bold text-gray-900">Бот Мария</h3>
               <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
             </div>
           </div>
