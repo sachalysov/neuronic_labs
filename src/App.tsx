@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import HomePage from './pages/HomePage'
+import AdminLoginPage from './pages/AdminLoginPage'
+import AdminBlogPage from './pages/AdminBlogPage'
 
 // Code splitting: Lazy loading для страниц блога (контент ниже первого экрана)
 const BlogPage = lazy(() => import('./pages/BlogPage'))
@@ -70,6 +72,8 @@ function App() {
             </Suspense>
           } 
         />
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/admin/blog" element={<AdminBlogPage />} />
       </Routes>
     </BrowserRouter>
   )
