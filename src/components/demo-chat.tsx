@@ -10,6 +10,7 @@ import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
 import { Message } from "@/lib/types"
 import { ConsultationModal } from "@/components/consultation-modal"
+import { VomolokoContextModal } from "@/components/vomoloko-context-modal"
 
 interface DemoChatProps {
   onClose?: () => void
@@ -97,6 +98,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [linkButtonsVisible, setLinkButtonsVisible] = useState(true)
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
+  const [isVomolokoContextModalOpen, setIsVomolokoContextModalOpen] = useState(false)
   // Храним текущий webhook URL (по умолчанию стандартный для demo)
   const [currentWebhookUrl, setCurrentWebhookUrl] = useState<string | undefined>(() => {
     const stored = getLocalStorage('demo-chat-webhook-url')
@@ -259,6 +261,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
     // Если это кнопка vomoloko.ru, переключаемся на новый webhook
     if (link === "vomoloko.ru") {
+      // Открываем модальное окно с контекстом
+      setIsVomolokoContextModalOpen(true)
+      
       // Устанавливаем новый webhook
       const newWebhookUrl = 'https://n8n.alexlysov.ru/webhook/cd9b5cc3-69e0-4742-9396-4a8b02e61270/chat'
       setCurrentWebhookUrl(newWebhookUrl)
@@ -565,6 +570,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       <ConsultationModal 
         isOpen={isConsultationModalOpen}
         onClose={() => setIsConsultationModalOpen(false)}
+      />
+      <VomolokoContextModal 
+        isOpen={isVomolokoContextModalOpen}
+        onClose={() => setIsVomolokoContextModalOpen(false)}
       />
     </Card>
   )
