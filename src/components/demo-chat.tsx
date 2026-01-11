@@ -94,6 +94,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   })
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [linkButtonsVisible, setLinkButtonsVisible] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -128,6 +129,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     
     // Сбрасываем сообщения на начальные
     setMessages(getInitialMessages())
+    
+    // Показываем кнопки со ссылками снова
+    setLinkButtonsVisible(true)
     
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
@@ -229,6 +233,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   const handleSendLink = async (link: string) => {
     if (isLoading) return
+
+    // Скрываем кнопки после выбора ссылки
+    setLinkButtonsVisible(false)
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -404,26 +411,28 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           ref={inputContainerRef}
           className={`p-4 border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}
         >
-          <div className="flex gap-2 mb-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleSendLink("https://vomoloko.ru/")}
-              disabled={isLoading}
-              className="flex-1 text-sm"
-            >
-              vomoloko.ru
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleSendLink("https://protec.one/")}
-              disabled={isLoading}
-              className="flex-1 text-sm"
-            >
-              protec.one
-            </Button>
-          </div>
+          {linkButtonsVisible && (
+            <div className="flex gap-2 mb-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleSendLink("https://vomoloko.ru/")}
+                disabled={isLoading}
+                className="flex-1 text-sm"
+              >
+                vomoloko.ru
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleSendLink("https://protec.one/")}
+                disabled={isLoading}
+                className="flex-1 text-sm"
+              >
+                protec.one
+              </Button>
+            </div>
+          )}
           <form
             onSubmit={(e) => {
               e.preventDefault()
