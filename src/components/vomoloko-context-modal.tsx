@@ -13,15 +13,13 @@ const contextText = `Во!Молоко — сеть магазинов в СПб
 
 Возможные вопросы:
 
-Цены/наличие на молоко Шексна 4% или творог?
+- Цены/наличие на молоко, творог и тд
+- Доставка, тарифы
+- Состав варенья "Вологодское малиновое"
+- Вакансия продавца: как устроится в магазин
+- Рекомендации для первого заказа с подарком
 
-Доставка в [район СПб], тарифы?
-
-Состав варенья "Вологодское малиновое"?
-
-Вакансия продавца: график, медкнижка?
-
-Рекомендации для первого заказа с подарком?`
+И многое другое касаемо молочной тематики`
 
 export function VomolokoContextModal({ isOpen, onClose }: VomolokoContextModalProps) {
   if (!isOpen) return null
@@ -60,29 +58,33 @@ export function VomolokoContextModal({ isOpen, onClose }: VomolokoContextModalPr
         <CardContent className="pt-4 sm:pt-6 flex-1 overflow-y-auto">
           <div className="space-y-4 sm:space-y-5">
             {contextText.split('\n').map((paragraph, index) => {
-              if (!paragraph.trim()) return null
-              
-              // Если строка начинается с "?", это вопрос
-              const isQuestion = paragraph.trim().startsWith('?') || paragraph.trim().endsWith('?')
+              const trimmed = paragraph.trim()
+              if (!trimmed) return null
               
               // Если строка содержит "Возможные вопросы:", это заголовок
-              const isHeading = paragraph.includes('Возможные вопросы:')
+              const isHeading = trimmed.includes('Возможные вопросы:')
+              
+              // Если строка начинается с "- ", это элемент списка
+              const isListItem = trimmed.startsWith('- ')
+              
+              // Если строка начинается с "И многое другое", это продолжение списка
+              const isListContinuation = trimmed.startsWith('И многое другое')
               
               if (isHeading) {
                 return (
                   <div key={index} className="mb-4 sm:mb-6">
                     <h4 className="text-lg sm:text-xl font-bold text-primary">
-                      {paragraph}
+                      {trimmed}
                     </h4>
                   </div>
                 )
               }
               
-              if (isQuestion) {
+              if (isListItem || isListContinuation) {
                 return (
-                  <div key={index} className="mb-3 sm:mb-4">
-                    <p className="text-sm sm:text-base leading-relaxed text-foreground font-medium">
-                      {paragraph.trim()}
+                  <div key={index} className="mb-2 sm:mb-3 ml-4">
+                    <p className="text-sm sm:text-base leading-relaxed text-foreground">
+                      {trimmed.replace(/^-\s*/, '')}
                     </p>
                   </div>
                 )
@@ -90,8 +92,8 @@ export function VomolokoContextModal({ isOpen, onClose }: VomolokoContextModalPr
               
               // Обычный параграф
               return (
-                <p key={index} className="text-sm sm:text-base leading-relaxed text-muted-foreground mb-3 sm:mb-4">
-                  {paragraph.trim()}
+                <p key={index} className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+                  {trimmed}
                 </p>
               )
             })}
