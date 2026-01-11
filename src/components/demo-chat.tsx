@@ -421,7 +421,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleSendLink("https://vomoloko.ru/")}
+                onClick={() => handleSendLink("vomoloko.ru")}
                 disabled={isLoading}
                 className="flex-1 text-sm"
               >
@@ -430,7 +430,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleSendLink("https://protec.one/")}
+                onClick={() => handleSendLink("protec.one")}
                 disabled={isLoading}
                 className="flex-1 text-sm"
               >
