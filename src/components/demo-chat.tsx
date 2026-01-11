@@ -521,7 +521,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 disabled={isLoading}
                 className="flex-1 text-sm"
               >
-                vomoloko.ru
+                Магазин молочных продуктов
               </Button>
               <Button
                 type="button"
