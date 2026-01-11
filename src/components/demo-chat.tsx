@@ -227,6 +227,45 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     }
   }
 
+  const handleSendLink = async (link: string) => {
+    if (isLoading) return
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: link,
+      sender: "user",
+      timestamp: new Date(),
+    }
+
+    setMessages((prev) => [...prev, userMessage])
+    setIsLoading(true)
+    updateLastActivity()
+
+    try {
+      const response = await sendChatMessage(link, 'demo', sessionId)
+
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: response.message,
+        sender: "bot",
+        timestamp: new Date(),
+      }
+
+      setMessages((prev) => [...prev, botMessage])
+      updateLastActivity()
+    } catch (error) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "Извините, произошла ошибка. Попробуйте позже.",
+        sender: "bot",
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, errorMessage])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   // Прокрутка к полю ввода при фокусе на мобильных устройствах
   useEffect(() => {
     if (!isMobile || typeof window === 'undefined') return
@@ -365,6 +404,26 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           ref={inputContainerRef}
           className={`p-4 border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}
         >
+          <div className="flex gap-2 mb-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleSendLink("https://vomoloko.ru/")}
+              disabled={isLoading}
+              className="flex-1 text-sm"
+            >
+              vomoloko.ru
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleSendLink("https://protec.one/")}
+              disabled={isLoading}
+              className="flex-1 text-sm"
+            >
+              protec.one
+            </Button>
+          </div>
           <form
             onSubmit={(e) => {
               e.preventDefault()
