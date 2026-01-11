@@ -209,7 +209,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       timestamp: new Date(),
     }
 
-    setMessages((prev) => [...prev, userMessage])
+    setMessages((prev) => {
+      // Проверяем, есть ли уже пользовательские сообщения
+      const hasUserMessages = prev.some(msg => msg.sender === "user")
+      // Если это первое пользовательское сообщение, удаляем начальные статические сообщения
+      if (!hasUserMessages) {
+        return prev.filter(msg => msg.id !== "1" && msg.id !== "2").concat([userMessage])
+      }
+      return [...prev, userMessage]
+    })
     setInput("")
     setIsLoading(true)
     updateLastActivity() // Обновляем активность при отправке сообщения
@@ -272,7 +280,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           sender: "user",
           timestamp: new Date(),
         }
-        setMessages((prev) => [...prev, userMessage])
+        setMessages((prev) => {
+          // Проверяем, есть ли уже пользовательские сообщения
+          const hasUserMessages = prev.some(msg => msg.sender === "user")
+          // Если это первое пользовательское сообщение, удаляем начальные статические сообщения
+          if (!hasUserMessages) {
+            return prev.filter(msg => msg.id !== "1" && msg.id !== "2").concat([userMessage])
+          }
+          return [...prev, userMessage]
+        })
         
         console.log('Отправка запроса на webhook:', newWebhookUrl)
         console.log('Данные запроса:', { messageText, sessionId })
@@ -315,7 +331,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         timestamp: new Date(),
       }
 
-      setMessages((prev) => [...prev, userMessage])
+      setMessages((prev) => {
+        // Проверяем, есть ли уже пользовательские сообщения
+        const hasUserMessages = prev.some(msg => msg.sender === "user")
+        // Если это первое пользовательское сообщение, удаляем начальные статические сообщения
+        if (!hasUserMessages) {
+          return prev.filter(msg => msg.id !== "1" && msg.id !== "2").concat([userMessage])
+        }
+        return [...prev, userMessage]
+      })
       setIsLoading(true)
       updateLastActivity()
 
