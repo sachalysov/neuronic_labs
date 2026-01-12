@@ -59,6 +59,23 @@ export async function sendChatMessage(
     }
   } catch (err) {
     console.error(`Chat service error (${chatType}):`, err)
+    
+    // Обработка различных типов сетевых ошибок
+    if (err instanceof TypeError) {
+      if (err.message.includes('Failed to fetch') || err.message.includes('fetch')) {
+        throw new Error("Проблема с подключением к серверу. Проверьте интернет-соединение и попробуйте позже.")
+      }
+      if (err.message.includes('DNS') || err.message.includes('dns')) {
+        throw new Error("Не удалось найти сервер. Возможно, проблема с DNS или сервер временно недоступен.")
+      }
+    }
+    
+    // Если ошибка уже является Error с понятным сообщением, пробрасываем её
+    if (err instanceof Error && err.message.includes('Webhook returned status')) {
+      throw err
+    }
+    
+    // Общая ошибка для остальных случаев
     throw new Error("Не удалось связаться с сервером. Пожалуйста, попробуйте позже.")
   }
 }

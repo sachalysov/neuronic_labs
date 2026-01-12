@@ -11,13 +11,14 @@ import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from
 import { Message } from "@/lib/types"
 import { ConsultationModal } from "@/components/consultation-modal"
 import { VomolokoContextModal } from "@/components/vomoloko-context-modal"
+import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL } from "@/lib/constants"
 
 interface DemoChatProps {
   onClose?: () => void
   isMobile?: boolean
 }
 
-const INACTIVITY_TIMEOUT = 60 * 60 * 1000 // 60 минут в миллисекундах
+const INITIAL_MESSAGE_IDS = ["1", "2"] as const
 
 const getInitialMessages = (): Message[] => [
   {
@@ -34,6 +35,15 @@ const getInitialMessages = (): Message[] => [
   },
 ]
 
+// Вспомогательная функция для добавления пользовательского сообщения с удалением стартовых
+const addUserMessage = (prevMessages: Message[], userMessage: Message): Message[] => {
+  const hasUserMessages = prevMessages.some(msg => msg.sender === "user")
+  if (!hasUserMessages) {
+    return prevMessages.filter(msg => !INITIAL_MESSAGE_IDS.includes(msg.id as typeof INITIAL_MESSAGE_IDS[number])).concat([userMessage])
+  }
+  return [...prevMessages, userMessage]
+}
+
 export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   // Генерируем уникальный sessionId при монтировании компонента
   const [sessionId, setSessionId] = useState(() => {
@@ -44,7 +54,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     if (lastActivity) {
       const lastActivityTime = parseInt(lastActivity, 10)
       const now = Date.now()
-      if (now - lastActivityTime > INACTIVITY_TIMEOUT) {
+      if (now - lastActivityTime > DEMO_CHAT_INACTIVITY_TIMEOUT) {
         // Сессия истекла, очищаем и создаем новую
         removeLocalStorage('demo-chat-session-id')
         removeLocalStorage('demo-chat-messages')
@@ -75,7 +85,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     if (lastActivity) {
       const lastActivityTime = parseInt(lastActivity, 10)
       const now = Date.now()
-      if (now - lastActivityTime > INACTIVITY_TIMEOUT) {
+      if (now - lastActivityTime > DEMO_CHAT_INACTIVITY_TIMEOUT) {
         return getInitialMessages()
       }
     }
@@ -121,6 +131,25 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     scrollToBottom()
   }, [messages])
 
+  // Функция для обновления времени последней активности
+  const updateLastActivity = useCallback(() => {
+    setLocalStorage('demo-chat-last-activity', Date.now().toString())
+    
+    // Сбрасываем таймер неактивности
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current)
+      inactivityTimerRef.current = null
+    }
+    
+    // Устанавливаем новый таймер на 60 минут
+    inactivityTimerRef.current = setTimeout(() => {
+      // Используем актуальную функцию через ref
+      if (handleResetChatRef.current) {
+        handleResetChatRef.current()
+      }
+    }, DEMO_CHAT_INACTIVITY_TIMEOUT)
+  }, [])
+
   // Функция для сброса чата
   const handleResetChat = useCallback(() => {
     // Генерируем новый sessionId
@@ -150,53 +179,30 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setCurrentWebhookUrl(undefined)
     removeLocalStorage('demo-chat-webhook-url')
     
-    // Сбрасываем таймер неактивности
-    if (inactivityTimerRef.current) {
-      clearTimeout(inactivityTimerRef.current)
-    }
-    inactivityTimerRef.current = setTimeout(() => {
-      if (handleResetChatRef.current) {
-        handleResetChatRef.current()
-      }
-    }, INACTIVITY_TIMEOUT)
-  }, [])
+    // Переустанавливаем таймер неактивности для новой сессии
+    updateLastActivity()
+  }, [updateLastActivity])
 
-  // Сохраняем ссылку на функцию в ref
+  // Сохраняем актуальную ссылку на handleResetChat в ref
   useEffect(() => {
     handleResetChatRef.current = handleResetChat
   }, [handleResetChat])
 
-  // Функция для обновления времени последней активности
-  const updateLastActivity = useCallback(() => {
-    setLocalStorage('demo-chat-last-activity', Date.now().toString())
-    
-    // Сбрасываем таймер неактивности
-    if (inactivityTimerRef.current) {
-      clearTimeout(inactivityTimerRef.current)
-    }
-    
-    // Устанавливаем новый таймер на 60 минут
-    inactivityTimerRef.current = setTimeout(() => {
-      if (handleResetChatRef.current) {
-        handleResetChatRef.current()
-      }
-    }, INACTIVITY_TIMEOUT)
-  }, [])
-
   // Сохраняем сообщения в localStorage при каждом изменении
   useEffect(() => {
     setLocalStorage('demo-chat-messages', JSON.stringify(messages))
-    // Обновляем время активности при изменении сообщений
-    updateLastActivity()
-  }, [messages, updateLastActivity])
+    // Обновляем время активности при изменении сообщений (не сразу, чтобы избежать лишних таймеров)
+    // Это будет вызываться только при реальных изменениях сообщений, не при каждом рендере
+  }, [messages])
 
-  // Инициализация таймера неактивности при монтировании
+  // Инициализация таймера неактивности при монтировании и очистка при размонтировании
   useEffect(() => {
     updateLastActivity()
     
     return () => {
       if (inactivityTimerRef.current) {
         clearTimeout(inactivityTimerRef.current)
+        inactivityTimerRef.current = null
       }
     }
   }, [updateLastActivity])
@@ -211,15 +217,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       timestamp: new Date(),
     }
 
-    setMessages((prev) => {
-      // Проверяем, есть ли уже пользовательские сообщения
-      const hasUserMessages = prev.some(msg => msg.sender === "user")
-      // Если это первое пользовательское сообщение, удаляем начальные статические сообщения
-      if (!hasUserMessages) {
-        return prev.filter(msg => msg.id !== "1" && msg.id !== "2").concat([userMessage])
-      }
-      return [...prev, userMessage]
-    })
+    setMessages((prev) => addUserMessage(prev, userMessage))
     setInput("")
     setIsLoading(true)
     updateLastActivity() // Обновляем активность при отправке сообщения
@@ -237,9 +235,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       setMessages((prev) => [...prev, botMessage])
       updateLastActivity() // Обновляем активность при получении ответа
     } catch (error) {
+      const errorText = error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже."
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "Извините, произошла ошибка. Попробуйте позже.",
+        text: errorText,
         sender: "bot",
         timestamp: new Date(),
       }
@@ -265,9 +264,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       setIsVomolokoContextModalOpen(true)
       
       // Устанавливаем новый webhook
-      const newWebhookUrl = 'https://n8n.alexlysov.ru/webhook/cd9b5cc3-69e0-4742-9396-4a8b02e61270/chat'
-      setCurrentWebhookUrl(newWebhookUrl)
-      setLocalStorage('demo-chat-webhook-url', newWebhookUrl)
+      setCurrentWebhookUrl(DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
+      setLocalStorage('demo-chat-webhook-url', DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
       
       // Скрываем кнопки после выбора ссылки
       setLinkButtonsVisible(false)
@@ -285,21 +283,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           sender: "user",
           timestamp: new Date(),
         }
-        setMessages((prev) => {
-          // Проверяем, есть ли уже пользовательские сообщения
-          const hasUserMessages = prev.some(msg => msg.sender === "user")
-          // Если это первое пользовательское сообщение, удаляем начальные статические сообщения
-          if (!hasUserMessages) {
-            return prev.filter(msg => msg.id !== "1" && msg.id !== "2").concat([userMessage])
-          }
-          return [...prev, userMessage]
-        })
+        setMessages((prev) => addUserMessage(prev, userMessage))
         
-        console.log('Отправка запроса на webhook:', newWebhookUrl)
+        console.log('Отправка запроса на webhook:', DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
         console.log('Данные запроса:', { messageText, sessionId })
         
         // Отправляем фиксированное сообщение на новый webhook
-        const response = await sendChatMessage(messageText, 'demo', sessionId, newWebhookUrl)
+        const response = await sendChatMessage(messageText, 'demo', sessionId, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
 
         console.log('Ответ от webhook:', response)
 
@@ -336,15 +326,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         timestamp: new Date(),
       }
 
-      setMessages((prev) => {
-        // Проверяем, есть ли уже пользовательские сообщения
-        const hasUserMessages = prev.some(msg => msg.sender === "user")
-        // Если это первое пользовательское сообщение, удаляем начальные статические сообщения
-        if (!hasUserMessages) {
-          return prev.filter(msg => msg.id !== "1" && msg.id !== "2").concat([userMessage])
-        }
-        return [...prev, userMessage]
-      })
+      setMessages((prev) => addUserMessage(prev, userMessage))
       setIsLoading(true)
       updateLastActivity()
 
@@ -361,9 +343,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         setMessages((prev) => [...prev, botMessage])
         updateLastActivity()
       } catch (error) {
+        const errorText = error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже."
         const errorMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: "Извините, произошла ошибка. Попробуйте позже.",
+          text: errorText,
           sender: "bot",
           timestamp: new Date(),
         }
