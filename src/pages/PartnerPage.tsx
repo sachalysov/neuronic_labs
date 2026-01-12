@@ -118,12 +118,12 @@ export default function PartnerPage() {
 
   const examples = [
     {
-      clients: "3 клиента/месяц на тариф 30K",
+      clients: "3 клиента/месяц на тариф 30 000 ₽",
       calculation: "3 × 5 400 ₽ (внедрение) + 3 × 2 700 ₽ × 3 месяца (подписка)",
       result: "40 500 ₽",
     },
     {
-      clients: "3 клиента/месяц на тариф 100K",
+      clients: "3 клиента/месяц на тариф 100 000 ₽",
       calculation: "3 × 20 000 ₽ + 3 × 5 000 ₽ × 3 месяца",
       result: "105 000 ₽",
     },
