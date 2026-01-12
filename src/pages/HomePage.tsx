@@ -404,8 +404,7 @@ export default function HomePage() {
                   <span className="text-muted-foreground">LABS</span>
                 </h1>
                 <p className="text-muted-foreground text-sm sm:text-[20px] uppercase tracking-wider">
-                  Агентство по внедрению
-               
+                  Агентство по внедрению<br className="sm:hidden" />
                   автоматизации в бизнес
                 </p>
               </div>
