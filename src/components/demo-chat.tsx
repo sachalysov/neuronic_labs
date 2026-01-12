@@ -273,6 +273,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const handleSendLink = async (link: string) => {
     if (isLoading) return
 
+    // Скрываем кнопки сразу при нажатии
+    setLinkButtonsVisible(false)
+
     // Если это кнопка vomoloko.ru, переключаемся на новый webhook
     if (link === "vomoloko.ru") {
       // Открываем модальное окно с контекстом
@@ -281,9 +284,6 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       // Устанавливаем новый webhook
       setCurrentWebhookUrl(DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
       setLocalStorage('demo-chat-webhook-url', DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
-      
-      // Скрываем кнопки после выбора ссылки
-      setLinkButtonsVisible(false)
       
       setIsLoading(true)
       updateLastActivity()
@@ -331,9 +331,6 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       }
     } else {
       // Для других кнопок (protec.one) используем стандартную логику
-      // Скрываем кнопки после выбора ссылки
-      setLinkButtonsVisible(false)
-
       const userMessage: Message = {
         id: Date.now().toString(),
         text: link,
