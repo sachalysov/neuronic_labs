@@ -548,6 +548,58 @@ export default function HomePage() {
         </div>
       </section>
 
+
+      {/* Use Cases Section */}
+      <section id="services" className="py-20 sm:py-32 px-3 sm:px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Сценарии использования</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <ShoppingCart className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Продажи</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Консультация клиентов, презентация продуктов, закрытие сделок</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <HeadphonesIcon className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Поддержка</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Ответы на частые вопросы, решение проблем клиентов 24/7</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Users className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Лидогенерация</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Квалификация лидов, сбор контактов, запись на встречи</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
+                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Lightbulb className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">Консультации</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Экспертные советы, подбор решений, персональные рекомендации</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Benefits Section */}
       <section id="product" className="py-20 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
@@ -695,57 +747,6 @@ export default function HomePage() {
                 />
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Use Cases Section */}
-      <section id="services" className="py-20 sm:py-32 px-3 sm:px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Сценарии использования</h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
-                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <ShoppingCart className="h-5 w-5 md:h-7 md:w-7 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">Продажи</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Консультация клиентов, презентация продуктов, закрытие сделок</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
-                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <HeadphonesIcon className="h-5 w-5 md:h-7 md:w-7 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">Поддержка</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Ответы на частые вопросы, решение проблем клиентов 24/7</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
-                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <Users className="h-5 w-5 md:h-7 md:w-7 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">Лидогенерация</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Квалификация лидов, сбор контактов, запись на встречи</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
-                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <Lightbulb className="h-5 w-5 md:h-7 md:w-7 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">Консультации</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Экспертные советы, подбор решений, персональные рекомендации</p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
