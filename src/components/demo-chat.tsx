@@ -114,7 +114,14 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`
     }
   }, [input])
-  const [linkButtonsVisible, setLinkButtonsVisible] = useState(true)
+  
+  // Определяем видимость кнопок: показываем всегда, кроме случая когда были явно скрыты
+  const [linkButtonsVisible, setLinkButtonsVisible] = useState(() => {
+    // Проверяем, были ли кнопки скрыты ранее (только если пользователь нажал на одну из них)
+    const buttonsHidden = getLocalStorage('demo-chat-buttons-hidden')
+    // Показываем кнопки всегда, если они не были явно скрыты пользователем
+    return buttonsHidden !== 'true'
+  })
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const [isVomolokoContextModalOpen, setIsVomolokoContextModalOpen] = useState(false)
   // Храним текущий webhook URL (по умолчанию стандартный для demo)
@@ -169,6 +176,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     removeLocalStorage('demo-chat-messages')
     removeLocalStorage('demo-chat-last-activity')
     removeLocalStorage('demo-chat-webhook-url')
+    removeLocalStorage('demo-chat-buttons-hidden')
     
     // Сохраняем новый sessionId и время активности
     setLocalStorage('demo-chat-session-id', newId)
@@ -177,8 +185,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     // Сбрасываем сообщения на начальные
     setMessages(getInitialMessages())
     
-    // Показываем кнопки со ссылками снова
+    // Показываем кнопки со ссылками снова и удаляем флаг из localStorage
     setLinkButtonsVisible(true)
+    removeLocalStorage('demo-chat-buttons-hidden')
     
     // Закрываем модальное окно консультации при сбросе
     setIsConsultationModalOpen(false)
@@ -273,8 +282,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const handleSendLink = async (link: string) => {
     if (isLoading) return
 
-    // Скрываем кнопки сразу при нажатии
+    // Скрываем кнопки сразу при нажатии и сохраняем в localStorage
     setLinkButtonsVisible(false)
+    setLocalStorage('demo-chat-buttons-hidden', 'true')
 
     // Если это кнопка vomoloko.ru, переключаемся на новый webhook
     if (link === "vomoloko.ru") {
