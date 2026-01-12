@@ -378,7 +378,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-20">
         {/* Background Image - eager для hero изображения (LCP optimization) */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-[-2]">
           <img 
             src="/images/robot-hero-2.jpeg" 
             alt="Автоматизация бизнеса с ИИ - NEURONIC LABS" 
