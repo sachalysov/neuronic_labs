@@ -524,7 +524,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 variant="outline"
                 onClick={() => handleSendLink("vomoloko.ru")}
                 disabled={isLoading}
-                className="flex-1 text-sm"
+                className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
               >
                 Магазин молочных продуктов
               </Button>
