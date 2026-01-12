@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Send, Loader2, X, RotateCcw } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
@@ -106,6 +106,14 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   })
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  // Автоматическое изменение высоты textarea
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto'
+      inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`
+    }
+  }, [input])
   const [linkButtonsVisible, setLinkButtonsVisible] = useState(true)
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const [isVomolokoContextModalOpen, setIsVomolokoContextModalOpen] = useState(false)
@@ -116,7 +124,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   })
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const inputContainerRef = useRef<HTMLDivElement>(null)
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
   const handleResetChatRef = useRef<(() => void) | null>(null)
@@ -210,20 +218,26 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
 
+    const messageText = input.trim()
+    
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: input,
+      text: messageText,
       sender: "user",
       timestamp: new Date(),
     }
 
     setMessages((prev) => addUserMessage(prev, userMessage))
     setInput("")
+    // Сбрасываем высоту textarea после отправки
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto'
+    }
     setIsLoading(true)
     updateLastActivity() // Обновляем активность при отправке сообщения
 
     try {
-      const response = await sendChatMessage(input, 'demo', sessionId, currentWebhookUrl)
+      const response = await sendChatMessage(messageText, 'demo', sessionId, currentWebhookUrl)
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -248,11 +262,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     }
+    // Shift+Enter или Shift+Return на macOS позволяет сделать перенос строки
   }
 
   const handleSendLink = async (link: string) => {
@@ -534,15 +549,16 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               e.preventDefault()
               handleSend()
             }}
-            className="flex gap-2"
+            className="flex gap-2 items-end"
           >
-            <Input
+            <Textarea
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               placeholder="Напишите нам свой вопрос..."
-              className="flex-1 bg-white border-gray-200 text-gray-900"
+              className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none"
+              rows={1}
             />
             <Button type="submit" disabled={isLoading || !input.trim()} size="icon" className="shrink-0">
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
