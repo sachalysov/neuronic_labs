@@ -9,6 +9,8 @@ interface Particle {
   vy: number
   size: number
   opacity: number
+  blinkPhase: number
+  blinkSpeed: number
 }
 
 interface SpaceDustProps {
@@ -82,7 +84,9 @@ export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDus
           vx: (Math.random() - 0.5) * 0.3,
           vy: (Math.random() - 0.5) * 0.3,
           size: Math.random() * 1.5 + 0.5,
-          opacity: Math.random() * 0.3 + 0.1
+          opacity: Math.random() * 0.3 + 0.1,
+          blinkPhase: Math.random() * Math.PI * 2, // Начальная фаза мигания (0-2π)
+          blinkSpeed: Math.random() * 0.02 + 0.01 // Скорость мигания для каждой частицы
         })
       }
     }
@@ -106,6 +110,12 @@ export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDus
       const particleColor = isDarkRef.current ? '255, 255, 255' : '20, 20, 20'
 
       particlesRef.current.forEach((particle) => {
+        // Обновление фазы мигания
+        particle.blinkPhase += particle.blinkSpeed
+        if (particle.blinkPhase > Math.PI * 2) {
+          particle.blinkPhase -= Math.PI * 2
+        }
+
         // Расстояние до курсора
         const dx = mouseRef.current.x - particle.x
         const dy = mouseRef.current.y - particle.y
@@ -144,8 +154,15 @@ export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDus
         if (particle.y < 0) particle.y = 0
         if (particle.y > canvas.height) particle.y = canvas.height
         
+        // Вычисляем opacity с миганием (синусоида от 0.1 до 0.8)
+        // Используем (sin + 1) / 2 для диапазона 0-1, затем масштабируем
+        const blinkIntensity = (Math.sin(particle.blinkPhase) + 1) / 2
+        const minOpacity = 0.1
+        const maxOpacity = 0.8
+        const currentOpacity = minOpacity + (maxOpacity - minOpacity) * blinkIntensity
+        
         // Рисуем частицу (упрощенная версия для лучшей производительности)
-        ctx.fillStyle = `rgba(${particleColor}, ${particle.opacity})`
+        ctx.fillStyle = `rgba(${particleColor}, ${currentOpacity})`
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
         ctx.fill()
