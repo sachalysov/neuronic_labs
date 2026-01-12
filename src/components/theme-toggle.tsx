@@ -64,7 +64,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card hover:bg-secondary border border-border hover:border-primary text-foreground transition-all duration-250 hover:shadow-md shadow-sm"
+      className="theme-toggle-pulse flex items-center gap-2 px-4 py-2 rounded-lg bg-card hover:bg-secondary border border-border hover:border-primary text-foreground transition-all duration-250 hover:shadow-md shadow-sm"
       aria-label="Переключить тему сайта"
       aria-pressed={theme === "dark"}
     >
