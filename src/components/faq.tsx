@@ -63,7 +63,7 @@ export function FAQ() {
   const hiddenItems = faqData.slice(4)
 
   return (
-    <section id="faq" className="py-12 sm:py-20 px-3 sm:px-4">
+    <section id="faq" className="py-20 sm:py-32 px-3 sm:px-4">
       <div className="container mx-auto">
         <div className="text-center space-y-3 sm:space-y-4 mb-6 sm:mb-8 md:mb-16">
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Частые вопросы</h2>

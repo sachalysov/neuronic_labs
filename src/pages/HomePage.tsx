@@ -450,7 +450,7 @@ export default function HomePage() {
       </section>
 
       {/* Problem Section - AIDA: Attention */}
-      <section className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background border-y border-border">
+      <section className="py-20 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background border-y border-border">
         <div className="container mx-auto">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-center mb-8 sm:mb-12 text-balance">
@@ -504,7 +504,7 @@ export default function HomePage() {
       </section>
 
       {/* Demo Chat Section - Desktop */}
-      <section id="demo-chat" className="hidden md:block py-20 px-4 bg-gradient-to-b from-background to-secondary/20">
+      <section id="demo-chat" className="hidden md:block py-20 sm:py-32 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center space-y-8 mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-balance section-title">Попробуйте ИИ-продавца прямо сейчас</h2>
@@ -523,7 +523,7 @@ export default function HomePage() {
       </section>
 
       {/* Demo Chat Section - Mobile with Button */}
-      <section className="md:hidden py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
+      <section className="md:hidden py-20 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-balance section-title">Попробуйте ИИ-продавца прямо сейчас</h2>
@@ -550,7 +550,7 @@ export default function HomePage() {
       </section>
 
       {/* Benefits Section */}
-      <section id="product" className="py-12 sm:py-20 px-3 sm:px-4">
+      <section id="product" className="py-20 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
             <div className="text-center mb-3 sm:mb-4">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-balance section-title">
@@ -701,7 +701,7 @@ export default function HomePage() {
       </section>
 
       {/* Use Cases Section */}
-      <section id="services" className="py-12 sm:py-20 px-3 sm:px-4">
+      <section id="services" className="py-20 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
           <div className="text-center mb-10 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Сценарии использования</h2>
@@ -752,7 +752,7 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="process" className="py-12 sm:py-20 px-3 sm:px-4 bg-secondary/30">
+      <section id="process" className="py-20 sm:py-32 px-3 sm:px-4 bg-secondary/30">
         <div className="container mx-auto">
           <div className="text-center mb-10 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Как мы работаем</h2>
@@ -790,7 +790,7 @@ export default function HomePage() {
       <Pricing onContactClick={() => setIsModalOpen(true)} />
 
       {/* About Us Section */}
-      <section id="about" className="py-12 sm:py-20 px-3 sm:px-4">
+      <section id="about" className="py-20 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
           <div className="max-w-5xl mx-auto">
             <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
@@ -908,7 +908,7 @@ export default function HomePage() {
       <FAQ />
 
       {/* Final CTA Section */}
-      <section className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background">
+      <section className="py-20 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background">
         <div className="container mx-auto">
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 shadow-2xl">
             <CardContent className="p-6 sm:p-8 md:p-12">
