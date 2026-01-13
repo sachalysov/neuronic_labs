@@ -56,7 +56,7 @@ export function ProtecContextModal({ isOpen, onClose }: ProtecContextModalProps)
         
         <CardContent className="pt-4 sm:pt-6 flex-1 overflow-y-auto">
           <div className="space-y-4 sm:space-y-5">
-            {contextText.split('\n').map((paragraph, index) => {
+            {contextText.split('\n').map((paragraph, index, array) => {
               const trimmed = paragraph.trim()
               if (!trimmed) return null
               
@@ -65,6 +65,22 @@ export function ProtecContextModal({ isOpen, onClose }: ProtecContextModalProps)
               
               // Если строка начинается с "- ", это элемент списка
               const isListItem = trimmed.startsWith('- ')
+              
+              // Проверяем, был ли предыдущий заголовок "Услуги" или "Примеры вопросов"
+              let isUnderServices = false
+              let isUnderExamples = false
+              for (let i = index - 1; i >= 0; i--) {
+                const prevTrimmed = array[i]?.trim()
+                if (!prevTrimmed) continue
+                if (prevTrimmed === 'Услуги' || prevTrimmed.includes('Примеры вопросов:')) {
+                  if (prevTrimmed === 'Услуги') {
+                    isUnderServices = true
+                  } else if (prevTrimmed.includes('Примеры вопросов:')) {
+                    isUnderExamples = true
+                  }
+                  break
+                }
+              }
               
               if (isHeading) {
                 return (
@@ -86,9 +102,10 @@ export function ProtecContextModal({ isOpen, onClose }: ProtecContextModalProps)
                 )
               }
               
-              // Обычный параграф
+              // Обычный параграф - под заголовками используем muted, иначе обычный
+              const paragraphColor = (isUnderServices || isUnderExamples) ? 'text-muted-foreground' : 'text-foreground'
               return (
-                <p key={index} className="text-sm sm:text-base leading-relaxed text-foreground">
+                <p key={index} className={`text-sm sm:text-base leading-relaxed ${paragraphColor}`}>
                   {trimmed}
                 </p>
               )
