@@ -131,12 +131,22 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     const stored = getLocalStorage('demo-chat-webhook-url')
     return stored || undefined
   })
+  // Состояние для отображения кнопки результата записи для protec.one
+  const [showProtecResultButton, setShowProtecResultButton] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const inputContainerRef = useRef<HTMLDivElement>(null)
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
   const handleResetChatRef = useRef<(() => void) | null>(null)
+
+  // Функция для проверки, содержит ли сообщение фразу о записи
+  const containsBookingConfirmation = (text: string): boolean => {
+    const lowerText = text.toLowerCase()
+    return lowerText.includes('подтверждаете запись') || 
+           lowerText.includes('записала!') || 
+           lowerText.includes('записала')
+  }
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -196,6 +206,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setIsVomolokoContextModalOpen(false)
     setIsProtecContextModalOpen(false)
     
+    // Скрываем кнопку результата записи при сбросе
+    setShowProtecResultButton(false)
+    
     // Сбрасываем webhook на исходный (undefined = стандартный для demo)
     setCurrentWebhookUrl(undefined)
     removeLocalStorage('demo-chat-webhook-url')
@@ -215,6 +228,20 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     // Обновляем время активности при изменении сообщений (не сразу, чтобы избежать лишних таймеров)
     // Это будет вызываться только при реальных изменениях сообщений, не при каждом рендере
   }, [messages])
+
+  // Проверяем при загрузке и изменении сообщений/webhook, нужно ли показывать кнопку результата записи
+  useEffect(() => {
+    if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL) {
+      // Ищем последнее сообщение от бота, содержащее текст о подтверждении записи
+      const hasConfirmationMessage = messages.some(msg => 
+        msg.sender === "bot" && containsBookingConfirmation(msg.text)
+      )
+      setShowProtecResultButton(hasConfirmationMessage)
+    } else {
+      // Если не используется protec.one webhook, скрываем кнопку
+      setShowProtecResultButton(false)
+    }
+  }, [messages, currentWebhookUrl])
 
   // Инициализация таймера неактивности при монтировании и очистка при размонтировании
   useEffect(() => {
@@ -260,6 +287,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       }
 
       setMessages((prev) => [...prev, botMessage])
+      
+      // Проверяем, нужно ли показать кнопку результата записи для protec.one
+      if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL && 
+          containsBookingConfirmation(response.message)) {
+        setShowProtecResultButton(true)
+      }
+      
       updateLastActivity() // Обновляем активность при получении ответа
     } catch (error) {
       const errorText = error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже."
@@ -330,6 +364,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
 
         setMessages((prev) => [...prev, botMessage])
+        
         updateLastActivity()
       } catch (error) {
         console.error('Ошибка при отправке на webhook:', error)
@@ -382,6 +417,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
 
         setMessages((prev) => [...prev, botMessage])
+        
+        // Проверяем, нужно ли показать кнопку результата записи для protec.one
+        if (containsBookingConfirmation(response.message)) {
+          setShowProtecResultButton(true)
+        }
+        
         updateLastActivity()
       } catch (error) {
         console.error('Ошибка при отправке на webhook:', error)
@@ -419,6 +460,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
 
         setMessages((prev) => [...prev, botMessage])
+        
+        // Проверяем, нужно ли показать кнопку результата записи для protec.one
+        if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL && 
+            containsBookingConfirmation(response.message)) {
+          setShowProtecResultButton(true)
+        }
+        
         updateLastActivity()
       } catch (error) {
         const errorText = error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже."
@@ -592,6 +640,18 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 className="flex-1 text-sm"
               >
                 protec.one
+              </Button>
+            </div>
+          )}
+          {showProtecResultButton && (
+            <div className="mb-2">
+              <Button
+                type="button"
+                variant="default"
+                onClick={() => window.open('https://docs.google.com/spreadsheets/d/1O_TP4AiIH260OTCiHESVTSyWiZm2GAGHTzRiEcRYq5w/edit?gid=0#gid=0', '_blank')}
+                className="w-full text-sm py-2"
+              >
+                Показать результат записи в таблице
               </Button>
             </div>
           )}
