@@ -11,7 +11,8 @@ import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from
 import { Message } from "@/lib/types"
 import { ConsultationModal } from "@/components/consultation-modal"
 import { VomolokoContextModal } from "@/components/vomoloko-context-modal"
-import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL } from "@/lib/constants"
+import { ProtecContextModal } from "@/components/protec-context-modal"
+import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL, DEMO_CHAT_PROTEC_WEBHOOK_URL } from "@/lib/constants"
 
 interface DemoChatProps {
   onClose?: () => void
@@ -124,6 +125,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   })
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const [isVomolokoContextModalOpen, setIsVomolokoContextModalOpen] = useState(false)
+  const [isProtecContextModalOpen, setIsProtecContextModalOpen] = useState(false)
   // Храним текущий webhook URL (по умолчанию стандартный для demo)
   const [currentWebhookUrl, setCurrentWebhookUrl] = useState<string | undefined>(() => {
     const stored = getLocalStorage('demo-chat-webhook-url')
@@ -189,8 +191,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setLinkButtonsVisible(true)
     removeLocalStorage('demo-chat-buttons-hidden')
     
-    // Закрываем модальное окно консультации при сбросе
+    // Закрываем модальные окна консультации и контекста при сбросе
     setIsConsultationModalOpen(false)
+    setIsVomolokoContextModalOpen(false)
+    setIsProtecContextModalOpen(false)
     
     // Сбрасываем webhook на исходный (undefined = стандартный для demo)
     setCurrentWebhookUrl(undefined)
@@ -315,6 +319,58 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         
         // Отправляем фиксированное сообщение на новый webhook
         const response = await sendChatMessage(messageText, 'demo', sessionId, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
+
+        console.log('Ответ от webhook:', response)
+
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: response.message,
+          sender: "bot",
+          timestamp: new Date(),
+        }
+
+        setMessages((prev) => [...prev, botMessage])
+        updateLastActivity()
+      } catch (error) {
+        console.error('Ошибка при отправке на webhook:', error)
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже.",
+          sender: "bot",
+          timestamp: new Date(),
+        }
+        setMessages((prev) => [...prev, errorMessage])
+      } finally {
+        setIsLoading(false)
+      }
+    } else if (link === "protec.one") {
+      // Открываем модальное окно с контекстом
+      setIsProtecContextModalOpen(true)
+      
+      // Устанавливаем новый webhook
+      setCurrentWebhookUrl(DEMO_CHAT_PROTEC_WEBHOOK_URL)
+      setLocalStorage('demo-chat-webhook-url', DEMO_CHAT_PROTEC_WEBHOOK_URL)
+      
+      setIsLoading(true)
+      updateLastActivity()
+
+      try {
+        const messageText = "У меня есть пара вопросов"
+        
+        // Показываем отправленное сообщение в чате сразу
+        const userMessage: Message = {
+          id: Date.now().toString(),
+          text: messageText,
+          sender: "user",
+          timestamp: new Date(),
+        }
+        setMessages((prev) => addUserMessage(prev, userMessage))
+        
+        console.log('Отправка запроса на webhook:', DEMO_CHAT_PROTEC_WEBHOOK_URL)
+        console.log('Данные запроса:', { messageText, sessionId })
+        
+        // Отправляем фиксированное сообщение на новый webhook
+        const response = await sendChatMessage(messageText, 'demo', sessionId, DEMO_CHAT_PROTEC_WEBHOOK_URL)
 
         console.log('Ответ от webhook:', response)
 
@@ -580,6 +636,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       <VomolokoContextModal 
         isOpen={isVomolokoContextModalOpen}
         onClose={() => setIsVomolokoContextModalOpen(false)}
+      />
+      <ProtecContextModal 
+        isOpen={isProtecContextModalOpen}
+        onClose={() => setIsProtecContextModalOpen(false)}
       />
     </Card>
   )
