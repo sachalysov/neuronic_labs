@@ -47,9 +47,9 @@ export function Footer() {
           </div>
 
           {/* Колонка 2 - Продукт */}
-          <div className="flex flex-col">
-            <h3 className="text-foreground font-semibold mb-3 sm:mb-4 text-base">Продукт</h3>
-            <nav className="flex flex-col gap-2 sm:gap-3">
+          <div className="flex flex-col mt-6 sm:mt-0">
+            <h3 className="text-foreground font-semibold mb-1.5 sm:mb-4 text-base">Продукт</h3>
+            <nav className="flex flex-col gap-1.5 sm:gap-3">
               <button
                 onClick={() => navigateToSection("demo-chat")}
                 className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
@@ -72,9 +72,9 @@ export function Footer() {
           </div>
 
           {/* Колонка 3 - О компании */}
-          <div className="flex flex-col">
-            <h3 className="text-foreground font-semibold mb-3 sm:mb-4 text-base">О компании</h3>
-            <nav className="flex flex-col gap-2 sm:gap-3">
+          <div className="flex flex-col mt-6 sm:mt-0">
+            <h3 className="text-foreground font-semibold mb-1.5 sm:mb-4 text-base">О компании</h3>
+            <nav className="flex flex-col gap-1.5 sm:gap-3">
               <button
                 onClick={() => navigateToSection("about")}
                 className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
@@ -91,9 +91,9 @@ export function Footer() {
           </div>
 
           {/* Колонка 4 - Клиентам */}
-          <div className="flex flex-col">
-            <h3 className="text-foreground font-semibold mb-3 sm:mb-4 text-base">Клиентам</h3>
-            <nav className="flex flex-col gap-2 sm:gap-3">
+          <div className="flex flex-col mt-6 sm:mt-0">
+            <h3 className="text-foreground font-semibold mb-1.5 sm:mb-4 text-base">Клиентам</h3>
+            <nav className="flex flex-col gap-1.5 sm:gap-3">
               <Link
                 to="/business-cases"
                 className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
@@ -116,9 +116,9 @@ export function Footer() {
           </div>
 
           {/* Колонка 5 - Контакты */}
-          <div className="flex flex-col">
-            <h3 className="text-foreground font-semibold mb-3 sm:mb-4 text-base">Контакты</h3>
-            <div className="flex flex-col gap-3 sm:gap-4">
+          <div className="flex flex-col mt-6 sm:mt-0">
+            <h3 className="text-foreground font-semibold mb-1.5 sm:mb-4 text-base">Контакты</h3>
+            <div className="flex flex-col gap-2 sm:gap-4">
               <div>
                 <a
                   href="mailto:info@neuroniclabs.ru"
