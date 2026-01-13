@@ -82,7 +82,7 @@ export function VomolokoContextModal({ isOpen, onClose }: VomolokoContextModalPr
               if (isListItem || isListContinuation) {
                 return (
                   <div key={index} className="mb-2 sm:mb-3 ml-4">
-                    <p className="text-sm sm:text-base leading-relaxed text-foreground">
+                    <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
                       {trimmed.replace(/^-\s*/, '')}
                     </p>
                   </div>
@@ -91,7 +91,7 @@ export function VomolokoContextModal({ isOpen, onClose }: VomolokoContextModalPr
               
               // Обычный параграф
               return (
-                <p key={index} className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+                <p key={index} className="text-sm sm:text-base leading-relaxed text-foreground">
                   {trimmed}
                 </p>
               )
