@@ -145,7 +145,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     const lowerText = text.toLowerCase()
     return lowerText.includes('подтверждаете запись') || 
            lowerText.includes('записала!') || 
-           lowerText.includes('записала')
+           lowerText.includes('записала') ||
+           lowerText.includes('вам придет смс с подтверждением записи')
   }
 
   const scrollToBottom = () => {
