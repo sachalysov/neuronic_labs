@@ -6,6 +6,7 @@ import { PhoneInput } from "@/components/ui/phone-input"
 import { ChatWidget } from "@/components/chat-widget"
 import { StickyHeader } from "@/components/sticky-header"
 import { DemoChat } from "@/components/demo-chat"
+import { CapabilitiesList } from "@/components/capabilities-list"
 import { ConsultationModal } from "@/components/consultation-modal"
 import { SpaceDust } from "@/components/space-dust"
 import { Pricing } from "@/components/pricing"
@@ -537,9 +538,11 @@ export default function HomePage() {
               size="lg"
             >
               <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
-              Протестировать ИИ-чат
+              Протестировать ИИ-бот
               <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
+            
+            <CapabilitiesList />
             
             <p className="text-center text-muted-foreground mt-4 text-sm">
               Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
