@@ -15,7 +15,6 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
   // Улучшенное регулярное выражение для поиска URL (включая URL в конце строки)
   // Ищем http/https ссылки, которые могут заканчиваться на пробел, перенос строки, скобку или конец строки
   const urlRegex = /(https?:\/\/[^\s\)\n]+)/gi
-  const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)\n]*)?/i
   const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
   
   // Находим все URL в тексте
@@ -98,7 +97,7 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
               flexWrap: 'wrap'
             }}
           >
-            {consecutiveImages.map((img, idx) => (
+            {consecutiveImages.map((img) => (
               <img
                 key={key++}
                 src={img.url}
