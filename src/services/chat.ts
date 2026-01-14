@@ -5,8 +5,9 @@ export async function sendChatMessage(
   messageText: string, 
   chatType: ChatType = 'widget',
   sessionId: string,
-  customWebhookUrl?: string
-): Promise<{ message: string }> {
+  customWebhookUrl?: string,
+  imageBase64?: string
+): Promise<{ message: string; imageUrl?: string }> {
   try {
     // Если передан кастомный webhook, используем его
     const webhookUrl = customWebhookUrl || (
@@ -23,15 +24,20 @@ export async function sendChatMessage(
       }
     }
 
-    const requestBody = {
+    const requestBody: any = {
       message: messageText,
       sessionId: sessionId, // Уникальный идентификатор сессии
       timestamp: new Date().toISOString(),
       chatType: chatType, // Добавляем тип чата для различения на бэкенде
     }
     
+    // Добавляем изображение если оно есть
+    if (imageBase64) {
+      requestBody.image = imageBase64
+    }
+    
     console.log('Отправка запроса на webhook:', webhookUrl)
-    console.log('Тело запроса:', requestBody)
+    console.log('Тело запроса:', { ...requestBody, image: imageBase64 ? '[base64 image]' : undefined })
     
     const response = await fetch(webhookUrl, {
       method: "POST",
@@ -55,7 +61,8 @@ export async function sendChatMessage(
 
     // Parse response based on common formats
     return {
-      message: data.response || data.message || data.text || data.output || JSON.stringify(data) || "Извините, не удалось получить ответ"
+      message: data.response || data.message || data.text || data.output || JSON.stringify(data) || "Извините, не удалось получить ответ",
+      imageUrl: data.imageUrl || data.image || data.image_url
     }
   } catch (err) {
     console.error(`Chat service error (${chatType}):`, err)

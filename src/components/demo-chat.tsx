@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Send, Loader2, X, RotateCcw } from "lucide-react"
+import { Send, Loader2, X, RotateCcw, Image as ImageIcon } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
@@ -108,6 +108,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   })
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Автоматическое изменение высоты textarea
   useEffect(() => {
@@ -215,6 +217,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setShowProtecResultButton(false)
     setShowVomolokoResultButton(false)
     
+    // Сбрасываем изображение
+    setSelectedImage(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+    
     // Сбрасываем webhook на исходный (undefined = стандартный для demo)
     setCurrentWebhookUrl(undefined)
     removeLocalStorage('demo-chat-webhook-url')
@@ -268,20 +276,66 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     }
   }, [updateLastActivity])
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return
+  // Функция для конвертации файла в base64
+  const convertImageToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const result = reader.result as string
+        resolve(result)
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
 
-    const messageText = input.trim()
+  // Обработчик выбора файла
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Проверяем тип файла
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите изображение')
+      return
+    }
+
+    // Проверяем размер файла (макс 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Размер изображения не должен превышать 5MB')
+      return
+    }
+
+    try {
+      const base64 = await convertImageToBase64(file)
+      setSelectedImage(base64)
+    } catch (error) {
+      console.error('Ошибка при обработке изображения:', error)
+      alert('Не удалось загрузить изображение')
+    }
+  }
+
+  const handleSend = async () => {
+    if ((!input.trim() && !selectedImage) || isLoading) return
+
+    const messageText = input.trim() || ""
+    const imageBase64 = selectedImage || undefined
     
     const userMessage: Message = {
       id: Date.now().toString(),
       text: messageText,
       sender: "user",
       timestamp: new Date(),
+      imageBase64: imageBase64,
     }
 
     setMessages((prev) => addUserMessage(prev, userMessage))
     setInput("")
+    setSelectedImage(null)
+    // Очищаем input файла
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
     // Сбрасываем высоту textarea после отправки
     if (inputRef.current) {
       inputRef.current.style.height = 'auto'
@@ -290,13 +344,14 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     updateLastActivity() // Обновляем активность при отправке сообщения
 
     try {
-      const response = await sendChatMessage(messageText, 'demo', sessionId, currentWebhookUrl)
+      const response = await sendChatMessage(messageText, 'demo', sessionId, currentWebhookUrl, imageBase64)
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: response.message,
         sender: "bot",
         timestamp: new Date(),
+        imageUrl: response.imageUrl,
       }
 
       setMessages((prev) => [...prev, botMessage])
@@ -378,6 +433,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           text: response.message,
           sender: "bot",
           timestamp: new Date(),
+          imageUrl: response.imageUrl,
         }
 
         setMessages((prev) => [...prev, botMessage])
@@ -431,6 +487,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           text: response.message,
           sender: "bot",
           timestamp: new Date(),
+          imageUrl: response.imageUrl,
         }
 
         setMessages((prev) => [...prev, botMessage])
@@ -474,6 +531,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           text: response.message,
           sender: "bot",
           timestamp: new Date(),
+          imageUrl: response.imageUrl,
         }
 
         setMessages((prev) => [...prev, botMessage])
@@ -609,7 +667,18 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                   message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-white border border-gray-200 text-gray-900"
                 }`}
               >
-                <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
+                {(message.imageUrl || message.imageBase64) && (
+                  <div className="mb-2">
+                    <img
+                      src={message.imageUrl || message.imageBase64 || ''}
+                      alt="Изображение"
+                      className="max-w-full max-h-64 rounded-lg object-contain"
+                    />
+                  </div>
+                )}
+                {message.text && (
+                  <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
+                )}
                 <p className={`text-xs mt-2 ${message.sender === "user" ? "text-primary-foreground/70" : "text-gray-500"}`}>
                   {formatTime(message.timestamp)}
                 </p>
@@ -701,6 +770,29 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               </Button>
             </div>
           )}
+          {selectedImage && (
+            <div className="mb-2 relative inline-block">
+              <img
+                src={selectedImage}
+                alt="Предпросмотр"
+                className="max-w-full max-h-32 rounded-lg object-contain"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setSelectedImage(null)
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = ''
+                  }
+                }}
+                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/50 hover:bg-black/70 text-white"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -708,6 +800,23 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
             }}
             className="flex gap-2 items-end"
           >
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageSelect}
+              accept="image/*"
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading}
+              className="shrink-0"
+            >
+              <ImageIcon className="h-5 w-5" />
+            </Button>
             <Textarea
               ref={inputRef}
               value={input}
@@ -717,7 +826,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none"
               rows={1}
             />
-            <Button type="submit" disabled={isLoading || !input.trim()} size="icon" className="shrink-0">
+            <Button type="submit" disabled={isLoading || (!input.trim() && !selectedImage)} size="icon" className="shrink-0">
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           </form>
