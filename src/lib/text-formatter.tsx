@@ -40,20 +40,30 @@ export function formatMessageText(text: string): React.ReactNode {
         React.createElement(HeaderTag, { key: key++, className }, headerContent)
       );
     } else if (line.trim()) {
-      // Обычный текст - обрабатываем жирный текст
+      // Обычный текст - обрабатываем жирный текст и изображения
       const formattedLine = formatBoldText(line, key);
       key += line.split('**').length - 1;
       
-      // Добавляем перенос строки, если это не последняя строка
-      if (i < lines.length - 1) {
-        parts.push(
-          <span key={key++}>
-            {formattedLine}
-            <br />
-          </span>
-        );
+      // Если результат - массив (может содержать изображения), обрабатываем по-другому
+      if (Array.isArray(formattedLine)) {
+        // Добавляем все части из массива
+        parts.push(...formattedLine);
+        // Добавляем перенос строки после всех частей, если это не последняя строка
+        if (i < lines.length - 1) {
+          parts.push(<br key={key++} />);
+        }
       } else {
-        parts.push(<span key={key++}>{formattedLine}</span>);
+        // Обычный текст без изображений - оборачиваем в span
+        if (i < lines.length - 1) {
+          parts.push(
+            <span key={key++}>
+              {formattedLine}
+              <br />
+            </span>
+          );
+        } else {
+          parts.push(<span key={key++}>{formattedLine}</span>);
+        }
       }
     } else if (i < lines.length - 1) {
       // Пустая строка - добавляем перенос строки
@@ -70,19 +80,30 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
   let lastIndex = 0;
   let key = startKey;
   
-  // Сначала обрабатываем ссылки на изображения
-  const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)]*)?/i
-  const urlRegex = /(https?:\/\/[^\s\)]+)/g
+  // Улучшенное регулярное выражение для поиска URL (включая URL в конце строки)
+  // Ищем http/https ссылки, которые могут заканчиваться на пробел, перенос строки, скобку или конец строки
+  const urlRegex = /(https?:\/\/[^\s\)\n]+)/gi
+  const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)\n]*)?/i
   const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
   
   // Находим все URL в тексте
   const urlMatches: Array<{ url: string; index: number; isImage: boolean }> = []
   let urlMatch
   
+  // Сбрасываем lastIndex регулярного выражения перед использованием
+  urlRegex.lastIndex = 0
+  
   while ((urlMatch = urlRegex.exec(text)) !== null) {
+    // Берем URL как есть, без trim, чтобы сохранить точную позицию
     const url = urlMatch[0]
-    const isImage = imageExtensions.test(url) || imageIndicators.some(indicator => url.toLowerCase().includes(indicator))
-    urlMatches.push({ url, index: urlMatch.index, isImage })
+    // Проверяем, является ли это изображением
+    // Создаем новое регулярное выражение для каждого теста, чтобы избежать проблем с состоянием
+    const extTest = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)\n]*)?/i.test(url)
+    const hasIndicator = imageIndicators.some(indicator => url.toLowerCase().includes(indicator))
+    const isImage = extTest || hasIndicator
+    if (isImage) {
+      urlMatches.push({ url: url.trim(), index: urlMatch.index, isImage: true })
+    }
   }
   
   // Если есть ссылки на изображения, обрабатываем их
@@ -128,17 +149,24 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
     
     // Добавляем оставшийся текст после последней ссылки
     if (lastIndex < text.length) {
-      const textAfter = text.substring(lastIndex)
-      const formattedAfter = formatBoldTextOnly(textAfter, key)
-      key += textAfter.split('**').length - 1
-      if (Array.isArray(formattedAfter)) {
-        parts.push(...formattedAfter)
-      } else {
-        parts.push(formattedAfter)
+      const textAfter = text.substring(lastIndex).trim()
+      if (textAfter) {
+        const formattedAfter = formatBoldTextOnly(textAfter, key)
+        key += textAfter.split('**').length - 1
+        if (Array.isArray(formattedAfter)) {
+          parts.push(...formattedAfter)
+        } else {
+          parts.push(formattedAfter)
+        }
       }
     }
     
-    return parts.length > 0 ? parts : text
+    // Если есть части, возвращаем их, иначе возвращаем исходный текст
+    if (parts.length > 0) {
+      return parts
+    }
+    
+    return text
   }
   
   // Если ссылок на изображения нет, обрабатываем только жирный текст
