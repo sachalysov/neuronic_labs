@@ -664,7 +664,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
             <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[75%] rounded-2xl px-5 py-3 ${
-                  message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-white border border-gray-200 text-gray-900"
+                  message.sender === "user" ? "bg-white border border-gray-200 text-gray-900" : "bg-white border border-gray-200 text-gray-900"
                 }`}
               >
                 {(message.imageUrl || message.imageBase64) && (
@@ -679,7 +679,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 {message.text && (
                   <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
                 )}
-                <p className={`text-xs mt-2 ${message.sender === "user" ? "text-primary-foreground/70" : "text-gray-500"}`}>
+                <p className={`text-xs mt-2 text-gray-500`}>
                   {formatTime(message.timestamp)}
                 </p>
               </div>
