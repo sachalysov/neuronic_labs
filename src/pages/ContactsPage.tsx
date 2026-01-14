@@ -1,3 +1,5 @@
+import { useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { ChatWidget } from "@/components/chat-widget"
@@ -13,10 +15,36 @@ import {
   MapPin,
   Clock,
   Building2,
+  CreditCard,
 } from "lucide-react"
 
 export default function ContactsPage() {
+  const location = useLocation()
   useMeta(createContactsMetaTags())
+
+  useEffect(() => {
+    // Обрабатываем hash из URL (если есть)
+    const hash = location.hash.substring(1) // убираем #
+    if (hash) {
+      const element = document.getElementById(hash)
+      if (element) {
+        // Минимальная задержка для завершения рендера
+        setTimeout(() => {
+          const headerOffset = 80
+          const elementPosition = element.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+          window.scrollTo({ top: offsetPosition, behavior: "auto" })
+          // Убираем hash из URL после скролла
+          setTimeout(() => {
+            window.history.replaceState(null, '', window.location.pathname)
+          }, 100)
+        }, 50)
+      } else {
+        // Если элемент не найден, просто убираем hash
+        window.history.replaceState(null, '', window.location.pathname)
+      }
+    }
+  }, [location.hash])
 
   const contacts = [
     {
@@ -157,6 +185,44 @@ export default function ContactsPage() {
               )
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Способы оплаты */}
+      <section id="payment-methods" className="py-8 sm:py-12 px-3 sm:px-4">
+        <div className="container mx-auto max-w-6xl">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-center">Способы оплаты</h2>
+          <Card className="bg-card/10 border-0">
+            <CardContent className="p-6 sm:p-8">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="h-6 w-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <div className="space-y-4 text-lg">
+                    <p>
+                      <strong>Возможна поэтапная оплата</strong>
+                    </p>
+                    <p className="font-semibold mb-2">Доступные способы оплаты:</p>
+                    <ul className="list-disc list-inside space-y-2 ml-4">
+                      <li>Безналичным переводом (для юридических лиц и ИП)</li>
+                      <li>Кредитной, дебетовой или корпоративной картой**</li>
+                      <li>СБП (Система Быстрых Платежей) (для физических лиц и организаций)</li>
+                      <li>Отсрочка платежа** (для юридических лиц и ИП)</li>
+                      <li>Рассрочка платежа** (для юридических лиц и ИП)</li>
+                    </ul>
+                    <p className="mt-4">
+                      Наш официальный партнер - <strong>Т-Банк</strong> предоставляет программу целевого кредитования и рассрочки платежа до 36 месяцев, подробности уточняйте у менеджера
+                    </p>
+                    <div className="mt-4 pt-4 border-t border-border/50 space-y-2 text-sm text-muted-foreground">
+                      <p>* Стоимость работ указана с учётом действующих скидок</p>
+                      <p>** При выборе данного способа оплаты скидки не предоставляются</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 

@@ -63,6 +63,17 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
     setIsMobileMenuOpen(false)
   }
 
+  const navigateToContactsSection = (id: string) => {
+    if (location.pathname === '/contacts') {
+      // Если мы на странице контактов, скроллим к секции
+      scrollToSection(id)
+    } else {
+      // Если мы не на странице контактов, переходим на страницу контактов с hash
+      navigate(`/contacts#${id}`)
+    }
+    setIsMobileMenuOpen(false)
+  }
+
   const handleChatBotClick = () => {
     // На мобильных устройствах (меньше md breakpoint = 768px) открываем демо чат
     // На более широких экранах переходим к секции
@@ -383,6 +394,15 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                       >
                         Контакты
                       </Link>
+                      <button
+                        onClick={() => {
+                          navigateToContactsSection("payment-methods")
+                          setIsMenuDropdownOpen(false)
+                        }}
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Способы оплаты
+                      </button>
                     </div>
                   </div>
                 )}
@@ -590,6 +610,15 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                     >
                       Контакты
                     </Link>
+                    <button
+                      onClick={() => {
+                        navigateToContactsSection("payment-methods")
+                        setIsMenuDropdownOpen(false)
+                      }}
+                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Способы оплаты
+                    </button>
                   </div>
                 )}
               </div>

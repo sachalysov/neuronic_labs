@@ -26,6 +26,16 @@ export function Footer() {
     }
   }
 
+  const navigateToContactsSection = (id: string) => {
+    if (location.pathname === '/contacts') {
+      // Если мы на странице контактов, скроллим к секции
+      scrollToSection(id)
+    } else {
+      // Если мы не на странице контактов, переходим на страницу контактов с hash
+      navigate(`/contacts#${id}`)
+    }
+  }
+
   return (
     <footer className="py-8 sm:py-12 px-3 sm:px-4 border-t border-border mt-20 bg-background">
       <div className="container mx-auto">
@@ -106,6 +116,12 @@ export function Footer() {
               >
                 Контакты
               </Link>
+              <button
+                onClick={() => navigateToContactsSection("payment-methods")}
+                className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+              >
+                Способы оплаты
+              </button>
               <Link
                 to="/partners"
                 className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
