@@ -64,8 +64,89 @@ export function formatMessageText(text: string): React.ReactNode {
   return parts.length > 0 ? <div>{parts}</div> : text;
 }
 
-// Вспомогательная функция для обработки жирного текста
+// Вспомогательная функция для обработки жирного текста и ссылок на изображения
 function formatBoldText(text: string, startKey: number): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let key = startKey;
+  
+  // Сначала обрабатываем ссылки на изображения
+  const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)]*)?/i
+  const urlRegex = /(https?:\/\/[^\s\)]+)/g
+  const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
+  
+  // Находим все URL в тексте
+  const urlMatches: Array<{ url: string; index: number; isImage: boolean }> = []
+  let urlMatch
+  
+  while ((urlMatch = urlRegex.exec(text)) !== null) {
+    const url = urlMatch[0]
+    const isImage = imageExtensions.test(url) || imageIndicators.some(indicator => url.toLowerCase().includes(indicator))
+    urlMatches.push({ url, index: urlMatch.index, isImage })
+  }
+  
+  // Если есть ссылки на изображения, обрабатываем их
+  if (urlMatches.some(m => m.isImage)) {
+    for (const urlMatch of urlMatches) {
+      if (!urlMatch.isImage) continue
+      
+      // Добавляем текст до ссылки
+      if (urlMatch.index > lastIndex) {
+        const textBefore = text.substring(lastIndex, urlMatch.index)
+        // Обрабатываем жирный текст в части до ссылки
+        const formattedBefore = formatBoldTextOnly(textBefore, key)
+        key += textBefore.split('**').length - 1
+        if (Array.isArray(formattedBefore)) {
+          parts.push(...formattedBefore)
+        } else {
+          parts.push(formattedBefore)
+        }
+      }
+      
+      // Добавляем изображение как блочный элемент для правильного отображения
+      parts.push(
+        <img
+          key={key++}
+          src={urlMatch.url}
+          alt="Изображение"
+          className="max-w-full max-h-64 rounded-lg object-contain my-2 block"
+          onError={(e) => {
+            // Если изображение не загрузилось, заменяем на ссылку
+            const target = e.target as HTMLImageElement
+            target.style.display = 'none'
+            const link = document.createElement('a')
+            link.href = urlMatch.url
+            link.textContent = urlMatch.url
+            link.className = 'text-blue-600 underline break-all'
+            target.parentNode?.insertBefore(link, target)
+          }}
+        />
+      )
+      
+      lastIndex = urlMatch.index + urlMatch.url.length
+    }
+    
+    // Добавляем оставшийся текст после последней ссылки
+    if (lastIndex < text.length) {
+      const textAfter = text.substring(lastIndex)
+      const formattedAfter = formatBoldTextOnly(textAfter, key)
+      key += textAfter.split('**').length - 1
+      if (Array.isArray(formattedAfter)) {
+        parts.push(...formattedAfter)
+      } else {
+        parts.push(formattedAfter)
+      }
+    }
+    
+    return parts.length > 0 ? parts : text
+  }
+  
+  // Если ссылок на изображения нет, обрабатываем только жирный текст
+  return formatBoldTextOnly(text, startKey)
+}
+
+// Вспомогательная функция только для обработки жирного текста (без изображений)
+function formatBoldTextOnly(text: string, startKey: number): React.ReactNode {
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   const regex = /\*\*(.+?)\*\*/g;

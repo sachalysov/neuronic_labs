@@ -155,43 +155,20 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
            lowerText.includes('оформила заказ')
   }
 
-  // Функция для извлечения ссылок на изображения из текста
-  const extractImageUrl = (text: string): { imageUrl: string | undefined; cleanedText: string } => {
-    if (!text) return { imageUrl: undefined, cleanedText: text }
+  // Функция для проверки, содержит ли текст ссылки на изображения
+  const hasImageUrlInText = (text: string): boolean => {
+    if (!text) return false
     
-    // Регулярное выражение для поиска URL изображений с расширениями
-    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s]*)?/i
-    // Регулярное выражение для поиска всех URL
-    const urlRegex = /(https?:\/\/[^\s\)]+)/gi
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)]*)?/i
+    const urlRegex = /(https?:\/\/[^\s\)]+)/g
+    const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
     
-    // Сначала ищем явные ссылки на изображения с расширениями
     const urls = text.match(urlRegex)
-    if (urls && urls.length > 0) {
-      // Ищем первую ссылку с расширением изображения
-      for (const url of urls) {
-        if (imageExtensions.test(url)) {
-          // Удаляем эту конкретную ссылку из текста
-          const cleanedText = text.replace(url, '').trim().replace(/\s+/g, ' ')
-          return { imageUrl: url, cleanedText }
-        }
-      }
-      
-      // Если явных ссылок на изображения нет, проверяем все URL
-      // и пытаемся определить, является ли это изображением
-      const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
-      for (const url of urls) {
-        const urlLower = url.toLowerCase()
-        const isLikelyImage = imageIndicators.some(indicator => urlLower.includes(indicator))
-        
-        if (isLikelyImage) {
-          // Удаляем эту конкретную ссылку из текста
-          const cleanedText = text.replace(url, '').trim().replace(/\s+/g, ' ')
-          return { imageUrl: url, cleanedText }
-        }
-      }
-    }
+    if (!urls) return false
     
-    return { imageUrl: undefined, cleanedText: text }
+    return urls.some(url => {
+      return imageExtensions.test(url) || imageIndicators.some(indicator => url.toLowerCase().includes(indicator))
+    })
   }
 
   const scrollToBottom = () => {
@@ -385,15 +362,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     try {
       const response = await sendChatMessage(messageText, 'demo', sessionId, currentWebhookUrl, imageBase64)
 
-      // Извлекаем ссылку на изображение из текста, если она есть
-      const { imageUrl: extractedImageUrl, cleanedText } = extractImageUrl(response.message)
-      
+      // Если вебхук вернул imageUrl отдельно, используем его
+      // Если ссылка на изображение есть в тексте, она будет обработана formatMessageText
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: cleanedText,
+        text: response.message,
         sender: "bot",
         timestamp: new Date(),
-        imageUrl: response.imageUrl || extractedImageUrl,
+        // Используем imageUrl только если его вернул вебхук отдельно и его нет в тексте
+        imageUrl: response.imageUrl && !hasImageUrlInText(response.message) ? response.imageUrl : undefined,
       }
 
       setMessages((prev) => [...prev, botMessage])
@@ -470,15 +447,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
         console.log('Ответ от webhook:', response)
 
-        // Извлекаем ссылку на изображение из текста, если она есть
-        const { imageUrl: extractedImageUrl, cleanedText } = extractImageUrl(response.message)
-        
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: cleanedText,
+          text: response.message,
           sender: "bot",
           timestamp: new Date(),
-          imageUrl: response.imageUrl || extractedImageUrl,
+          // Используем imageUrl только если его вернул вебхук отдельно и его нет в тексте
+          imageUrl: response.imageUrl && !hasImageUrlInText(response.message) ? response.imageUrl : undefined,
         }
 
         setMessages((prev) => [...prev, botMessage])
@@ -527,15 +502,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
         console.log('Ответ от webhook:', response)
 
-        // Извлекаем ссылку на изображение из текста, если она есть
-        const { imageUrl: extractedImageUrl, cleanedText } = extractImageUrl(response.message)
-        
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: cleanedText,
+          text: response.message,
           sender: "bot",
           timestamp: new Date(),
-          imageUrl: response.imageUrl || extractedImageUrl,
+          // Используем imageUrl только если его вернул вебхук отдельно и его нет в тексте
+          imageUrl: response.imageUrl && !hasImageUrlInText(response.message) ? response.imageUrl : undefined,
         }
 
         setMessages((prev) => [...prev, botMessage])
@@ -574,15 +547,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       try {
         const response = await sendChatMessage(link, 'demo', sessionId, currentWebhookUrl)
 
-        // Извлекаем ссылку на изображение из текста, если она есть
-        const { imageUrl: extractedImageUrl, cleanedText } = extractImageUrl(response.message)
-        
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: cleanedText,
+          text: response.message,
           sender: "bot",
           timestamp: new Date(),
-          imageUrl: response.imageUrl || extractedImageUrl,
+          // Используем imageUrl только если его вернул вебхук отдельно и его нет в тексте
+          imageUrl: response.imageUrl && !hasImageUrlInText(response.message) ? response.imageUrl : undefined,
         }
 
         setMessages((prev) => [...prev, botMessage])
@@ -718,7 +689,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                   message.sender === "user" ? "bg-white border border-gray-200 text-gray-900" : "bg-white border border-gray-200 text-gray-900"
                 }`}
               >
-                {(message.imageUrl || message.imageBase64) && (
+                {/* Отображаем изображение отдельно только если оно не встроено в текст */}
+                {(message.imageUrl || message.imageBase64) && !hasImageUrlInText(message.text || '') && (
                   <div className="mb-2">
                     <img
                       src={message.imageUrl || message.imageBase64 || ''}
