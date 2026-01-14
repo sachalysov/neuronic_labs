@@ -1,77 +1,9 @@
 import React from 'react';
 
 export function formatMessageText(text: string): React.ReactNode {
-  const parts: React.ReactNode[] = [];
-  let key = 0;
-
-  // Разбиваем текст на строки для обработки заголовков
-  const lines = text.split('\n');
-  
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    
-    // Проверяем, является ли строка заголовком markdown
-    const headerMatch = line.match(/^(#{1,6})\s+(.+)$/);
-    
-    if (headerMatch) {
-      const level = headerMatch[1].length;
-      const headerText = headerMatch[2];
-      
-      // Добавляем разделитель перед заголовком (кроме первого)
-      if (i > 0) {
-        parts.push(
-          <div key={key++} className="my-3 border-t border-border/30"></div>
-        );
-      }
-      
-      // Создаем элемент заголовка с соответствующим размером
-      const HeaderTag = `h${Math.min(level, 6)}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-      const className = 
-        level === 1 ? 'text-xl font-bold mt-2 mb-2' :
-        level === 2 ? 'text-lg font-semibold mt-2 mb-2' :
-        level === 3 ? 'text-base font-semibold mt-2 mb-1' :
-        'text-sm font-semibold mt-1 mb-1';
-      
-      // Обрабатываем жирный текст внутри заголовка
-      const headerContent = formatBoldText(headerText, key);
-      key += headerText.split('**').length - 1;
-      
-      parts.push(
-        React.createElement(HeaderTag, { key: key++, className }, headerContent)
-      );
-    } else if (line.trim()) {
-      // Обычный текст - обрабатываем жирный текст и изображения
-      const formattedLine = formatBoldText(line, key);
-      key += line.split('**').length - 1;
-      
-      // Если результат - массив (может содержать изображения), обрабатываем по-другому
-      if (Array.isArray(formattedLine)) {
-        // Добавляем все части из массива
-        parts.push(...formattedLine);
-        // Добавляем перенос строки после всех частей, если это не последняя строка
-        if (i < lines.length - 1) {
-          parts.push(<br key={key++} />);
-        }
-      } else {
-        // Обычный текст без изображений - оборачиваем в span
-        if (i < lines.length - 1) {
-          parts.push(
-            <span key={key++}>
-              {formattedLine}
-              <br />
-            </span>
-          );
-        } else {
-          parts.push(<span key={key++}>{formattedLine}</span>);
-        }
-      }
-    } else if (i < lines.length - 1) {
-      // Пустая строка - добавляем перенос строки
-      parts.push(<br key={key++} />);
-    }
-  }
-  
-  return parts.length > 0 ? <div>{parts}</div> : text;
+  // Обрабатываем весь текст целиком для правильной группировки изображений
+  // Это позволяет группировать изображения даже если они на разных строках
+  return formatBoldText(text, 0);
 }
 
 // Вспомогательная функция для обработки жирного текста и ссылок на изображения
@@ -87,7 +19,7 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
   const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
   
   // Находим все URL в тексте
-  const urlMatches: Array<{ url: string; index: number; isImage: boolean }> = []
+  const urlMatches: Array<{ url: string; index: number; isImage: boolean; originalLength: number }> = []
   let urlMatch
   
   // Сбрасываем lastIndex регулярного выражения перед использованием
@@ -96,20 +28,28 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
   while ((urlMatch = urlRegex.exec(text)) !== null) {
     // Берем URL как есть, без trim, чтобы сохранить точную позицию
     const url = urlMatch[0]
+    const urlLength = url.length
     // Проверяем, является ли это изображением
     // Создаем новое регулярное выражение для каждого теста, чтобы избежать проблем с состоянием
     const extTest = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)\n]*)?/i.test(url)
     const hasIndicator = imageIndicators.some(indicator => url.toLowerCase().includes(indicator))
     const isImage = extTest || hasIndicator
     if (isImage) {
-      urlMatches.push({ url: url.trim(), index: urlMatch.index, isImage: true })
+      urlMatches.push({ 
+        url: url.trim(), 
+        index: urlMatch.index, 
+        isImage: true,
+        originalLength: urlLength // Сохраняем оригинальную длину для правильного вычисления позиций
+      })
     }
   }
   
   // Если есть ссылки на изображения, обрабатываем их
   if (urlMatches.some(m => m.isImage)) {
-    for (const urlMatch of urlMatches) {
-      if (!urlMatch.isImage) continue
+    const imageMatches = urlMatches.filter(m => m.isImage)
+    
+    for (let i = 0; i < imageMatches.length; i++) {
+      const urlMatch = imageMatches[i]
       
       // Добавляем текст до ссылки
       if (urlMatch.index > lastIndex) {
@@ -124,27 +64,89 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
         }
       }
       
-      // Добавляем изображение как блочный элемент для правильного отображения
-      parts.push(
-        <img
-          key={key++}
-          src={urlMatch.url}
-          alt="Изображение"
-          className="max-w-full max-h-64 rounded-lg object-contain my-2 block"
-          onError={(e) => {
-            // Если изображение не загрузилось, заменяем на ссылку
-            const target = e.target as HTMLImageElement
-            target.style.display = 'none'
-            const link = document.createElement('a')
-            link.href = urlMatch.url
-            link.textContent = urlMatch.url
-            link.className = 'text-blue-600 underline break-all'
-            target.parentNode?.insertBefore(link, target)
-          }}
-        />
-      )
+      // Проверяем, есть ли следующие изображения подряд (без значимого текста между ними)
+      const consecutiveImages: Array<{ url: string; index: number; originalLength: number }> = [urlMatch]
+      let nextIndex = urlMatch.index + urlMatch.originalLength
       
-      lastIndex = urlMatch.index + urlMatch.url.length
+      // Ищем следующие изображения, которые идут подряд
+      for (let j = i + 1; j < imageMatches.length; j++) {
+        const nextMatch = imageMatches[j]
+        const textBetween = text.substring(nextIndex, nextMatch.index)
+        
+        // Если между изображениями только пробелы, переносы строк или пусто - группируем
+        // Убираем пробелы и переносы строк для проверки
+        const trimmedBetween = textBetween.trim()
+        if (!trimmedBetween || /^[\s\n\r]*$/.test(textBetween)) {
+          consecutiveImages.push(nextMatch)
+          nextIndex = nextMatch.index + nextMatch.originalLength
+          i = j // Пропускаем это изображение в основном цикле
+        } else {
+          break // Есть текст между изображениями, не группируем
+        }
+      }
+      
+      // Если несколько изображений подряд, отображаем их в flex-контейнере
+      if (consecutiveImages.length > 1) {
+        parts.push(
+          <div 
+            key={key++} 
+            className="flex flex-wrap" 
+            style={{ 
+              gap: '5px', 
+              margin: '5px 0',
+              display: 'flex',
+              flexWrap: 'wrap'
+            }}
+          >
+            {consecutiveImages.map((img, idx) => (
+              <img
+                key={key++}
+                src={img.url}
+                alt="Изображение"
+                className="rounded-2xl object-contain"
+                style={{ 
+                  flex: '0 0 calc(50% - 2.5px)',
+                  maxWidth: 'calc(50% - 2.5px)',
+                  maxHeight: '200px',
+                  height: 'auto',
+                  display: 'block'
+                }}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.style.display = 'none'
+                  const link = document.createElement('a')
+                  link.href = img.url
+                  link.textContent = img.url
+                  link.className = 'text-blue-600 underline break-all'
+                  target.parentNode?.insertBefore(link, target)
+                }}
+              />
+            ))}
+          </div>
+        )
+        lastIndex = nextIndex
+      } else {
+        // Одно изображение - отображаем как обычно, но с минимальными отступами
+        parts.push(
+          <img
+            key={key++}
+            src={urlMatch.url}
+            alt="Изображение"
+            className="max-w-full max-h-64 rounded-2xl object-contain block"
+            style={{ margin: '10px 0' }}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.style.display = 'none'
+              const link = document.createElement('a')
+              link.href = urlMatch.url
+              link.textContent = urlMatch.url
+              link.className = 'text-blue-600 underline break-all'
+              target.parentNode?.insertBefore(link, target)
+            }}
+          />
+        )
+        lastIndex = urlMatch.index + urlMatch.originalLength
+      }
     }
     
     // Добавляем оставшийся текст после последней ссылки
