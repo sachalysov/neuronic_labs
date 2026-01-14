@@ -155,6 +155,45 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
            lowerText.includes('оформила заказ')
   }
 
+  // Функция для извлечения ссылок на изображения из текста
+  const extractImageUrl = (text: string): { imageUrl: string | undefined; cleanedText: string } => {
+    if (!text) return { imageUrl: undefined, cleanedText: text }
+    
+    // Регулярное выражение для поиска URL изображений с расширениями
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s]*)?/i
+    // Регулярное выражение для поиска всех URL
+    const urlRegex = /(https?:\/\/[^\s\)]+)/gi
+    
+    // Сначала ищем явные ссылки на изображения с расширениями
+    const urls = text.match(urlRegex)
+    if (urls && urls.length > 0) {
+      // Ищем первую ссылку с расширением изображения
+      for (const url of urls) {
+        if (imageExtensions.test(url)) {
+          // Удаляем эту конкретную ссылку из текста
+          const cleanedText = text.replace(url, '').trim().replace(/\s+/g, ' ')
+          return { imageUrl: url, cleanedText }
+        }
+      }
+      
+      // Если явных ссылок на изображения нет, проверяем все URL
+      // и пытаемся определить, является ли это изображением
+      const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
+      for (const url of urls) {
+        const urlLower = url.toLowerCase()
+        const isLikelyImage = imageIndicators.some(indicator => urlLower.includes(indicator))
+        
+        if (isLikelyImage) {
+          // Удаляем эту конкретную ссылку из текста
+          const cleanedText = text.replace(url, '').trim().replace(/\s+/g, ' ')
+          return { imageUrl: url, cleanedText }
+        }
+      }
+    }
+    
+    return { imageUrl: undefined, cleanedText: text }
+  }
+
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
@@ -346,12 +385,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     try {
       const response = await sendChatMessage(messageText, 'demo', sessionId, currentWebhookUrl, imageBase64)
 
+      // Извлекаем ссылку на изображение из текста, если она есть
+      const { imageUrl: extractedImageUrl, cleanedText } = extractImageUrl(response.message)
+      
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: response.message,
+        text: cleanedText,
         sender: "bot",
         timestamp: new Date(),
-        imageUrl: response.imageUrl,
+        imageUrl: response.imageUrl || extractedImageUrl,
       }
 
       setMessages((prev) => [...prev, botMessage])
@@ -428,12 +470,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
         console.log('Ответ от webhook:', response)
 
+        // Извлекаем ссылку на изображение из текста, если она есть
+        const { imageUrl: extractedImageUrl, cleanedText } = extractImageUrl(response.message)
+        
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: response.message,
+          text: cleanedText,
           sender: "bot",
           timestamp: new Date(),
-          imageUrl: response.imageUrl,
+          imageUrl: response.imageUrl || extractedImageUrl,
         }
 
         setMessages((prev) => [...prev, botMessage])
@@ -482,12 +527,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
         console.log('Ответ от webhook:', response)
 
+        // Извлекаем ссылку на изображение из текста, если она есть
+        const { imageUrl: extractedImageUrl, cleanedText } = extractImageUrl(response.message)
+        
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: response.message,
+          text: cleanedText,
           sender: "bot",
           timestamp: new Date(),
-          imageUrl: response.imageUrl,
+          imageUrl: response.imageUrl || extractedImageUrl,
         }
 
         setMessages((prev) => [...prev, botMessage])
@@ -526,12 +574,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       try {
         const response = await sendChatMessage(link, 'demo', sessionId, currentWebhookUrl)
 
+        // Извлекаем ссылку на изображение из текста, если она есть
+        const { imageUrl: extractedImageUrl, cleanedText } = extractImageUrl(response.message)
+        
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: response.message,
+          text: cleanedText,
           sender: "bot",
           timestamp: new Date(),
-          imageUrl: response.imageUrl,
+          imageUrl: response.imageUrl || extractedImageUrl,
         }
 
         setMessages((prev) => [...prev, botMessage])
