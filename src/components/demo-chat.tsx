@@ -133,6 +133,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   })
   // Состояние для отображения кнопки результата записи для protec.one
   const [showProtecResultButton, setShowProtecResultButton] = useState(false)
+  // Состояние для отображения кнопки результата заказа для vomoloko.ru
+  const [showVomolokoResultButton, setShowVomolokoResultButton] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -146,7 +148,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     return lowerText.includes('подтверждаете запись') || 
            lowerText.includes('записала!') || 
            lowerText.includes('записала') ||
-           lowerText.includes('вам придет смс с подтверждением записи')
+           lowerText.includes('вам придет смс с подтверждением записи') ||
+           lowerText.includes('оформила заказ')
   }
 
   const scrollToBottom = () => {
@@ -207,8 +210,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setIsVomolokoContextModalOpen(false)
     setIsProtecContextModalOpen(false)
     
-    // Скрываем кнопку результата записи при сбросе
+    // Скрываем кнопки результатов при сбросе
     setShowProtecResultButton(false)
+    setShowVomolokoResultButton(false)
     
     // Сбрасываем webhook на исходный (undefined = стандартный для demo)
     setCurrentWebhookUrl(undefined)
@@ -232,15 +236,22 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   // Проверяем при загрузке и изменении сообщений/webhook, нужно ли показывать кнопку результата записи
   useEffect(() => {
+    const hasConfirmationMessage = messages.some(msg => 
+      msg.sender === "bot" && containsBookingConfirmation(msg.text)
+    )
+
     if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL) {
-      // Ищем последнее сообщение от бота, содержащее текст о подтверждении записи
-      const hasConfirmationMessage = messages.some(msg => 
-        msg.sender === "bot" && containsBookingConfirmation(msg.text)
-      )
+      // Для protec.one показываем кнопку результата записи
       setShowProtecResultButton(hasConfirmationMessage)
     } else {
-      // Если не используется protec.one webhook, скрываем кнопку
       setShowProtecResultButton(false)
+    }
+
+    if (currentWebhookUrl === DEMO_CHAT_VOMOLOKO_WEBHOOK_URL) {
+      // Для vomoloko.ru показываем кнопку результата заказа
+      setShowVomolokoResultButton(hasConfirmationMessage)
+    } else {
+      setShowVomolokoResultButton(false)
     }
   }, [messages, currentWebhookUrl])
 
@@ -289,10 +300,14 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
       setMessages((prev) => [...prev, botMessage])
       
-      // Проверяем, нужно ли показать кнопку результата записи для protec.one
-      if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL && 
-          containsBookingConfirmation(response.message)) {
-        setShowProtecResultButton(true)
+      // Проверяем, нужно ли показать кнопку результата записи/заказа
+      if (containsBookingConfirmation(response.message)) {
+        if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL) {
+          setShowProtecResultButton(true)
+        }
+        if (currentWebhookUrl === DEMO_CHAT_VOMOLOKO_WEBHOOK_URL) {
+          setShowVomolokoResultButton(true)
+        }
       }
       
       updateLastActivity() // Обновляем активность при получении ответа
@@ -462,10 +477,14 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
         setMessages((prev) => [...prev, botMessage])
         
-        // Проверяем, нужно ли показать кнопку результата записи для protec.one
-        if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL && 
-            containsBookingConfirmation(response.message)) {
-          setShowProtecResultButton(true)
+        // Проверяем, нужно ли показать кнопку результата записи/заказа
+        if (containsBookingConfirmation(response.message)) {
+          if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL) {
+            setShowProtecResultButton(true)
+          }
+          if (currentWebhookUrl === DEMO_CHAT_VOMOLOKO_WEBHOOK_URL) {
+            setShowVomolokoResultButton(true)
+          }
         }
         
         updateLastActivity()
@@ -653,6 +672,18 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 className="w-full text-sm py-2"
               >
                 Показать результат записи в таблице
+              </Button>
+            </div>
+          )}
+          {showVomolokoResultButton && (
+            <div className="mb-2">
+              <Button
+                type="button"
+                variant="default"
+                onClick={() => window.open('https://docs.google.com/spreadsheets/d/1DFPTgFBKTW28z-eF6yW_O_d5KexInIZUGLp_AJS8UtY/edit?usp=sharing', '_blank')}
+                className="w-full text-sm py-2"
+              >
+                Посмотреть результаты в таблице
               </Button>
             </div>
           )}
