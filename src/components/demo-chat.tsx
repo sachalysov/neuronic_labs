@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Send, Loader2, X, RotateCcw } from "lucide-react"
+import { Send, Loader2, X, RotateCcw, ChevronDown } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
@@ -135,6 +135,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [showProtecResultButton, setShowProtecResultButton] = useState(false)
   // Состояние для отображения кнопки результата заказа для vomoloko.ru
   const [showVomolokoResultButton, setShowVomolokoResultButton] = useState(false)
+  // Состояние для выпадающего списка возможностей
+  const [isCapabilitiesOpen, setIsCapabilitiesOpen] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -563,6 +565,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   }, [isMobile])
 
   return (
+    <>
     <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} mx-auto shadow-2xl border-gray-200 bg-white ${isMobile ? 'rounded-none' : ''} ${isMobile ? 'flex flex-col' : ''}`}>
       <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
         <div className="flex items-center justify-between gap-4">
@@ -734,6 +737,55 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         onClose={() => setIsProtecContextModalOpen(false)}
       />
     </Card>
+    
+    {/* Выпадающий список возможностей */}
+    <Card className={`w-full ${isMobile ? '' : 'max-w-[717px]'} mx-auto mt-4 shadow-lg bg-card border-border`}>
+      <CardContent 
+        className="p-4 cursor-pointer hover:bg-secondary transition-colors"
+        onClick={() => setIsCapabilitiesOpen(!isCapabilitiesOpen)}
+      >
+        <div className="flex items-center justify-between gap-4">
+          <h3 className="text-base font-bold text-card-foreground">Самые базовые возможности этого демо-бота</h3>
+          <ChevronDown
+            className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 text-muted-foreground ${
+              isCapabilitiesOpen ? "rotate-180" : ""
+            }`}
+          />
+        </div>
+        
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isCapabilitiesOpen ? "max-h-[800px] opacity-100 mt-4" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="space-y-4 text-sm text-card-foreground">
+            <div>
+              <h4 className="font-semibold text-card-foreground mb-2">Что он умеет?</h4>
+              <ul className="space-y-1.5 list-disc list-inside ml-2 text-muted-foreground">
+                <li>Консультирует по наличию</li>
+                <li>Расчитывает стоимость</li>
+                <li>Предлагает дополниельный товар и услуги</li>
+                <li>Закрывает возражения</li>
+                <li>Записывает номера телефонов, имена, адреса</li>
+                <li>Подсказывает ближайший магазин или офис от дома клиента</li>
+                <li>Умеет отменять запись</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-card-foreground mb-2">Варианты интеграции:</h4>
+              <div className="space-y-1.5 text-muted-foreground">
+                <p><span className="font-medium text-card-foreground">Канал продаж</span> - На сайт / telegram / avito / и другие..</p>
+                <p><span className="font-medium text-card-foreground">CRM</span> - Bitrix / Amo / Yclients / и другие..</p>
+              </div>
+            </div>
+            
+            <p className="text-muted-foreground italic">И любой другой сценарий который захотете реализовать!</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+    </>
   )
 }
 
