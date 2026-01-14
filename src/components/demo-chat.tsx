@@ -645,7 +645,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   return (
     <>
-    <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} mx-auto shadow-2xl border-gray-200 bg-white ${isMobile ? 'rounded-none' : ''} ${isMobile ? 'flex flex-col' : ''}`}>
+    <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} ${isMobile ? '' : 'mx-auto'} ${isMobile ? '' : 'shadow-2xl'} border-gray-200 bg-white ${isMobile ? 'rounded-none border-0' : ''} ${isMobile ? 'flex flex-col' : ''}`}>
       <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
