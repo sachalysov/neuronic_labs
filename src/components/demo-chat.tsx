@@ -739,7 +739,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     </Card>
     
     {/* Выпадающий список возможностей */}
-    <Card className={`w-full ${isMobile ? '' : 'max-w-[717px]'} mx-auto mt-4 shadow-lg bg-card border-border`}>
+    <Card className={`w-full ${isMobile ? '' : 'max-w-[717px]'} mx-auto mt-4 shadow-lg bg-card border-border ${!isCapabilitiesOpen ? 'capabilities-red-pulse' : ''}`}>
       <CardContent 
         className="px-4 py-2 cursor-pointer transition-colors"
         onClick={() => setIsCapabilitiesOpen(!isCapabilitiesOpen)}

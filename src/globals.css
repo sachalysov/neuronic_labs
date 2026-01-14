@@ -867,3 +867,25 @@ html[data-theme="dark"] .hero-bottom-fade {
   }
 }
 
+/* Анимация красного мигания для свернутого списка */
+@keyframes redPulse {
+  0%, 100% {
+    border-color: var(--border);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  50% {
+    border-color: oklch(0.55 0.22 27);
+    box-shadow: 0 10px 15px -3px oklch(0.55 0.22 27 / 0.3), 0 4px 6px -2px oklch(0.55 0.22 27 / 0.2);
+  }
+}
+
+.capabilities-red-pulse {
+  animation: redPulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capabilities-red-pulse {
+    animation: none;
+  }
+}
+
