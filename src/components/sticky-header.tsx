@@ -146,7 +146,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
           <Link to="/" className="flex items-center gap-1 sm:gap-3 hover:opacity-80 transition-opacity">
             <div className="flex items-center gap-2 sm:gap-4">
               <div className="flex flex-col items-start">
-                <div className="flex items-baseline gap-0.5 sm:gap-1">
+                <div className="flex items-baseline sm:gap-1">
                   <span className="text-xl sm:text-2xl font-bold text-primary">N</span>
                   <span className="text-xl sm:text-2xl font-bold text-foreground">LABS</span>
                 </div>

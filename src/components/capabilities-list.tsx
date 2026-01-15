@@ -29,7 +29,7 @@ export function CapabilitiesList() {
         >
           <div className="space-y-4 text-sm text-card-foreground text-left">
             <div>
-              <h4 className="font-semibold text-card-foreground mb-2">Что он умеет?</h4>
+              <h4 className="font-semibold text-card-foreground mb-3">Что он умеет?</h4>
               <ul className="space-y-1.5 list-disc list-inside ml-2 text-muted-foreground">
                 <li>Консультирует по наличию</li>
                 <li>Расчитывает стоимость</li>
@@ -37,7 +37,8 @@ export function CapabilitiesList() {
                 <li>Закрывает возражения</li>
                 <li>Записывает номера телефонов, имена, адреса</li>
                 <li>Подсказывает ближайший магазин или офис от дома клиента</li>
-                <li>Умеет отменять запись</li>
+                <li>Отменять запись по просьбе клиента</li>
+                <li>Отправлять фото товаров</li>
               </ul>
             </div>
             
