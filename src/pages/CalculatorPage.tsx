@@ -179,7 +179,7 @@ export default function CalculatorPage() {
     }
 
     const lines: string[] = []
-    lines.push("Выбранные параметры внедрения:\n")
+    lines.push("Напишите свои пожелания:\n\nВот выбранные параметры внедрения:\n")
 
     selectedOptions.forEach((optionIds, category) => {
       const categoryData = categories.find(c => c.category === category)
