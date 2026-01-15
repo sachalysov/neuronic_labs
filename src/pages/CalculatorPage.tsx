@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { StickyHeader } from '@/components/sticky-header'
+import { SpaceDust } from '@/components/space-dust'
 import { Footer } from '@/components/footer'
 import { Card, CardContent } from '@/components/ui/card'
-import { ChevronDown, Calculator } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { getCalculatorPrices, subscribeToCalculatorPrices, type CalculatorCategory } from '@/services/calculator-prices'
 import { useMeta } from '@/hooks/useMeta'
 
@@ -128,23 +129,27 @@ export default function CalculatorPage() {
   const total = calculateTotal()
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <main className="min-h-screen">
+      <SpaceDust />
       <StickyHeader />
       
-      <main className="flex-1 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Заголовок */}
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-2xl mb-4 sm:mb-6">
-              <Calculator className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+      <div className="flex-1">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden min-h-[40vh] flex items-center pt-20 bg-gradient-to-b from-secondary/20 to-background">
+          <div className="container mx-auto px-4 py-20 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
+                <span className="text-primary">Рассчитать стоимость внедрения самостоятельно</span>
+              </h1>
+              <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
+                Выберите параметры внедрения и узнайте стоимость
+              </p>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
-              Рассчитать стоимость внедрения самостоятельно
-            </h1>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Выберите параметры внедрения и узнайте стоимость
-            </p>
           </div>
+        </section>
+
+        <section className="pb-12 px-4 sm:px-6 lg:px-8">
+          <div className="container mx-auto max-w-4xl">
 
           {loading ? (
             <div className="text-center py-12">
@@ -279,11 +284,12 @@ export default function CalculatorPage() {
               </div>
             </div>
           )}
-        </div>
-      </main>
+          </div>
+        </section>
+      </div>
 
       <Footer />
-    </div>
+    </main>
   )
 }
 
