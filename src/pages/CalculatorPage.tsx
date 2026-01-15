@@ -215,12 +215,15 @@ export default function CalculatorPage() {
                     <Card
                       key={category.category}
                       id={`category-${category.category}`}
-                      className="overflow-hidden transition-all hover:border-primary/50"
+                      className={`overflow-hidden transition-all hover:border-primary/50 ${
+                        !isOpen ? 'cursor-pointer' : ''
+                      }`}
+                      onClick={!isOpen ? () => toggleCategory(category.category) : undefined}
                     >
                       <button
                         type="button"
                         onClick={() => toggleCategory(category.category)}
-                        className="w-full"
+                        className={`w-full ${!isOpen ? 'pointer-events-none' : ''}`}
                       >
                         <CardContent className={isOpen ? "p-4 sm:p-6" : "px-4 sm:px-6 py-0.5 sm:py-1"}>
                           <div className="flex items-center justify-between gap-4">
