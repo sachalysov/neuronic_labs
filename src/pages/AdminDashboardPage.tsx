@@ -142,13 +142,29 @@ export default function AdminDashboardPage() {
                   className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     maintenanceEnabled ? 'bg-destructive' : 'bg-muted'
                   }`}
+                  style={{
+                    minHeight: '24px',
+                    maxHeight: '24px',
+                    height: '24px',
+                    minWidth: '44px',
+                    maxWidth: '44px',
+                    width: '44px'
+                  }}
                   aria-pressed={maintenanceEnabled}
                   aria-label="Переключить уведомление о технических работах"
                 >
                   <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out ${
-                      maintenanceEnabled ? 'translate-x-5' : 'translate-x-0'
+                    className={`pointer-events-none absolute top-1/2 left-0.5 -translate-y-1/2 inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition-all duration-200 ease-in-out ${
+                      maintenanceEnabled ? 'translate-x-[20px]' : 'translate-x-0'
                     }`}
+                    style={{
+                      minHeight: '20px',
+                      maxHeight: '20px',
+                      height: '20px',
+                      minWidth: '20px',
+                      maxWidth: '20px',
+                      width: '20px'
+                    }}
                   />
                 </button>
                 <div className="flex-1">
