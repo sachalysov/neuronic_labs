@@ -5,6 +5,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { ThemeToggle } from "./theme-toggle"
 import { search, type SearchResult } from "@/services/search"
 
+const MAINTENANCE_STORAGE_KEY = 'nlabs_maintenance_banner'
+const MAINTENANCE_EVENT_NAME = 'nlabs_maintenance_banner_change'
+
 interface StickyHeaderProps {
   onOpenDemoChat?: () => void
 }
@@ -21,6 +24,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false)
   const [isSearchLoading, setIsSearchLoading] = useState(false)
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [showMaintenanceBanner, setShowMaintenanceBanner] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +33,29 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const readFromStorage = () => {
+      try {
+        const value = window.localStorage.getItem(MAINTENANCE_STORAGE_KEY)
+        setShowMaintenanceBanner(value === '1')
+      } catch {
+        setShowMaintenanceBanner(false)
+      }
+    }
+
+    readFromStorage()
+
+    const handleMaintenanceChange = () => {
+      readFromStorage()
+    }
+
+    window.addEventListener(MAINTENANCE_EVENT_NAME, handleMaintenanceChange as EventListener)
+
+    return () => {
+      window.removeEventListener(MAINTENANCE_EVENT_NAME, handleMaintenanceChange as EventListener)
+    }
   }, [])
 
   // Очистка таймера при размонтировании
@@ -140,6 +167,11 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
         isScrolled || isMobileMenuOpen ? "bg-background/95 backdrop-blur-sm border-b border-border shadow-lg" : "bg-transparent"
       }`}
     >
+      {showMaintenanceBanner && (
+        <div className="w-full bg-destructive text-destructive-foreground text-xs sm:text-sm text-center py-1 px-2">
+          На сайте ведутся технические работы. Возможны временные сбои в работе.
+        </div>
+      )}
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}

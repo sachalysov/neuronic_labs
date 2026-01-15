@@ -19,7 +19,7 @@ export default function AdminLoginPage() {
 
     try {
       await signIn(email, password)
-      navigate('/admin/blog')
+      navigate('/admin')
     } catch (err: any) {
       setError(err.message || 'Ошибка входа. Проверьте email и пароль.')
     } finally {

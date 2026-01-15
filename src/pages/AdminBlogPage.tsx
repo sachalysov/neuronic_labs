@@ -166,6 +166,9 @@ export default function AdminBlogPage() {
             <p className="text-muted-foreground mt-1">Управление статьями</p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate('/admin')}>
+              Назад
+            </Button>
             <Button variant="outline" onClick={() => navigate('/blog')}>
               Просмотр блога
             </Button>
