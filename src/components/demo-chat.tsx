@@ -119,12 +119,23 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     }
   }, [input])
   
-  // Определяем видимость кнопок: показываем всегда, кроме случая когда были явно скрыты
+  // Определяем видимость кнопок: скрываем если диалог уже начат (есть пользовательские сообщения)
   const [linkButtonsVisible, setLinkButtonsVisible] = useState(() => {
-    // Проверяем, были ли кнопки скрыты ранее (только если пользователь нажал на одну из них)
-    const buttonsHidden = getLocalStorage('demo-chat-buttons-hidden')
-    // Показываем кнопки всегда, если они не были явно скрыты пользователем
-    return buttonsHidden !== 'true'
+    // Проверяем сохраненные сообщения
+    const stored = getLocalStorage('demo-chat-messages')
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        // Проверяем, есть ли среди сохраненных сообщений сообщения от пользователя
+        const hasUserMessages = parsed.some((msg: any) => msg.sender === "user")
+        // Если есть пользовательские сообщения, значит диалог начат - скрываем кнопки
+        return !hasUserMessages
+      } catch (e) {
+        console.error('Error parsing stored messages for buttons visibility:', e)
+      }
+    }
+    // Если нет сохраненных сообщений или ошибка парсинга - показываем кнопки
+    return true
   })
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const [isVomolokoContextModalOpen, setIsVomolokoContextModalOpen] = useState(false)
@@ -345,7 +356,16 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       imageBase64: imageBase64,
     }
 
+    // Проверяем, есть ли уже пользовательские сообщения перед добавлением нового
+    const hasExistingUserMessages = messages.some(msg => msg.sender === "user")
+    
     setMessages((prev) => addUserMessage(prev, userMessage))
+    
+    // Если это первое пользовательское сообщение, скрываем кнопки
+    if (!hasExistingUserMessages && linkButtonsVisible) {
+      setLinkButtonsVisible(false)
+      setLocalStorage('demo-chat-buttons-hidden', 'true')
+    }
     setInput("")
     setSelectedImage(null)
     // Очищаем input файла
@@ -533,7 +553,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         setIsLoading(false)
       }
     } else {
-      // Для других кнопок (protec.one) используем стандартную логику
+      // Для других ссылок используем стандартную логику
       const userMessage: Message = {
         id: Date.now().toString(),
         text: link,
@@ -541,7 +561,16 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         timestamp: new Date(),
       }
 
+      // Проверяем, есть ли уже пользовательские сообщения перед добавлением нового
+      const hasExistingUserMessages = messages.some(msg => msg.sender === "user")
+      
       setMessages((prev) => addUserMessage(prev, userMessage))
+      
+      // Если это первое пользовательское сообщение, скрываем кнопки
+      if (!hasExistingUserMessages && linkButtonsVisible) {
+        setLinkButtonsVisible(false)
+        setLocalStorage('demo-chat-buttons-hidden', 'true')
+      }
       setIsLoading(true)
       updateLastActivity()
 
