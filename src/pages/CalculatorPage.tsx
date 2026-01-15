@@ -3,7 +3,9 @@ import { StickyHeader } from '@/components/sticky-header'
 import { SpaceDust } from '@/components/space-dust'
 import { Footer } from '@/components/footer'
 import { Card, CardContent } from '@/components/ui/card'
-import { ChevronDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { ConsultationModal } from '@/components/consultation-modal'
+import { ChevronDown, Phone } from 'lucide-react'
 import { getCalculatorPrices, subscribeToCalculatorPrices, type CalculatorCategory } from '@/services/calculator-prices'
 import { useMeta } from '@/hooks/useMeta'
 
@@ -26,6 +28,7 @@ export default function CalculatorPage() {
   const [selectedOptions, setSelectedOptions] = useState<Map<string, Set<string>>>(new Map())
   const [openCategories, setOpenCategories] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   
   // Категории, где можно выбрать только один вариант
   const singleSelectCategories = new Set(['Количество каналов продаж', 'Где вести учет?'])
@@ -232,6 +235,35 @@ export default function CalculatorPage() {
                     </Card>
                   )
                 })}
+
+                {/* Блок с контактами */}
+                <Card className="mt-6 bg-primary/5 border-primary/20">
+                  <CardContent className="p-6">
+                    <p className="text-base sm:text-lg text-foreground mb-4 text-center">
+                      Не нашли нужное решение? Свяжитесь с нами, оставьте свои контактные данные или позвоните по номеру
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button
+                        onClick={() => setIsConsultationModalOpen(true)}
+                        size="lg"
+                        className="flex-1 sm:flex-initial"
+                      >
+                        Оставить контакты
+                      </Button>
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="lg"
+                        className="flex-1 sm:flex-initial"
+                      >
+                        <a href="tel:+79930799177" className="flex items-center justify-center gap-2">
+                          <Phone className="h-4 w-4" />
+                          +7 993 079 91 77
+                        </a>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Правая колонка - Калькулятор */}
@@ -287,6 +319,11 @@ export default function CalculatorPage() {
           </div>
         </section>
       </div>
+
+      <ConsultationModal
+        isOpen={isConsultationModalOpen}
+        onClose={() => setIsConsultationModalOpen(false)}
+      />
 
       <Footer />
     </main>
