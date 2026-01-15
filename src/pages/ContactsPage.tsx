@@ -96,8 +96,8 @@ export default function ContactsPage() {
       <StickyHeader />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[40vh] flex items-center pt-20 bg-gradient-to-b from-secondary/20 to-background">
-        <div className="container mx-auto px-4 py-12 sm:py-16 relative z-10">
+      <section className="relative overflow-hidden min-h-[40vh] flex items-center pb-0 pt-20 bg-gradient-to-b from-secondary/20 to-background">
+        <div className="container mx-auto px-4 pt-3 pb-0 sm:py-16 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-6">
               <span className="text-primary">Контакты</span>
@@ -110,16 +110,16 @@ export default function ContactsPage() {
       </section>
 
       {/* О компании */}
-      <section className="py-8 sm:py-12 px-3 sm:px-4">
+      <section className="py-2 sm:py-12 px-3 sm:px-4">
         <div className="container mx-auto max-w-6xl">
           <Card className="bg-card/10 border-0">
             <CardContent className="p-6 sm:p-8">
-              <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row items-start gap-4 mb-1.5 sm:mb-6">
                 <div className="hidden sm:flex w-12 h-12 rounded-lg bg-primary/10 items-center justify-center flex-shrink-0">
                   <Building2 className="h-6 w-6 text-primary" />
                 </div>
                 <div className="w-full sm:flex-1">
-                  <h2 className="text-2xl sm:text-3xl font-bold mb-4">О NEURONIC LABS</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-4">О NEURONIC LABS</h2>
                   <div className="space-y-4 text-lg">
                     <p>
                       <strong>NEURONIC LABS</strong> — агентство по внедрению нейро-продавцов и автоматизации бизнеса.
