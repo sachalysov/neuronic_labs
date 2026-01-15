@@ -65,6 +65,17 @@ export default function AdminDashboardPage() {
     }
   }
 
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      navigate('/admin/login')
+    } catch (error) {
+      console.error('Ошибка выхода:', error)
+      // Всё равно редиректим на логин
+      navigate('/admin/login')
+    }
+  }
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -90,13 +101,28 @@ export default function AdminDashboardPage() {
             </div>
             <div className="flex flex-wrap gap-2 items-center">
               <AdminThemeToggle />
-              <Button variant="outline" onClick={() => navigate('/')}>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/')}
+                type="button"
+                className="touch-manipulation"
+              >
                 Открыть сайт
               </Button>
-              <Button variant="outline" onClick={() => navigate('/admin/blog')}>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/admin/blog')}
+                type="button"
+                className="touch-manipulation"
+              >
                 Админка блога
               </Button>
-              <Button variant="outline" onClick={signOut}>
+              <Button 
+                variant="outline" 
+                onClick={handleSignOut}
+                type="button"
+                className="touch-manipulation min-w-[80px]"
+              >
                 Выйти
               </Button>
             </div>

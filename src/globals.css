@@ -442,9 +442,18 @@ html[data-theme="dark"] .hero-bottom-fade {
 /* Touch-friendly buttons */
 @media (hover: none) and (pointer: coarse) {
   button, a {
-    min-height: 5px;
-    min-width: 5px;
+    min-height: 44px; /* Минимальный размер для удобного нажатия на мобильных */
+    min-width: 44px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   }
+}
+
+/* Touch manipulation для лучшей отзывчивости на мобильных */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Hide scrollbar for slider */

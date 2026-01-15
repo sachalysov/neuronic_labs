@@ -146,6 +146,17 @@ export default function AdminBlogPage() {
     }
   }
 
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      navigate('/admin/login')
+    } catch (error) {
+      console.error('Ошибка выхода:', error)
+      // Всё равно редиректим на логин
+      navigate('/admin/login')
+    }
+  }
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -172,13 +183,28 @@ export default function AdminBlogPage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => navigate('/admin')}>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/admin')}
+              type="button"
+              className="touch-manipulation"
+            >
               Назад
             </Button>
-            <Button variant="outline" onClick={() => navigate('/blog')}>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/blog')}
+              type="button"
+              className="touch-manipulation"
+            >
               Просмотр блога
             </Button>
-            <Button variant="outline" onClick={signOut}>
+            <Button 
+              variant="outline" 
+              onClick={handleSignOut}
+              type="button"
+              className="touch-manipulation min-w-[80px]"
+            >
               Выйти
             </Button>
           </div>
