@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -13,9 +13,10 @@ import { validatePhone, validateName, validateComment, CIS_COUNTRIES, type Count
 interface ConsultationModalProps {
   isOpen: boolean
   onClose: () => void
+  initialComment?: string
 }
 
-export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
+export function ConsultationModal({ isOpen, onClose, initialComment = "" }: ConsultationModalProps) {
   const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
@@ -29,6 +30,26 @@ export function ConsultationModal({ isOpen, onClose }: ConsultationModalProps) {
     phone?: string
     comment?: string
   }>({})
+
+  // Устанавливаем начальный комментарий при открытии модального окна
+  useEffect(() => {
+    if (isOpen && initialComment) {
+      setComment(initialComment)
+    }
+  }, [isOpen, initialComment])
+
+  // Сброс формы при закрытии
+  useEffect(() => {
+    if (!isOpen) {
+      setName("")
+      setPhone("")
+      setEmail("")
+      setTelegram("")
+      setComment("")
+      setIsSubmitted(false)
+      setErrors({})
+    }
+  }, [isOpen])
 
   if (!isOpen) return null
 

@@ -173,6 +173,46 @@ export default function CalculatorPage() {
       .filter((name): name is string => name !== null)
   }
 
+  const formatCalculatorDataForComment = (): string => {
+    if (selectedOptions.size === 0) {
+      return ""
+    }
+
+    const lines: string[] = []
+    lines.push("Выбранные параметры внедрения:\n")
+
+    selectedOptions.forEach((optionIds, category) => {
+      const categoryData = categories.find(c => c.category === category)
+      if (!categoryData) return
+
+      const selectedNames: string[] = []
+      optionIds.forEach(optionId => {
+        const option = categoryData.options.find(o => o.id === optionId)
+        if (option) {
+          selectedNames.push(option.option_name)
+          if (option.price > 0) {
+            selectedNames[selectedNames.length - 1] += ` (${formatPrice(option.price)})`
+          }
+        }
+      })
+
+      if (selectedNames.length > 0) {
+        lines.push(`${category}:`)
+        selectedNames.forEach(name => {
+          lines.push(`  - ${name}`)
+        })
+        lines.push("")
+      }
+    })
+
+    const total = calculateTotal()
+    if (total > 0) {
+      lines.push(`Итоговая стоимость: ${formatPrice(total)}`)
+    }
+
+    return lines.join("\n")
+  }
+
   const total = calculateTotal()
 
   return (
@@ -379,6 +419,7 @@ export default function CalculatorPage() {
       <ConsultationModal
         isOpen={isConsultationModalOpen}
         onClose={() => setIsConsultationModalOpen(false)}
+        initialComment={formatCalculatorDataForComment()}
       />
 
       <Footer />
