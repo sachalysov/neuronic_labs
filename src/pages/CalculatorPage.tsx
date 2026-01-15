@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react'
 import { StickyHeader } from '@/components/sticky-header'
 import { Footer } from '@/components/footer'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { ChevronDown, Calculator } from 'lucide-react'
-import { getCalculatorPrices, subscribeToCalculatorPrices, type CalculatorCategory, type CalculatorPrice } from '@/services/calculator-prices'
+import { getCalculatorPrices, subscribeToCalculatorPrices, type CalculatorCategory } from '@/services/calculator-prices'
 import { useMeta } from '@/hooks/useMeta'
 
 function formatPrice(price: number): string {
