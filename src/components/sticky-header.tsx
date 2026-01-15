@@ -26,6 +26,8 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [showMaintenanceBanner, setShowMaintenanceBanner] = useState(false)
   const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
+  const menuDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const productDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,11 +67,17 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
     }
   }, [])
 
-  // Очистка таймера при размонтировании
+  // Очистка таймеров при размонтировании
   useEffect(() => {
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current)
+      }
+      if (menuDropdownTimeoutRef.current) {
+        clearTimeout(menuDropdownTimeoutRef.current)
+      }
+      if (productDropdownTimeoutRef.current) {
+        clearTimeout(productDropdownTimeoutRef.current)
       }
     }
   }, [])
@@ -320,8 +328,17 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               </Link>
               <div
                 className="relative"
-                onMouseEnter={() => setIsProductDropdownOpen(true)}
-                onMouseLeave={() => setIsProductDropdownOpen(false)}
+                onMouseEnter={() => {
+                  if (productDropdownTimeoutRef.current) {
+                    clearTimeout(productDropdownTimeoutRef.current)
+                  }
+                  setIsProductDropdownOpen(true)
+                }}
+                onMouseLeave={() => {
+                  productDropdownTimeoutRef.current = setTimeout(() => {
+                    setIsProductDropdownOpen(false)
+                  }, 150)
+                }}
               >
                 <button
                   onClick={() => setIsProductDropdownOpen(!isProductDropdownOpen)}
@@ -338,14 +355,26 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   </svg>
                 </button>
                 {isProductDropdownOpen && (
-                  <div className="absolute top-full left-0 pt-2 w-48 z-50">
-                    <div className="bg-background border border-border rounded-lg shadow-lg overflow-hidden">
+                  <div 
+                    className="absolute top-full left-0 pt-2 z-50"
+                    onMouseEnter={() => {
+                      if (productDropdownTimeoutRef.current) {
+                        clearTimeout(productDropdownTimeoutRef.current)
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      productDropdownTimeoutRef.current = setTimeout(() => {
+                        setIsProductDropdownOpen(false)
+                      }, 150)
+                    }}
+                  >
+                    <div className="bg-background border border-border rounded-lg shadow-lg overflow-hidden min-w-max">
                       <button
                         onClick={() => {
                           navigateToSection("product")
                           setIsProductDropdownOpen(false)
                         }}
-                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         О продукте
                       </button>
@@ -354,21 +383,21 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                           navigateToSection("pricing")
                           setIsProductDropdownOpen(false)
                         }}
-                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Тарифы и цены
                       </button>
                       <Link
                         to="/calculator"
                         onClick={() => setIsProductDropdownOpen(false)}
-                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Рассчитать стоимость внедрения самостоятельно
                       </Link>
                       <Link
                         to="/business-cases"
                         onClick={() => setIsProductDropdownOpen(false)}
-                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Кейсы бизнеса
                       </Link>
@@ -377,7 +406,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                           navigateToSection("testimonials")
                           setIsProductDropdownOpen(false)
                         }}
-                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Отзывы клиентов
                       </button>
@@ -386,7 +415,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                           navigateToSection("faq")
                           setIsProductDropdownOpen(false)
                         }}
-                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Частые вопросы
                       </button>
@@ -397,8 +426,17 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
              
               <div
                 className="relative"
-                onMouseEnter={() => setIsMenuDropdownOpen(true)}
-                onMouseLeave={() => setIsMenuDropdownOpen(false)}
+                onMouseEnter={() => {
+                  if (menuDropdownTimeoutRef.current) {
+                    clearTimeout(menuDropdownTimeoutRef.current)
+                  }
+                  setIsMenuDropdownOpen(true)
+                }}
+                onMouseLeave={() => {
+                  menuDropdownTimeoutRef.current = setTimeout(() => {
+                    setIsMenuDropdownOpen(false)
+                  }, 150)
+                }}
               >
                 <button
                   onClick={() => setIsMenuDropdownOpen(!isMenuDropdownOpen)}
@@ -415,12 +453,24 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   </svg>
                 </button>
                 {isMenuDropdownOpen && (
-                  <div className="absolute top-full left-0 pt-2 w-48 z-50">
-                    <div className="bg-background border border-border rounded-lg shadow-lg overflow-hidden">
+                  <div 
+                    className="absolute top-full left-0 pt-2 z-50"
+                    onMouseEnter={() => {
+                      if (menuDropdownTimeoutRef.current) {
+                        clearTimeout(menuDropdownTimeoutRef.current)
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      menuDropdownTimeoutRef.current = setTimeout(() => {
+                        setIsMenuDropdownOpen(false)
+                      }, 150)
+                    }}
+                  >
+                    <div className="bg-background border border-border rounded-lg shadow-lg overflow-hidden min-w-max">
                       <Link
                         to="/partners"
                         onClick={() => setIsMenuDropdownOpen(false)}
-                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Партнерская программа
                       </Link>
@@ -429,21 +479,21 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                           navigateToSection("about")
                           setIsMenuDropdownOpen(false)
                         }}
-                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         О нас
                       </button>
                       <Link
                         to="/contacts"
                         onClick={() => setIsMenuDropdownOpen(false)}
-                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Контакты
                       </Link>
                       <Link
                         to="/conference"
                         onClick={() => setIsMenuDropdownOpen(false)}
-                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Для участников конференции
                       </Link>
@@ -452,7 +502,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                           navigateToContactsSection("payment-methods")
                           setIsMenuDropdownOpen(false)
                         }}
-                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
                       >
                         Способы оплаты
                       </button>
