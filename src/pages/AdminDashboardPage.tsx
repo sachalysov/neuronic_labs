@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
@@ -16,6 +16,8 @@ export default function AdminDashboardPage() {
   const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
   const [loadingSettings, setLoadingSettings] = useState(true)
   const [saving, setSaving] = useState(false)
+  const textSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isUserTypingRef = useRef(false)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -46,12 +48,19 @@ export default function AdminDashboardPage() {
 
     // Подписка на изменения настроек в реальном времени
     const unsubscribe = subscribeToAdminSettings((settings: AdminSettings) => {
-      setMaintenanceEnabled(settings.maintenance_banner_enabled)
-      setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+      // Игнорируем обновления от Realtime, если пользователь сам вводит текст
+      if (!isUserTypingRef.current) {
+        setMaintenanceEnabled(settings.maintenance_banner_enabled)
+        setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+      }
     })
 
     return () => {
       unsubscribe()
+      // Очищаем таймер при размонтировании
+      if (textSaveTimeoutRef.current) {
+        clearTimeout(textSaveTimeoutRef.current)
+      }
     }
   }, [user])
 
@@ -69,18 +78,32 @@ export default function AdminDashboardPage() {
     }
   }
 
-  const handleTextChange = async (text: string) => {
+  const handleTextChange = (text: string) => {
+    // Обновляем локальное состояние сразу для отзывчивости UI
     setMaintenanceText(text)
-    setSaving(true)
-    try {
-      await updateAdminSettings({ 
-        maintenance_banner_text: text.trim() || DEFAULT_MAINTENANCE_TEXT 
-      })
-    } catch (error) {
-      console.error('Ошибка обновления текста:', error)
-    } finally {
-      setSaving(false)
+    
+    // Устанавливаем флаг, что пользователь вводит текст
+    isUserTypingRef.current = true
+    
+    // Очищаем предыдущий таймер
+    if (textSaveTimeoutRef.current) {
+      clearTimeout(textSaveTimeoutRef.current)
     }
+    
+    // Сохраняем в Supabase только после паузы в вводе (500ms)
+    textSaveTimeoutRef.current = setTimeout(async () => {
+      isUserTypingRef.current = false
+      setSaving(true)
+      try {
+        await updateAdminSettings({ 
+          maintenance_banner_text: text.trim() || DEFAULT_MAINTENANCE_TEXT 
+        })
+      } catch (error) {
+        console.error('Ошибка обновления текста:', error)
+      } finally {
+        setSaving(false)
+      }
+    }, 500)
   }
 
   const handleSignOut = async () => {
@@ -200,24 +223,22 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               
-              {maintenanceEnabled && (
-                <div className="space-y-2 pt-2 border-t border-border">
-                  <label className="block text-sm font-medium">
-                    Текст уведомления
-                  </label>
-                  <Input
-                    type="text"
-                    value={maintenanceText}
-                    onChange={(e) => handleTextChange(e.target.value)}
-                    placeholder={DEFAULT_MAINTENANCE_TEXT}
-                    disabled={saving || loadingSettings}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Текст будет отображаться в красном баннере в верхней части всех страниц сайта.
-                  </p>
-                </div>
-              )}
+              <div className="space-y-2 pt-2 border-t border-border">
+                <label className="block text-sm font-medium">
+                  Текст уведомления
+                </label>
+                <Input
+                  type="text"
+                  value={maintenanceText}
+                  onChange={(e) => handleTextChange(e.target.value)}
+                  placeholder={DEFAULT_MAINTENANCE_TEXT}
+                  disabled={saving || loadingSettings}
+                  className="w-full"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Текст будет отображаться в красном баннере в верхней части всех страниц сайта.
+                </p>
+              </div>
             </CardContent>
           </Card>
 
