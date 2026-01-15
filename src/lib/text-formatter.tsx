@@ -85,13 +85,166 @@ function ImageWithModal({ src, alt, className, style, onError }: {
 }
 
 export function formatMessageText(text: string): React.ReactNode {
+  // Сначала обрабатываем переносы строк для параграфов
+  const paragraphs = text.split(/\n\n+/);
+  if (paragraphs.length > 1) {
+    const parts: React.ReactNode[] = [];
+    let key = 0;
+    paragraphs.forEach((para, index) => {
+      if (para.trim()) {
+        parts.push(
+          <div key={key++} style={{ marginBottom: index < paragraphs.length - 1 ? '12px' : '0' }}>
+            {formatMarkdown(para.trim(), key * 1000)}
+          </div>
+        );
+      }
+    });
+    return parts.length > 0 ? parts : text;
+  }
+  
   // Обрабатываем весь текст целиком для правильной группировки изображений
-  // Это позволяет группировать изображения даже если они на разных строках
-  return formatBoldText(text, 0);
+  return formatMarkdown(text, 0);
+}
+
+// Основная функция для обработки markdown
+function formatMarkdown(text: string, startKey: number): React.ReactNode {
+  // Обрабатываем списки
+  const lines = text.split('\n');
+  const hasList = lines.some(line => /^([-*]|\d+\.)\s+/.test(line.trim()));
+  
+  if (hasList) {
+    const parts: React.ReactNode[] = [];
+    let key = startKey;
+    let currentList: Array<{ type: 'ul' | 'ol'; items: string[] }> = [];
+    let lastIndex = 0;
+    
+    lines.forEach((line, index) => {
+      const trimmed = line.trim();
+      const match = trimmed.match(/^([-*]|\d+\.)\s+(.+)$/);
+      
+      if (match) {
+        const isOrdered = /^\d+\.$/.test(match[1]);
+        const itemText = match[2];
+        
+        // Если это начало нового списка или продолжение текущего
+        if (currentList.length === 0 || 
+            (currentList[currentList.length - 1].type === 'ul' && isOrdered) ||
+            (currentList[currentList.length - 1].type === 'ol' && !isOrdered)) {
+          // Добавляем текст до списка
+          if (index > lastIndex) {
+            const textBefore = lines.slice(lastIndex, index).join('\n').trim();
+            if (textBefore) {
+              const formatted = formatMarkdownInline(textBefore, key * 1000);
+              if (Array.isArray(formatted)) {
+                parts.push(...formatted);
+              } else {
+                parts.push(formatted);
+              }
+              key += 100;
+            }
+          }
+          
+          // Начинаем новый список
+          currentList.push({
+            type: isOrdered ? 'ol' : 'ul',
+            items: [itemText]
+          });
+        } else {
+          // Продолжаем текущий список
+          currentList[currentList.length - 1].items.push(itemText);
+        }
+      } else {
+        // Если список закончился, рендерим его
+        if (currentList.length > 0) {
+          currentList.forEach(list => {
+            const ListTag = list.type === 'ul' ? 'ul' : 'ol';
+            parts.push(
+              React.createElement(
+                ListTag,
+                { key: key++, style: { margin: '8px 0', paddingLeft: '20px' } },
+                list.items.map((item, itemIndex) => (
+                  <li key={itemIndex} style={{ marginBottom: '4px' }}>
+                    {formatMarkdownInline(item, key * 1000 + itemIndex)}
+                  </li>
+                ))
+              )
+            );
+            key += 100;
+          });
+          currentList = [];
+        }
+        
+        // Добавляем текущую строку
+        if (trimmed) {
+          if (index > lastIndex || parts.length > 0) {
+            parts.push(<br key={key++} />);
+          }
+          const formatted = formatMarkdownInline(trimmed, key * 100);
+          if (Array.isArray(formatted)) {
+            parts.push(...formatted);
+          } else {
+            parts.push(formatted);
+          }
+          key += 10;
+        } else if (index < lines.length - 1) {
+          parts.push(<br key={key++} />);
+        }
+        
+        lastIndex = index + 1;
+      }
+    });
+    
+    // Рендерим оставшийся список
+    if (currentList.length > 0) {
+      currentList.forEach(list => {
+        const ListTag = list.type === 'ul' ? 'ul' : 'ol';
+        parts.push(
+          React.createElement(
+            ListTag,
+            { key: key++, style: { margin: '8px 0', paddingLeft: '20px' } },
+            list.items.map((item, itemIndex) => (
+              <li key={itemIndex} style={{ marginBottom: '4px' }}>
+                {formatMarkdownInline(item, key * 1000 + itemIndex)}
+              </li>
+            ))
+          )
+        );
+        key += 100;
+      });
+    }
+    
+    return parts.length > 0 ? parts : text;
+  }
+  
+  // Если списков нет, обрабатываем переносы строк внутри параграфа
+  if (lines.length > 1) {
+    const parts: React.ReactNode[] = [];
+    let key = startKey;
+    lines.forEach((line, index) => {
+      if (line.trim()) {
+        parts.push(formatMarkdownInline(line, key * 100));
+        if (index < lines.length - 1) {
+          parts.push(<br key={key * 100 + 1} />);
+        }
+        key++;
+      } else if (index < lines.length - 1) {
+        parts.push(<br key={key * 100 + 1} />);
+        key++;
+      }
+    });
+    return parts.length > 0 ? parts : text;
+  }
+  
+  return formatMarkdownInline(text, startKey);
+}
+
+// Вспомогательная функция для обработки markdown внутри одной строки
+function formatMarkdownInline(text: string, startKey: number): React.ReactNode {
+  return formatImages(text, startKey);
 }
 
 // Вспомогательная функция для обработки жирного текста и ссылок на изображения
-function formatBoldText(text: string, startKey: number): React.ReactNode {
+function formatImages(text: string, startKey: number): React.ReactNode {
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let key = startKey;
@@ -137,9 +290,9 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
       // Добавляем текст до ссылки
       if (urlMatch.index > lastIndex) {
         const textBefore = text.substring(lastIndex, urlMatch.index)
-        // Обрабатываем жирный текст в части до ссылки
-        const formattedBefore = formatBoldTextOnly(textBefore, key)
-        key += textBefore.split('**').length - 1
+        // Обрабатываем markdown в части до ссылки
+        const formattedBefore = formatTextMarkdown(textBefore, key)
+        key += (textBefore.match(/\*\*|\*|_|\[|`/g) || []).length * 2
         if (Array.isArray(formattedBefore)) {
           parts.push(...formattedBefore)
         } else {
@@ -234,10 +387,10 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
     
     // Добавляем оставшийся текст после последней ссылки
     if (lastIndex < text.length) {
-      const textAfter = text.substring(lastIndex).trim()
-      if (textAfter) {
-        const formattedAfter = formatBoldTextOnly(textAfter, key)
-        key += textAfter.split('**').length - 1
+      const textAfter = text.substring(lastIndex)
+      if (textAfter.trim()) {
+        const formattedAfter = formatTextMarkdown(textAfter, key)
+        key += (textAfter.match(/\*\*|\*|_|\[|`/g) || []).length * 2
         if (Array.isArray(formattedAfter)) {
           parts.push(...formattedAfter)
         } else {
@@ -254,26 +407,198 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
     return text
   }
   
-  // Если ссылок на изображения нет, обрабатываем только жирный текст
-  return formatBoldTextOnly(text, startKey)
+  // Если ссылок на изображения нет, обрабатываем markdown в тексте
+  return formatTextMarkdown(text, startKey)
 }
 
-// Вспомогательная функция только для обработки жирного текста (без изображений)
-function formatBoldTextOnly(text: string, startKey: number): React.ReactNode {
+// Функция для обработки всех markdown элементов в тексте
+function formatTextMarkdown(text: string, startKey: number): React.ReactNode {
+  // Обрабатываем в порядке приоритета: код блоки -> инлайн код -> ссылки -> жирный -> курсив
+  return formatCodeBlocks(text, startKey);
+}
+
+// Обработка блоков кода ```
+function formatCodeBlocks(text: string, startKey: number): React.ReactNode {
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
-  const regex = /\*\*(.+?)\*\*/g;
-  let match;
   let key = startKey;
+  const regex = /```([\s\S]*?)```/g;
+  let match;
 
   while ((match = regex.exec(text)) !== null) {
-    // Добавляем текст до совпадения
+    // Добавляем текст до блока кода
+    if (match.index > lastIndex) {
+      const textBefore = text.substring(lastIndex, match.index);
+      const formatted = formatInlineCode(textBefore, key * 1000);
+      if (Array.isArray(formatted)) {
+        parts.push(...formatted);
+      } else {
+        parts.push(formatted);
+      }
+      key += (textBefore.match(/`/g) || []).length;
+    }
+    
+    // Добавляем блок кода
+    parts.push(
+      <pre key={key++} style={{ 
+        backgroundColor: '#f4f4f4', 
+        padding: '8px', 
+        borderRadius: '4px', 
+        overflow: 'auto',
+        margin: '8px 0',
+        fontSize: '0.875rem',
+        fontFamily: 'monospace'
+      }}>
+        <code>{match[1]}</code>
+      </pre>
+    );
+    
+    lastIndex = regex.lastIndex;
+  }
+  
+  // Обрабатываем оставшийся текст
+  if (lastIndex < text.length) {
+    const textAfter = text.substring(lastIndex);
+    const formatted = formatInlineCode(textAfter, key * 1000);
+    if (Array.isArray(formatted)) {
+      parts.push(...formatted);
+    } else {
+      parts.push(formatted);
+    }
+  }
+  
+  return parts.length > 0 ? parts : formatInlineCode(text, startKey);
+}
+
+// Обработка инлайн кода `код`
+function formatInlineCode(text: string, startKey: number): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let key = startKey;
+  // Ищем `код`, но не ```блоки```
+  const regex = /(?<!`)`([^`\n]+?)`(?!`)/g;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    // Добавляем текст до кода
+    if (match.index > lastIndex) {
+      const textBefore = text.substring(lastIndex, match.index);
+      const formatted = formatLinks(textBefore, key * 1000);
+      if (Array.isArray(formatted)) {
+        parts.push(...formatted);
+      } else {
+        parts.push(formatted);
+      }
+      key += (textBefore.match(/\[|\*\*|\*|_/g) || []).length;
+    }
+    
+    // Добавляем инлайн код
+    parts.push(
+      <code key={key++} style={{ 
+        backgroundColor: '#f4f4f4', 
+        padding: '2px 4px', 
+        borderRadius: '3px',
+        fontSize: '0.875rem',
+        fontFamily: 'monospace'
+      }}>
+        {match[1]}
+      </code>
+    );
+    
+    lastIndex = regex.lastIndex;
+  }
+  
+  // Обрабатываем оставшийся текст
+  if (lastIndex < text.length) {
+    const textAfter = text.substring(lastIndex);
+    const formatted = formatLinks(textAfter, key * 1000);
+    if (Array.isArray(formatted)) {
+      parts.push(...formatted);
+    } else {
+      parts.push(formatted);
+    }
+  }
+  
+  return parts.length > 0 ? parts : formatLinks(text, startKey);
+}
+
+// Обработка ссылок [текст](url)
+function formatLinks(text: string, startKey: number): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let key = startKey;
+  const regex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    // Добавляем текст до ссылки
+    if (match.index > lastIndex) {
+      const textBefore = text.substring(lastIndex, match.index);
+      const formatted = formatBoldItalic(textBefore, key * 1000);
+      if (Array.isArray(formatted)) {
+        parts.push(...formatted);
+      } else {
+        parts.push(formatted);
+      }
+      key += (textBefore.match(/\*\*|\*|_/g) || []).length;
+    }
+    
+    // Добавляем ссылку
+    parts.push(
+      <a 
+        key={key++} 
+        href={match[2]} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        style={{ color: '#2563eb', textDecoration: 'underline' }}
+      >
+        {match[1]}
+      </a>
+    );
+    
+    lastIndex = regex.lastIndex;
+  }
+  
+  // Обрабатываем оставшийся текст
+  if (lastIndex < text.length) {
+    const textAfter = text.substring(lastIndex);
+    const formatted = formatBoldItalic(textAfter, key * 1000);
+    if (Array.isArray(formatted)) {
+      parts.push(...formatted);
+    } else {
+      parts.push(formatted);
+    }
+  }
+  
+  return parts.length > 0 ? parts : formatBoldItalic(text, startKey);
+}
+
+// Обработка жирного и курсивного текста
+function formatBoldItalic(text: string, startKey: number): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let key = startKey;
+  
+  // Обрабатываем жирный текст **текст** и курсив *текст* или _текст_
+  // Приоритет: жирный > курсив
+  const regex = /(\*\*([^*]+?)\*\*)|(\*([^*\n]+?)\*)|(_([^_\n]+?)_)/g;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    // Добавляем текст до форматирования
     if (match.index > lastIndex) {
       parts.push(text.substring(lastIndex, match.index));
     }
     
-    // Добавляем жирный текст
-    parts.push(<strong key={key++}>{match[1]}</strong>);
+    // Обрабатываем жирный текст **текст**
+    if (match[1] && match[2]) {
+      parts.push(<strong key={key++}>{match[2]}</strong>);
+    }
+    // Обрабатываем курсив *текст* или _текст_
+    else if ((match[3] && match[4]) || (match[5] && match[6])) {
+      const italicText = match[4] || match[6];
+      parts.push(<em key={key++}>{italicText}</em>);
+    }
     
     lastIndex = regex.lastIndex;
   }

@@ -328,7 +328,10 @@ export default function CalculatorPage() {
                 <Card className="mt-6 bg-primary/5 border-primary/20">
                   <CardContent className="p-6">
                     <p className="text-base sm:text-lg text-foreground mb-4 text-center">
-                      Не нашли нужное решение? Свяжитесь с нами, оставьте свои контактные данные или позвоните по номеру
+                      Не нашли нужное решение?
+                    </p>
+                    <p className="text-base sm:text-lg text-foreground mb-4 text-center">
+                      Свяжитесь с нами, оставьте свои контактные данные или позвоните по номеру
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <Button
