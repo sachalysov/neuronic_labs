@@ -4,10 +4,8 @@ import { useState, useEffect, useRef } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { ThemeToggle } from "./theme-toggle"
 import { search, type SearchResult } from "@/services/search"
+import { getAdminSettings, subscribeToAdminSettings, type AdminSettings } from "@/services/admin-settings"
 
-const MAINTENANCE_STORAGE_KEY = 'nlabs_maintenance_banner'
-const MAINTENANCE_TEXT_STORAGE_KEY = 'nlabs_maintenance_banner_text'
-const MAINTENANCE_EVENT_NAME = 'nlabs_maintenance_banner_change'
 const DEFAULT_MAINTENANCE_TEXT = 'На сайте ведутся технические работы. Возможны временные сбои в работе.'
 
 interface StickyHeaderProps {
@@ -39,33 +37,31 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   }, [])
 
   useEffect(() => {
-    const readFromStorage = () => {
+    // Загрузка настроек из Supabase
+    const loadSettings = async () => {
       try {
-        const value = window.localStorage.getItem(MAINTENANCE_STORAGE_KEY)
-        setShowMaintenanceBanner(value === '1')
-        
-        const textValue = window.localStorage.getItem(MAINTENANCE_TEXT_STORAGE_KEY)
-        if (textValue) {
-          setMaintenanceText(textValue)
-        } else {
-          setMaintenanceText(DEFAULT_MAINTENANCE_TEXT)
+        const settings = await getAdminSettings()
+        if (settings) {
+          setShowMaintenanceBanner(settings.maintenance_banner_enabled)
+          setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
         }
-      } catch {
+      } catch (error) {
+        console.error('Ошибка загрузки настроек:', error)
         setShowMaintenanceBanner(false)
         setMaintenanceText(DEFAULT_MAINTENANCE_TEXT)
       }
     }
 
-    readFromStorage()
+    loadSettings()
 
-    const handleMaintenanceChange = () => {
-      readFromStorage()
-    }
-
-    window.addEventListener(MAINTENANCE_EVENT_NAME, handleMaintenanceChange as EventListener)
+    // Подписка на изменения настроек в реальном времени
+    const unsubscribe = subscribeToAdminSettings((settings: AdminSettings) => {
+      setShowMaintenanceBanner(settings.maintenance_banner_enabled)
+      setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+    })
 
     return () => {
-      window.removeEventListener(MAINTENANCE_EVENT_NAME, handleMaintenanceChange as EventListener)
+      unsubscribe()
     }
   }, [])
 

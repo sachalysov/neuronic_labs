@@ -5,10 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { AdminThemeToggle } from '@/components/admin-theme-toggle'
+import { getAdminSettings, updateAdminSettings, subscribeToAdminSettings, type AdminSettings } from '@/services/admin-settings'
 
-const MAINTENANCE_STORAGE_KEY = 'nlabs_maintenance_banner'
-const MAINTENANCE_TEXT_STORAGE_KEY = 'nlabs_maintenance_banner_text'
-const MAINTENANCE_EVENT_NAME = 'nlabs_maintenance_banner_change'
 const DEFAULT_MAINTENANCE_TEXT = 'На сайте ведутся технические работы. Возможны временные сбои в работе.'
 
 export default function AdminDashboardPage() {
@@ -16,6 +14,8 @@ export default function AdminDashboardPage() {
   const navigate = useNavigate()
   const [maintenanceEnabled, setMaintenanceEnabled] = useState(false)
   const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
+  const [loadingSettings, setLoadingSettings] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -23,45 +23,63 @@ export default function AdminDashboardPage() {
     }
   }, [user, authLoading, navigate])
 
+  // Загрузка настроек из Supabase
   useEffect(() => {
-    try {
-      const value = window.localStorage.getItem(MAINTENANCE_STORAGE_KEY)
-      setMaintenanceEnabled(value === '1')
-      
-      const textValue = window.localStorage.getItem(MAINTENANCE_TEXT_STORAGE_KEY)
-      if (textValue) {
-        setMaintenanceText(textValue)
-      }
-    } catch {
-      setMaintenanceEnabled(false)
-    }
-  }, [])
+    if (!user) return
 
-  const handleToggleMaintenance = (value: boolean) => {
-    setMaintenanceEnabled(value)
-    try {
-      if (value) {
-        window.localStorage.setItem(MAINTENANCE_STORAGE_KEY, '1')
-      } else {
-        window.localStorage.removeItem(MAINTENANCE_STORAGE_KEY)
+    const loadSettings = async () => {
+      setLoadingSettings(true)
+      try {
+        const settings = await getAdminSettings()
+        if (settings) {
+          setMaintenanceEnabled(settings.maintenance_banner_enabled)
+          setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки настроек:', error)
+      } finally {
+        setLoadingSettings(false)
       }
-      window.dispatchEvent(new Event(MAINTENANCE_EVENT_NAME))
-    } catch {
-      // ignore storage errors
+    }
+
+    loadSettings()
+
+    // Подписка на изменения настроек в реальном времени
+    const unsubscribe = subscribeToAdminSettings((settings: AdminSettings) => {
+      setMaintenanceEnabled(settings.maintenance_banner_enabled)
+      setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [user])
+
+  const handleToggleMaintenance = async (value: boolean) => {
+    setMaintenanceEnabled(value)
+    setSaving(true)
+    try {
+      await updateAdminSettings({ maintenance_banner_enabled: value })
+    } catch (error) {
+      console.error('Ошибка обновления настроек:', error)
+      // Откатываем изменение при ошибке
+      setMaintenanceEnabled(!value)
+    } finally {
+      setSaving(false)
     }
   }
 
-  const handleTextChange = (text: string) => {
+  const handleTextChange = async (text: string) => {
     setMaintenanceText(text)
+    setSaving(true)
     try {
-      if (text.trim()) {
-        window.localStorage.setItem(MAINTENANCE_TEXT_STORAGE_KEY, text)
-      } else {
-        window.localStorage.setItem(MAINTENANCE_TEXT_STORAGE_KEY, DEFAULT_MAINTENANCE_TEXT)
-      }
-      window.dispatchEvent(new Event(MAINTENANCE_EVENT_NAME))
-    } catch {
-      // ignore storage errors
+      await updateAdminSettings({ 
+        maintenance_banner_text: text.trim() || DEFAULT_MAINTENANCE_TEXT 
+      })
+    } catch (error) {
+      console.error('Ошибка обновления текста:', error)
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -135,11 +153,15 @@ export default function AdminDashboardPage() {
               <CardTitle>Общие настройки сайта</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {loadingSettings && (
+                <div className="text-sm text-muted-foreground">Загрузка настроек...</div>
+              )}
               <div className="flex items-start gap-3">
                 <button
                   type="button"
                   onClick={() => handleToggleMaintenance(!maintenanceEnabled)}
-                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  disabled={saving || loadingSettings}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
                     maintenanceEnabled ? 'bg-destructive' : 'bg-muted'
                   }`}
                   style={{
@@ -188,6 +210,7 @@ export default function AdminDashboardPage() {
                     value={maintenanceText}
                     onChange={(e) => handleTextChange(e.target.value)}
                     placeholder={DEFAULT_MAINTENANCE_TEXT}
+                    disabled={saving || loadingSettings}
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
