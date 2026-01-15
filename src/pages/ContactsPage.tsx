@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
@@ -16,11 +16,13 @@ import {
   Clock,
   Building2,
   CreditCard,
+  ChevronDown,
 } from "lucide-react"
 
 export default function ContactsPage() {
   const location = useLocation()
   useMeta(createContactsMetaTags())
+  const [isPaymentMethodsOpen, setIsPaymentMethodsOpen] = useState(false)
 
   useEffect(() => {
     // Обрабатываем hash из URL (если есть)
@@ -203,20 +205,38 @@ export default function ContactsPage() {
                     <p>
                       <strong>Возможна поэтапная оплата</strong>
                     </p>
-                    <p className="font-semibold mb-2">Доступные способы оплаты:</p>
-                    <ul className="list-disc list-inside space-y-2 ml-4">
-                      <li>Безналичным переводом (для юридических лиц и ИП)</li>
-                      <li>Кредитной, дебетовой или корпоративной картой**</li>
-                      <li>СБП (Система Быстрых Платежей) (для физических лиц и организаций)</li>
-                      <li>Отсрочка платежа** (для юридических лиц и ИП)</li>
-                      <li>Рассрочка платежа** (для юридических лиц и ИП)</li>
-                    </ul>
-                    <p className="mt-4">
-                      Наш официальный партнер - <strong>Т-Банк</strong> предоставляет программу целевого кредитования и рассрочки платежа до 36 месяцев, подробности уточняйте у менеджера
-                    </p>
-                    <div className="mt-4 pt-4 border-t border-border/50 space-y-2 text-sm text-muted-foreground">
-                      <p>* Стоимость работ указана с учётом действующих скидок</p>
-                      <p>** При выборе данного способа оплаты скидки не предоставляются</p>
+                    <button
+                      onClick={() => setIsPaymentMethodsOpen(!isPaymentMethodsOpen)}
+                      className="flex items-center justify-between w-full text-left font-semibold mb-2 hover:text-primary transition-colors"
+                    >
+                      <span>Доступные способы оплаты:</span>
+                      <ChevronDown
+                        className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${
+                          isPaymentMethodsOpen ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </button>
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                        isPaymentMethodsOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <div className="pt-2">
+                        <ul className="list-disc list-inside space-y-2">
+                          <li>Безналичным переводом (для юридических лиц и ИП)</li>
+                          <li>Кредитной, дебетовой или корпоративной картой**</li>
+                          <li>СБП (Система Быстрых Платежей) (для физических лиц и организаций)</li>
+                          <li>Отсрочка платежа** (для юридических лиц и ИП)</li>
+                          <li>Рассрочка платежа** (для юридических лиц и ИП)</li>
+                        </ul>
+                        <p className="mt-4">
+                          Наш официальный партнер - <strong>Т-Банк</strong> предоставляет программу целевого кредитования и рассрочки платежа до 36 месяцев, подробности уточняйте у менеджера
+                        </p>
+                        <div className="mt-4 pt-4 border-t border-border/50 space-y-2 text-sm text-muted-foreground">
+                          <p>* Стоимость работ указана с учётом действующих скидок</p>
+                          <p>** При выборе данного способа оплаты скидки не предоставляются</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
