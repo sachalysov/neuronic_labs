@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AdminThemeToggle } from '@/components/admin-theme-toggle'
 
 export default function AdminBlogPage() {
   const { user, loading: authLoading, signOut } = useAuth()
@@ -160,12 +161,17 @@ export default function AdminBlogPage() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Админ панель блога</h1>
-            <p className="text-muted-foreground mt-1">Управление статьями</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">Админ панель блога</h1>
+              <p className="text-muted-foreground mt-1">Управление статьями</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <AdminThemeToggle />
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={() => navigate('/admin')}>
               Назад
             </Button>

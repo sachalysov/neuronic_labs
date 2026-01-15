@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { AdminThemeToggle } from '@/components/admin-theme-toggle'
 
 const MAINTENANCE_STORAGE_KEY = 'nlabs_maintenance_banner'
 const MAINTENANCE_TEXT_STORAGE_KEY = 'nlabs_maintenance_banner_text'
@@ -79,23 +80,26 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Админ панель</h1>
-            <p className="text-muted-foreground mt-1">
-              Общие настройки сайта и переход в разделы админки
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => navigate('/')}>
-              Открыть сайт
-            </Button>
-            <Button variant="outline" onClick={() => navigate('/admin/blog')}>
-              Админка блога
-            </Button>
-            <Button variant="outline" onClick={signOut}>
-              Выйти
-            </Button>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">Админ панель</h1>
+              <p className="text-muted-foreground mt-1">
+                Общие настройки сайта и переход в разделы админки
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 items-center">
+              <AdminThemeToggle />
+              <Button variant="outline" onClick={() => navigate('/')}>
+                Открыть сайт
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/admin/blog')}>
+                Админка блога
+              </Button>
+              <Button variant="outline" onClick={signOut}>
+                Выйти
+              </Button>
+            </div>
           </div>
         </div>
 

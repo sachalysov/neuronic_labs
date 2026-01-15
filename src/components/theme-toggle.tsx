@@ -1,14 +1,23 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
 import { Moon, Sun } from "lucide-react"
 
 export function ThemeToggle() {
+  const location = useLocation()
   const [theme, setTheme] = useState<"light" | "dark">("light")
   const [mounted, setMounted] = useState(false)
 
   // Инициализация темы при загрузке
   useEffect(() => {
+    // Не применяем тему на админ-страницах (там своя тема)
+    const isAdminPage = location.pathname.startsWith('/admin')
+    if (isAdminPage) {
+      setMounted(true)
+      return
+    }
+
     // Читаем сохраненную тему из localStorage
     const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null
     
@@ -27,10 +36,16 @@ export function ThemeToggle() {
     
     setTheme(initialTheme)
     setMounted(true)
-  }, [])
+  }, [location.pathname])
 
   // Переключение темы
   const toggleTheme = () => {
+    // Не применяем тему на админ-страницах
+    const isAdminPage = location.pathname.startsWith('/admin')
+    if (isAdminPage) {
+      return
+    }
+
     const newTheme = theme === "dark" ? "light" : "dark"
     
     // Применяем тему к HTML

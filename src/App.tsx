@@ -1,9 +1,12 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
 import HomePage from './pages/HomePage'
 import AdminLoginPage from './pages/AdminLoginPage'
 import AdminBlogPage from './pages/AdminBlogPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+
+const ADMIN_THEME_STORAGE_KEY = "admin_theme"
+const USER_THEME_STORAGE_KEY = "theme"
 
 // Code splitting: Lazy loading для страниц блога (контент ниже первого экрана)
 const BlogPage = lazy(() => import('./pages/BlogPage'))
@@ -21,9 +24,67 @@ const PageLoader = () => (
   </div>
 )
 
+// Компонент для управления темой в зависимости от пути
+function ThemeManager() {
+  const location = useLocation()
+
+  useEffect(() => {
+    const applyTheme = () => {
+      const isAdminPage = location.pathname.startsWith('/admin')
+      
+      if (isAdminPage) {
+        // Применяем тему админки
+        const adminTheme = localStorage.getItem(ADMIN_THEME_STORAGE_KEY) as "light" | "dark" | null
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+        const theme = adminTheme || (prefersDark ? "dark" : "light")
+        
+        if (theme === "dark") {
+          document.documentElement.dataset.theme = "dark"
+        } else {
+          delete document.documentElement.dataset.theme
+        }
+      } else {
+        // Применяем тему пользователя
+        const userTheme = localStorage.getItem(USER_THEME_STORAGE_KEY) as "light" | "dark" | null
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+        const theme = userTheme || (prefersDark ? "dark" : "light")
+        
+        if (theme === "dark") {
+          document.documentElement.dataset.theme = "dark"
+        } else {
+          delete document.documentElement.dataset.theme
+        }
+      }
+    }
+
+    applyTheme()
+
+    // Слушаем изменения темы админки
+    const handleAdminThemeChange = (e: Event) => {
+      const customEvent = e as CustomEvent<"light" | "dark">
+      if (location.pathname.startsWith('/admin')) {
+        if (customEvent.detail === "dark") {
+          document.documentElement.dataset.theme = "dark"
+        } else {
+          delete document.documentElement.dataset.theme
+        }
+      }
+    }
+
+    window.addEventListener("admin-theme-changed", handleAdminThemeChange as EventListener)
+
+    return () => {
+      window.removeEventListener("admin-theme-changed", handleAdminThemeChange as EventListener)
+    }
+  }, [location.pathname])
+
+  return null
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <ThemeManager />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route 
