@@ -5,7 +5,7 @@ import { Footer } from '@/components/footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ConsultationModal } from '@/components/consultation-modal'
-import { ChevronDown, Phone } from 'lucide-react'
+import { ChevronDown, Phone, RotateCcw } from 'lucide-react'
 import { getCalculatorPrices, subscribeToCalculatorPrices, type CalculatorCategory } from '@/services/calculator-prices'
 import { useMeta } from '@/hooks/useMeta'
 
@@ -294,6 +294,12 @@ export default function CalculatorPage() {
     }
 
     return lines.join("\n")
+  }
+
+  const resetCalculator = () => {
+    setSelectedOptions(new Map())
+    setSelectedSubOptions(new Map())
+    setExpandedOptions(new Set())
   }
 
   const total = calculateTotal()
@@ -590,6 +596,18 @@ export default function CalculatorPage() {
                       <p className="text-sm text-muted-foreground text-center mt-4">
                         Выберите параметры для расчета
                       </p>
+                    )}
+
+                    {total > 0 && (
+                      <Button
+                        onClick={resetCalculator}
+                        variant="outline"
+                        size="sm"
+                        className="w-full mt-4"
+                      >
+                        <RotateCcw className="h-4 w-4 mr-2" />
+                        Сбросить выбор
+                      </Button>
                     )}
 
                     <Button
