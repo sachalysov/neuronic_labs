@@ -6,7 +6,9 @@ import { ThemeToggle } from "./theme-toggle"
 import { search, type SearchResult } from "@/services/search"
 
 const MAINTENANCE_STORAGE_KEY = 'nlabs_maintenance_banner'
+const MAINTENANCE_TEXT_STORAGE_KEY = 'nlabs_maintenance_banner_text'
 const MAINTENANCE_EVENT_NAME = 'nlabs_maintenance_banner_change'
+const DEFAULT_MAINTENANCE_TEXT = 'На сайте ведутся технические работы. Возможны временные сбои в работе.'
 
 interface StickyHeaderProps {
   onOpenDemoChat?: () => void
@@ -25,6 +27,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const [isSearchLoading, setIsSearchLoading] = useState(false)
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [showMaintenanceBanner, setShowMaintenanceBanner] = useState(false)
+  const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,8 +43,16 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       try {
         const value = window.localStorage.getItem(MAINTENANCE_STORAGE_KEY)
         setShowMaintenanceBanner(value === '1')
+        
+        const textValue = window.localStorage.getItem(MAINTENANCE_TEXT_STORAGE_KEY)
+        if (textValue) {
+          setMaintenanceText(textValue)
+        } else {
+          setMaintenanceText(DEFAULT_MAINTENANCE_TEXT)
+        }
       } catch {
         setShowMaintenanceBanner(false)
+        setMaintenanceText(DEFAULT_MAINTENANCE_TEXT)
       }
     }
 
@@ -169,7 +180,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
     >
       {showMaintenanceBanner && (
         <div className="w-full bg-destructive text-destructive-foreground text-xs sm:text-sm text-center py-1 px-2">
-          На сайте ведутся технические работы. Возможны временные сбои в работе.
+          {maintenanceText}
         </div>
       )}
       <div className="container mx-auto px-2 sm:px-4">

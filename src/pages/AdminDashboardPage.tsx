@@ -3,14 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 
 const MAINTENANCE_STORAGE_KEY = 'nlabs_maintenance_banner'
+const MAINTENANCE_TEXT_STORAGE_KEY = 'nlabs_maintenance_banner_text'
 const MAINTENANCE_EVENT_NAME = 'nlabs_maintenance_banner_change'
+const DEFAULT_MAINTENANCE_TEXT = 'На сайте ведутся технические работы. Возможны временные сбои в работе.'
 
 export default function AdminDashboardPage() {
   const { user, loading: authLoading, signOut } = useAuth()
   const navigate = useNavigate()
   const [maintenanceEnabled, setMaintenanceEnabled] = useState(false)
+  const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -22,6 +26,11 @@ export default function AdminDashboardPage() {
     try {
       const value = window.localStorage.getItem(MAINTENANCE_STORAGE_KEY)
       setMaintenanceEnabled(value === '1')
+      
+      const textValue = window.localStorage.getItem(MAINTENANCE_TEXT_STORAGE_KEY)
+      if (textValue) {
+        setMaintenanceText(textValue)
+      }
     } catch {
       setMaintenanceEnabled(false)
     }
@@ -34,6 +43,20 @@ export default function AdminDashboardPage() {
         window.localStorage.setItem(MAINTENANCE_STORAGE_KEY, '1')
       } else {
         window.localStorage.removeItem(MAINTENANCE_STORAGE_KEY)
+      }
+      window.dispatchEvent(new Event(MAINTENANCE_EVENT_NAME))
+    } catch {
+      // ignore storage errors
+    }
+  }
+
+  const handleTextChange = (text: string) => {
+    setMaintenanceText(text)
+    try {
+      if (text.trim()) {
+        window.localStorage.setItem(MAINTENANCE_TEXT_STORAGE_KEY, text)
+      } else {
+        window.localStorage.setItem(MAINTENANCE_TEXT_STORAGE_KEY, DEFAULT_MAINTENANCE_TEXT)
       }
       window.dispatchEvent(new Event(MAINTENANCE_EVENT_NAME))
     } catch {
@@ -98,7 +121,7 @@ export default function AdminDashboardPage() {
                     }`}
                   />
                 </button>
-                <div>
+                <div className="flex-1">
                   <div className="font-medium">
                     Вывести уведомление о технических работах в шапке сайта
                   </div>
@@ -108,6 +131,24 @@ export default function AdminDashboardPage() {
                   </p>
                 </div>
               </div>
+              
+              {maintenanceEnabled && (
+                <div className="space-y-2 pt-2 border-t border-border">
+                  <label className="block text-sm font-medium">
+                    Текст уведомления
+                  </label>
+                  <Input
+                    type="text"
+                    value={maintenanceText}
+                    onChange={(e) => handleTextChange(e.target.value)}
+                    placeholder={DEFAULT_MAINTENANCE_TEXT}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Текст будет отображаться в красном баннере в верхней части всех страниц сайта.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
