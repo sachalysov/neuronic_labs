@@ -72,6 +72,7 @@ export default function CalculatorPage() {
     const newSelectedOptions = new Map(selectedOptions)
     const currentSelection = newSelectedOptions.get(category) || new Set<string>()
     const isSingleSelect = singleSelectCategories.has(category)
+    const wasCategoryEmpty = currentSelection.size === 0
     
     if (currentSelection.has(optionId)) {
       // Если опция уже выбрана, снимаем выбор
@@ -96,6 +97,49 @@ export default function CalculatorPage() {
     }
     
     setSelectedOptions(newSelectedOptions)
+    
+    // Автоматический переход к следующей категории или калькулятору
+    if (!currentSelection.has(optionId)) {
+      // Только если мы выбираем новую опцию (не снимаем выбор)
+      // Для категорий с множественным выбором переходим только при первом выборе
+      const shouldTransition = isSingleSelect || wasCategoryEmpty
+      
+      if (shouldTransition) {
+        const currentIndex = categories.findIndex(c => c.category === category)
+        const isLastCategory = currentIndex === categories.length - 1
+        
+        // Закрываем текущую категорию
+        const newOpenCategories = new Set(openCategories)
+        newOpenCategories.delete(category)
+        
+        if (isLastCategory) {
+          // Если это последняя категория, просто закрываем и прокручиваем к калькулятору
+          setOpenCategories(newOpenCategories)
+          setTimeout(() => {
+            const calculatorElement = document.getElementById('calculator-total')
+            if (calculatorElement) {
+              calculatorElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            }
+          }, 300)
+        } else {
+          // Открываем следующую категорию
+          const nextCategory = categories[currentIndex + 1]
+          if (nextCategory) {
+            newOpenCategories.add(nextCategory.category)
+            setOpenCategories(newOpenCategories)
+            // Прокручиваем к следующей категории
+            setTimeout(() => {
+              const nextCategoryElement = document.getElementById(`category-${nextCategory.category}`)
+              if (nextCategoryElement) {
+                nextCategoryElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              }
+            }, 300)
+          } else {
+            setOpenCategories(newOpenCategories)
+          }
+        }
+      }
+    }
   }
 
   const calculateTotal = (): number => {
@@ -170,6 +214,7 @@ export default function CalculatorPage() {
                   return (
                     <Card
                       key={category.category}
+                      id={`category-${category.category}`}
                       className="overflow-hidden transition-all hover:border-primary/50"
                     >
                       <button
@@ -190,7 +235,7 @@ export default function CalculatorPage() {
                           </div>
                           
                           {selectedNames.length > 0 && (
-                            <div className="mt-2 text-sm text-primary font-medium">
+                            <div className="mt-2 text-sm text-primary font-medium text-left">
                               Выбрано: {selectedNames.join(', ')}
                             </div>
                           )}
@@ -268,7 +313,7 @@ export default function CalculatorPage() {
 
               {/* Правая колонка - Калькулятор */}
               <div className="lg:col-span-1">
-                <Card className="sticky top-24">
+                <Card id="calculator-total" className="sticky top-24">
                   <CardContent className="p-6">
                     <h3 className="text-xl font-bold mb-4">Итого</h3>
                     
@@ -311,6 +356,14 @@ export default function CalculatorPage() {
                         Выберите параметры для расчета
                       </p>
                     )}
+
+                    <Button
+                      onClick={() => setIsConsultationModalOpen(true)}
+                      size="lg"
+                      className="w-full mt-4"
+                    >
+                      Заказать внедрение
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
