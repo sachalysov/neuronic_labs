@@ -225,8 +225,8 @@ export default function CalculatorPage() {
         <section className="relative overflow-hidden min-h-[40vh] flex items-center pt-20 bg-gradient-to-b from-secondary/20 to-background">
           <div className="container mx-auto px-4 py-20 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
-                <span className="text-primary">Рассчитать стоимость внедрения самостоятельно</span>
+              <h1 className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
+                <span className="text-primary">Рассчитать стоимость<br className="sm:hidden" /> внедрения самостоятельно</span>
               </h1>
               <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
                 Выберите параметры внедрения и узнайте стоимость
