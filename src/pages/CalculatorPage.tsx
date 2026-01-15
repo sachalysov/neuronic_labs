@@ -92,8 +92,11 @@ export default function CalculatorPage() {
   const toggleCategory = (category: string) => {
     const newOpenCategories = new Set(openCategories)
     if (newOpenCategories.has(category)) {
+      // Если категория уже открыта, закрываем её (пользователь может свернуть вручную)
       newOpenCategories.delete(category)
     } else {
+      // Если категория закрыта, закрываем все остальные и открываем только эту
+      newOpenCategories.clear()
       newOpenCategories.add(category)
     }
     setOpenCategories(newOpenCategories)
@@ -103,7 +106,6 @@ export default function CalculatorPage() {
     const newSelectedOptions = new Map(selectedOptions)
     const currentSelection = newSelectedOptions.get(category) || new Set<string>()
     const isSingleSelect = singleSelectCategories.has(category)
-    const wasCategoryEmpty = currentSelection.size === 0
     
     if (currentSelection.has(optionId)) {
       // Если опция уже выбрана, снимаем выбор
@@ -167,49 +169,8 @@ export default function CalculatorPage() {
     
     setSelectedOptions(newSelectedOptions)
     
-    // Автоматический переход к следующей категории или калькулятору
-    if (!currentSelection.has(optionId)) {
-      // Только если мы выбираем новую опцию (не снимаем выбор)
-      // Для категорий с множественным выбором переходим только при первом выборе
-      const shouldTransition = isSingleSelect || wasCategoryEmpty
-      
-      // Не переходим автоматически, если у опции есть подвопросы
-      if (shouldTransition && !hasSubOptions) {
-        const currentIndex = categories.findIndex(c => c.category === category)
-        const isLastCategory = currentIndex === categories.length - 1
-        
-        // Закрываем текущую категорию
-        const newOpenCategories = new Set(openCategories)
-        newOpenCategories.delete(category)
-        
-        if (isLastCategory) {
-          // Если это последняя категория, просто закрываем и прокручиваем к калькулятору
-          setOpenCategories(newOpenCategories)
-          setTimeout(() => {
-            const calculatorElement = document.getElementById('calculator-total')
-            if (calculatorElement) {
-              calculatorElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            }
-          }, 300)
-        } else {
-          // Открываем следующую категорию
-          const nextCategory = categories[currentIndex + 1]
-          if (nextCategory) {
-            newOpenCategories.add(nextCategory.category)
-            setOpenCategories(newOpenCategories)
-            // Прокручиваем к следующей категории
-            setTimeout(() => {
-              const nextCategoryElement = document.getElementById(`category-${nextCategory.category}`)
-              if (nextCategoryElement) {
-                nextCategoryElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
-              }
-            }, 300)
-          } else {
-            setOpenCategories(newOpenCategories)
-          }
-        }
-      }
-    }
+    // Категории не закрываются автоматически при выборе опций или подвопросов
+    // Пользователь должен самостоятельно переходить между категориями
   }
 
   const toggleSubOption = (parentOptionId: string, subOptionId: string) => {
