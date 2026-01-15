@@ -1,4 +1,88 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+// Компонент для изображения с возможностью открытия в полноэкранном режиме
+function ImageWithModal({ src, alt, className, style, onError }: {
+  src: string;
+  alt: string;
+  className?: string;
+  style?: React.CSSProperties;
+  onError?: (e: React.SyntheticEvent<HTMLImageElement, Event>) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setIsOpen(false);
+    }
+  };
+
+  return (
+    <>
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        style={{ ...style, cursor: 'pointer' }}
+        onClick={handleClick}
+        onError={onError}
+      />
+      {isOpen && (
+        <div
+          onClick={handleClose}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            cursor: 'pointer'
+          }}
+        >
+          <img
+            src={src}
+            alt={alt}
+            style={{
+              maxWidth: '90%',
+              maxHeight: '90%',
+              objectFit: 'contain'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            onClick={handleClose}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              border: 'none',
+              color: 'white',
+              fontSize: '24px',
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            ×
+          </button>
+        </div>
+      )}
+    </>
+  );
+}
 
 export function formatMessageText(text: string): React.ReactNode {
   // Обрабатываем весь текст целиком для правильной группировки изображений
@@ -98,7 +182,7 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
             }}
           >
             {consecutiveImages.map((img) => (
-              <img
+              <ImageWithModal
                 key={key++}
                 src={img.url}
                 alt="Изображение"
@@ -127,7 +211,7 @@ function formatBoldText(text: string, startKey: number): React.ReactNode {
       } else {
         // Одно изображение - отображаем как обычно, но с минимальными отступами
         parts.push(
-          <img
+          <ImageWithModal
             key={key++}
             src={urlMatch.url}
             alt="Изображение"
