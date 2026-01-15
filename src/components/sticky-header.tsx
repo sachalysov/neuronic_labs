@@ -22,12 +22,14 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
   const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false)
+  const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false)
   const [isSearchLoading, setIsSearchLoading] = useState(false)
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [showMaintenanceBanner, setShowMaintenanceBanner] = useState(false)
   const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
   const menuDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const productDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const moreDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,6 +80,9 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       }
       if (productDropdownTimeoutRef.current) {
         clearTimeout(productDropdownTimeoutRef.current)
+      }
+      if (moreDropdownTimeoutRef.current) {
+        clearTimeout(moreDropdownTimeoutRef.current)
       }
     }
   }, [])
@@ -316,16 +321,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Протестировать чат-бот
               </button>
-              <Link
-                to="/"
-                onClick={() => {
-                  setIsMobileMenuOpen(false)
-                  window.scrollTo({ top: 0, behavior: "auto" })
-                }}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
-              >
-                Главная
-              </Link>
               <div
                 className="relative"
                 onMouseEnter={() => {
@@ -467,13 +462,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                     }}
                   >
                     <div className="bg-background border border-border rounded-lg shadow-lg overflow-hidden min-w-max">
-                      <Link
-                        to="/partners"
-                        onClick={() => setIsMenuDropdownOpen(false)}
-                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
-                      >
-                        Партнерская программа
-                      </Link>
                       <button
                         onClick={() => {
                           navigateToSection("about")
@@ -490,13 +478,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                       >
                         Контакты
                       </Link>
-                      <Link
-                        to="/conference"
-                        onClick={() => setIsMenuDropdownOpen(false)}
-                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
-                      >
-                        Для участников конференции
-                      </Link>
                       <button
                         onClick={() => {
                           navigateToContactsSection("payment-methods")
@@ -510,12 +491,74 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   </div>
                 )}
               </div>
-              <Link
-                to="/blog"
-                className="text-foreground/90 hover:text-primary transition-colors font-medium"
+              <div
+                className="relative"
+                onMouseEnter={() => {
+                  if (moreDropdownTimeoutRef.current) {
+                    clearTimeout(moreDropdownTimeoutRef.current)
+                  }
+                  setIsMoreDropdownOpen(true)
+                }}
+                onMouseLeave={() => {
+                  moreDropdownTimeoutRef.current = setTimeout(() => {
+                    setIsMoreDropdownOpen(false)
+                  }, 150)
+                }}
               >
-                Блог
-              </Link>
+                <button
+                  onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
+                  className="text-foreground/90 hover:text-primary transition-colors font-medium flex items-center gap-1"
+                >
+                  Еще
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isMoreDropdownOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isMoreDropdownOpen && (
+                  <div 
+                    className="absolute top-full left-0 pt-2 z-50"
+                    onMouseEnter={() => {
+                      if (moreDropdownTimeoutRef.current) {
+                        clearTimeout(moreDropdownTimeoutRef.current)
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      moreDropdownTimeoutRef.current = setTimeout(() => {
+                        setIsMoreDropdownOpen(false)
+                      }, 150)
+                    }}
+                  >
+                    <div className="bg-background border border-border rounded-lg shadow-lg overflow-hidden min-w-max">
+                      <Link
+                        to="/blog"
+                        onClick={() => setIsMoreDropdownOpen(false)}
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
+                      >
+                        Блог
+                      </Link>
+                      <Link
+                        to="/conference"
+                        onClick={() => setIsMoreDropdownOpen(false)}
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
+                      >
+                        Для участников конференции
+                      </Link>
+                      <Link
+                        to="/partners"
+                        onClick={() => setIsMoreDropdownOpen(false)}
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
+                      >
+                        Партнерская программа
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
             </nav>
 
             <ThemeToggle />
@@ -587,16 +630,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 Протестировать чат-бот
               </button>
-              <Link
-                to="/"
-                onClick={() => {
-                  setIsMobileMenuOpen(false)
-                  window.scrollTo({ top: 0, behavior: "auto" })
-                }}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Главная
-              </Link>
               <div className="px-2">
                 <button
                   onClick={() => setIsProductDropdownOpen(!isProductDropdownOpen)}
@@ -694,16 +727,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                 </button>
                 {isMenuDropdownOpen && (
                   <div className="pl-4 mt-2 space-y-2 border-l border-border">
-                    <Link
-                      to="/partners"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setIsMenuDropdownOpen(false)
-                      }}
-                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Партнерская программа
-                    </Link>
                     <button
                       onClick={() => {
                         navigateToSection("about")
@@ -723,16 +746,6 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                     >
                       Контакты
                     </Link>
-                    <Link
-                      to="/conference"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setIsMenuDropdownOpen(false)
-                      }}
-                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Для участников конференции
-                    </Link>
                     <button
                       onClick={() => {
                         navigateToContactsSection("payment-methods")
@@ -745,13 +758,56 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   </div>
                 )}
               </div>
-              <Link
-                to="/blog"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Блог
-              </Link>
+              <div className="px-2">
+                <button
+                  onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
+                  className="text-foreground/90 hover:text-primary transition-colors font-medium text-left flex items-center justify-between w-full py-2"
+                >
+                  <span>Еще</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${isMoreDropdownOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isMoreDropdownOpen && (
+                  <div className="pl-4 mt-2 space-y-2 border-l border-border">
+                    <Link
+                      to="/blog"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        setIsMoreDropdownOpen(false)
+                      }}
+                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Блог
+                    </Link>
+                    <Link
+                      to="/conference"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        setIsMoreDropdownOpen(false)
+                      }}
+                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Для участников конференции
+                    </Link>
+                    <Link
+                      to="/partners"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        setIsMoreDropdownOpen(false)
+                      }}
+                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Партнерская программа
+                    </Link>
+                  </div>
+                )}
+              </div>
               <a 
                 href="tel:+79930799177" 
                 className="flex items-center gap-2 text-foreground/90 hover:text-primary transition-colors font-medium px-2 py-2"
