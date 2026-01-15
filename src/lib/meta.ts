@@ -299,3 +299,26 @@ export function createContactsMetaTags(): MetaTags {
   }
 }
 
+/**
+ * Хелпер для создания мета-тегов для страницы участников конференции
+ */
+export function createConferenceMetaTags(): MetaTags {
+  const fullUrl = `${BASE_URL}/conference`
+  
+  return {
+    title: 'Для участников конференции | NEURONIC LABS',
+    description: 'Специальные предложения для участников AI-Fest. Бесплатный аудит бизнеса и эксклюзивные материалы.',
+    keywords: 'конференция, AI-Fest, участники, бесплатный аудит, автоматизация, ИИ',
+    canonical: fullUrl,
+    ogTitle: 'Для участников конференции | NEURONIC LABS',
+    ogDescription: 'Специальные предложения для участников AI-Fest. Бесплатный аудит бизнеса и эксклюзивные материалы.',
+    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    ogUrl: fullUrl,
+    ogType: 'website',
+    twitterTitle: 'Для участников конференции | NEURONIC LABS',
+    twitterDescription: 'Специальные предложения для участников AI-Fest. Бесплатный аудит бизнеса и эксклюзивные материалы.',
+    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    url: fullUrl,
+  }
+}
+

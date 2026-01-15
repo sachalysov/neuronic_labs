@@ -394,6 +394,13 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                       >
                         Контакты
                       </Link>
+                      <Link
+                        to="/conference"
+                        onClick={() => setIsMenuDropdownOpen(false)}
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Для участников конференции
+                      </Link>
                       <button
                         onClick={() => {
                           navigateToContactsSection("payment-methods")
@@ -609,6 +616,16 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                       className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
                     >
                       Контакты
+                    </Link>
+                    <Link
+                      to="/conference"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        setIsMenuDropdownOpen(false)
+                      }}
+                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Для участников конференции
                     </Link>
                     <button
                       onClick={() => {

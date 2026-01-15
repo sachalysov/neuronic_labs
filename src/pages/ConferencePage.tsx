@@ -1,0 +1,150 @@
+import { useState } from "react"
+import { StickyHeader } from "@/components/sticky-header"
+import { SpaceDust } from "@/components/space-dust"
+import { ChatWidget } from "@/components/chat-widget"
+import { Footer } from "@/components/footer"
+import { ConsultationModal } from "@/components/consultation-modal"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { useMeta } from "@/hooks/useMeta"
+import { createConferenceMetaTags } from "@/lib/meta"
+import {
+  Calendar,
+  MessageCircle,
+  Gift,
+  ArrowRight,
+} from "lucide-react"
+
+export default function ConferencePage() {
+  useMeta(createConferenceMetaTags())
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  return (
+    <main className="min-h-screen">
+      <SpaceDust />
+      <StickyHeader />
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden min-h-[50vh] flex items-center pt-20 bg-gradient-to-b from-secondary/20 to-background">
+        <div className="container mx-auto px-4 py-20 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+              <span className="text-primary">Для участников конференции</span>
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8">
+              Специальные предложения для участников AI-Fest
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Products Section */}
+      <section className="py-12 sm:py-20 px-3 sm:px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="grid gap-6 md:gap-8">
+            {/* Кнопка 1: Бесплатный аудит */}
+            <Card className="bg-card/10 border-border hover:border-primary transition-all">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-2">
+                        Запишитесь на бесплатный аудит вашего бизнеса
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Получите профессиональную консультацию и узнайте, как автоматизировать ваш бизнес с помощью ИИ
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    size="lg" 
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-full sm:w-auto"
+                  >
+                    Записаться на аудит
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Кнопка 2: Телеграм канал */}
+            <Card className="bg-card/10 border-border hover:border-primary transition-all">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <MessageCircle className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-2">
+                        Бесплатный бот финансит в телеграм канал
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Только для участников AI-Fest. Получите доступ к эксклюзивным материалам и боту
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    asChild
+                    className="w-full sm:w-auto"
+                  >
+                    <a 
+                      href="https://t.me/your_channel" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      Перейти в канал
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Кнопка 3: Пока пустая */}
+            <Card className="bg-card/10 border-border hover:border-primary transition-all">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Gift className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-2">
+                        Специальное предложение
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Скоро здесь появится новая эксклюзивная возможность для участников конференции
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    disabled
+                    className="w-full sm:w-auto"
+                  >
+                    Скоро
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+
+      <ChatWidget />
+
+      <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </main>
+  )
+}
+

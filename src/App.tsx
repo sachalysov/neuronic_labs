@@ -11,6 +11,7 @@ const BusinessCasesPage = lazy(() => import('./pages/BusinessCasesPage'))
 const BusinessCasePage = lazy(() => import('./pages/BusinessCasePage'))
 const PartnerPage = lazy(() => import('./pages/PartnerPage'))
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
+const ConferencePage = lazy(() => import('./pages/ConferencePage'))
 
 // Fallback компонент для загрузки (минимальный, чтобы не блокировать рендер)
 const PageLoader = () => (
@@ -69,6 +70,14 @@ function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <ContactsPage />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/conference" 
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ConferencePage />
             </Suspense>
           } 
         />
