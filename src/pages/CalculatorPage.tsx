@@ -392,11 +392,22 @@ export default function CalculatorPage() {
                             <h2 className="text-lg sm:text-xl font-bold text-left">
                               {category.category}
                             </h2>
-                            <ChevronDown
-                              className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${
-                                isOpen ? 'rotate-180' : ''
-                              }`}
-                            />
+                            <div className="flex items-center gap-2">
+                              {!isOpen ? (
+                                <span className="text-xs text-muted-foreground/60">
+                                  развернуть
+                                </span>
+                              ) : (
+                                <span className="text-xs text-muted-foreground/60">
+                                  свернуть
+                                </span>
+                              )}
+                              <ChevronDown
+                                className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${
+                                  isOpen ? 'rotate-180' : ''
+                                }`}
+                              />
+                            </div>
                           </div>
                           
                           {selectedNames.length > 0 && (
@@ -431,23 +442,34 @@ export default function CalculatorPage() {
                                   }`}
                                 >
                                   <div className="flex items-center justify-between gap-4">
-                                    <div className="flex items-center gap-2 flex-1">
-                                      <span className="text-sm sm:text-base font-medium">
-                                        {option.option_name}
-                                      </span>
+                                    <span className="text-sm sm:text-base font-medium flex-1">
+                                      {option.option_name}
+                                    </span>
+                                    <div className="flex items-center gap-2">
                                       {hasSubOptions && (
-                                        <ChevronDown
-                                          className={`h-4 w-4 flex-shrink-0 transition-transform duration-300 ${
-                                            isExpanded ? 'rotate-180' : ''
-                                          }`}
-                                        />
+                                        <>
+                                          {!isExpanded ? (
+                                            <span className="text-xs text-muted-foreground/60">
+                                              развернуть
+                                            </span>
+                                          ) : (
+                                            <span className="text-xs text-muted-foreground/60">
+                                              свернуть
+                                            </span>
+                                          )}
+                                          <ChevronDown
+                                            className={`h-4 w-4 flex-shrink-0 transition-transform duration-300 ${
+                                              isExpanded ? 'rotate-180' : ''
+                                            }`}
+                                          />
+                                        </>
+                                      )}
+                                      {option.price > 0 && (
+                                        <span className="text-sm sm:text-base font-bold text-primary whitespace-nowrap">
+                                          +{formatPrice(option.price)}
+                                        </span>
                                       )}
                                     </div>
-                                    {option.price > 0 && (
-                                      <span className="text-sm sm:text-base font-bold text-primary whitespace-nowrap">
-                                        +{formatPrice(option.price)}
-                                      </span>
-                                    )}
                                   </div>
                                 </button>
                                 
