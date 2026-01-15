@@ -26,12 +26,14 @@ export default function CalculatorPage() {
 
   const [categories, setCategories] = useState<CalculatorCategory[]>([])
   const [selectedOptions, setSelectedOptions] = useState<Map<string, Set<string>>>(new Map())
+  const [selectedSubOptions, setSelectedSubOptions] = useState<Map<string, Set<string>>>(new Map())
   const [openCategories, setOpenCategories] = useState<Set<string>>(new Set())
+  const [expandedOptions, setExpandedOptions] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   
   // Категории, где можно выбрать только один вариант
-  const singleSelectCategories = new Set(['Количество каналов продаж', 'Где вести учет?'])
+  const singleSelectCategories = new Set<string>()
 
   useEffect(() => {
     const loadPrices = async () => {
@@ -58,6 +60,35 @@ export default function CalculatorPage() {
     }
   }, [])
 
+  // Автоматически разворачиваем подвопросы при выборе опции с подвопросами
+  useEffect(() => {
+    if (categories.length === 0) return
+
+    setExpandedOptions(prev => {
+      const newExpanded = new Set<string>()
+
+      selectedOptions.forEach((optionIds, category) => {
+        const categoryData = categories.find(c => c.category === category)
+        if (categoryData) {
+          optionIds.forEach(optionId => {
+            const option = categoryData.options.find(o => o.id === optionId)
+            if (option?.sub_options && option.sub_options.length > 0) {
+              newExpanded.add(optionId)
+            }
+          })
+        }
+      })
+
+      // Проверяем, изменилось ли состояние
+      if (newExpanded.size !== prev.size || 
+          Array.from(newExpanded).some(id => !prev.has(id)) ||
+          Array.from(prev).some(id => !newExpanded.has(id))) {
+        return newExpanded
+      }
+      return prev
+    })
+  }, [selectedOptions, categories])
+
   const toggleCategory = (category: string) => {
     const newOpenCategories = new Set(openCategories)
     if (newOpenCategories.has(category)) {
@@ -68,7 +99,7 @@ export default function CalculatorPage() {
     setOpenCategories(newOpenCategories)
   }
 
-  const toggleOption = (category: string, optionId: string) => {
+  const toggleOption = (category: string, optionId: string, hasSubOptions?: boolean) => {
     const newSelectedOptions = new Map(selectedOptions)
     const currentSelection = newSelectedOptions.get(category) || new Set<string>()
     const isSingleSelect = singleSelectCategories.has(category)
@@ -83,16 +114,54 @@ export default function CalculatorPage() {
       } else {
         newSelectedOptions.delete(category)
       }
+      
+      // Удаляем подвопросы, если они были выбраны
+      if (hasSubOptions) {
+        const newSelectedSubOptions = new Map(selectedSubOptions)
+        newSelectedSubOptions.delete(optionId)
+        setSelectedSubOptions(newSelectedSubOptions)
+        setExpandedOptions(prev => {
+          const newSet = new Set(prev)
+          newSet.delete(optionId)
+          return newSet
+        })
+      }
     } else {
       // Выбираем новую опцию
       if (isSingleSelect) {
         // Для категорий с одним выбором заменяем весь Set
+        // Сначала удаляем подвопросы предыдущей опции
+        const prevOptionId = Array.from(currentSelection)[0]
+        if (prevOptionId) {
+          const prevOption = categories
+            .find(c => c.category === category)
+            ?.options.find(o => o.id === prevOptionId)
+          if (prevOption?.sub_options && prevOption.sub_options.length > 0) {
+            const newSelectedSubOptions = new Map(selectedSubOptions)
+            newSelectedSubOptions.delete(prevOptionId)
+            setSelectedSubOptions(newSelectedSubOptions)
+            setExpandedOptions(prev => {
+              const newSet = new Set(prev)
+              newSet.delete(prevOptionId)
+              return newSet
+            })
+          }
+        }
         newSelectedOptions.set(category, new Set([optionId]))
       } else {
         // Для категорий с множественным выбором добавляем к существующим
         const newSet = new Set(currentSelection)
         newSet.add(optionId)
         newSelectedOptions.set(category, newSet)
+      }
+      
+      // Если у опции есть подвопросы, сразу разворачиваем их
+      if (hasSubOptions) {
+        setExpandedOptions(prev => {
+          const newExpanded = new Set(prev)
+          newExpanded.add(optionId)
+          return newExpanded
+        })
       }
     }
     
@@ -104,7 +173,8 @@ export default function CalculatorPage() {
       // Для категорий с множественным выбором переходим только при первом выборе
       const shouldTransition = isSingleSelect || wasCategoryEmpty
       
-      if (shouldTransition) {
+      // Не переходим автоматически, если у опции есть подвопросы
+      if (shouldTransition && !hasSubOptions) {
         const currentIndex = categories.findIndex(c => c.category === category)
         const isLastCategory = currentIndex === categories.length - 1
         
@@ -142,6 +212,27 @@ export default function CalculatorPage() {
     }
   }
 
+  const toggleSubOption = (parentOptionId: string, subOptionId: string) => {
+    const newSelectedSubOptions = new Map(selectedSubOptions)
+    const currentSubSelection = newSelectedSubOptions.get(parentOptionId) || new Set<string>()
+    
+    if (currentSubSelection.has(subOptionId)) {
+      const newSet = new Set(currentSubSelection)
+      newSet.delete(subOptionId)
+      if (newSet.size > 0) {
+        newSelectedSubOptions.set(parentOptionId, newSet)
+      } else {
+        newSelectedSubOptions.delete(parentOptionId)
+      }
+    } else {
+      const newSet = new Set(currentSubSelection)
+      newSet.add(subOptionId)
+      newSelectedSubOptions.set(parentOptionId, newSet)
+    }
+    
+    setSelectedSubOptions(newSelectedSubOptions)
+  }
+
   const calculateTotal = (): number => {
     let total = 0
     selectedOptions.forEach((optionIds, category) => {
@@ -151,6 +242,19 @@ export default function CalculatorPage() {
           const option = categoryData.options.find(o => o.id === optionId)
           if (option) {
             total += option.price
+            
+            // Добавляем цены выбранных подвопросов
+            if (option.sub_options && option.sub_options.length > 0) {
+              const subOptionIds = selectedSubOptions.get(optionId)
+              if (subOptionIds) {
+                subOptionIds.forEach(subOptionId => {
+                  const subOption = option.sub_options?.find(so => so.id === subOptionId)
+                  if (subOption) {
+                    total += subOption.price
+                  }
+                })
+              }
+            }
           }
         })
       }
@@ -189,9 +293,27 @@ export default function CalculatorPage() {
       optionIds.forEach(optionId => {
         const option = categoryData.options.find(o => o.id === optionId)
         if (option) {
-          selectedNames.push(option.option_name)
+          let optionText = option.option_name
           if (option.price > 0) {
-            selectedNames[selectedNames.length - 1] += ` (${formatPrice(option.price)})`
+            optionText += ` (${formatPrice(option.price)})`
+          }
+          selectedNames.push(optionText)
+          
+          // Добавляем выбранные подвопросы
+          if (option.sub_options && option.sub_options.length > 0) {
+            const subOptionIds = selectedSubOptions.get(optionId)
+            if (subOptionIds && subOptionIds.size > 0) {
+              subOptionIds.forEach(subOptionId => {
+                const subOption = option.sub_options?.find(so => so.id === subOptionId)
+                if (subOption) {
+                  let subOptionText = `    - ${subOption.option_name}`
+                  if (subOption.price > 0) {
+                    subOptionText += ` (${formatPrice(subOption.price)})`
+                  }
+                  selectedNames.push(subOptionText)
+                }
+              })
+            }
           }
         }
       })
@@ -199,7 +321,7 @@ export default function CalculatorPage() {
       if (selectedNames.length > 0) {
         lines.push(`${category}:`)
         selectedNames.forEach(name => {
-          lines.push(`  - ${name}`)
+          lines.push(name)
         })
         lines.push("")
       }
@@ -293,29 +415,80 @@ export default function CalculatorPage() {
                         <div className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-2">
                           {category.options.map((option) => {
                             const isSelected = selectedOptionIds?.has(option.id) || false
+                            const hasSubOptions = option.sub_options && option.sub_options.length > 0
+                            const isExpanded = expandedOptions.has(option.id)
+                            const selectedSubOptionIds = selectedSubOptions.get(option.id)
                             
                             return (
-                              <button
-                                key={option.id}
-                                type="button"
-                                onClick={() => toggleOption(category.category, option.id)}
-                                className={`w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all ${
-                                  isSelected
-                                    ? 'border-primary bg-primary/10'
-                                    : 'border-border hover:border-primary/50 bg-card'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between gap-4">
-                                  <span className="text-sm sm:text-base font-medium flex-1">
-                                    {option.option_name}
-                                  </span>
-                                  {option.price > 0 && (
-                                    <span className="text-sm sm:text-base font-bold text-primary whitespace-nowrap">
-                                      +{formatPrice(option.price)}
-                                    </span>
-                                  )}
-                                </div>
-                              </button>
+                              <div key={option.id} className="space-y-2">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleOption(category.category, option.id, hasSubOptions)}
+                                  className={`w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all ${
+                                    isSelected
+                                      ? 'border-primary bg-primary/10'
+                                      : 'border-border hover:border-primary/50 bg-card'
+                                  }`}
+                                >
+                                  <div className="flex items-center justify-between gap-4">
+                                    <div className="flex items-center gap-2 flex-1">
+                                      <span className="text-sm sm:text-base font-medium">
+                                        {option.option_name}
+                                      </span>
+                                      {hasSubOptions && (
+                                        <ChevronDown
+                                          className={`h-4 w-4 flex-shrink-0 transition-transform duration-300 ${
+                                            isExpanded ? 'rotate-180' : ''
+                                          }`}
+                                        />
+                                      )}
+                                    </div>
+                                    {option.price > 0 && (
+                                      <span className="text-sm sm:text-base font-bold text-primary whitespace-nowrap">
+                                        +{formatPrice(option.price)}
+                                      </span>
+                                    )}
+                                  </div>
+                                </button>
+                                
+                                {/* Подвопросы */}
+                                {hasSubOptions && isSelected && isExpanded && (
+                                  <div className="overflow-hidden ml-4 max-h-[500px] opacity-100">
+                                    <div className="space-y-2 pt-2">
+                                      {option.sub_options?.map((subOption) => {
+                                        const isSubSelected = selectedSubOptionIds?.has(subOption.id) || false
+                                        
+                                        return (
+                                          <button
+                                            key={subOption.id}
+                                            type="button"
+                                            onClick={(e) => {
+                                              e.stopPropagation()
+                                              toggleSubOption(option.id, subOption.id)
+                                            }}
+                                            className={`w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all ${
+                                              isSubSelected
+                                                ? 'border-primary bg-primary/10'
+                                                : 'border-border hover:border-primary/50 bg-card'
+                                            }`}
+                                          >
+                                            <div className="flex items-center justify-between gap-4">
+                                              <span className="text-sm sm:text-base font-medium flex-1">
+                                                {subOption.option_name}
+                                              </span>
+                                              {subOption.price > 0 && (
+                                                <span className="text-sm sm:text-base font-bold text-primary whitespace-nowrap">
+                                                  +{formatPrice(subOption.price)}
+                                                </span>
+                                              )}
+                                            </div>
+                                          </button>
+                                        )
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             )
                           })}
                         </div>
@@ -369,22 +542,50 @@ export default function CalculatorPage() {
                         if (!categoryData) return null
                         
                         return Array.from(optionIds)
-                          .map(optionId => {
+                          .flatMap(optionId => {
                             const option = categoryData.options.find(o => o.id === optionId)
-                            if (!option || option.price === 0) return null
+                            if (!option) return []
                             
-                            return (
-                              <div key={`${category}-${optionId}`} className="flex justify-between items-center text-sm">
-                                <span className="text-muted-foreground truncate pr-2">
-                                  {option.option_name}
-                                </span>
-                                <span className="font-medium whitespace-nowrap">
-                                  {formatPrice(option.price)}
-                                </span>
-                              </div>
-                            )
+                            const items: React.ReactElement[] = []
+                            
+                            // Основная опция
+                            if (option.price > 0) {
+                              items.push(
+                                <div key={`${category}-${optionId}`} className="flex justify-between items-center text-sm">
+                                  <span className="text-muted-foreground truncate pr-2">
+                                    {option.option_name}
+                                  </span>
+                                  <span className="font-medium whitespace-nowrap">
+                                    {formatPrice(option.price)}
+                                  </span>
+                                </div>
+                              )
+                            }
+                            
+                            // Подвопросы
+                            if (option.sub_options && option.sub_options.length > 0) {
+                              const subOptionIds = selectedSubOptions.get(optionId)
+                              if (subOptionIds) {
+                                subOptionIds.forEach(subOptionId => {
+                                  const subOption = option.sub_options?.find(so => so.id === subOptionId)
+                                  if (subOption && subOption.price > 0) {
+                                    items.push(
+                                      <div key={`${category}-${optionId}-${subOptionId}`} className="flex justify-between items-center text-sm ml-4">
+                                        <span className="text-muted-foreground truncate pr-2">
+                                          {subOption.option_name}
+                                        </span>
+                                        <span className="font-medium whitespace-nowrap">
+                                          {formatPrice(subOption.price)}
+                                        </span>
+                                      </div>
+                                    )
+                                  }
+                                })
+                              }
+                            }
+                            
+                            return items
                           })
-                          .filter(Boolean)
                       })}
                     </div>
 

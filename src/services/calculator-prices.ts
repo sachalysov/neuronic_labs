@@ -7,6 +7,8 @@ export interface CalculatorPrice {
   price: number
   display_order: number
   category_order: number
+  parent_option_id?: string | null
+  sub_options?: CalculatorPrice[]
   created_at?: string
   updated_at?: string
 }
@@ -44,7 +46,10 @@ export async function getCalculatorPrices(): Promise<CalculatorCategory[]> {
 
     // Группируем по категориям
     const categoriesMap = new Map<string, CalculatorCategory>()
+    const allPrices: CalculatorPrice[] = []
+    const subOptionsMap = new Map<string, CalculatorPrice[]>()
     
+    // Сначала создаем все опции
     data.forEach((item) => {
       const price: CalculatorPrice = {
         id: item.id,
@@ -53,19 +58,47 @@ export async function getCalculatorPrices(): Promise<CalculatorCategory[]> {
         price: parseFloat(item.price) || 0,
         display_order: item.display_order,
         category_order: item.category_order,
+        parent_option_id: item.parent_option_id || null,
         created_at: item.created_at,
         updated_at: item.updated_at,
       }
 
-      if (!categoriesMap.has(item.category)) {
-        categoriesMap.set(item.category, {
-          category: item.category,
-          options: [],
-          category_order: item.category_order,
-        })
-      }
+      allPrices.push(price)
 
-      categoriesMap.get(item.category)!.options.push(price)
+      // Если это подвопрос, добавляем в map
+      if (item.parent_option_id) {
+        if (!subOptionsMap.has(item.parent_option_id)) {
+          subOptionsMap.set(item.parent_option_id, [])
+        }
+        subOptionsMap.get(item.parent_option_id)!.push(price)
+      }
+    })
+
+    // Привязываем подвопросы к родительским опциям
+    allPrices.forEach((price) => {
+      if (subOptionsMap.has(price.id)) {
+        price.sub_options = subOptionsMap.get(price.id)!.sort((a, b) => a.display_order - b.display_order)
+      }
+    })
+
+    // Группируем только родительские опции (без parent_option_id) по категориям
+    allPrices.forEach((price) => {
+      if (!price.parent_option_id) {
+        if (!categoriesMap.has(price.category)) {
+          categoriesMap.set(price.category, {
+            category: price.category,
+            options: [],
+            category_order: price.category_order,
+          })
+        }
+
+        categoriesMap.get(price.category)!.options.push(price)
+      }
+    })
+
+    // Сортируем опции внутри каждой категории
+    categoriesMap.forEach((category) => {
+      category.options.sort((a, b) => a.display_order - b.display_order)
     })
 
     return Array.from(categoriesMap.values())
