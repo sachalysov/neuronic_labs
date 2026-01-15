@@ -174,7 +174,7 @@ export default function CalculatorPage() {
                         onClick={() => toggleCategory(category.category)}
                         className="w-full"
                       >
-                        <CardContent className="p-4 sm:p-6">
+                        <CardContent className={isOpen ? "p-4 sm:p-6" : "px-4 sm:px-6 py-0.5 sm:py-1"}>
                           <div className="flex items-center justify-between gap-4">
                             <h2 className="text-lg sm:text-xl font-bold text-left">
                               {category.category}
