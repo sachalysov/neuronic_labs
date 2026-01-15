@@ -1,0 +1,290 @@
+import { useEffect, useState } from 'react'
+import { StickyHeader } from '@/components/sticky-header'
+import { Footer } from '@/components/footer'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { ChevronDown, Calculator } from 'lucide-react'
+import { getCalculatorPrices, subscribeToCalculatorPrices, type CalculatorCategory, type CalculatorPrice } from '@/services/calculator-prices'
+import { useMeta } from '@/hooks/useMeta'
+
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat('ru-RU', {
+    style: 'currency',
+    currency: 'RUB',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price)
+}
+
+export default function CalculatorPage() {
+  useMeta({
+    title: 'Расчитать стоимость внедрения самостоятельно | Neuronic Labs',
+    description: 'Калькулятор расчета стоимости внедрения ИИ-продавца. Выберите параметры и узнайте стоимость внедрения.',
+  })
+
+  const [categories, setCategories] = useState<CalculatorCategory[]>([])
+  const [selectedOptions, setSelectedOptions] = useState<Map<string, Set<string>>>(new Map())
+  const [openCategories, setOpenCategories] = useState<Set<string>>(new Set())
+  const [loading, setLoading] = useState(true)
+  
+  // Категории, где можно выбрать только один вариант
+  const singleSelectCategories = new Set(['Количество каналов продаж', 'Где вести учет?'])
+
+  useEffect(() => {
+    const loadPrices = async () => {
+      setLoading(true)
+      try {
+        const prices = await getCalculatorPrices()
+        setCategories(prices)
+      } catch (error) {
+        console.error('Ошибка загрузки цен:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadPrices()
+
+    // Подписка на изменения цен в реальном времени
+    const unsubscribe = subscribeToCalculatorPrices((prices) => {
+      setCategories(prices)
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  const toggleCategory = (category: string) => {
+    const newOpenCategories = new Set(openCategories)
+    if (newOpenCategories.has(category)) {
+      newOpenCategories.delete(category)
+    } else {
+      newOpenCategories.add(category)
+    }
+    setOpenCategories(newOpenCategories)
+  }
+
+  const toggleOption = (category: string, optionId: string) => {
+    const newSelectedOptions = new Map(selectedOptions)
+    const currentSelection = newSelectedOptions.get(category) || new Set<string>()
+    const isSingleSelect = singleSelectCategories.has(category)
+    
+    if (currentSelection.has(optionId)) {
+      // Если опция уже выбрана, снимаем выбор
+      const newSet = new Set(currentSelection)
+      newSet.delete(optionId)
+      if (newSet.size > 0) {
+        newSelectedOptions.set(category, newSet)
+      } else {
+        newSelectedOptions.delete(category)
+      }
+    } else {
+      // Выбираем новую опцию
+      if (isSingleSelect) {
+        // Для категорий с одним выбором заменяем весь Set
+        newSelectedOptions.set(category, new Set([optionId]))
+      } else {
+        // Для категорий с множественным выбором добавляем к существующим
+        const newSet = new Set(currentSelection)
+        newSet.add(optionId)
+        newSelectedOptions.set(category, newSet)
+      }
+    }
+    
+    setSelectedOptions(newSelectedOptions)
+  }
+
+  const calculateTotal = (): number => {
+    let total = 0
+    selectedOptions.forEach((optionIds, category) => {
+      const categoryData = categories.find(c => c.category === category)
+      if (categoryData) {
+        optionIds.forEach(optionId => {
+          const option = categoryData.options.find(o => o.id === optionId)
+          if (option) {
+            total += option.price
+          }
+        })
+      }
+    })
+    return total
+  }
+
+  const getSelectedOptionNames = (category: string): string[] => {
+    const optionIds = selectedOptions.get(category)
+    if (!optionIds || optionIds.size === 0) return []
+    
+    const categoryData = categories.find(c => c.category === category)
+    if (!categoryData) return []
+    
+    return Array.from(optionIds)
+      .map(optionId => {
+        const option = categoryData.options.find(o => o.id === optionId)
+        return option ? option.option_name : null
+      })
+      .filter((name): name is string => name !== null)
+  }
+
+  const total = calculateTotal()
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <StickyHeader />
+      
+      <main className="flex-1 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Заголовок */}
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-2xl mb-4 sm:mb-6">
+              <Calculator className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">
+              Рассчитать стоимость внедрения самостоятельно
+            </h1>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+              Выберите параметры внедрения и узнайте стоимость
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="text-muted-foreground">Загрузка калькулятора...</div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Левая колонка - Категории */}
+              <div className="lg:col-span-2 space-y-4">
+                {categories.map((category) => {
+                  const isOpen = openCategories.has(category.category)
+                  const selectedOptionIds = selectedOptions.get(category.category)
+                  const selectedNames = getSelectedOptionNames(category.category)
+                  
+                  return (
+                    <Card
+                      key={category.category}
+                      className="overflow-hidden transition-all hover:border-primary/50"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleCategory(category.category)}
+                        className="w-full"
+                      >
+                        <CardContent className="p-4 sm:p-6">
+                          <div className="flex items-center justify-between gap-4">
+                            <h2 className="text-lg sm:text-xl font-bold text-left">
+                              {category.category}
+                            </h2>
+                            <ChevronDown
+                              className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${
+                                isOpen ? 'rotate-180' : ''
+                              }`}
+                            />
+                          </div>
+                          
+                          {selectedNames.length > 0 && (
+                            <div className="mt-2 text-sm text-primary font-medium">
+                              Выбрано: {selectedNames.join(', ')}
+                            </div>
+                          )}
+                        </CardContent>
+                      </button>
+
+                      <div
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                          isOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
+                        }`}
+                      >
+                        <div className="px-4 sm:px-6 pb-4 sm:pb-6 space-y-2">
+                          {category.options.map((option) => {
+                            const isSelected = selectedOptionIds?.has(option.id) || false
+                            
+                            return (
+                              <button
+                                key={option.id}
+                                type="button"
+                                onClick={() => toggleOption(category.category, option.id)}
+                                className={`w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all ${
+                                  isSelected
+                                    ? 'border-primary bg-primary/10'
+                                    : 'border-border hover:border-primary/50 bg-card'
+                                }`}
+                              >
+                                <div className="flex items-center justify-between gap-4">
+                                  <span className="text-sm sm:text-base font-medium flex-1">
+                                    {option.option_name}
+                                  </span>
+                                  {option.price > 0 && (
+                                    <span className="text-sm sm:text-base font-bold text-primary whitespace-nowrap">
+                                      +{formatPrice(option.price)}
+                                    </span>
+                                  )}
+                                </div>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </Card>
+                  )
+                })}
+              </div>
+
+              {/* Правая колонка - Калькулятор */}
+              <div className="lg:col-span-1">
+                <Card className="sticky top-24">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold mb-4">Итого</h3>
+                    
+                    <div className="space-y-3 mb-6">
+                      {Array.from(selectedOptions.entries()).map(([category, optionIds]) => {
+                        const categoryData = categories.find(c => c.category === category)
+                        if (!categoryData) return null
+                        
+                        return Array.from(optionIds)
+                          .map(optionId => {
+                            const option = categoryData.options.find(o => o.id === optionId)
+                            if (!option || option.price === 0) return null
+                            
+                            return (
+                              <div key={`${category}-${optionId}`} className="flex justify-between items-center text-sm">
+                                <span className="text-muted-foreground truncate pr-2">
+                                  {option.option_name}
+                                </span>
+                                <span className="font-medium whitespace-nowrap">
+                                  {formatPrice(option.price)}
+                                </span>
+                              </div>
+                            )
+                          })
+                          .filter(Boolean)
+                      })}
+                    </div>
+
+                    <div className="border-t border-border pt-4">
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-lg font-bold">Сумма:</span>
+                        <span className="text-2xl font-bold text-primary">
+                          {formatPrice(total)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {total === 0 && (
+                      <p className="text-sm text-muted-foreground text-center mt-4">
+                        Выберите параметры для расчета
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
+

@@ -359,6 +359,13 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                         Тарифы и цены
                       </button>
                       <Link
+                        to="/calculator"
+                        onClick={() => setIsProductDropdownOpen(false)}
+                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
+                      >
+                        Рассчитать стоимость внедрения самостоятельно
+                      </Link>
+                      <Link
                         to="/business-cases"
                         onClick={() => setIsProductDropdownOpen(false)}
                         className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium"
@@ -577,6 +584,16 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                     >
                       Тарифы и цены
                     </button>
+                    <Link
+                      to="/calculator"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        setIsProductDropdownOpen(false)
+                      }}
+                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    >
+                      Рассчитать стоимость внедрения самостоятельно
+                    </Link>
                     <Link
                       to="/business-cases"
                       onClick={() => {
