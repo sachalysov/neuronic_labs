@@ -90,7 +90,7 @@ export default function AdminDashboardPage() {
       clearTimeout(textSaveTimeoutRef.current)
     }
     
-    // Сохраняем в Supabase только после паузы в вводе (500ms)
+    // Сохраняем в Supabase только после паузы в вводе (3500ms)
     textSaveTimeoutRef.current = setTimeout(async () => {
       isUserTypingRef.current = false
       setSaving(true)
@@ -103,7 +103,7 @@ export default function AdminDashboardPage() {
       } finally {
         setSaving(false)
       }
-    }, 500)
+    }, 3500)
   }
 
   const handleSignOut = async () => {
