@@ -401,11 +401,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    // Обрабатываем Enter/Return для отправки сообщения
+    if ((e.key === "Enter" || e.key === "Return") && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     }
-    // Shift+Enter или Shift+Return на macOS позволяет сделать перенос строки
+    // Shift+Enter или Shift+Return позволяет сделать перенос строки
   }
 
   const handleSendLink = async (link: string) => {
