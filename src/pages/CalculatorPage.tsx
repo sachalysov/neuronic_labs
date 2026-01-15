@@ -573,12 +573,17 @@ export default function CalculatorPage() {
                     </div>
 
                     <div className="border-t border-border pt-4">
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="text-lg font-bold">Сумма:</span>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-lg font-bold">
+                          Сумма<sup className="text-xs"></sup>:
+                        </span>
                         <span className="text-2xl font-bold text-primary">
                           {formatPrice(total)}
                         </span>
                       </div>
+                      <p className="text-xs text-muted-foreground mb-4">
+                        * Сумма приблизительна. Для окончательного расчета с Вами свяжется менеджер
+                      </p>
                     </div>
 
                     {total === 0 && (
