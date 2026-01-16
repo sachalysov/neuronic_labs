@@ -161,7 +161,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const handleResetChatRef = useRef<(() => void) | null>(null)
 
   // Функция для проверки, содержит ли сообщение фразу о записи
-  const containsBookingConfirmation = (text: string): boolean => {
+  const containsBookingConfirmation = (text: string | undefined | null): boolean => {
+    if (!text) return false
     const lowerText = text.toLowerCase()
     return lowerText.includes('подтверждаете запись') || 
            lowerText.includes('записала!') || 
@@ -277,7 +278,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   // Проверяем при загрузке и изменении сообщений/webhook, нужно ли показывать кнопку результата записи
   useEffect(() => {
     const hasConfirmationMessage = messages.some(msg => 
-      msg.sender === "bot" && containsBookingConfirmation(msg.text)
+      msg.sender === "bot" && msg.text && containsBookingConfirmation(msg.text)
     )
 
     if (currentWebhookUrl === webhookProtec) {
