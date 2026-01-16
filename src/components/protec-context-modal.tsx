@@ -32,10 +32,10 @@ export function ProtecContextModal({ isOpen, onClose }: ProtecContextModalProps)
       onClick={handleBackdropClick}
     >
       <Card 
-        className="w-full max-w-2xl max-h-[90vh] shadow-2xl border-border bg-card/10 backdrop-blur-md animate-in zoom-in-95 duration-200 flex flex-col overflow-hidden"
+        className="w-full max-w-2xl max-h-[90vh] shadow-2xl border-border bg-card animate-in zoom-in-95 duration-200 flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <CardHeader className="border-b border-border/50 pb-3 sm:pb-4 bg-destructive/10">
+        <CardHeader className="border-b border-border pb-3 sm:pb-4 bg-secondary/50">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg sm:text-2xl font-bold text-foreground">Погружение в контекст перед диалогом</h3>
@@ -44,7 +44,7 @@ export function ProtecContextModal({ isOpen, onClose }: ProtecContextModalProps)
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-7 w-7 sm:h-8 sm:w-8 rounded-full hover:bg-destructive/20 flex-shrink-0"
+              className="h-7 w-7 sm:h-8 sm:w-8 rounded-full hover:bg-secondary flex-shrink-0"
             >
               <X className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>

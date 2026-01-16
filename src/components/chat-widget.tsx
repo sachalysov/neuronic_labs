@@ -238,9 +238,9 @@ export function ChatWidget() {
     <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-50">
       <TelegramLink />
       {/* Chat Widget */}
-      <div className="w-[380px] h-[600px] bg-card/10 backdrop-blur-md border border-border/50 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="w-[380px] h-[600px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="bg-destructive/10 border-b border-destructive/30 p-4 sm:p-6 flex items-center justify-between rounded-t-2xl">
+        <div className="bg-secondary/50 border-b border-border p-4 sm:p-6 flex items-center justify-between rounded-t-2xl">
         <div className="flex items-center gap-3 flex-1">
           <div className="text-2xl sm:text-3xl">💬</div>
           <h3 className="font-semibold text-lg">Добро пожаловать в чат!</h3>
@@ -250,12 +250,12 @@ export function ChatWidget() {
             variant="ghost"
             size="icon"
             onClick={handleResetChat}
-            className="hover:bg-destructive/20 flex-shrink-0"
+            className="hover:bg-secondary flex-shrink-0"
             title="Начать сначала"
           >
             <RotateCcw className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:bg-destructive/20 flex-shrink-0">
+          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:bg-secondary flex-shrink-0">
             <X className="h-5 w-5" />
           </Button>
         </div>
