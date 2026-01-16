@@ -14,6 +14,8 @@ export default function AdminDashboardPage() {
   const navigate = useNavigate()
   const [maintenanceEnabled, setMaintenanceEnabled] = useState(false)
   const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
+  const [webhooksEnabled, setWebhooksEnabled] = useState(true)
+  const [isEditingWebhooks, setIsEditingWebhooks] = useState(false)
   const [webhookDemoChat, setWebhookDemoChat] = useState('')
   const [webhookDemoChatVomoloko, setWebhookDemoChatVomoloko] = useState('')
   const [webhookDemoChatProtec, setWebhookDemoChatProtec] = useState('')
@@ -22,7 +24,6 @@ export default function AdminDashboardPage() {
   const [loadingSettings, setLoadingSettings] = useState(true)
   const [saving, setSaving] = useState(false)
   const textSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const webhookSaveTimeoutRefs = useRef<Record<string, NodeJS.Timeout | null>>({})
   const isUserTypingRef = useRef(false)
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function AdminDashboardPage() {
         if (settings) {
           setMaintenanceEnabled(settings.maintenance_banner_enabled)
           setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+          setWebhooksEnabled(settings.webhooks_enabled ?? true)
           setWebhookDemoChat(settings.webhook_demo_chat || '')
           setWebhookDemoChatVomoloko(settings.webhook_demo_chat_vomoloko || '')
           setWebhookDemoChatProtec(settings.webhook_demo_chat_protec || '')
@@ -59,10 +61,11 @@ export default function AdminDashboardPage() {
 
     // Подписка на изменения настроек в реальном времени
     const unsubscribe = subscribeToAdminSettings((settings: AdminSettings) => {
-      // Игнорируем обновления от Realtime, если пользователь сам вводит текст
-      if (!isUserTypingRef.current) {
+      // Игнорируем обновления от Realtime, если пользователь сам вводит текст или редактирует вебхуки
+      if (!isUserTypingRef.current && !isEditingWebhooks) {
         setMaintenanceEnabled(settings.maintenance_banner_enabled)
         setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+        setWebhooksEnabled(settings.webhooks_enabled ?? true)
         setWebhookDemoChat(settings.webhook_demo_chat || '')
         setWebhookDemoChatVomoloko(settings.webhook_demo_chat_vomoloko || '')
         setWebhookDemoChatProtec(settings.webhook_demo_chat_protec || '')
@@ -77,10 +80,6 @@ export default function AdminDashboardPage() {
       if (textSaveTimeoutRef.current) {
         clearTimeout(textSaveTimeoutRef.current)
       }
-      // Очищаем все таймеры вебхуков
-      Object.values(webhookSaveTimeoutRefs.current).forEach(timeout => {
-        if (timeout) clearTimeout(timeout)
-      })
     }
   }, [user])
 
@@ -126,46 +125,55 @@ export default function AdminDashboardPage() {
     }, 3500)
   }
 
-  const handleWebhookChange = (field: keyof AdminSettings, value: string) => {
-    // Обновляем локальное состояние
-    switch (field) {
-      case 'webhook_demo_chat':
-        setWebhookDemoChat(value)
-        break
-      case 'webhook_demo_chat_vomoloko':
-        setWebhookDemoChatVomoloko(value)
-        break
-      case 'webhook_demo_chat_protec':
-        setWebhookDemoChatProtec(value)
-        break
-      case 'webhook_widget_chat':
-        setWebhookWidgetChat(value)
-        break
-      case 'webhook_form':
-        setWebhookForm(value)
-        break
+  const handleToggleWebhooks = async (value: boolean) => {
+    setWebhooksEnabled(value)
+    setSaving(true)
+    try {
+      await updateAdminSettings({ webhooks_enabled: value })
+      clearWebhooksCache()
+    } catch (error) {
+      console.error('Ошибка обновления настроек вебхуков:', error)
+      // Откатываем изменение при ошибке
+      setWebhooksEnabled(!value)
+    } finally {
+      setSaving(false)
     }
+  }
 
-    // Очищаем предыдущий таймер для этого поля
-    if (webhookSaveTimeoutRefs.current[field]) {
-      clearTimeout(webhookSaveTimeoutRefs.current[field]!)
+  const handleSaveWebhooks = async () => {
+    setSaving(true)
+    try {
+      await updateAdminSettings({
+        webhook_demo_chat: webhookDemoChat.trim() || undefined,
+        webhook_demo_chat_vomoloko: webhookDemoChatVomoloko.trim() || undefined,
+        webhook_demo_chat_protec: webhookDemoChatProtec.trim() || undefined,
+        webhook_widget_chat: webhookWidgetChat.trim() || undefined,
+        webhook_form: webhookForm.trim() || undefined,
+      })
+      clearWebhooksCache()
+      setIsEditingWebhooks(false)
+    } catch (error) {
+      console.error('Ошибка сохранения вебхуков:', error)
+    } finally {
+      setSaving(false)
     }
+  }
 
-    // Сохраняем в Supabase только после паузы в вводе (2000ms)
-    webhookSaveTimeoutRefs.current[field] = setTimeout(async () => {
-      setSaving(true)
-      try {
-        await updateAdminSettings({ 
-          [field]: value.trim() || undefined
-        } as Partial<AdminSettings>)
-        // Сбрасываем кэш вебхуков после обновления
-        clearWebhooksCache()
-      } catch (error) {
-        console.error(`Ошибка обновления вебхука ${field}:`, error)
-      } finally {
-        setSaving(false)
+  const handleCancelEditWebhooks = async () => {
+    // Загружаем исходные значения из базы
+    try {
+      const settings = await getAdminSettings()
+      if (settings) {
+        setWebhookDemoChat(settings.webhook_demo_chat || '')
+        setWebhookDemoChatVomoloko(settings.webhook_demo_chat_vomoloko || '')
+        setWebhookDemoChatProtec(settings.webhook_demo_chat_protec || '')
+        setWebhookWidgetChat(settings.webhook_widget_chat || '')
+        setWebhookForm(settings.webhook_form || '')
       }
-    }, 2000)
+    } catch (error) {
+      console.error('Ошибка загрузки вебхуков:', error)
+    }
+    setIsEditingWebhooks(false)
   }
 
   const handleSignOut = async () => {
@@ -333,6 +341,87 @@ export default function AdminDashboardPage() {
               <div className="text-sm text-muted-foreground">Загрузка настроек...</div>
             )}
             
+            <div className="flex items-start gap-3">
+              <button
+                type="button"
+                onClick={() => handleToggleWebhooks(!webhooksEnabled)}
+                disabled={saving || loadingSettings}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
+                  webhooksEnabled ? 'bg-primary' : 'bg-muted'
+                }`}
+                style={{
+                  minHeight: '24px',
+                  maxHeight: '24px',
+                  height: '24px',
+                  minWidth: '44px',
+                  maxWidth: '44px',
+                  width: '44px'
+                }}
+                aria-pressed={webhooksEnabled}
+                aria-label="Переключить вебхуки"
+              >
+                <span
+                  className={`pointer-events-none absolute top-1/2 left-0.5 -translate-y-1/2 inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition-all duration-200 ease-in-out ${
+                    webhooksEnabled ? 'translate-x-[20px]' : 'translate-x-0'
+                  }`}
+                  style={{
+                    minHeight: '20px',
+                    maxHeight: '20px',
+                    height: '20px',
+                    minWidth: '20px',
+                    maxWidth: '20px',
+                    width: '20px'
+                  }}
+                />
+              </button>
+              <div className="flex-1">
+                <div className="font-medium">
+                  Выключить вебхуки
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">
+                  При выключении вебхуки не будут использоваться, будут применяться значения по умолчанию из конфигурации.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 pt-2 border-t border-border">
+              <div>
+                <div className="font-medium">Редактирование вебхуков</div>
+                <p className="text-sm text-muted-foreground">
+                  Нажмите "Редактировать" чтобы изменить вебхуки, затем "Сохранить" для применения изменений.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                {!isEditingWebhooks ? (
+                  <Button 
+                    size="sm" 
+                    onClick={() => setIsEditingWebhooks(true)}
+                    disabled={saving || loadingSettings}
+                  >
+                    Редактировать
+                  </Button>
+                ) : (
+                  <>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={handleCancelEditWebhooks}
+                      disabled={saving}
+                    >
+                      Отмена
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={handleSaveWebhooks}
+                      disabled={saving}
+                    >
+                      {saving ? 'Сохранение...' : 'Сохранить'}
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+            
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="block text-sm font-medium">
@@ -341,9 +430,9 @@ export default function AdminDashboardPage() {
                 <Input
                   type="url"
                   value={webhookDemoChat}
-                  onChange={(e) => handleWebhookChange('webhook_demo_chat', e.target.value)}
+                  onChange={(e) => setWebhookDemoChat(e.target.value)}
                   placeholder="https://n8n.example.com/webhook/demo-chat"
-                  disabled={saving || loadingSettings}
+                  disabled={!isEditingWebhooks || saving || loadingSettings}
                   className="w-full font-mono text-sm"
                 />
                 <p className="text-xs text-muted-foreground">
@@ -358,9 +447,9 @@ export default function AdminDashboardPage() {
                 <Input
                   type="url"
                   value={webhookDemoChatVomoloko}
-                  onChange={(e) => handleWebhookChange('webhook_demo_chat_vomoloko', e.target.value)}
+                  onChange={(e) => setWebhookDemoChatVomoloko(e.target.value)}
                   placeholder="https://n8n.example.com/webhook/vomoloko"
-                  disabled={saving || loadingSettings}
+                  disabled={!isEditingWebhooks || saving || loadingSettings}
                   className="w-full font-mono text-sm"
                 />
                 <p className="text-xs text-muted-foreground">
@@ -375,9 +464,9 @@ export default function AdminDashboardPage() {
                 <Input
                   type="url"
                   value={webhookDemoChatProtec}
-                  onChange={(e) => handleWebhookChange('webhook_demo_chat_protec', e.target.value)}
+                  onChange={(e) => setWebhookDemoChatProtec(e.target.value)}
                   placeholder="https://n8n.example.com/webhook/protec"
-                  disabled={saving || loadingSettings}
+                  disabled={!isEditingWebhooks || saving || loadingSettings}
                   className="w-full font-mono text-sm"
                 />
                 <p className="text-xs text-muted-foreground">
@@ -392,9 +481,9 @@ export default function AdminDashboardPage() {
                 <Input
                   type="url"
                   value={webhookWidgetChat}
-                  onChange={(e) => handleWebhookChange('webhook_widget_chat', e.target.value)}
+                  onChange={(e) => setWebhookWidgetChat(e.target.value)}
                   placeholder="https://n8n.example.com/webhook/widget-chat"
-                  disabled={saving || loadingSettings}
+                  disabled={!isEditingWebhooks || saving || loadingSettings}
                   className="w-full font-mono text-sm"
                 />
                 <p className="text-xs text-muted-foreground">
@@ -409,9 +498,9 @@ export default function AdminDashboardPage() {
                 <Input
                   type="url"
                   value={webhookForm}
-                  onChange={(e) => handleWebhookChange('webhook_form', e.target.value)}
+                  onChange={(e) => setWebhookForm(e.target.value)}
                   placeholder="https://n8n.example.com/webhook/contact"
-                  disabled={saving || loadingSettings}
+                  disabled={!isEditingWebhooks || saving || loadingSettings}
                   className="w-full font-mono text-sm"
                 />
                 <p className="text-xs text-muted-foreground">

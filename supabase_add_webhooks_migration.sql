@@ -59,6 +59,17 @@ BEGIN
     RAISE NOTICE 'Добавлено поле webhook_form';
   END IF;
 
+  -- Флаг включения/выключения вебхуков
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'admin_settings' 
+    AND column_name = 'webhooks_enabled'
+  ) THEN
+    ALTER TABLE admin_settings ADD COLUMN webhooks_enabled BOOLEAN DEFAULT true;
+    RAISE NOTICE 'Добавлено поле webhooks_enabled';
+  END IF;
+
   RAISE NOTICE 'Миграция завершена успешно';
 END $$;
 

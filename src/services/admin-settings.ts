@@ -5,6 +5,7 @@ export interface AdminSettings {
   key?: string
   maintenance_banner_enabled: boolean
   maintenance_banner_text: string
+  webhooks_enabled?: boolean
   webhook_demo_chat?: string
   webhook_demo_chat_vomoloko?: string
   webhook_demo_chat_protec?: string
@@ -83,7 +84,7 @@ async function createDefaultSettings(): Promise<AdminSettings | null> {
  * Обновить настройки админ-панели
  */
 export async function updateAdminSettings(
-  updates: Partial<Pick<AdminSettings, 'maintenance_banner_enabled' | 'maintenance_banner_text' | 'webhook_demo_chat' | 'webhook_demo_chat_vomoloko' | 'webhook_demo_chat_protec' | 'webhook_widget_chat' | 'webhook_form'>>
+  updates: Partial<Pick<AdminSettings, 'maintenance_banner_enabled' | 'maintenance_banner_text' | 'webhooks_enabled' | 'webhook_demo_chat' | 'webhook_demo_chat_vomoloko' | 'webhook_demo_chat_protec' | 'webhook_widget_chat' | 'webhook_form'>>
 ): Promise<AdminSettings | null> {
   if (!supabase) {
     console.warn('Supabase не настроен')
@@ -175,7 +176,7 @@ export function subscribeToAdminSettings(
 }
 
 // Кэш для вебхуков (обновляется при загрузке настроек)
-let webhooksCache: Partial<Pick<AdminSettings, 'webhook_demo_chat' | 'webhook_demo_chat_vomoloko' | 'webhook_demo_chat_protec' | 'webhook_widget_chat' | 'webhook_form'>> | null = null
+let webhooksCache: Partial<Pick<AdminSettings, 'webhooks_enabled' | 'webhook_demo_chat' | 'webhook_demo_chat_vomoloko' | 'webhook_demo_chat_protec' | 'webhook_widget_chat' | 'webhook_form'>> | null = null
 let webhooksCacheTimestamp: number = 0
 const WEBHOOKS_CACHE_TTL = 5 * 60 * 1000 // 5 минут
 
@@ -189,6 +190,10 @@ export async function getWebhookFromSettings(
   
   // Если кэш актуален, используем его
   if (webhooksCache && (now - webhooksCacheTimestamp) < WEBHOOKS_CACHE_TTL) {
+    // Если вебхуки выключены, возвращаем undefined
+    if (webhooksCache.webhooks_enabled === false) {
+      return undefined
+    }
     return webhooksCache[webhookType]
   }
 
@@ -197,6 +202,7 @@ export async function getWebhookFromSettings(
     const settings = await getAdminSettings()
     if (settings) {
       webhooksCache = {
+        webhooks_enabled: settings.webhooks_enabled,
         webhook_demo_chat: settings.webhook_demo_chat,
         webhook_demo_chat_vomoloko: settings.webhook_demo_chat_vomoloko,
         webhook_demo_chat_protec: settings.webhook_demo_chat_protec,
@@ -204,6 +210,12 @@ export async function getWebhookFromSettings(
         webhook_form: settings.webhook_form,
       }
       webhooksCacheTimestamp = now
+      
+      // Если вебхуки выключены, возвращаем undefined
+      if (settings.webhooks_enabled === false) {
+        return undefined
+      }
+      
       return settings[webhookType]
     }
   } catch (error) {

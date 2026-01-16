@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS admin_settings (
   maintenance_banner_enabled BOOLEAN DEFAULT false,
   maintenance_banner_text TEXT DEFAULT 'На сайте ведутся технические работы. Возможны временные сбои в работе.',
   -- Вебхуки для различных компонентов
+  webhooks_enabled BOOLEAN DEFAULT true,
   webhook_demo_chat TEXT,
   webhook_demo_chat_vomoloko TEXT,
   webhook_demo_chat_protec TEXT,
@@ -76,6 +77,9 @@ BEGIN
   END IF;
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'webhook_form') THEN
     ALTER TABLE admin_settings ADD COLUMN webhook_form TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'webhooks_enabled') THEN
+    ALTER TABLE admin_settings ADD COLUMN webhooks_enabled BOOLEAN DEFAULT true;
   END IF;
 END $$;
 
