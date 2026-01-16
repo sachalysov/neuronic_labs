@@ -168,7 +168,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
            lowerText.includes('записала!') || 
            lowerText.includes('записала') ||
            lowerText.includes('вам придет смс с подтверждением записи') ||
-           lowerText.includes('оформила заказ')
+           lowerText.includes('оформила заказ') ||
+           lowerText.includes('подтверждаете заказ') ||
+           lowerText.includes('оформила!') ||
+           lowerText.includes('оформила') ||
+           lowerText.includes('вам придет смс с подтверждением заказа') ||
+           lowerText.includes('заказ оформлен')
   }
 
   // Функция для проверки, содержит ли текст ссылки на изображения
@@ -507,6 +512,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
 
         setMessages((prev) => [...prev, botMessage])
+        
+        // Проверяем, нужно ли показать кнопку результата заказа для vomoloko.ru
+        if (containsBookingConfirmation(response.message)) {
+          setShowVomolokoResultButton(true)
+        }
         
         updateLastActivity()
       } catch (error) {
