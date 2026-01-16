@@ -4,6 +4,12 @@ CREATE TABLE IF NOT EXISTS admin_settings (
   key TEXT UNIQUE NOT NULL DEFAULT 'main',
   maintenance_banner_enabled BOOLEAN DEFAULT false,
   maintenance_banner_text TEXT DEFAULT 'На сайте ведутся технические работы. Возможны временные сбои в работе.',
+  -- Вебхуки для различных компонентов
+  webhook_demo_chat TEXT,
+  webhook_demo_chat_vomoloko TEXT,
+  webhook_demo_chat_protec TEXT,
+  webhook_widget_chat TEXT,
+  webhook_form TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -52,4 +58,24 @@ CREATE TRIGGER update_admin_settings_updated_at
   BEFORE UPDATE ON admin_settings
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
+
+-- Добавление полей вебхуков к существующей таблице (если таблица уже создана)
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'webhook_demo_chat') THEN
+    ALTER TABLE admin_settings ADD COLUMN webhook_demo_chat TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'webhook_demo_chat_vomoloko') THEN
+    ALTER TABLE admin_settings ADD COLUMN webhook_demo_chat_vomoloko TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'webhook_demo_chat_protec') THEN
+    ALTER TABLE admin_settings ADD COLUMN webhook_demo_chat_protec TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'webhook_widget_chat') THEN
+    ALTER TABLE admin_settings ADD COLUMN webhook_widget_chat TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'admin_settings' AND column_name = 'webhook_form') THEN
+    ALTER TABLE admin_settings ADD COLUMN webhook_form TEXT;
+  END IF;
+END $$;
 

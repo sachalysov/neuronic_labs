@@ -1,4 +1,6 @@
 // Client-side chat service to replace Next.js server action
+import { getWebhookFromSettings } from './admin-settings'
+
 type ChatType = 'widget' | 'demo'
 
 export async function sendChatMessage(
@@ -10,11 +12,23 @@ export async function sendChatMessage(
 ): Promise<{ message: string; imageUrl?: string }> {
   try {
     // Если передан кастомный webhook, используем его
-    const webhookUrl = customWebhookUrl || (
-      chatType === 'widget' 
-        ? (import.meta.env.VITE_WIDGET_WEBHOOK_URL || 'https://n8n.alexlysov.ru/webhook/bc12fe55-7a98-4d81-b4ec-d3d74650e28a/chat')
-        : 'https://n8n.alexlysov.ru/webhook/b74adb23-9f9b-4b80-8dc3-7a2fe09e980e/chat'
-    )
+    let webhookUrl = customWebhookUrl
+    
+    if (!webhookUrl) {
+      // Пытаемся получить вебхук из админ настроек
+      if (chatType === 'widget') {
+        webhookUrl = await getWebhookFromSettings('webhook_widget_chat')
+      } else {
+        webhookUrl = await getWebhookFromSettings('webhook_demo_chat')
+      }
+      
+      // Если вебхук не настроен в админке, используем значения по умолчанию из env или хардкод
+      if (!webhookUrl) {
+        webhookUrl = chatType === 'widget' 
+          ? (import.meta.env.VITE_WIDGET_WEBHOOK_URL || 'https://n8n.alexlysov.ru/webhook/bc12fe55-7a98-4d81-b4ec-d3d74650e28a/chat')
+          : (import.meta.env.VITE_DEMO_WEBHOOK_URL || 'https://n8n.alexlysov.ru/webhook/b74adb23-9f9b-4b80-8dc3-7a2fe09e980e/chat')
+      }
+    }
 
     if (!webhookUrl) {
       console.warn(`Webhook URL for ${chatType} not configured. Using mock response.`)

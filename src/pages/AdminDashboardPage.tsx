@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { AdminThemeToggle } from '@/components/admin-theme-toggle'
-import { getAdminSettings, updateAdminSettings, subscribeToAdminSettings, type AdminSettings } from '@/services/admin-settings'
+import { getAdminSettings, updateAdminSettings, subscribeToAdminSettings, clearWebhooksCache, type AdminSettings } from '@/services/admin-settings'
 
 const DEFAULT_MAINTENANCE_TEXT = 'На сайте ведутся технические работы. Возможны временные сбои в работе.'
 
@@ -14,9 +14,15 @@ export default function AdminDashboardPage() {
   const navigate = useNavigate()
   const [maintenanceEnabled, setMaintenanceEnabled] = useState(false)
   const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
+  const [webhookDemoChat, setWebhookDemoChat] = useState('')
+  const [webhookDemoChatVomoloko, setWebhookDemoChatVomoloko] = useState('')
+  const [webhookDemoChatProtec, setWebhookDemoChatProtec] = useState('')
+  const [webhookWidgetChat, setWebhookWidgetChat] = useState('')
+  const [webhookForm, setWebhookForm] = useState('')
   const [loadingSettings, setLoadingSettings] = useState(true)
   const [saving, setSaving] = useState(false)
   const textSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const webhookSaveTimeoutRefs = useRef<Record<string, NodeJS.Timeout | null>>({})
   const isUserTypingRef = useRef(false)
 
   useEffect(() => {
@@ -36,6 +42,11 @@ export default function AdminDashboardPage() {
         if (settings) {
           setMaintenanceEnabled(settings.maintenance_banner_enabled)
           setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+          setWebhookDemoChat(settings.webhook_demo_chat || '')
+          setWebhookDemoChatVomoloko(settings.webhook_demo_chat_vomoloko || '')
+          setWebhookDemoChatProtec(settings.webhook_demo_chat_protec || '')
+          setWebhookWidgetChat(settings.webhook_widget_chat || '')
+          setWebhookForm(settings.webhook_form || '')
         }
       } catch (error) {
         console.error('Ошибка загрузки настроек:', error)
@@ -52,6 +63,11 @@ export default function AdminDashboardPage() {
       if (!isUserTypingRef.current) {
         setMaintenanceEnabled(settings.maintenance_banner_enabled)
         setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+        setWebhookDemoChat(settings.webhook_demo_chat || '')
+        setWebhookDemoChatVomoloko(settings.webhook_demo_chat_vomoloko || '')
+        setWebhookDemoChatProtec(settings.webhook_demo_chat_protec || '')
+        setWebhookWidgetChat(settings.webhook_widget_chat || '')
+        setWebhookForm(settings.webhook_form || '')
       }
     })
 
@@ -61,6 +77,10 @@ export default function AdminDashboardPage() {
       if (textSaveTimeoutRef.current) {
         clearTimeout(textSaveTimeoutRef.current)
       }
+      // Очищаем все таймеры вебхуков
+      Object.values(webhookSaveTimeoutRefs.current).forEach(timeout => {
+        if (timeout) clearTimeout(timeout)
+      })
     }
   }, [user])
 
@@ -104,6 +124,48 @@ export default function AdminDashboardPage() {
         setSaving(false)
       }
     }, 3500)
+  }
+
+  const handleWebhookChange = (field: keyof AdminSettings, value: string) => {
+    // Обновляем локальное состояние
+    switch (field) {
+      case 'webhook_demo_chat':
+        setWebhookDemoChat(value)
+        break
+      case 'webhook_demo_chat_vomoloko':
+        setWebhookDemoChatVomoloko(value)
+        break
+      case 'webhook_demo_chat_protec':
+        setWebhookDemoChatProtec(value)
+        break
+      case 'webhook_widget_chat':
+        setWebhookWidgetChat(value)
+        break
+      case 'webhook_form':
+        setWebhookForm(value)
+        break
+    }
+
+    // Очищаем предыдущий таймер для этого поля
+    if (webhookSaveTimeoutRefs.current[field]) {
+      clearTimeout(webhookSaveTimeoutRefs.current[field]!)
+    }
+
+    // Сохраняем в Supabase только после паузы в вводе (2000ms)
+    webhookSaveTimeoutRefs.current[field] = setTimeout(async () => {
+      setSaving(true)
+      try {
+        await updateAdminSettings({ 
+          [field]: value.trim() || undefined
+        } as Partial<AdminSettings>)
+        // Сбрасываем кэш вебхуков после обновления
+        clearWebhooksCache()
+      } catch (error) {
+        console.error(`Ошибка обновления вебхука ${field}:`, error)
+      } finally {
+        setSaving(false)
+      }
+    }, 2000)
   }
 
   const handleSignOut = async () => {
@@ -261,6 +323,104 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Настройки вебхуков</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {loadingSettings && (
+              <div className="text-sm text-muted-foreground">Загрузка настроек...</div>
+            )}
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">
+                  Вебхук для демо чата (основной)
+                </label>
+                <Input
+                  type="url"
+                  value={webhookDemoChat}
+                  onChange={(e) => handleWebhookChange('webhook_demo_chat', e.target.value)}
+                  placeholder="https://n8n.example.com/webhook/demo-chat"
+                  disabled={saving || loadingSettings}
+                  className="w-full font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Используется в демо чате для отправки сообщений пользователя
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">
+                  Вебхук для демо чата - кнопка vomoloko.ru
+                </label>
+                <Input
+                  type="url"
+                  value={webhookDemoChatVomoloko}
+                  onChange={(e) => handleWebhookChange('webhook_demo_chat_vomoloko', e.target.value)}
+                  placeholder="https://n8n.example.com/webhook/vomoloko"
+                  disabled={saving || loadingSettings}
+                  className="w-full font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Используется при нажатии на кнопку vomoloko.ru в демо чате
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">
+                  Вебхук для демо чата - кнопка protec.one
+                </label>
+                <Input
+                  type="url"
+                  value={webhookDemoChatProtec}
+                  onChange={(e) => handleWebhookChange('webhook_demo_chat_protec', e.target.value)}
+                  placeholder="https://n8n.example.com/webhook/protec"
+                  disabled={saving || loadingSettings}
+                  className="w-full font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Используется при нажатии на кнопку protec.one в демо чате
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">
+                  Вебхук для виджет чата
+                </label>
+                <Input
+                  type="url"
+                  value={webhookWidgetChat}
+                  onChange={(e) => handleWebhookChange('webhook_widget_chat', e.target.value)}
+                  placeholder="https://n8n.example.com/webhook/widget-chat"
+                  disabled={saving || loadingSettings}
+                  className="w-full font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Используется в виджет чате на сайте для отправки сообщений
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">
+                  Вебхук для форм обратной связи
+                </label>
+                <Input
+                  type="url"
+                  value={webhookForm}
+                  onChange={(e) => handleWebhookChange('webhook_form', e.target.value)}
+                  placeholder="https://n8n.example.com/webhook/contact"
+                  disabled={saving || loadingSettings}
+                  className="w-full font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Используется для отправки данных из форм обратной связи
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

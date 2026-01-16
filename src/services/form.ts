@@ -1,3 +1,5 @@
+import { getWebhookFromSettings } from './admin-settings'
+
 export interface FormData {
   name: string
   phone: string
@@ -7,7 +9,13 @@ export interface FormData {
 }
 
 export async function submitFormData(formData: FormData): Promise<void> {
-  const webhookUrl = import.meta.env.VITE_FORM_WEBHOOK_URL || 'https://n8n.alexlysov.ru/webhook/contact'
+  // Пытаемся получить вебхук из админ настроек
+  let webhookUrl = await getWebhookFromSettings('webhook_form')
+  
+  // Если вебхук не настроен в админке, используем значение по умолчанию из env или хардкод
+  if (!webhookUrl) {
+    webhookUrl = import.meta.env.VITE_FORM_WEBHOOK_URL || 'https://n8n.alexlysov.ru/webhook/contact'
+  }
   
   const payload = {
     name: formData.name,

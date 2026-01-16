@@ -14,6 +14,7 @@ import { VomolokoContextModal } from "@/components/vomoloko-context-modal"
 import { ProtecContextModal } from "@/components/protec-context-modal"
 import { CapabilitiesList } from "@/components/capabilities-list"
 import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL, DEMO_CHAT_PROTEC_WEBHOOK_URL } from "@/lib/constants"
+import { getWebhookFromSettings } from "@/services/admin-settings"
 
 interface DemoChatProps {
   onClose?: () => void
@@ -140,6 +141,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const [isVomolokoContextModalOpen, setIsVomolokoContextModalOpen] = useState(false)
   const [isProtecContextModalOpen, setIsProtecContextModalOpen] = useState(false)
+  // Вебхуки из админ настроек
+  const [webhookVomoloko, setWebhookVomoloko] = useState<string | undefined>(undefined)
+  const [webhookProtec, setWebhookProtec] = useState<string | undefined>(undefined)
   // Храним текущий webhook URL (по умолчанию стандартный для demo)
   const [currentWebhookUrl, setCurrentWebhookUrl] = useState<string | undefined>(() => {
     const stored = getLocalStorage('demo-chat-webhook-url')
@@ -276,20 +280,41 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       msg.sender === "bot" && containsBookingConfirmation(msg.text)
     )
 
-    if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL) {
+    if (currentWebhookUrl === webhookProtec) {
       // Для protec.one показываем кнопку результата записи
       setShowProtecResultButton(hasConfirmationMessage)
     } else {
       setShowProtecResultButton(false)
     }
 
-    if (currentWebhookUrl === DEMO_CHAT_VOMOLOKO_WEBHOOK_URL) {
+    if (currentWebhookUrl === webhookVomoloko) {
       // Для vomoloko.ru показываем кнопку результата заказа
       setShowVomolokoResultButton(hasConfirmationMessage)
     } else {
       setShowVomolokoResultButton(false)
     }
-  }, [messages, currentWebhookUrl])
+  }, [messages, currentWebhookUrl, webhookProtec, webhookVomoloko])
+
+  // Загрузка вебхуков из админ настроек при монтировании
+  useEffect(() => {
+    const loadWebhooks = async () => {
+      try {
+        const vomoloko = await getWebhookFromSettings('webhook_demo_chat_vomoloko')
+        const protec = await getWebhookFromSettings('webhook_demo_chat_protec')
+        
+        // Используем вебхуки из админки, если они есть, иначе используем константы
+        setWebhookVomoloko(vomoloko || DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
+        setWebhookProtec(protec || DEMO_CHAT_PROTEC_WEBHOOK_URL)
+      } catch (error) {
+        console.error('Ошибка загрузки вебхуков:', error)
+        // Используем константы при ошибке
+        setWebhookVomoloko(DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
+        setWebhookProtec(DEMO_CHAT_PROTEC_WEBHOOK_URL)
+      }
+    }
+    
+    loadWebhooks()
+  }, [])
 
   // Инициализация таймера неактивности при монтировании и очистка при размонтировании
   useEffect(() => {
@@ -397,10 +422,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       
       // Проверяем, нужно ли показать кнопку результата записи/заказа
       if (containsBookingConfirmation(response.message)) {
-        if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL) {
+        if (currentWebhookUrl === webhookProtec) {
           setShowProtecResultButton(true)
         }
-        if (currentWebhookUrl === DEMO_CHAT_VOMOLOKO_WEBHOOK_URL) {
+        if (currentWebhookUrl === webhookVomoloko) {
           setShowVomolokoResultButton(true)
         }
       }
@@ -441,9 +466,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       // Открываем модальное окно с контекстом
       setIsVomolokoContextModalOpen(true)
       
+      // Используем вебхук из админ настроек или константу
+      const vomolokoWebhook = webhookVomoloko || DEMO_CHAT_VOMOLOKO_WEBHOOK_URL
+      
       // Устанавливаем новый webhook
-      setCurrentWebhookUrl(DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
-      setLocalStorage('demo-chat-webhook-url', DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
+      setCurrentWebhookUrl(vomolokoWebhook)
+      setLocalStorage('demo-chat-webhook-url', vomolokoWebhook)
       
       setIsLoading(true)
       updateLastActivity()
@@ -460,11 +488,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
         setMessages((prev) => addUserMessage(prev, userMessage))
         
-        console.log('Отправка запроса на webhook:', DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
+        console.log('Отправка запроса на webhook:', vomolokoWebhook)
         console.log('Данные запроса:', { messageText, sessionId })
         
         // Отправляем фиксированное сообщение на новый webhook
-        const response = await sendChatMessage(messageText, 'demo', sessionId, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
+        const response = await sendChatMessage(messageText, 'demo', sessionId, vomolokoWebhook)
 
         console.log('Ответ от webhook:', response)
 
@@ -496,9 +524,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       // Открываем модальное окно с контекстом
       setIsProtecContextModalOpen(true)
       
+      // Используем вебхук из админ настроек или константу
+      const protecWebhook = webhookProtec || DEMO_CHAT_PROTEC_WEBHOOK_URL
+      
       // Устанавливаем новый webhook
-      setCurrentWebhookUrl(DEMO_CHAT_PROTEC_WEBHOOK_URL)
-      setLocalStorage('demo-chat-webhook-url', DEMO_CHAT_PROTEC_WEBHOOK_URL)
+      setCurrentWebhookUrl(protecWebhook)
+      setLocalStorage('demo-chat-webhook-url', protecWebhook)
       
       setIsLoading(true)
       updateLastActivity()
@@ -515,11 +546,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
         setMessages((prev) => addUserMessage(prev, userMessage))
         
-        console.log('Отправка запроса на webhook:', DEMO_CHAT_PROTEC_WEBHOOK_URL)
+        console.log('Отправка запроса на webhook:', protecWebhook)
         console.log('Данные запроса:', { messageText, sessionId })
         
         // Отправляем фиксированное сообщение на новый webhook
-        const response = await sendChatMessage(messageText, 'demo', sessionId, DEMO_CHAT_PROTEC_WEBHOOK_URL)
+        const response = await sendChatMessage(messageText, 'demo', sessionId, protecWebhook)
 
         console.log('Ответ от webhook:', response)
 
@@ -590,10 +621,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         
         // Проверяем, нужно ли показать кнопку результата записи/заказа
         if (containsBookingConfirmation(response.message)) {
-          if (currentWebhookUrl === DEMO_CHAT_PROTEC_WEBHOOK_URL) {
+          if (currentWebhookUrl === webhookProtec) {
             setShowProtecResultButton(true)
           }
-          if (currentWebhookUrl === DEMO_CHAT_VOMOLOKO_WEBHOOK_URL) {
+          if (currentWebhookUrl === webhookVomoloko) {
             setShowVomolokoResultButton(true)
           }
         }
