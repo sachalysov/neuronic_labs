@@ -433,7 +433,7 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setWebhookDemoChat(e.target.value)}
                   placeholder="https://n8n.example.com/webhook/demo-chat"
                   disabled={!isEditingWebhooks || saving || loadingSettings}
-                  className="w-full font-mono text-sm"
+                  className="w-full font-mono text-base px-4 py-3 border-2 border-black dark:border-white focus:border-primary focus:ring-2 focus:ring-primary/20 bg-background dark:bg-white dark:text-black"
                 />
                 <p className="text-xs text-muted-foreground">
                   Используется в демо чате для отправки сообщений пользователя
