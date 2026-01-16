@@ -14,6 +14,8 @@ export default function AdminDashboardPage() {
   const navigate = useNavigate()
   const [maintenanceEnabled, setMaintenanceEnabled] = useState(false)
   const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
+  const [testimonialsEnabled, setTestimonialsEnabled] = useState(true)
+  const [businessCasesEnabled, setBusinessCasesEnabled] = useState(true)
   const [webhooksEnabled, setWebhooksEnabled] = useState(true)
   const [isEditingWebhooks, setIsEditingWebhooks] = useState(false)
   const [webhookDemoChat, setWebhookDemoChat] = useState('')
@@ -43,6 +45,8 @@ export default function AdminDashboardPage() {
         if (settings) {
           setMaintenanceEnabled(settings.maintenance_banner_enabled)
           setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+          setTestimonialsEnabled(settings.testimonials_enabled ?? true)
+          setBusinessCasesEnabled(settings.business_cases_enabled ?? true)
           setWebhooksEnabled(settings.webhooks_enabled ?? true)
           setWebhookDemoChat(settings.webhook_demo_chat || '')
           setWebhookDemoChatVomoloko(settings.webhook_demo_chat_vomoloko || '')
@@ -65,6 +69,8 @@ export default function AdminDashboardPage() {
       if (!isUserTypingRef.current && !isEditingWebhooks) {
         setMaintenanceEnabled(settings.maintenance_banner_enabled)
         setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+        setTestimonialsEnabled(settings.testimonials_enabled ?? true)
+        setBusinessCasesEnabled(settings.business_cases_enabled ?? true)
         setWebhooksEnabled(settings.webhooks_enabled ?? true)
         setWebhookDemoChat(settings.webhook_demo_chat || '')
         setWebhookDemoChatVomoloko(settings.webhook_demo_chat_vomoloko || '')
@@ -123,6 +129,34 @@ export default function AdminDashboardPage() {
         setSaving(false)
       }
     }, 3500)
+  }
+
+  const handleToggleTestimonials = async (value: boolean) => {
+    setTestimonialsEnabled(value)
+    setSaving(true)
+    try {
+      await updateAdminSettings({ testimonials_enabled: value })
+    } catch (error) {
+      console.error('Ошибка обновления настроек отзывов:', error)
+      // Откатываем изменение при ошибке
+      setTestimonialsEnabled(!value)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleToggleBusinessCases = async (value: boolean) => {
+    setBusinessCasesEnabled(value)
+    setSaving(true)
+    try {
+      await updateAdminSettings({ business_cases_enabled: value })
+    } catch (error) {
+      console.error('Ошибка обновления настроек кейсов:', error)
+      // Откатываем изменение при ошибке
+      setBusinessCasesEnabled(!value)
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleToggleWebhooks = async (value: boolean) => {
@@ -308,6 +342,94 @@ export default function AdminDashboardPage() {
                 <p className="text-xs text-muted-foreground">
                   Текст будет отображаться в красном баннере в верхней части всех страниц сайта.
                 </p>
+              </div>
+
+              <div className="space-y-4 pt-2 border-t border-border">
+                <div className="flex items-start gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleTestimonials(!testimonialsEnabled)}
+                    disabled={saving || loadingSettings}
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
+                      testimonialsEnabled ? 'bg-primary' : 'bg-muted'
+                    }`}
+                    style={{
+                      minHeight: '24px',
+                      maxHeight: '24px',
+                      height: '24px',
+                      minWidth: '44px',
+                      maxWidth: '44px',
+                      width: '44px'
+                    }}
+                    aria-pressed={testimonialsEnabled}
+                    aria-label="Переключить секцию Отзывы"
+                  >
+                    <span
+                      className={`pointer-events-none absolute top-1/2 left-0.5 -translate-y-1/2 inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition-all duration-200 ease-in-out ${
+                        testimonialsEnabled ? 'translate-x-[20px]' : 'translate-x-0'
+                      }`}
+                      style={{
+                        minHeight: '20px',
+                        maxHeight: '20px',
+                        height: '20px',
+                        minWidth: '20px',
+                        maxWidth: '20px',
+                        width: '20px'
+                      }}
+                    />
+                  </button>
+                  <div className="flex-1">
+                    <div className="font-medium">
+                      Показать секцию "Отзывы"
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      При выключении скрывается секция "Отзывы" на главной странице и ссылка "Отзывы" в хедере.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleToggleBusinessCases(!businessCasesEnabled)}
+                    disabled={saving || loadingSettings}
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${
+                      businessCasesEnabled ? 'bg-primary' : 'bg-muted'
+                    }`}
+                    style={{
+                      minHeight: '24px',
+                      maxHeight: '24px',
+                      height: '24px',
+                      minWidth: '44px',
+                      maxWidth: '44px',
+                      width: '44px'
+                    }}
+                    aria-pressed={businessCasesEnabled}
+                    aria-label="Переключить секцию Кейсы бизнеса"
+                  >
+                    <span
+                      className={`pointer-events-none absolute top-1/2 left-0.5 -translate-y-1/2 inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition-all duration-200 ease-in-out ${
+                        businessCasesEnabled ? 'translate-x-[20px]' : 'translate-x-0'
+                      }`}
+                      style={{
+                        minHeight: '20px',
+                        maxHeight: '20px',
+                        height: '20px',
+                        minWidth: '20px',
+                        maxWidth: '20px',
+                        width: '20px'
+                      }}
+                    />
+                  </button>
+                  <div className="flex-1">
+                    <div className="font-medium">
+                      Показать секцию "Кейсы бизнеса"
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      При выключении скрывается ссылка "Кейсы бизнеса" в хедере.
+                    </p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

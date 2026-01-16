@@ -27,6 +27,8 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [showMaintenanceBanner, setShowMaintenanceBanner] = useState(false)
   const [maintenanceText, setMaintenanceText] = useState(DEFAULT_MAINTENANCE_TEXT)
+  const [testimonialsEnabled, setTestimonialsEnabled] = useState(true)
+  const [businessCasesEnabled, setBusinessCasesEnabled] = useState(true)
   const menuDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const productDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const moreDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -48,6 +50,8 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
         if (settings) {
           setShowMaintenanceBanner(settings.maintenance_banner_enabled)
           setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+          setTestimonialsEnabled(settings.testimonials_enabled ?? true)
+          setBusinessCasesEnabled(settings.business_cases_enabled ?? true)
         }
       } catch (error) {
         console.error('Ошибка загрузки настроек:', error)
@@ -62,6 +66,8 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
     const unsubscribe = subscribeToAdminSettings((settings: AdminSettings) => {
       setShowMaintenanceBanner(settings.maintenance_banner_enabled)
       setMaintenanceText(settings.maintenance_banner_text || DEFAULT_MAINTENANCE_TEXT)
+      setTestimonialsEnabled(settings.testimonials_enabled ?? true)
+      setBusinessCasesEnabled(settings.business_cases_enabled ?? true)
     })
 
     return () => {
@@ -389,22 +395,26 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                       >
                         Рассчитать стоимость внедрения самостоятельно
                       </Link>
-                      <Link
-                        to="/business-cases"
-                        onClick={() => setIsProductDropdownOpen(false)}
-                        className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
-                      >
-                        Кейсы бизнеса
-                      </Link>
-                      <button
-                        onClick={() => {
-                          navigateToSection("testimonials")
-                          setIsProductDropdownOpen(false)
-                        }}
-                        className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
-                      >
-                        Отзывы клиентов
-                      </button>
+                      {businessCasesEnabled && (
+                        <Link
+                          to="/business-cases"
+                          onClick={() => setIsProductDropdownOpen(false)}
+                          className="block px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
+                        >
+                          Кейсы бизнеса
+                        </Link>
+                      )}
+                      {testimonialsEnabled && (
+                        <button
+                          onClick={() => {
+                            navigateToSection("testimonials")
+                            setIsProductDropdownOpen(false)
+                          }}
+                          className="block w-full text-left px-4 py-2 text-foreground/90 hover:bg-primary/10 hover:text-primary transition-colors font-medium whitespace-nowrap"
+                        >
+                          Отзывы клиентов
+                        </button>
+                      )}
                       <button
                         onClick={() => {
                           navigateToSection("faq")
@@ -677,26 +687,30 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                     >
                       Рассчитать стоимость внедрения самостоятельно
                     </Link>
-                    <Link
-                      to="/business-cases"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setIsProductDropdownOpen(false)
-                      }}
-                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Кейсы бизнеса
-                    </Link>
-                    <button
-                      onClick={() => {
-                        navigateToSection("testimonials")
-                        setIsMobileMenuOpen(false)
-                        setIsProductDropdownOpen(false)
-                      }}
-                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Отзывы клиентов
-                    </button>
+                    {businessCasesEnabled && (
+                      <Link
+                        to="/business-cases"
+                        onClick={() => {
+                          setIsMobileMenuOpen(false)
+                          setIsProductDropdownOpen(false)
+                        }}
+                        className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                      >
+                        Кейсы бизнеса
+                      </Link>
+                    )}
+                    {testimonialsEnabled && (
+                      <button
+                        onClick={() => {
+                          navigateToSection("testimonials")
+                          setIsMobileMenuOpen(false)
+                          setIsProductDropdownOpen(false)
+                        }}
+                        className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                      >
+                        Отзывы клиентов
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         navigateToSection("faq")

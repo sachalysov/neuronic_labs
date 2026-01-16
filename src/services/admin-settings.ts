@@ -11,6 +11,8 @@ export interface AdminSettings {
   webhook_demo_chat_protec?: string
   webhook_widget_chat?: string
   webhook_form?: string
+  testimonials_enabled?: boolean
+  business_cases_enabled?: boolean
   created_at?: string
   updated_at?: string
 }
@@ -84,7 +86,7 @@ async function createDefaultSettings(): Promise<AdminSettings | null> {
  * Обновить настройки админ-панели
  */
 export async function updateAdminSettings(
-  updates: Partial<Pick<AdminSettings, 'maintenance_banner_enabled' | 'maintenance_banner_text' | 'webhooks_enabled' | 'webhook_demo_chat' | 'webhook_demo_chat_vomoloko' | 'webhook_demo_chat_protec' | 'webhook_widget_chat' | 'webhook_form'>>
+  updates: Partial<Pick<AdminSettings, 'maintenance_banner_enabled' | 'maintenance_banner_text' | 'webhooks_enabled' | 'webhook_demo_chat' | 'webhook_demo_chat_vomoloko' | 'webhook_demo_chat_protec' | 'webhook_widget_chat' | 'webhook_form' | 'testimonials_enabled' | 'business_cases_enabled'>>
 ): Promise<AdminSettings | null> {
   if (!supabase) {
     console.warn('Supabase не настроен')

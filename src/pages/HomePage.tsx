@@ -18,6 +18,7 @@ import { submitFormData } from "@/services/form"
 import { useEffect, useState, useRef } from "react"
 import { useLocation } from "react-router-dom"
 import { useMeta } from "@/hooks/useMeta"
+import { getAdminSettings, subscribeToAdminSettings, type AdminSettings } from "@/services/admin-settings"
 import { createHomeMetaTags } from "@/lib/meta"
 import { validatePhone, validateName, validateComment, CIS_COUNTRIES, type Country } from "@/lib/phone-validation"
 import {
@@ -59,6 +60,7 @@ export default function HomePage() {
   }>({})
   const benefitsScrollRef = useRef<HTMLDivElement>(null)
   const [activeBenefitIndex, setActiveBenefitIndex] = useState(0)
+  const [testimonialsEnabled, setTestimonialsEnabled] = useState(true)
   const benefitsData = [
     {
       icon: Bot,
@@ -110,6 +112,31 @@ export default function HomePage() {
       }
     }
   }, [location.hash])
+
+  // Загрузка настроек для управления видимостью секций
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await getAdminSettings()
+        if (settings) {
+          setTestimonialsEnabled(settings.testimonials_enabled ?? true)
+        }
+      } catch (error) {
+        console.error('Ошибка загрузки настроек:', error)
+      }
+    }
+
+    loadSettings()
+
+    // Подписка на изменения настроек в реальном времени
+    const unsubscribe = subscribeToAdminSettings((settings: AdminSettings) => {
+      setTestimonialsEnabled(settings.testimonials_enabled ?? true)
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
 
   // Блокировка скролла при открытии демо-чата на мобильных устройствах
   useEffect(() => {
@@ -905,7 +932,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <Testimonials />
+      {testimonialsEnabled && <Testimonials />}
 
       {/* FAQ Section */}
       <FAQ />
