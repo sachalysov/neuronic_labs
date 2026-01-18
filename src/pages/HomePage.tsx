@@ -438,21 +438,17 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                  <span className="text-sm sm:text-base text-foreground">Монетизация за 2-3 недели</span>
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
                   <span className="text-sm sm:text-base text-foreground">Поддержка 24/7</span>
                 </div>
               </div>
 
               {/* Main headline */}
-              <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
                 Ваш ИИ-продавец<br />
                 работает <span className="text-primary">24/7</span><br />
                 Пока вы спите, он<br />
                 продает
-              </h2>
+              </h1>
 
               {/* Description */}
               <div className="space-y-2 sm:space-y-3 text-base sm:text-xl md:text-2xl text-muted-foreground leading-relaxed">
