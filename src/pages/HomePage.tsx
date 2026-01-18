@@ -426,24 +426,40 @@ export default function HomePage() {
         <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="max-w-3xl">
             <div className="space-y-6 sm:space-y-8">
-              <div className="inline-block">
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-2">
-                  <span className="text-primary">NEURONIC</span> <br />
-                  <span className="text-muted-foreground">LABS</span>
-                </h1>
-                <p className="text-muted-foreground text-sm sm:text-[20px] uppercase tracking-wider">
-                  Агентство по внедрению<br className="sm:hidden" />
-                  автоматизации в бизнес
-                </p>
+              {/* Top badges with checkmarks */}
+              <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                  <span className="text-sm sm:text-base text-foreground">90+ довольных клиентов</span>
+                </div>
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                  <span className="text-sm sm:text-base text-foreground">Внедрение за 7-14 дней</span>
+                </div>
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                  <span className="text-sm sm:text-base text-foreground">Монетизация за 2-3 недели</span>
+                </div>
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                  <span className="text-sm sm:text-base text-foreground">Поддержка 24/7</span>
+                </div>
               </div>
 
+              {/* Main headline */}
               <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
-                Автоматизируй продажи на 300% без кодинга за 7 дней
+                Ваш ИИ-продавец<br />
+                работает <span className="text-primary">24/7</span><br />
+                Пока вы спите, он<br />
+                продает
               </h2>
 
-              <p className="text-base sm:text-xl md:text-2xl text-muted-foreground leading-relaxed">
-                Создаём ИИ-агента и чат-бота для Telegram, WhatsApp, Avito. Интеллектуальная автоматизация бизнеса — лиды 24/7 пока ты спишь
-              </p>
+              {/* Description */}
+              <div className="space-y-2 sm:space-y-3 text-base sm:text-xl md:text-2xl text-muted-foreground leading-relaxed">
+                <p>Обрабатывает лиды за 30 секунд в Telegram, WhatsApp и Avito</p>
+                <p>Менеджеры сосредотачиваются только на горячих клиентах</p>
+                <p className="text-primary font-semibold">Конверсия растет в 3-5 раз за первый месяц</p>
+              </div>
 
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
                 <Button size="lg" className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 animate-pulse w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
