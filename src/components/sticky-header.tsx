@@ -223,7 +223,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                 onFocus={() => setIsSearchOpen(true)}
                 onBlur={() => setTimeout(() => setIsSearchOpen(false), 200)}
                 className="w-full px-2 py-1.5 pl-6 pr-6 sm:px-3 sm:pl-8 sm:pr-8 md:px-4 md:py-2 md:pl-10 md:pr-10 rounded-full bg-background/50 border border-border/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-sm sm:text-base"
-                style={{ fontSize: '16px' }}
+                style={{ fontSize: '15px' }}
               />
               <svg
                 className="hidden sm:block absolute left-1.5 sm:left-2 md:left-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-foreground/50"

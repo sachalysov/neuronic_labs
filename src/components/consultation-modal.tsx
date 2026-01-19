@@ -248,7 +248,7 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
                   onChange={handleNameChange}
                   required
                   className={`bg-background border-border text-sm sm:text-base ${errors.name ? 'border-destructive' : ''}`}
-                  style={{ fontSize: '16px' }}
+                  style={{ fontSize: '15px' }}
                   aria-invalid={errors.name ? 'true' : 'false'}
                 />
                 {errors.name && (
@@ -282,7 +282,7 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="bg-background border-border text-sm sm:text-base"
-                  style={{ fontSize: '16px' }}
+                  style={{ fontSize: '15px' }}
                 />
               </div>
 
@@ -297,7 +297,7 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
                   value={telegram}
                   onChange={handleTelegramChange}
                   className="bg-background border-border text-sm sm:text-base"
-                  style={{ fontSize: '16px' }}
+                  style={{ fontSize: '15px' }}
                 />
               </div>
 
@@ -311,7 +311,7 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
                   value={comment}
                   onChange={handleCommentChange}
                   className={`bg-background border-border text-sm sm:text-base ${errors.comment ? 'border-destructive' : ''}`}
-                  style={{ fontSize: '16px' }}
+                  style={{ fontSize: '15px' }}
                   rows={3}
                   maxLength={1500}
                   aria-invalid={errors.comment ? 'true' : 'false'}

@@ -66,7 +66,7 @@ function ImageWithModal({ src, alt, className, style, onError }: {
               backgroundColor: 'rgba(255, 255, 255, 0.2)',
               border: 'none',
               color: 'white',
-              fontSize: '24px',
+              fontSize: '22px',
               width: '40px',
               height: '40px',
               borderRadius: '50%',
@@ -446,7 +446,7 @@ function formatCodeBlocks(text: string, startKey: number): React.ReactNode {
         borderRadius: '4px', 
         overflow: 'auto',
         margin: '8px 0',
-        fontSize: '0.875rem',
+        fontSize: '0.81rem',
         fontFamily: 'monospace'
       }}>
         <code>{match[1]}</code>
@@ -498,7 +498,7 @@ function formatInlineCode(text: string, startKey: number): React.ReactNode {
         backgroundColor: '#f4f4f4', 
         padding: '2px 4px', 
         borderRadius: '3px',
-        fontSize: '0.875rem',
+        fontSize: '0.81rem',
         fontFamily: 'monospace'
       }}>
         {match[1]}
