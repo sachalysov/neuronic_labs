@@ -40,6 +40,7 @@ import {
   Cross,
   Wrench,
   Briefcase,
+  Info,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -926,6 +927,102 @@ export default function HomePage() {
                 Узнать стоимость для моего бизнеса
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Founder Section */}
+      <section className="py-20 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
+        <div className="container mx-auto">
+          <div className="max-w-6xl mx-auto">
+            {/* Top Slogan */}
+            <div className="text-center mb-12 sm:mb-16">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
+                <span className="text-primary">ЛИЧНО КОНТРОЛИРУЮ</span>
+              </h2>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
+                КАЖДЫЙ ПРОЕКТ
+              </h2>
+            </div>
+
+            {/* Main Content */}
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+              {/* Left Section - Portrait */}
+              <div className="order-2 md:order-1">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                  <img 
+                    src="/images/founder-portrait.jpg" 
+                    alt="Александр Дужев - Основатель NEURONIC LABS" 
+                    className="w-full h-auto object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
+              {/* Right Section - Info */}
+              <div className="order-1 md:order-2 space-y-6 sm:space-y-8">
+                {/* Name and Title */}
+                <div>
+                  <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-2">
+                    Александр Лысов
+                  </h3>
+                  <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
+                    Основатель NEURONIC LABS
+                  </p>
+                </div>
+
+                {/* Qualifications */}
+                <div className="space-y-4">
+                  <Card className="bg-card/50 border-border hover:border-primary/50 transition-all">
+                    <CardContent className="p-4 sm:p-5 flex items-start gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Info className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                      </div>
+                      <p className="text-base sm:text-lg text-foreground pt-1">
+                        Кандидат экономических наук
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-card/50 border-border hover:border-primary/50 transition-all">
+                    <CardContent className="p-4 sm:p-5 flex items-start gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Info className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                      </div>
+                      <p className="text-base sm:text-lg text-foreground pt-1">
+                        Более 15 лет опыта работы в руководстве банка
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-card/50 border-border hover:border-primary/50 transition-all">
+                    <CardContent className="p-4 sm:p-5 flex items-start gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Info className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                      </div>
+                      <p className="text-base sm:text-lg text-foreground pt-1">
+                        Автор курса по работе с нейросетями «Нейрогенез»
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Offer Description */}
+                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                  Получите бесплатный аудит ваших бизнес-процессов и расчет перспективы внедрения ИИ-решений в ваш бизнес
+                </p>
+
+                {/* CTA Button */}
+                <Button 
+                  size="lg" 
+                  className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  КОНСУЛЬТАЦИЯ С АЛЕКСАНДРОМ
+                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
