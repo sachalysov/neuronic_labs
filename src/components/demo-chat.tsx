@@ -111,6 +111,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  // Состояние для блокировки чата заглушкой (всегда заблокирован при загрузке)
+  const [isUnlocked, setIsUnlocked] = useState(false)
 
   // Автоматическое изменение высоты textarea
   useEffect(() => {
@@ -245,6 +247,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setLinkButtonsVisible(true)
     removeLocalStorage('demo-chat-buttons-hidden')
     
+    // Блокируем чат снова при сбросе
+    setIsUnlocked(false)
+    
     // Закрываем модальные окна консультации и контекста при сбросе
     setIsConsultationModalOpen(false)
     setIsVomolokoContextModalOpen(false)
@@ -374,7 +379,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   }
 
   const handleSend = async () => {
-    if ((!input.trim() && !selectedImage) || isLoading) return
+    if ((!input.trim() && !selectedImage) || isLoading || !isUnlocked) return
 
     const messageText = input.trim() || ""
     const imageBase64 = selectedImage || undefined
@@ -460,8 +465,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     // Shift+Enter или Shift+Return позволяет сделать перенос строки
   }
 
+  // Функция для разблокировки чата
+  const handleUnlockChat = () => {
+    setIsUnlocked(true)
+  }
+
   const handleSendLink = async (link: string) => {
-    if (isLoading) return
+    if (isLoading || !isUnlocked) return
 
     // Скрываем кнопки сразу при нажатии и сохраняем в localStorage
     setLinkButtonsVisible(false)
@@ -717,7 +727,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   return (
     <>
-    <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} ${isMobile ? '' : 'mx-auto'} ${isMobile ? '' : 'shadow-2xl'} border-gray-200 bg-white ${isMobile ? 'rounded-none border-0' : ''} ${isMobile ? 'flex flex-col' : ''}`}>
+    <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} ${isMobile ? '' : 'mx-auto'} ${isMobile ? '' : 'shadow-2xl'} border-gray-200 bg-white ${isMobile ? 'rounded-none border-0' : ''} ${isMobile ? 'flex flex-col' : ''} relative`}>
       <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -753,7 +763,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         </div>
       </CardHeader>
       <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0' : ''}`}>
-        <div ref={messagesContainerRef} className={`${isMobile ? 'flex-1 min-h-0' : 'h-[500px]'} overflow-y-auto p-6 space-y-4 bg-gray-50`}>
+        <div ref={messagesContainerRef} className={`relative ${isMobile ? 'flex-1 min-h-0' : 'h-[500px]'} overflow-y-auto p-6 space-y-4 bg-gray-50`}>
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
@@ -801,6 +811,21 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
             </div>
           )}
           <div ref={messagesEndRef} />
+          
+          {/* Заглушка с размытым фоном и кнопкой - только над областью сообщений */}
+          {!isUnlocked && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+              <div className="text-center px-6">
+                <Button
+                  onClick={handleUnlockChat}
+                  size="lg"
+                  className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-semibold shadow-lg hover:shadow-xl transition-all"
+                >
+                  Попробуй ИИ продавца прямо сейчас
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div 
@@ -809,24 +834,24 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         >
           {linkButtonsVisible && (
             <div className="flex gap-2 mb-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleSendLink("vomoloko.ru")}
-                disabled={isLoading}
-                className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
-              >
-                vomoloko.ru
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleSendLink("protec.one")}
-                disabled={isLoading}
-                className="flex-1 text-sm"
-              >
-                protec.one
-              </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleSendLink("vomoloko.ru")}
+              disabled={isLoading || !isUnlocked}
+              className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
+            >
+              vomoloko.ru
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => handleSendLink("protec.one")}
+              disabled={isLoading || !isUnlocked}
+              className="flex-1 text-sm"
+            >
+              protec.one
+            </Button>
             </div>
           )}
           {showProtecResultButton && (
@@ -907,7 +932,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               variant="outline"
               size="icon"
               onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
+              disabled={isLoading || !isUnlocked}
               className="shrink-0"
             >
               <ImageIcon className="h-5 w-5" />
@@ -920,8 +945,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               placeholder="Напишите нам свой вопрос..."
               className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none"
               rows={1}
+              disabled={!isUnlocked}
             />
-            <Button type="submit" disabled={isLoading || (!input.trim() && !selectedImage)} size="icon" className="shrink-0">
+            <Button type="submit" disabled={isLoading || (!input.trim() && !selectedImage) || !isUnlocked} size="icon" className="shrink-0">
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           </form>
