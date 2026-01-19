@@ -1589,31 +1589,26 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                {/* Mobile: Аккордеон */}
+                {/* Mobile: Предпросмотр с кнопкой "Показать еще" */}
                 <div className="md:hidden w-full">
-                  <Card
-                    className="bg-card border-border cursor-pointer hover:border-primary/50 transition-all"
-                    onClick={() => setExpandedProductInfo(!expandedProductInfo)}
-                  >
+                  <Card className="bg-card border-border">
                     <CardContent className="p-4 sm:p-6">
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-xl sm:text-2xl font-bold flex-1">О нашем продукте</h3>
-                        <ChevronDown
-                          className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${
-                            expandedProductInfo ? "rotate-180" : ""
-                          }`}
-                        />
+                      <h3 className="text-xl sm:text-2xl font-bold mb-4">О нашем продукте</h3>
+                      
+                      {/* Предпросмотр - всегда видимый (10% текста) */}
+                      <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+                        <p>
+                          Наш ИИ-агент и чат-бот — это не просто автоматизация. Это интеллектуальная автоматизация бизнеса с помощью нейросети. Создаём ИИ-помощника, который понимает контекст вашего бизнеса, знает ваши продукты и услуги, и способен вести диалог с клиентами на уровне опытного менеджера.
+                        </p>
                       </div>
                       
+                      {/* Остальной контент - скрыт по умолчанию */}
                       <div
                         className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                          expandedProductInfo ? "max-h-[3000px] opacity-100 mt-4" : "max-h-0 opacity-0"
+                          expandedProductInfo ? "max-h-[3000px] opacity-100 mt-3" : "max-h-0 opacity-0"
                         }`}
                       >
                         <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
-                          <p>
-                            Наш ИИ-агент и чат-бот — это не просто автоматизация. Это интеллектуальная автоматизация бизнеса с помощью нейросети. Создаём ИИ-помощника, который понимает контекст вашего бизнеса, знает ваши продукты и услуги, и способен вести диалог с клиентами на уровне опытного менеджера.
-                          </p>
                           <p>
                             Технология построена на базе передовых языковых моделей, адаптированных под специфику вашей отрасли. Мы создаём ИИ-агента, обучая систему на ваших данных: прайс-листах, описаниях услуг, типовых вопросах клиентов и скриптах продаж. Интеграция ИИ в работу позволяет автоматизировать не только продажи, но и рутинные задачи, генерацию контента, создание счетов и отчётов.
                           </p>
@@ -1642,6 +1637,22 @@ export default function HomePage() {
                             </ul>
                           </div>
                         </div>
+                      </div>
+                      
+                      {/* Кнопка "Показать еще" / "Скрыть" */}
+                      <div className="mt-4">
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => setExpandedProductInfo(!expandedProductInfo)}
+                        >
+                          {expandedProductInfo ? "Скрыть" : "Показать еще"}
+                          <ChevronDown
+                            className={`ml-2 h-4 w-4 transition-transform duration-300 ${
+                              expandedProductInfo ? "rotate-180" : ""
+                            }`}
+                          />
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
