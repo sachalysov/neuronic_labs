@@ -1539,14 +1539,14 @@ export default function HomePage() {
             {/* Video and Product Description */}
             <div className="mb-8 sm:mb-12">
               <div className="flex flex-col gap-6 sm:gap-8">
-                {/* Video Section - Full Width */}
+                {/* Robot Image Section - Full Width */}
                 <div className="w-full">
-                  <div className="relative rounded-xl overflow-hidden shadow-2xl w-full" style={{ aspectRatio: '16/9' }}>
-                    <iframe
-                      src="https://drive.google.com/file/d/1WPOhATh5rgSd4U0XVElvYKBNJoZNiBTM/preview"
-                      className="absolute inset-0 w-full h-full"
-                      allow="autoplay"
-                      title="Презентация продукта"
+                  <div className="relative rounded-xl overflow-hidden shadow-2xl w-full">
+                    <img 
+                      src="/images/robot-hero-3.jpeg" 
+                      alt="ИИ-робот NEURONIC LABS" 
+                      className="w-full h-auto object-cover"
+                      loading="lazy"
                     />
                   </div>
                 </div>
