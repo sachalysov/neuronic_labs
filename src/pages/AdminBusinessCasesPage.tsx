@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AdminThemeToggle } from '@/components/admin-theme-toggle'
-import { Plus, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react'
+import { Plus, X, Upload, Loader2 } from 'lucide-react'
 
 export default function AdminBusinessCasesPage() {
   const { user, loading: authLoading, signOut } = useAuth()

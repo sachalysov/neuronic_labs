@@ -41,7 +41,7 @@ export async function uploadImage(
 
   try {
     // Загружаем файл в Storage
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from(BUSINESS_CASES_BUCKET)
       .upload(filePath, file, {
         cacheControl: '3600',

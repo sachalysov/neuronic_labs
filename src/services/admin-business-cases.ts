@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import type { BusinessCase } from './business-cases'
 
-export async function createBusinessCase(caseData: Omit<BusinessCase, 'id'> & { id?: string }): Promise<BusinessCase> {
+export async function createBusinessCase(caseData: Omit<BusinessCase, 'id' | 'image'> & { id?: string; image?: string }): Promise<BusinessCase> {
   if (!supabase) {
     throw new Error('Supabase не настроен')
   }
