@@ -26,13 +26,13 @@ const INITIAL_MESSAGE_IDS = ["1", "2"] as const
 const getInitialMessages = (): Message[] => [
   {
     id: "1",
-    text: "**Добавь в чат ссылку на свой сайт** и протестируй то как будет работать ИИ-продавец на твоей сайте",
+    text: "**Привет! Меня зовут Маша и я бот)** Просто выбери кнопку над стройкой ввода сообщения и начнем тестирование.",
     sender: "bot",
     timestamp: new Date(),
   },
   {
     id: "2",
-    text: "**Либо используй готовый вариант**\n\n 1.  Кнопки над строкой это выбор готового бота, который грамотно настроен, **идеальный пример**\n 2.  Что бы начать сначала, в шапке чата есть значок **Начать сначала**\n3.  Ознакомься с контекстом сайта указанного в кнопке, окно с контекстом появится само.",
+    text: "**Либо добавь в чат ссылку на свой сайт** и протестируй то как будет работать ИИ-продавец на твоем сайте. Но есть небольшая пометка, если на выбранном сайте стоит проверка от роботов, я не смогу его проанализировать, так что жмите -**Начать сначала**- и пробуйте другой",
     sender: "bot",
     timestamp: new Date(),
   },
@@ -113,6 +113,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   // Состояние для блокировки чата заглушкой (всегда заблокирован при загрузке)
   const [isUnlocked, setIsUnlocked] = useState(false)
+  // Состояние для показа правил использования
+  const [showRules, setShowRules] = useState(false)
 
   // Автоматическое изменение высоты textarea
   useEffect(() => {
@@ -249,6 +251,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     
     // Блокируем чат снова при сбросе
     setIsUnlocked(false)
+    setShowRules(false)
     
     // Закрываем модальные окна консультации и контекста при сбросе
     setIsConsultationModalOpen(false)
@@ -465,9 +468,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     // Shift+Enter или Shift+Return позволяет сделать перенос строки
   }
 
-  // Функция для разблокировки чата
+  // Функция для показа правил использования
+  const handleShowRules = () => {
+    setShowRules(true)
+  }
+
+  // Функция для полной разблокировки чата
   const handleUnlockChat = () => {
     setIsUnlocked(true)
+    setShowRules(false)
   }
 
   const handleSendLink = async (link: string) => {
@@ -813,16 +822,40 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           <div ref={messagesEndRef} />
           
           {/* Заглушка с размытым фоном и кнопкой - только над областью сообщений */}
-          {!isUnlocked && (
+          {!isUnlocked && !showRules && (
             <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
               <div className="text-center px-6">
                 <Button
-                  onClick={handleUnlockChat}
+                  onClick={handleShowRules}
                   size="lg"
                   className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-semibold shadow-lg hover:shadow-xl transition-all"
                 >
                   Попробуй ИИ продавца прямо сейчас
                 </Button>
+              </div>
+            </div>
+          )}
+          
+          {/* Второй overlay с правилами использования - едва размытый */}
+          {!isUnlocked && showRules && (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-[2px]">
+              <div className="text-center px-6 max-w-md">
+                <div className="bg-white rounded-lg p-6 shadow-lg space-y-4">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Правила использования</h3>
+                  <div className="text-sm text-gray-700 space-y-2 text-left">
+                    <p>• Добавь в чат ссылку на свой сайт и протестируй работу ИИ-продавца</p>
+                    <p>• Либо используй готовый вариант с кнопок над строкой ввода</p>
+                    <p>• Чтобы начать сначала, используй кнопку "Начать сначала" в шапке чата</p>
+                    <p>• Ознакомься с контекстом сайта, указанного в кнопке</p>
+                  </div>
+                  <Button
+                    onClick={handleUnlockChat}
+                    size="lg"
+                    className="w-full mt-6 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-semibold shadow-lg hover:shadow-xl transition-all"
+                  >
+                    Начать
+                  </Button>
+                </div>
               </div>
             </div>
           )}
