@@ -67,6 +67,7 @@ export default function HomePage() {
   const businessTypesScrollRef = useRef<HTMLDivElement>(null)
   const examplesScrollRef = useRef<HTMLDivElement>(null)
   const stagesScrollRef = useRef<HTMLDivElement>(null)
+  const automationSalesScrollRef = useRef<HTMLDivElement>(null)
   const [testimonialsEnabled, setTestimonialsEnabled] = useState(true)
   const [expandedDirections, setExpandedDirections] = useState<number | null>(null)
   const [expandedProductInfo, setExpandedProductInfo] = useState(false)
@@ -828,6 +829,7 @@ export default function HomePage() {
           {/* Автоматизация продаж – мобильный слайдер */}
           <div className="md:hidden -mx-3 mb-8 sm:mb-12">
             <div
+              ref={automationSalesScrollRef}
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 pb-4"
               style={{ scrollPaddingLeft: "0.75rem", scrollPaddingRight: "0.75rem" }}
             >
@@ -902,6 +904,10 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             </div>
+            <SliderPagination 
+              containerRef={automationSalesScrollRef} 
+              itemCount={2}
+            />
           </div>
 
           {/* Остальные направления – большие блоки по стилю «Автоматизация продаж» */}
