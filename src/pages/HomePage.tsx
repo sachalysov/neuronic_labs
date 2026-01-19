@@ -668,7 +668,7 @@ export default function HomePage() {
       {/* Benefits Section */}
       <section id="product" className="py-20 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
-            <div className="text-center mb-3 sm:mb-4">
+          <div className="text-center mb-3 sm:mb-4">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-balance section-title">
               Внедрим ИИ-продавца в ваш бизнес за 7 дней
             </h2>
@@ -678,8 +678,8 @@ export default function HomePage() {
           </p>
 
           <div className="text-center mb-10 sm:mb-16">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
               onClick={() => setIsModalOpen(true)}
             >
@@ -813,6 +813,473 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+
+      {/* Directions & Products Section – аналог «Направления и продукты» */}
+      <section className="py-20 sm:py-32 px-3 sm:px-4 bg-secondary/40 border-y border-border">
+        <div className="container mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
+              Направления и продукты NEURONIC LABS
+            </h2>
+            <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mt-4">
+              Разрабатываем и внедряем ИИ-решения под ключ: от умных чат-ботов до компьютерного зрения и
+              предиктивной аналитики.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 lg:gap-10 items-stretch mb-8 sm:mb-12">
+            {/* AI-продавец */}
+            <Card className="bg-card/90 border-border shadow-xl">
+              <CardContent className="p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full space-y-6 sm:space-y-8">
+                <div className="space-y-4 sm:space-y-6">
+                  <p className="uppercase tracking-[0.18em] text-xs sm:text-sm text-primary font-semibold">
+                    Автоматизация продаж
+                  </p>
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-balance">
+                    Автоматизация и&nbsp;увеличение продаж на&nbsp;30% с&nbsp;помощью ИИ‑продавца
+                  </h3>
+                  <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
+                    Умный чат‑бот на базе нейросети, который ведёт полноценные продающие диалоги с вашими лидами
+                    24/7 во всех основных каналах: сайт, мессенджеры, соцсети.
+                  </p>
+
+                  <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-muted-foreground">
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Обрабатывает 100% входящих обращений за секунды, не теряя ни одного лида.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Отвечает на частые вопросы, презентует продукты и собирает данные для CRM.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Передаёт «горячие» заявки менеджеру, фиксируя ключевые детали сделки.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Работает в тоне бренда и поддерживает сценарии продаж, согласованные с вами.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto text-sm sm:text-base px-4 sm:px-8 py-3 sm:py-4"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Подробнее про ИИ‑продавца
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full sm:w-auto text-sm sm:text-base px-4 sm:px-8 py-3 sm:py-4"
+                    onClick={() => {
+                      const demoSection = document.getElementById("demo-chat")
+                      if (demoSection) {
+                        demoSection.scrollIntoView({ behavior: "smooth", block: "start" })
+                      }
+                    }}
+                  >
+                    Посмотреть демо
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Превью интерфейса / телефона */}
+            <Card className="bg-card border-border shadow-xl flex items-center justify-center">
+              <CardContent className="p-6 sm:p-8 flex items-center justify-center h-full">
+                <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-gradient-to-b from-background to-muted flex flex-col overflow-hidden">
+                  <div className="h-10 bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                    Пример диалога ИИ‑продавца
+                  </div>
+                  <div className="flex-1 px-3 py-4 space-y-2 text-[11px] leading-snug text-foreground">
+                    <div className="bg-primary/10 rounded-2xl rounded-bl-sm px-3 py-2 max-w-[85%]">
+                      Клиент: «Добрый день! Интересует стоимость услуги и сроки внедрения».
+                    </div>
+                    <div className="bg-card rounded-2xl rounded-br-sm px-3 py-2 max-w-[85%] ml-auto border border-primary/30">
+                      ИИ‑продавец: «Здравствуйте! Подберу решение под ваш бизнес за 3 вопроса. Расскажите, в какой
+                      сфере вы работаете и сколько обращений в месяц получаете?»
+                    </div>
+                    <div className="bg-card rounded-2xl rounded-br-sm px-3 py-2 max-w-[85%] ml-auto border border-primary/30">
+                      «После короткого аудита пришлю расчёт экономии и окупаемости за 12 месяцев».
+                    </div>
+                  </div>
+                  <div className="h-10 bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
+                    Работает 24/7, пока менеджеры спят
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Остальные направления – большие блоки по стилю «Автоматизация продаж» */}
+          <div className="space-y-8 sm:space-y-10">
+            {/* ИИ‑контроль качества */}
+            <Card className="bg-card/90 border-border shadow-xl">
+              <CardContent className="p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full space-y-6 sm:space-y-8">
+                <div className="space-y-4 sm:space-y-6">
+                  <p className="uppercase tracking-[0.18em] text-xs sm:text-sm text-primary font-semibold">
+                    Контроль качества и стандарты сервиса
+                  </p>
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-balance">
+                    ИИ‑контроль качества колл‑центра и отдела продаж
+                  </h3>
+                  <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
+                    Система, которая анализирует 100% звонков и переписок по скриптам, сразу находит проблемные
+                    точки и формирует понятные отчёты и рекомендации.
+                  </p>
+
+                  <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-muted-foreground">
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Контроль соблюдения скриптов и стандартов сервиса по каждому диалогу.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Оценка конверсий и качества работы каждого менеджера в режиме реального времени.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Готовые чек‑листы и подсказки для обучения, роста и мотивации команды.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto text-sm sm:text-base px-4 sm:px-8 py-3 sm:py-4"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Подробнее про ИИ‑контроль качества
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Голосовые и текстовые чат‑боты */}
+            <Card className="bg-card/90 border-border shadow-xl">
+              <CardContent className="p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full space-y-6 sm:space-y-8">
+                <div className="space-y-4 sm:space-y-6">
+                  <p className="uppercase tracking-[0.18em] text-xs sm:text-sm text-primary font-semibold">
+                    Голосовые и текстовые боты
+                  </p>
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-balance">
+                    Голосовые и текстовые чат‑боты для 24/7‑коммуникаций
+                  </h3>
+                  <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
+                    ИИ‑боты, которые не пропускают звонки и сообщения, консультируют по скриптам и передают сложные
+                    вопросы человеку.
+                  </p>
+
+                  <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-muted-foreground">
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Интеграция с WhatsApp, Telegram, VK, сайтом и телефонией в единую систему.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Естественная речь и диалоги в тоне бренда, с учётом вашего стиля и сценариев.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Сбор и передача лидов в CRM‑систему с комментариями и историей общения.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto text-sm sm:text-base px-4 sm:px-8 py-3 sm:py-4"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Подробнее про чат‑ботов
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Компьютерное зрение и предиктивная аналитика */}
+            <Card className="bg-card/90 border-border shadow-xl">
+              <CardContent className="p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full space-y-6 sm:space-y-8">
+                <div className="space-y-4 sm:space-y-6">
+                  <p className="uppercase tracking-[0.18em] text-xs sm:text-sm text-primary font-semibold">
+                    Компьютерное зрение и аналитика
+                  </p>
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-balance">
+                    Компьютерное зрение и предиктивная аналитика
+                  </h3>
+                  <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
+                    Решения на базе ИИ, которые видят, прогнозируют и помогают управлять бизнес‑процессами на данных.
+                  </p>
+
+                  <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-muted-foreground">
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Анализ видео и изображений: контроль качества, безопасность, мониторинг процессов.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Прогноз спроса, LTV и оттока клиентов для уверенных управленческих решений.</span>
+                    </li>
+                    <li className="flex gap-2 items-start">
+                      <span className="mt-1 text-primary">●</span>
+                      <span>Предотвращение аварий и простоев оборудования за счёт предиктивной аналитики.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto text-sm sm:text-base px-4 sm:px-8 py-3 sm:py-4"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Подробнее про компьютерное зрение
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Stages of Implementation – «Этапы внедрения ИИ в ваш бизнес» */}
+      <section className="py-20 sm:py-32 px-3 sm:px-4 bg-background">
+        <div className="container mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
+              Этапы внедрения ИИ в ваш бизнес
+            </h2>
+            <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mt-4">
+              Работаем по прозрачной пошаговой воронке: от глубокого аудита процессов до оптимизации и роста
+              показателей после запуска.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
+            <Card className="bg-card border-border shadow-md">
+              <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
+                <p className="text-primary text-3xl sm:text-4xl font-bold">1.</p>
+                <h3 className="text-lg sm:text-2xl font-bold">
+                  Глубокое исследование ваших бизнес‑процессов
+                </h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Проводим аудит процессов и находим точки роста с помощью ИИ‑аналитики. Показываем конкретные цифры
+                  потенциальной экономии и прироста выручки.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border shadow-md">
+              <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
+                <p className="text-primary text-3xl sm:text-4xl font-bold">2.</p>
+                <h3 className="text-lg sm:text-2xl font-bold">
+                  Формирование индивидуальной стратегии действий
+                </h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Подготавливаем персональную стратегию под ваши задачи: какие ИИ‑решения запускать, в каком порядке,
+                  какие KPI и сроки ожидаем.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border shadow-md">
+              <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
+                <p className="text-primary text-3xl sm:text-4xl font-bold">3.</p>
+                <h3 className="text-lg sm:text-2xl font-bold">Подготовка и запуск проекта</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Создаём и настраиваем ИИ‑решение под ваш сценарий: интегрируем с CRM, мессенджерами и телефонией,
+                  тестируем на реальных диалогах.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-border shadow-md">
+              <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
+                <p className="text-primary text-3xl sm:text-4xl font-bold">4.</p>
+                <h3 className="text-lg sm:text-2xl font-bold">Оптимизация процессов после запуска</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  Сопровождаем вас первый месяц после запуска: дорабатываем сценарии, усиливаем конверсию, подключаем
+                  дополнительные каналы и отчётность.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="max-w-xl mx-auto text-center space-y-4">
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Получите бесплатный аудит ваших бизнес‑процессов и расчёт перспектив внедрения ИИ‑решений в ваш бизнес.
+            </p>
+            <Button
+              size="lg"
+              className="w-full sm:w-auto text-sm sm:text-lg px-6 sm:px-10 py-4 sm:py-5"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Получить аудит бизнеса
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Examples of Use – «Примеры применения ИИ‑решений» */}
+      <section className="py-20 sm:py-32 px-3 sm:px-4 bg-secondary/30 border-y border-border">
+        <div className="container mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
+              Примеры применения ИИ‑решений
+            </h2>
+            <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mt-4">
+              Показываем, как ИИ даёт измеримую выгоду в разных отраслях: от здравоохранения и логистики до
+              digital‑маркетинга и юриспруденции.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4 md:gap-6 max-w-5xl mx-auto">
+            <Card className="bg-card border-dashed border-border">
+              <CardContent className="p-5 sm:p-6 space-y-3">
+                <h3 className="text-lg sm:text-xl font-bold">Здравоохранение</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Ключевая проблема:</span> дефицит специалистов, высокая нагрузка на
+                  врачей и потребность в ранней диагностике.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Решение:</span> ИИ‑ассистент для анализа изображений и обработки
+                  медицинской документации.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Измеримая выгода:</span> повышение точности диагностики, сокращение
+                  времени на документацию до 60%.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Получить консультацию
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-dashed border-border">
+              <CardContent className="p-5 sm:p-6 space-y-3">
+                <h3 className="text-lg sm:text-xl font-bold">Digital‑маркетинг</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Ключевая проблема:</span> неэффективные рекламные кампании и отток
+                  клиентов.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Решение:</span> предиктивная аналитика и ИИ‑модели сегментации.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Измеримая выгода:</span> прогнозирование LTV и оттока, сокращение
+                  расходов на рекламу.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Получить консультацию
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-dashed border-border">
+              <CardContent className="p-5 sm:p-6 space-y-3">
+                <h3 className="text-lg sm:text-xl font-bold">Юриспруденция</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Ключевая проблема:</span> рутинный и медленный анализ судебных
+                  документов.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Решение:</span> Legal‑ИИ‑агент для анализа договоров и судебной
+                  практики.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Измеримая выгода:</span> сокращение времени на анализ до 62% и
+                  автоматическое заполнение типовых форм.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Получить консультацию
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border-dashed border-border">
+              <CardContent className="p-5 sm:p-6 space-y-3">
+                <h3 className="text-lg sm:text-xl font-bold">Промышленность и логистика</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Ключевая проблема:</span> незапланированные поломки и неэффективное
+                  управление запасами.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Решение:</span> предиктивная аналитика и компьютерное зрение для
+                  мониторинга оборудования и складов.
+                </p>
+                <p className="text-sm sm:text-base text-muted-foreground">
+                  <span className="font-semibold">Измеримая выгода:</span> снижение затрат на обслуживание на
+                  20–30% и снижение рисков простоев.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  Получить консультацию
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Complex AI Implementation CTA – «Комплексное внедрение ИИ» */}
+      <section className="py-20 sm:py-32 px-3 sm:px-4 bg-background">
+        <div className="container mx-auto">
+          <Card className="bg-card border-border shadow-2xl">
+            <CardContent className="p-6 sm:p-10 md:p-12 text-center space-y-4 sm:space-y-6">
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-balance">
+                Комплексное внедрение искусственного интеллекта для вашего бизнеса
+              </h2>
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                Разрабатываем и внедряем ИИ‑решения под ключ: от ИИ‑помощников и чат‑ботов до систем компьютерного
+                зрения и аналитики. Берём на себя весь цикл — от идеи и проекта до запуска и поддержки.
+              </p>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+                Получите бесплатный аудит ваших бизнес‑процессов и расчёт перспектив внедрения ИИ‑решений в ваш
+                бизнес уже на первой консультации.
+              </p>
+              <Button
+                size="lg"
+                className="w-full sm:w-auto text-sm sm:text-lg px-6 sm:px-10 py-4 sm:py-5"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Получить аудит бизнеса
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
