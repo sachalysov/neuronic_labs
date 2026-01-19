@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, Quote } from "lucide-react"
+import { SliderPagination } from "@/components/slider-pagination"
 
 interface Testimonial {
   id: number
@@ -171,6 +172,10 @@ export function Testimonials() {
               renderTestimonial(testimonial, `testimonial-${index}`)
             )}
           </div>
+          <SliderPagination 
+            containerRef={scrollContainerRef} 
+            itemCount={testimonials.length}
+          />
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-8 sm:mt-12 max-w-3xl mx-auto">

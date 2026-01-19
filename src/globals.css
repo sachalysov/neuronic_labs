@@ -466,6 +466,13 @@ html[data-theme="dark"] .hero-bottom-fade {
     height: 20px !important;
     width: 20px !important;
   }
+  
+  /* Исключение для пагинации слайдеров - маленькие точки */
+  button[role="tab"][aria-label*="слайд"] {
+    min-height: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+  }
 }
 
 /* Touch manipulation для лучшей отзывчивости на мобильных */

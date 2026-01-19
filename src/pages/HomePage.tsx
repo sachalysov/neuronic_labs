@@ -14,6 +14,7 @@ import { FAQ } from "@/components/faq"
 import { Testimonials } from "@/components/testimonials"
 import { CountdownTimer } from "@/components/countdown-timer"
 import { Footer } from "@/components/footer"
+import { SliderPagination } from "@/components/slider-pagination"
 import { submitFormData } from "@/services/form"
 import { useEffect, useState, useRef } from "react"
 import { useLocation } from "react-router-dom"
@@ -643,6 +644,10 @@ export default function HomePage() {
                 )
               })}
             </div>
+            <SliderPagination 
+              containerRef={businessTypesScrollRef} 
+              itemCount={6}
+            />
           </div>
         </div>
       </section>
@@ -720,6 +725,10 @@ export default function HomePage() {
                 )
               })}
             </div>
+            <SliderPagination 
+              containerRef={benefitsScrollRef} 
+              itemCount={benefitsData.length}
+            />
           </div>
         </div>
       </section>
@@ -1232,6 +1241,10 @@ export default function HomePage() {
                 </Card>
               ))}
             </div>
+            <SliderPagination 
+              containerRef={stagesScrollRef} 
+              itemCount={4}
+            />
           </div>
 
           <div className="max-w-xl mx-auto text-center space-y-4">
@@ -1442,6 +1455,10 @@ export default function HomePage() {
                 </Card>
               ))}
             </div>
+            <SliderPagination 
+              containerRef={examplesScrollRef} 
+              itemCount={4}
+            />
           </div>
         </div>
       </section>

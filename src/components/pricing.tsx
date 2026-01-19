@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle, Star, ChevronRight } from "lucide-react"
 import { useRef, useState, useEffect } from "react"
 import { PricingDetailModal } from "@/components/pricing-detail-modal"
+import { SliderPagination } from "@/components/slider-pagination"
 
 interface PricingProps {
   onContactClick: () => void
@@ -193,7 +194,10 @@ export function Pricing({ onContactClick }: PricingProps) {
               </Card>
             ))}
           </div>
-          
+          <SliderPagination 
+            containerRef={scrollContainerRef} 
+            itemCount={plans.length}
+          />
         </div>
 
         {/* Desktop: Grid */}

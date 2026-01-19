@@ -151,14 +151,14 @@ export function MobileCarousel({
 
       {/* Dots Indicator */}
       {showDots && scrollSnaps.length > 1 && (
-        <div className="flex justify-center gap-2 mt-4" role="tablist" aria-label="Индикаторы слайдов">
+        <div className="flex justify-center gap-1 mt-3" role="tablist" aria-label="Индикаторы слайдов">
           {scrollSnaps.map((_, index) => (
             <button
               key={index}
-              className={`h-2 rounded-full transition-all duration-300 ${
+              className={`rounded-full transition-all duration-300 !min-w-0 !min-h-0 !p-0 ${
                 index === selectedIndex
-                  ? "w-8 bg-primary"
-                  : "w-2 bg-muted-foreground/30"
+                  ? "w-[5px] h-[5px] bg-primary"
+                  : "w-[3px] h-[3px] bg-muted-foreground/30 hover:bg-muted-foreground/50"
               }`}
               onClick={() => scrollTo(index)}
               aria-label={`Перейти к слайду ${index + 1}`}
