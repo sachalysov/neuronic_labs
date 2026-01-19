@@ -681,7 +681,7 @@ export default function HomePage() {
                       <Icon className="h-7 w-7 text-primary" />
                     </div>
                     <h3 className="text-xl font-bold">{benefit.title}</h3>
-                    <p className="text-muted-foreground">
+                     <p className="text-muted-foreground">
                       {benefit.description}
                     </p>
                   </CardContent>
@@ -1289,25 +1289,27 @@ export default function HomePage() {
 
           {/* Desktop Grid */}
           <div className="hidden md:grid md:grid-cols-2 gap-4 md:gap-6 max-w-5xl mx-auto">
-            <Card className="bg-card border-dashed border-border">
-              <CardContent className="p-5 sm:p-6 space-y-3">
-                <h3 className="text-lg sm:text-xl font-bold">Здравоохранение</h3>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Ключевая проблема:</span> дефицит специалистов, высокая нагрузка на
-                  врачей и потребность в ранней диагностике.
-                </p>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Решение:</span> ИИ‑ассистент для анализа изображений и обработки
-                  медицинской документации.
-                </p>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Измеримая выгода:</span> повышение точности диагностики, сокращение
-                  времени на документацию до 60%.
-                </p>
+            <Card className="bg-card border-dashed border-border flex flex-col">
+              <CardContent className="p-5 sm:p-6 flex flex-col flex-1">
+                <div className="space-y-3 flex-1">
+                  <h3 className="text-lg sm:text-xl font-bold text-primary">Здравоохранение</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Ключевая проблема:</span> дефицит специалистов, высокая нагрузка на
+                    врачей и потребность в ранней диагностике.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Решение:</span> ИИ‑ассистент для анализа изображений и обработки
+                    медицинской документации.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Измеримая выгода:</span> повышение точности диагностики, сокращение
+                    времени на документацию до 60%.
+                  </p>
+                </div>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="mt-2"
+                  className="mt-4 w-full"
                   onClick={() => setIsModalOpen(true)}
                 >
                   Получить консультацию
@@ -1315,24 +1317,26 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-dashed border-border">
-              <CardContent className="p-5 sm:p-6 space-y-3">
-                <h3 className="text-lg sm:text-xl font-bold">Digital‑маркетинг</h3>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Ключевая проблема:</span> неэффективные рекламные кампании и отток
-                  клиентов.
-                </p>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Решение:</span> предиктивная аналитика и ИИ‑модели сегментации.
-                </p>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Измеримая выгода:</span> прогнозирование LTV и оттока, сокращение
-                  расходов на рекламу.
-                </p>
+            <Card className="bg-card border-dashed border-border flex flex-col">
+              <CardContent className="p-5 sm:p-6 flex flex-col flex-1">
+                <div className="space-y-3 flex-1">
+                  <h3 className="text-lg sm:text-xl font-bold text-primary">Digital‑маркетинг</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Ключевая проблема:</span> неэффективные рекламные кампании и отток
+                    клиентов.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Решение:</span> предиктивная аналитика и ИИ‑модели сегментации.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Измеримая выгода:</span> прогнозирование LTV и оттока, сокращение
+                    расходов на рекламу.
+                  </p>
+                </div>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="mt-2"
+                  className="mt-4 w-full"
                   onClick={() => setIsModalOpen(true)}
                 >
                   Получить консультацию
@@ -1340,25 +1344,27 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-dashed border-border">
-              <CardContent className="p-5 sm:p-6 space-y-3">
-                <h3 className="text-lg sm:text-xl font-bold">Юриспруденция</h3>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Ключевая проблема:</span> рутинный и медленный анализ судебных
-                  документов.
-                </p>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Решение:</span> Legal‑ИИ‑агент для анализа договоров и судебной
-                  практики.
-                </p>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Измеримая выгода:</span> сокращение времени на анализ до 62% и
-                  автоматическое заполнение типовых форм.
-                </p>
+            <Card className="bg-card border-dashed border-border flex flex-col">
+              <CardContent className="p-5 sm:p-6 flex flex-col flex-1">
+                <div className="space-y-3 flex-1">
+                  <h3 className="text-lg sm:text-xl font-bold text-primary">Юриспруденция</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Ключевая проблема:</span> рутинный и медленный анализ судебных
+                    документов.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Решение:</span> Legal‑ИИ‑агент для анализа договоров и судебной
+                    практики.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Измеримая выгода:</span> сокращение времени на анализ до 62% и
+                    автоматическое заполнение типовых форм.
+                  </p>
+                </div>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="mt-2"
+                  className="mt-4 w-full"
                   onClick={() => setIsModalOpen(true)}
                 >
                   Получить консультацию
@@ -1366,25 +1372,27 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-dashed border-border">
-              <CardContent className="p-5 sm:p-6 space-y-3">
-                <h3 className="text-lg sm:text-xl font-bold">Промышленность и логистика</h3>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Ключевая проблема:</span> незапланированные поломки и неэффективное
-                  управление запасами.
-                </p>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Решение:</span> предиктивная аналитика и компьютерное зрение для
-                  мониторинга оборудования и складов.
-                </p>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  <span className="font-semibold">Измеримая выгода:</span> снижение затрат на обслуживание на
-                  20–30% и снижение рисков простоев.
-                </p>
+            <Card className="bg-card border-dashed border-border flex flex-col">
+              <CardContent className="p-5 sm:p-6 flex flex-col flex-1">
+                <div className="space-y-3 flex-1">
+                  <h3 className="text-lg sm:text-xl font-bold text-primary">Промышленность и логистика</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Ключевая проблема:</span> незапланированные поломки и неэффективное
+                    управление запасами.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Решение:</span> предиктивная аналитика и компьютерное зрение для
+                    мониторинга оборудования и складов.
+                  </p>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    <span className="font-semibold">Измеримая выгода:</span> снижение затрат на обслуживание на
+                    20–30% и снижение рисков простоев.
+                  </p>
+                </div>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="mt-2"
+                  className="mt-4 w-full"
                   onClick={() => setIsModalOpen(true)}
                 >
                   Получить консультацию
@@ -1431,23 +1439,25 @@ export default function HomePage() {
               ].map((item, index) => (
                 <Card
                   key={index}
-                  className="flex-shrink-0 w-[88vw] max-w-md snap-center bg-card border-dashed border-border"
+                  className="flex-shrink-0 w-[88vw] max-w-md snap-center bg-card border-dashed border-border flex flex-col"
                 >
-                  <CardContent className="p-5 sm:p-6 space-y-3">
-                    <h3 className="text-lg sm:text-xl font-bold">{item.title}</h3>
-                    <p className="text-sm sm:text-base text-muted-foreground">
-                      <span className="font-semibold">Ключевая проблема:</span> {item.problem}
-                    </p>
-                    <p className="text-sm sm:text-base text-muted-foreground">
-                      <span className="font-semibold">Решение:</span> {item.solution}
-                    </p>
-                    <p className="text-sm sm:text-base text-muted-foreground">
-                      <span className="font-semibold">Измеримая выгода:</span> {item.benefit}
-                    </p>
+                  <CardContent className="p-5 sm:p-6 flex flex-col flex-1">
+                    <div className="space-y-3 flex-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-primary">{item.title}</h3>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        <span className="font-semibold">Ключевая проблема:</span> {item.problem}
+                      </p>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        <span className="font-semibold">Решение:</span> {item.solution}
+                      </p>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        <span className="font-semibold">Измеримая выгода:</span> {item.benefit}
+                      </p>
+                    </div>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="mt-2 w-full"
+                      className="mt-4 w-full"
                       onClick={() => setIsModalOpen(true)}
                     >
                       Получить консультацию
