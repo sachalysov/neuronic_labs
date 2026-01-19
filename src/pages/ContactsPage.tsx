@@ -61,7 +61,7 @@ export default function ContactsPage() {
       icon: Mail,
       title: "Email",
       values: [
-        { label: "info@neuroniclabs.ru", href: "mailto:info@neuroniclabs.ru" },
+        { label: "neuroniclabs@yandex.ru", href: "mailto:neuroniclabs@yandex.ru" },
         { label: "contact@neuroniclabs.ru", href: "mailto:contact@neuroniclabs.ru" }
       ]
     },

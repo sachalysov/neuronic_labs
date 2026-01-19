@@ -137,11 +137,11 @@ export function Footer() {
             <div className="flex flex-col gap-2 sm:gap-4">
               <div>
                 <a
-                  href="mailto:info@neuroniclabs.ru"
+                  href="mailto:neuroniclabs@yandex.ru"
                   className="text-foreground/80 hover:text-primary transition-colors text-sm flex items-center gap-2"
                 >
                   <Mail className="h-4 w-4" />
-                  info@neuroniclabs.ru
+                  neuroniclabs@yandex.ru
                 </a>
                 <p className="text-xs text-muted-foreground mt-1">
                   по всем вопросам и предложениям
