@@ -830,7 +830,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 lg:gap-10 items-stretch mb-8 sm:mb-12">
+          {/* Автоматизация продаж – десктопная сетка */}
+          <div className="hidden md:grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 lg:gap-10 items-stretch mb-8 sm:mb-12">
             {/* AI-продавец */}
             <Card className="bg-card/90 border-border shadow-xl">
               <CardContent className="p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full space-y-6 sm:space-y-8">
@@ -917,6 +918,97 @@ export default function HomePage() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Автоматизация продаж – мобильный слайдер */}
+          <div className="md:hidden -mx-3 mb-8 sm:mb-12">
+            <div
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-3 pb-4"
+              style={{ scrollPaddingLeft: "0.75rem", scrollPaddingRight: "0.75rem" }}
+            >
+              {/* Слайд 1: описание продукта */}
+              <Card className="flex-shrink-0 w-[88vw] max-w-md snap-center bg-card/90 border-border shadow-xl">
+                <CardContent className="p-5 sm:p-6 flex flex-col justify-between h-full space-y-5">
+                  <div className="space-y-3 sm:space-y-4">
+                    <p className="uppercase tracking-[0.18em] text-xs sm:text-sm text-primary font-semibold">
+                      Автоматизация продаж
+                    </p>
+                    <h3 className="text-xl sm:text-2xl font-bold text-balance">
+                      Автоматизация и&nbsp;увеличение продаж на&nbsp;30% с&nbsp;помощью ИИ‑продавца
+                    </h3>
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      Умный чат‑бот на базе нейросети, который ведёт полноценные продающие диалоги с вашими лидами
+                      24/7 во всех основных каналах: сайт, мессенджеры, соцсети.
+                    </p>
+
+                    <ul className="space-y-2 text-sm sm:text-base text-muted-foreground">
+                      <li className="flex gap-2 items-start">
+                        <span className="mt-1 text-primary">●</span>
+                        <span>Обрабатывает 100% входящих обращений за секунды, не теряя ни одного лида.</span>
+                      </li>
+                      <li className="flex gap-2 items-start">
+                        <span className="mt-1 text-primary">●</span>
+                        <span>Отвечает на частые вопросы, презентует продукты и собирает данные для CRM.</span>
+                      </li>
+                      <li className="flex gap-2 items-start">
+                        <span className="mt-1 text-primary">●</span>
+                        <span>Передаёт «горячие» заявки менеджеру, фиксируя ключевые детали сделки.</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="flex flex-col gap-3 pt-2">
+                    <Button
+                      size="lg"
+                      className="w-full text-sm sm:text-base"
+                      onClick={() => setIsModalOpen(true)}
+                    >
+                      Подробнее про ИИ‑продавца
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full text-sm sm:text-base"
+                      onClick={() => {
+                        const demoSection = document.getElementById("demo-chat")
+                        if (demoSection) {
+                          demoSection.scrollIntoView({ behavior: "smooth", block: "start" })
+                        }
+                      }}
+                    >
+                      Посмотреть демо
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Слайд 2: пример диалога */}
+              <Card className="flex-shrink-0 w-[88vw] max-w-md snap-center bg-card border-border shadow-xl flex items-center justify-center">
+                <CardContent className="p-5 sm:p-6 flex items-center justify-center h-full">
+                  <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-gradient-to-b from-background to-muted flex flex-col overflow-hidden">
+                    <div className="h-10 bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                      Пример диалога ИИ‑продавца
+                    </div>
+                    <div className="flex-1 px-3 py-4 space-y-2 text-[11px] leading-snug text-foreground">
+                      <div className="bg-primary/10 rounded-2xl rounded-bl-sm px-3 py-2 max-w-[85%]">
+                        Клиент: «Добрый день! Интересует стоимость услуги и сроки внедрения».
+                      </div>
+                      <div className="bg-card rounded-2xl rounded-br-sm px-3 py-2 max-w-[85%] ml-auto border border-primary/30">
+                        ИИ‑продавец: «Здравствуйте! Подберу решение под ваш бизнес за 3 вопроса. Расскажите, в какой
+                        сфере вы работаете и сколько обращений в месяц получаете?»
+                      </div>
+                      <div className="bg-card rounded-2xl rounded-br-sm px-3 py-2 max-w-[85%] ml-auto border border-primary/30">
+                        «После короткого аудита пришлю расчёт экономии и окупаемости за 12 месяцев».
+                      </div>
+                    </div>
+                    <div className="h-10 bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
+                      Работает 24/7, пока менеджеры спят
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           {/* Остальные направления – большие блоки по стилю «Автоматизация продаж» */}
