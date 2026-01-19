@@ -937,7 +937,7 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto">
             {/* Top Slogan */}
-            <div className="text-center mb-12 sm:mb-16">
+            <div className="text-center mb-8 sm:mb-12 md:mb-16">
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
                 <span className="text-primary">ЛИЧНО КОНТРОЛИРУЮ</span>
               </h2>
@@ -947,21 +947,21 @@ export default function HomePage() {
             </div>
 
             {/* Main Content */}
-            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-              {/* Left Section - Portrait */}
-              <div className="order-2 md:order-1">
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+            <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12">
+              {/* Portrait - Mobile: centered, Desktop: left */}
+              <div className="w-full md:order-1 flex justify-center md:justify-start">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-md md:max-w-none">
                   <img 
                     src="/images/founder-portrait.jpg" 
-                    alt="Александр Дужев - Основатель NEURONIC LABS" 
+                    alt="Александр Лысов - Основатель NEURONIC LABS" 
                     className="w-full h-auto object-cover"
                     loading="lazy"
                   />
                 </div>
               </div>
 
-              {/* Right Section - Info */}
-              <div className="order-1 md:order-2 space-y-6 sm:space-y-8">
+              {/* Info Section - Mobile: below image, Desktop: right */}
+              <div className="w-full md:order-2 space-y-6 sm:space-y-8">
                 {/* Name and Title */}
                 <div>
                   <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-2">
@@ -1014,14 +1014,16 @@ export default function HomePage() {
                 </p>
 
                 {/* CTA Button */}
-                <Button 
-                  size="lg" 
-                  className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  КОНСУЛЬТАЦИЯ С АЛЕКСАНДРОМ
-                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-                </Button>
+                <div className="flex justify-center md:justify-start">
+                  <Button 
+                    size="lg" 
+                    className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    КОНСУЛЬТАЦИЯ С АЛЕКСАНДРОМ
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
