@@ -72,7 +72,6 @@ const testimonials: Testimonial[] = [
 
 export function Testimonials() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0)
 
   // Отслеживание активного слайда (без клонов и бесконечной прокрутки)
   useEffect(() => {
@@ -83,10 +82,9 @@ export function Testimonials() {
       const scrollLeft = container.scrollLeft
       
       // Определяем ближайший слайд
-      let closestIndex = 0
       let closestDistance = Infinity
 
-      Array.from(container.children).forEach((child, index) => {
+      Array.from(container.children).forEach((child) => {
         const card = child as HTMLElement
         const cardLeft = card.offsetLeft
         const cardCenter = cardLeft + card.offsetWidth / 2
@@ -94,11 +92,8 @@ export function Testimonials() {
         
         if (distance < closestDistance) {
           closestDistance = distance
-          closestIndex = index
         }
       })
-
-      setActiveTestimonialIndex(closestIndex)
     }
 
     // Небольшая задержка для правильного расчета размеров и установки стартового индекса
