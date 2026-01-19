@@ -50,6 +50,16 @@ export async function uploadImage(
 
     if (error) {
       console.error('Ошибка загрузки изображения:', error)
+      
+      // Специальная обработка ошибки отсутствия bucket
+      if (error.message.includes('Bucket not found') || error.message.includes('bucket')) {
+        throw new Error(
+          'Bucket "business-cases-images" не найден в Supabase Storage. ' +
+          'Пожалуйста, создайте bucket через Supabase Dashboard (Storage -> New bucket) ' +
+          'или выполните SQL миграцию supabase_business_cases_storage.sql'
+        )
+      }
+      
       throw new Error(`Ошибка загрузки: ${error.message}`)
     }
 

@@ -1,6 +1,14 @@
 -- Настройка Storage для изображений бизнес-кейсов
 -- Выполните этот файл после создания таблицы business_cases
 
+-- Удаление старых политик (если они существуют)
+DROP POLICY IF EXISTS "Authenticated users can upload business case images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can update business case images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated users can delete business case images" ON storage.objects;
+DROP POLICY IF EXISTS "Anyone can upload business case images" ON storage.objects;
+DROP POLICY IF EXISTS "Anyone can update business case images" ON storage.objects;
+DROP POLICY IF EXISTS "Anyone can delete business case images" ON storage.objects;
+
 -- Создание bucket для изображений кейсов (если еще не создан)
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
@@ -17,33 +25,22 @@ CREATE POLICY "Anyone can view business case images"
 ON storage.objects FOR SELECT
 USING (bucket_id = 'business-cases-images');
 
--- Политика доступа: только авторизованные пользователи могут загружать изображения
-CREATE POLICY "Authenticated users can upload business case images"
+-- Политика доступа: все могут загружать изображения (для публичного bucket)
+-- ВАЖНО: Если нужна безопасность, используйте Supabase Auth или service_role key
+CREATE POLICY "Anyone can upload business case images"
 ON storage.objects FOR INSERT
-WITH CHECK (
-  bucket_id = 'business-cases-images' AND
-  auth.role() = 'authenticated'
-);
+WITH CHECK (bucket_id = 'business-cases-images');
 
--- Политика доступа: только авторизованные пользователи могут обновлять изображения
-CREATE POLICY "Authenticated users can update business case images"
+-- Политика доступа: все могут обновлять изображения
+CREATE POLICY "Anyone can update business case images"
 ON storage.objects FOR UPDATE
-USING (
-  bucket_id = 'business-cases-images' AND
-  auth.role() = 'authenticated'
-)
-WITH CHECK (
-  bucket_id = 'business-cases-images' AND
-  auth.role() = 'authenticated'
-);
+USING (bucket_id = 'business-cases-images')
+WITH CHECK (bucket_id = 'business-cases-images');
 
--- Политика доступа: только авторизованные пользователи могут удалять изображения
-CREATE POLICY "Authenticated users can delete business case images"
+-- Политика доступа: все могут удалять изображения
+CREATE POLICY "Anyone can delete business case images"
 ON storage.objects FOR DELETE
-USING (
-  bucket_id = 'business-cases-images' AND
-  auth.role() = 'authenticated'
-);
+USING (bucket_id = 'business-cases-images');
 
 -- Примечание: После создания bucket и политик вы можете загружать изображения через:
 -- 1. Supabase Dashboard -> Storage -> business-cases-images
