@@ -42,6 +42,18 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Блокировка скролла при открытом мобильном меню
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen])
+
   useEffect(() => {
     // Загрузка настроек из Supabase
     const loadSettings = async () => {
@@ -188,6 +200,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   }
 
   return (
+    <>
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled || isMobileMenuOpen ? "bg-background/95 backdrop-blur-sm border-b border-border shadow-lg" : "bg-transparent"
@@ -630,204 +643,195 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <nav className="lg:hidden py-4 border-t border-border bg-background">
-            <div className="flex flex-col space-y-4">
-              <button
-                onClick={handleChatBotClick}
-                className="text-foreground/90 hover:text-primary transition-colors font-medium text-left px-2 py-2"
-              >
-                Протестировать чат-бот
-              </button>
-              <div className="px-2">
+      </div>
+    </header>
+
+    {/* Mobile Menu Overlay - вне header для правильного позиционирования */}
+    <>
+      {/* Backdrop */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+      
+      {/* Side Menu */}
+      <nav 
+        className="lg:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-black z-[70] shadow-2xl transition-transform duration-300 ease-out overflow-y-auto flex flex-col"
+        style={{
+          transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(100%)'
+        }}
+        aria-hidden={!isMobileMenuOpen}
+      >
+              {/* Menu Header */}
+              <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
+                <h2 className="text-white text-lg font-medium">Меню</h2>
                 <button
-                  onClick={() => setIsProductDropdownOpen(!isProductDropdownOpen)}
-                  className="text-foreground/90 hover:text-primary transition-colors font-medium text-left flex items-center justify-between w-full py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-white hover:text-primary transition-colors p-2"
+                  aria-label="Закрыть меню"
                 >
-                  <span>О продукте</span>
                   <svg
-                    className={`w-4 h-4 transition-transform ${isProductDropdownOpen ? "rotate-180" : ""}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+
+              {/* Logo Section */}
+              <div className="px-4 py-4 border-b border-white/10">
+                <Link
+                  to="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center"
+                >
+                  <div className="flex items-baseline">
+                    <span className="text-xl font-bold text-primary">N</span>
+                    <span className="text-xl font-bold text-white">LABS</span>
+                  </div>
+                  <span className="text-white/80 text-sm ml-2">AI-решения для бизнеса</span>
+                </Link>
+              </div>
+
+              {/* Menu Items */}
+              <div className="flex flex-col py-4">
+                {/* ИИ-продавец / Протестировать чат-бот */}
+              <button
+                  onClick={() => {
+                    handleChatBotClick()
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
+                >
+                  <span className="font-medium">ИИ-продавец</span>
+                  <svg
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
+              </button>
+
+                {/* Контроль Колл-центров */}
+                <button
+                  onClick={() => {
+                    navigateToSection("demo-chat")
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
+                >
+                  <span className="font-medium">Контроль Колл-центров</span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
-                {isProductDropdownOpen && (
-                  <div className="pl-4 mt-2 space-y-2 border-l border-border">
+
+                {/* Все продукты */}
                     <button
                       onClick={() => {
                         navigateToSection("product")
                         setIsMobileMenuOpen(false)
-                        setIsProductDropdownOpen(false)
-                      }}
-                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      О продукте
+                  }}
+                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
+                >
+                  <span className="font-medium">Все продукты</span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
                     </button>
-                    <button
-                      onClick={() => {
-                        navigateToSection("pricing")
-                        setIsMobileMenuOpen(false)
-                        setIsProductDropdownOpen(false)
-                      }}
-                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Тарифы и цены
-                    </button>
-                    <Link
-                      to="/calculator"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setIsProductDropdownOpen(false)
-                      }}
-                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Рассчитать стоимость внедрения самостоятельно
-                    </Link>
+
+                {/* Separator */}
+                <div className="h-px bg-white/10 my-2" />
+
+                {/* Кейсы бизнеса */}
                     {businessCasesEnabled && (
                       <Link
                         to="/business-cases"
-                        onClick={() => {
-                          setIsMobileMenuOpen(false)
-                          setIsProductDropdownOpen(false)
-                        }}
-                        className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                      >
-                        Кейсы бизнеса
-                      </Link>
-                    )}
-                    {testimonialsEnabled && (
-                      <button
-                        onClick={() => {
-                          navigateToSection("testimonials")
-                          setIsMobileMenuOpen(false)
-                          setIsProductDropdownOpen(false)
-                        }}
-                        className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                      >
-                        Отзывы клиентов
-                      </button>
-                    )}
-                    <button
-                      onClick={() => {
-                        navigateToSection("faq")
-                        setIsMobileMenuOpen(false)
-                        setIsProductDropdownOpen(false)
-                      }}
-                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
+                  >
+                    <span className="font-medium">Кейсы бизнеса</span>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      Частые вопросы
-                    </button>
-                  </div>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
                 )}
-              </div>
-              <div className="px-2">
+
+                {/* Как мы работаем */}
                 <button
-                  onClick={() => setIsMenuDropdownOpen(!isMenuDropdownOpen)}
-                  className="text-foreground/90 hover:text-primary transition-colors font-medium text-left flex items-center justify-between w-full py-2"
+                  onClick={() => {
+                    navigateToSection("pricing")
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
                 >
-                  <span>О нас</span>
+                  <span className="font-medium">Как мы работаем</span>
                   <svg
-                    className={`w-4 h-4 transition-transform ${isMenuDropdownOpen ? "rotate-180" : ""}`}
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
-                {isMenuDropdownOpen && (
-                  <div className="pl-4 mt-2 space-y-2 border-l border-border">
+
+                {/* О нас */}
                     <button
                       onClick={() => {
                         navigateToSection("about")
-                        setIsMenuDropdownOpen(false)
-                      }}
-                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      О нас
-                    </button>
-                    <Link
-                      to="/contacts"
-                      onClick={() => {
                         setIsMobileMenuOpen(false)
-                        setIsMenuDropdownOpen(false)
-                      }}
-                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Контакты
-                    </Link>
-                    <button
-                      onClick={() => {
-                        navigateToContactsSection("payment-methods")
-                        setIsMenuDropdownOpen(false)
-                      }}
-                      className="block text-left text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Способы оплаты
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className="px-2">
-                <button
-                  onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
-                  className="text-foreground/90 hover:text-primary transition-colors font-medium text-left flex items-center justify-between w-full py-2"
+                  }}
+                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
                 >
-                  <span>Еще</span>
+                  <span className="font-medium">О нас</span>
                   <svg
-                    className={`w-4 h-4 transition-transform ${isMoreDropdownOpen ? "rotate-180" : ""}`}
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
-                {isMoreDropdownOpen && (
-                  <div className="pl-4 mt-2 space-y-2 border-l border-border">
-                    <Link
-                      to="/blog"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setIsMoreDropdownOpen(false)
-                      }}
-                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Блог
-                    </Link>
-                    <Link
-                      to="/conference"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setIsMoreDropdownOpen(false)
-                      }}
-                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Для участников конференции
-                    </Link>
-                    <Link
-                      to="/partners"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setIsMoreDropdownOpen(false)
-                      }}
-                      className="block text-foreground/90 hover:text-primary transition-colors font-medium py-2"
-                    >
-                      Партнерская программа
-                    </Link>
-                  </div>
-                )}
               </div>
+
+              {/* Phone Section */}
+              <div className="mt-auto px-4 py-4 border-t border-white/10">
               <a 
                 href="tel:+79930799177" 
-                className="flex items-center gap-2 text-foreground/90 hover:text-primary transition-colors font-medium px-2 py-2"
+                  className="flex items-center gap-2 text-white hover:text-white/80 transition-colors font-medium"
               >
                 <svg
-                  className="w-4 h-4"
+                    className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -838,9 +842,8 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               </a>
             </div>
           </nav>
-        )}
-      </div>
-    </header>
+    </>
+    </>
   )
 }
 
