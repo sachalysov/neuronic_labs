@@ -804,25 +804,13 @@ export default function HomePage() {
             {/* Превью интерфейса / телефона */}
             <Card className="bg-card border-border shadow-xl flex items-center justify-center">
               <CardContent className="p-6 sm:p-8 flex items-center justify-center h-full">
-                <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-gradient-to-b from-background to-muted flex flex-col overflow-hidden">
-                  <div className="h-10 bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                    Пример диалога ИИ‑продавца
-                  </div>
-                  <div className="flex-1 px-3 py-4 space-y-2 text-[11px] leading-snug text-foreground">
-                    <div className="bg-primary/10 rounded-2xl rounded-bl-sm px-3 py-2 max-w-[85%]">
-                      Клиент: «Добрый день! Интересует стоимость услуги и сроки внедрения».
-                    </div>
-                    <div className="bg-card rounded-2xl rounded-br-sm px-3 py-2 max-w-[85%] ml-auto border border-primary/30">
-                      ИИ‑продавец: «Здравствуйте! Подберу решение под ваш бизнес за 3 вопроса. Расскажите, в какой
-                      сфере вы работаете и сколько обращений в месяц получаете?»
-                    </div>
-                    <div className="bg-card rounded-2xl rounded-br-sm px-3 py-2 max-w-[85%] ml-auto border border-primary/30">
-                      «После короткого аудита пришлю расчёт экономии и окупаемости за 12 месяцев».
-                    </div>
-                  </div>
-                  <div className="h-10 bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
-                    Работает 24/7, пока менеджеры спят
-                  </div>
+                <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-background overflow-hidden shadow-2xl">
+                  <img 
+                    src="/images/demo-chat-mobile.jpg" 
+                    alt="Пример диалога ИИ‑продавца" 
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -894,25 +882,13 @@ export default function HomePage() {
               {/* Слайд 2: пример диалога */}
               <Card className="flex-shrink-0 w-[88vw] max-w-md snap-center bg-card border-border shadow-xl flex items-center justify-center">
                 <CardContent className="p-5 sm:p-6 flex items-center justify-center h-full">
-                  <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-gradient-to-b from-background to-muted flex flex-col overflow-hidden">
-                    <div className="h-10 bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                      Пример диалога ИИ‑продавца
-                    </div>
-                    <div className="flex-1 px-3 py-4 space-y-2 text-[11px] leading-snug text-foreground">
-                      <div className="bg-primary/10 rounded-2xl rounded-bl-sm px-3 py-2 max-w-[85%]">
-                        Клиент: «Добрый день! Интересует стоимость услуги и сроки внедрения».
-                      </div>
-                      <div className="bg-card rounded-2xl rounded-br-sm px-3 py-2 max-w-[85%] ml-auto border border-primary/30">
-                        ИИ‑продавец: «Здравствуйте! Подберу решение под ваш бизнес за 3 вопроса. Расскажите, в какой
-                        сфере вы работаете и сколько обращений в месяц получаете?»
-                      </div>
-                      <div className="bg-card rounded-2xl rounded-br-sm px-3 py-2 max-w-[85%] ml-auto border border-primary/30">
-                        «После короткого аудита пришлю расчёт экономии и окупаемости за 12 месяцев».
-                      </div>
-                    </div>
-                    <div className="h-10 bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
-                      Работает 24/7, пока менеджеры спят
-                    </div>
+                  <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-background overflow-hidden shadow-2xl">
+                    <img 
+                      src="/images/demo-chat-mobile.png" 
+                      alt="Пример диалога ИИ‑продавца" 
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                   </div>
                 </CardContent>
               </Card>
