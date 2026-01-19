@@ -155,10 +155,10 @@ export function MobileCarousel({
           {scrollSnaps.map((_, index) => (
             <button
               key={index}
-              className={`rounded-full transition-all duration-300 !min-w-0 !min-h-0 !p-0 ${
+              className={`transition-all duration-300 !min-w-0 !min-h-0 !p-0 ${
                 index === selectedIndex
-                  ? "w-[5px] h-[5px] bg-primary"
-                  : "w-[3px] h-[3px] bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                  ? "w-[20px] h-[10px] rounded-[10px] bg-primary"
+                  : "w-[14px] h-[7px] rounded-[10px] bg-muted-foreground/30 hover:bg-muted-foreground/50"
               }`}
               onClick={() => scrollTo(index)}
               aria-label={`Перейти к слайду ${index + 1}`}
