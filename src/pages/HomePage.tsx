@@ -27,9 +27,6 @@ import {
   TrendingUp,
   DollarSign,
   ShoppingCart,
-  HeadphonesIcon,
-  Lightbulb,
-  Users,
   ArrowRight,
   Target,
   Award,
@@ -38,6 +35,11 @@ import {
   CheckCircle,
   MessageCircle,
   Sparkles,
+  Scissors,
+  Home,
+  Cross,
+  Wrench,
+  Briefcase,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -447,12 +449,12 @@ export default function HomePage() {
                 Ваш ИИ-продавец<br />
                 работает <span className="text-primary">24/7</span><br />
                 Пока вы спите, он<br />
-                продает
+                зарабатывает
               </h1>
 
               {/* Description */}
               <div className="space-y-2 sm:space-y-3 text-base sm:text-xl md:text-2xl text-muted-foreground leading-relaxed">
-                <p>Обрабатывает лиды за 30 секунд в Telegram, WhatsApp и Avito</p>
+                <p>Обрабатывает лиды за секунды в любом канале продаж<br /></p>
                 <p>Менеджеры сосредотачиваются только на горячих клиентах</p>
                 <p className="text-primary font-semibold">Конверсия растет в 3-5 раз за первый месяц</p>
               </div>
@@ -591,51 +593,71 @@ export default function HomePage() {
       </section>
 
 
-      {/* Use Cases Section */}
+      {/* Business Types Section */}
       <section id="services" className="py-20 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
           <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Сценарии использования</h2>
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Для какого бизнеса это работает лучше всего</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
-                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <ShoppingCart className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Scissors className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
-                <h3 className="text-lg md:text-xl font-bold">Продажи</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Консультация клиентов, презентация продуктов, закрытие сделок</p>
+                <h3 className="text-lg md:text-xl font-bold">САЛОНЫ И СПА</h3>
+                <p className="text-sm md:text-base text-muted-foreground">+50% клиентов, 0 пропущенных звонков</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
-                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <HeadphonesIcon className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Home className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
-                <h3 className="text-lg md:text-xl font-bold">Поддержка</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Ответы на частые вопросы, решение проблем клиентов 24/7</p>
+                <h3 className="text-lg md:text-xl font-bold">РИЭЛТОРЫ</h3>
+                <p className="text-sm md:text-base text-muted-foreground">+300% просмотров, ответ за 30 сек</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
-                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <Users className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <ShoppingCart className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
-                <h3 className="text-lg md:text-xl font-bold">Лидогенерация</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Квалификация лидов, сбор контактов, запись на встречи</p>
+                <h3 className="text-lg md:text-xl font-bold">E-COMMERCE</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Чек +40%, конверсия +50%</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
-              <CardContent className="p-3 md:p-6 space-y-1 md:space-y-4 text-center">
-                <div className="w-10 h-10 md:w-14 md:h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                  <Lightbulb className="h-5 w-5 md:h-7 md:w-7 text-primary" />
+              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Cross className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
-                <h3 className="text-lg md:text-xl font-bold">Консультации</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Экспертные советы, подбор решений, персональные рекомендации</p>
+                <h3 className="text-lg md:text-xl font-bold">КЛИНИКИ</h3>
+                <p className="text-sm md:text-base text-muted-foreground">No-show упали на 60%</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Wrench className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">АВТОСЕРВИСЫ</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Полная запись на неделю вперед</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <Briefcase className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+                </div>
+                <h3 className="text-lg md:text-xl font-bold">КОНСУЛЬТАНТЫ</h3>
+                <p className="text-sm md:text-base text-muted-foreground">Консультант работает только с готовыми клиентами</p>
               </CardContent>
             </Card>
           </div>
@@ -647,7 +669,7 @@ export default function HomePage() {
         <div className="container mx-auto">
             <div className="text-center mb-3 sm:mb-4">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-balance section-title">
-              Создаём ИИ-агента и автоматизируем бизнес-процессы за 14 дней
+              Внедрим ИИ-продавца в ваш бизнес за 7 дней
             </h2>
           </div>
           <p className="text-base sm:text-xl text-center text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto">
@@ -793,40 +815,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="process" className="py-20 sm:py-32 px-3 sm:px-4 bg-secondary/30">
-        <div className="container mx-auto">
-          <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Как мы работаем</h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
-            <div className="text-center space-y-3 sm:space-y-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold text-primary-foreground">
-                1
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold">Анализ бизнеса</h3>
-              <p className="text-sm sm:text-base text-muted-foreground">Изучаем ваши процессы, потребности клиентов и точки автоматизации</p>
-            </div>
-
-            <div className="text-center space-y-3 sm:space-y-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold text-primary-foreground">
-                2
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold">Создание ИИ-агента</h3>
-              <p className="text-sm sm:text-base text-muted-foreground">Создаём ИИ-помощника, чат-бота и обучаем под специфику вашего бизнеса. Интеллектуальная автоматизация процессов</p>
-            </div>
-
-            <div className="text-center space-y-3 sm:space-y-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center mx-auto text-xl sm:text-2xl font-bold text-primary-foreground">
-                3
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold">Интеграция ИИ в работу</h3>
-              <p className="text-sm sm:text-base text-muted-foreground">Интегрируем ИИ-агента с вашими системами, автоматизируем счета и отчёты. Обеспечиваем постоянную техподдержку</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Pricing Section */}
       <Pricing onContactClick={() => setIsModalOpen(true)} />
