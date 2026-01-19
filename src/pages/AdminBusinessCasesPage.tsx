@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { fetchBusinessCases, type BusinessCase } from '@/services/business-cases'
 import { createBusinessCase, updateBusinessCase, deleteBusinessCase } from '@/services/admin-business-cases'
+import { uploadImage, deleteImage, extractPathFromUrl } from '@/services/storage'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AdminThemeToggle } from '@/components/admin-theme-toggle'
-import { Plus, X } from 'lucide-react'
+import { Plus, X, Upload, Loader2, Image as ImageIcon } from 'lucide-react'
 
 export default function AdminBusinessCasesPage() {
   const { user, loading: authLoading, signOut } = useAuth()
@@ -32,6 +33,10 @@ export default function AdminBusinessCasesPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [newResult, setNewResult] = useState({ icon: 'Users', label: '', value: '', color: 'text-primary' })
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [oldImagePath, setOldImagePath] = useState<string | null>(null)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -74,7 +79,6 @@ export default function AdminBusinessCasesPage() {
     })
     setCustomId('')
     setError('')
-    setEditingResultIndex(null)
     setNewResult({ icon: 'Users', label: '', value: '', color: 'text-primary' })
   }
 
@@ -94,14 +98,109 @@ export default function AdminBusinessCasesPage() {
     })
     setCustomId('')
     setError('')
-    setEditingResultIndex(null)
     setNewResult({ icon: 'Users', label: '', value: '', color: 'text-primary' })
+    // Устанавливаем превью изображения если оно есть
+    if (businessCase.image) {
+      setImagePreview(businessCase.image)
+      const path = extractPathFromUrl(businessCase.image)
+      setOldImagePath(path)
+    } else {
+      setImagePreview(null)
+      setOldImagePath(null)
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Проверка типа файла
+    if (!file.type.startsWith('image/')) {
+      setError('Пожалуйста, выберите файл изображения')
+      return
+    }
+
+    // Проверка размера (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Размер файла не должен превышать 5MB')
+      return
+    }
+
+    setUploadingImage(true)
+    setError('')
+
+    try {
+      // Создаем превью для отображения
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+
+      // Загружаем файл в Supabase Storage
+      const result = await uploadImage(file, 'business-cases')
+      
+      // Обновляем URL изображения в форме
+      setFormData((prev) => ({ ...prev, image: result.url }))
+
+      // Если было старое изображение из Storage, удаляем его
+      if (oldImagePath) {
+        try {
+          await deleteImage(oldImagePath)
+        } catch (err) {
+          console.warn('Не удалось удалить старое изображение:', err)
+        }
+      }
+
+      // Сохраняем путь нового изображения для возможного удаления в будущем
+      setOldImagePath(result.path)
+    } catch (err: any) {
+      setError(err.message || 'Ошибка загрузки изображения')
+      setImagePreview(null)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
+  const handleRemoveImage = async () => {
+    if (oldImagePath) {
+      try {
+        await deleteImage(oldImagePath)
+      } catch (err) {
+        console.warn('Не удалось удалить изображение из Storage:', err)
+      }
+    }
+    setFormData((prev) => ({ ...prev, image: '' }))
+    setImagePreview(null)
+    setOldImagePath(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const handleDeleteCase = async (id: string) => {
     if (!confirm('Удалить этот кейс?')) return
 
     try {
+      // Находим кейс для удаления изображения
+      const caseToDelete = cases.find(c => c.id === id)
+      if (caseToDelete?.image) {
+        const imagePath = extractPathFromUrl(caseToDelete.image)
+        if (imagePath) {
+          try {
+            await deleteImage(imagePath)
+          } catch (err) {
+            console.warn('Не удалось удалить изображение из Storage:', err)
+          }
+        }
+      }
+
       await deleteBusinessCase(id)
       await loadCases()
       if (editingCase?.id === id) {
@@ -161,6 +260,20 @@ export default function AdminBusinessCasesPage() {
       }
 
       if (editingCase) {
+        // При обновлении проверяем, было ли заменено или удалено изображение
+        const oldCase = cases.find(c => c.id === editingCase.id)
+        if (oldCase?.image) {
+          const oldImagePathFromUrl = extractPathFromUrl(oldCase.image)
+          // Если старое изображение было из Storage и оно было заменено или удалено
+          if (oldImagePathFromUrl && oldCase.image !== formData.image) {
+            // Удаляем старое изображение из Storage
+            try {
+              await deleteImage(oldImagePathFromUrl)
+            } catch (err) {
+              console.warn('Не удалось удалить старое изображение:', err)
+            }
+          }
+        }
         await updateBusinessCase(editingCase.id, caseData)
       } else {
         await createBusinessCase(caseData)
@@ -335,16 +448,85 @@ export default function AdminBusinessCasesPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">
-                      URL изображения
+                    <label className="block text-sm font-medium mb-2">
+                      Изображение
                     </label>
-                    <Input
-                      value={formData.image}
-                      onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, image: e.target.value }))
-                      }
-                      placeholder="/path/to/image.jpg или https://..."
-                    />
+                    
+                    {/* Превью изображения */}
+                    {imagePreview && (
+                      <div className="mb-3 relative">
+                        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-border">
+                          <img
+                            src={imagePreview}
+                            alt="Превью"
+                            className="w-full h-full object-cover"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            className="absolute top-2 right-2"
+                            onClick={handleRemoveImage}
+                            disabled={uploadingImage}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Кнопка загрузки */}
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingImage || saving}
+                        className="flex items-center gap-2"
+                      >
+                        {uploadingImage ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Загрузка...
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="h-4 w-4" />
+                            {imagePreview ? 'Заменить изображение' : 'Загрузить изображение'}
+                          </>
+                        )}
+                      </Button>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                    </div>
+
+                    {/* Поле для ручного ввода URL */}
+                    <div className="mt-3">
+                      <label className="block text-xs text-muted-foreground mb-1">
+                        Или введите URL изображения вручную
+                      </label>
+                      <Input
+                        value={formData.image}
+                        onChange={(e) => {
+                          setFormData((prev) => ({ ...prev, image: e.target.value }))
+                          if (e.target.value) {
+                            setImagePreview(e.target.value)
+                            const path = extractPathFromUrl(e.target.value)
+                            setOldImagePath(path)
+                          } else {
+                            setImagePreview(null)
+                            setOldImagePath(null)
+                          }
+                        }}
+                        placeholder="/path/to/image.jpg или https://..."
+                        disabled={uploadingImage}
+                      />
+                    </div>
                   </div>
 
                   <div>
