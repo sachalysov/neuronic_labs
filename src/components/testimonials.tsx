@@ -74,30 +74,12 @@ export function Testimonials() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0)
 
-  // Отслеживание активного слайда и бесконечная прокрутка
+  // Отслеживание активного слайда (без клонов и бесконечной прокрутки)
   useEffect(() => {
     const container = scrollContainerRef.current
     if (!container) return
 
-    let isScrolling = false
-
-    const getRealIndex = (index: number): number => {
-      const total = testimonials.length
-      if (index < total) {
-        // Клоны в начале - последние слайды
-        return index
-      } else if (index >= total * 2) {
-        // Клоны в конце - первые слайды
-        return index - total * 2
-      } else {
-        // Реальные слайды в середине
-        return index - total
-      }
-    }
-
     const handleScroll = () => {
-      if (isScrolling) return
-
       const scrollLeft = container.scrollLeft
       
       // Определяем ближайший слайд
@@ -116,52 +98,13 @@ export function Testimonials() {
         }
       })
 
-      const realIndex = getRealIndex(closestIndex)
-      setActiveTestimonialIndex(realIndex)
-
-      // Бесконечная прокрутка: перепрыгиваем с клонов на реальные слайды
-      const firstRealIndex = testimonials.length
-      const lastRealIndex = testimonials.length * 2 - 1
-      const firstRealCard = container.children[firstRealIndex] as HTMLElement
-      const lastRealCard = container.children[lastRealIndex] as HTMLElement
-
-      if (!firstRealCard || !lastRealCard) return
-
-      const firstRealLeft = firstRealCard.offsetLeft
-      const lastRealLeft = lastRealCard.offsetLeft
-      const cardWidth = firstRealCard.offsetWidth
-      const threshold = cardWidth / 2
-
-      // Если доскроллили до начала (клоны последних слайдов)
-      if (scrollLeft < firstRealLeft - threshold) {
-        isScrolling = true
-        container.scrollLeft = lastRealLeft - (container.offsetWidth - cardWidth) / 2
-        setTimeout(() => { isScrolling = false }, 50)
-      }
-      // Если доскроллили до конца (клоны первых слайдов)
-      else if (scrollLeft > lastRealLeft + threshold) {
-        isScrolling = true
-        container.scrollLeft = firstRealLeft - (container.offsetWidth - cardWidth) / 2
-        setTimeout(() => { isScrolling = false }, 50)
-      }
+      setActiveTestimonialIndex(closestIndex)
     }
 
-    // Инициализация: скроллим к первому реальному слайду (после клонов в начале)
-    const initScroll = () => {
-      const firstRealIndex = testimonials.length
-      const firstRealCard = container.children[firstRealIndex] as HTMLElement
-      if (firstRealCard) {
-        isScrolling = true
-        container.scrollLeft = firstRealCard.offsetLeft - (container.offsetWidth - firstRealCard.offsetWidth) / 2
-        setTimeout(() => {
-          isScrolling = false
-          handleScroll()
-        }, 100)
-      }
-    }
-
-    // Небольшая задержка для правильного расчета размеров
-    setTimeout(initScroll, 100)
+    // Небольшая задержка для правильного расчета размеров и установки стартового индекса
+    setTimeout(() => {
+      handleScroll()
+    }, 100)
     
     container.addEventListener('scroll', handleScroll, { passive: true })
     return () => container.removeEventListener('scroll', handleScroll)
@@ -229,51 +172,9 @@ export function Testimonials() {
               scrollPaddingRight: '0.5rem'
             }}
           >
-            {/* Клоны последних слайдов в начале для бесконечной прокрутки */}
-            {testimonials.slice(-testimonials.length).map((testimonial, index) => 
-              renderTestimonial(testimonial, `clone-start-${index}`)
-            )}
-            
-            {/* Реальные слайды */}
             {testimonials.map((testimonial, index) => 
-              renderTestimonial(testimonial, `real-${index}`)
+              renderTestimonial(testimonial, `testimonial-${index}`)
             )}
-
-            {/* Клоны первых слайдов в конце для бесконечной прокрутки */}
-            {testimonials.slice(0, testimonials.length).map((testimonial, index) => 
-              renderTestimonial(testimonial, `clone-end-${index}`)
-            )}
-          </div>
-
-          {/* Dots Navigation */}
-          <div className="flex justify-center gap-3 mt-6">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  const container = scrollContainerRef.current
-                  if (container) {
-                    // Реальный слайд находится после клонов в начале
-                    const realIndex = index + testimonials.length
-                    const card = container.children[realIndex] as HTMLElement
-                    if (card) {
-                      container.scrollTo({
-                        left: card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2,
-                        behavior: 'smooth'
-                      })
-                    }
-                  }
-                }}
-                className={`transition-all duration-300 rounded-full ${
-                  activeTestimonialIndex === index ? 'bg-primary' : 'bg-muted-foreground/30'
-                }`}
-                style={{
-                  width: activeTestimonialIndex === index ? '1.25rem' : '0.5rem',
-                  height: '0.5rem'
-                }}
-                aria-label={`Перейти к отзыву ${index + 1}`}
-              />
-            ))}
           </div>
 
           {/* Stats */}

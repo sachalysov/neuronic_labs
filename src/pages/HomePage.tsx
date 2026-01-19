@@ -62,7 +62,6 @@ export default function HomePage() {
     comment?: string
   }>({})
   const benefitsScrollRef = useRef<HTMLDivElement>(null)
-  const [activeBenefitIndex, setActiveBenefitIndex] = useState(0)
   const [testimonialsEnabled, setTestimonialsEnabled] = useState(true)
   const benefitsData = [
     {
@@ -168,37 +167,18 @@ export default function HomePage() {
     }
   }, [isDemoChatOpen])
 
-  // Отслеживание активного слайда и бесконечная прокрутка
+  // Отслеживание активного слайда (без клонов и бесконечной прокрутки)
   useEffect(() => {
     const container = benefitsScrollRef.current
     if (!container) return
 
-    let isScrolling = false
-
-    const getRealIndex = (index: number): number => {
-      const total = benefitsData.length
-      if (index < total) {
-        // Клоны в начале - последние слайды
-        return index
-      } else if (index >= total * 2) {
-        // Клоны в конце - первые слайды
-        return index - total * 2
-      } else {
-        // Реальные слайды в середине
-        return index - total
-      }
-    }
-
     const handleScroll = () => {
-      if (isScrolling) return
-
       const scrollLeft = container.scrollLeft
-      
-      // Определяем ближайший слайд
-      let closestIndex = 0
+
+      // Пробегаемся по карточкам, чтобы обеспечить корректный расчёт позиций.
       let closestDistance = Infinity
 
-      Array.from(container.children).forEach((child, index) => {
+      Array.from(container.children).forEach((child) => {
         const card = child as HTMLElement
         const cardLeft = card.offsetLeft
         const cardCenter = cardLeft + card.offsetWidth / 2
@@ -206,56 +186,14 @@ export default function HomePage() {
         
         if (distance < closestDistance) {
           closestDistance = distance
-          closestIndex = index
         }
       })
-
-      const realIndex = getRealIndex(closestIndex)
-      setActiveBenefitIndex(realIndex)
-
-      // Бесконечная прокрутка: перепрыгиваем с клонов на реальные слайды
-      const firstRealIndex = benefitsData.length
-      const lastRealIndex = benefitsData.length * 2 - 1
-      const firstRealCard = container.children[firstRealIndex] as HTMLElement
-      const lastRealCard = container.children[lastRealIndex] as HTMLElement
-
-      if (!firstRealCard || !lastRealCard) return
-
-      const firstRealLeft = firstRealCard.offsetLeft
-      const lastRealLeft = lastRealCard.offsetLeft
-      const cardWidth = firstRealCard.offsetWidth
-      const threshold = cardWidth / 2
-
-      // Если доскроллили до начала (клоны последних слайдов)
-      if (scrollLeft < firstRealLeft - threshold) {
-        isScrolling = true
-        container.scrollLeft = lastRealLeft - (container.offsetWidth - cardWidth) / 2
-        setTimeout(() => { isScrolling = false }, 50)
-      }
-      // Если доскроллили до конца (клоны первых слайдов)
-      else if (scrollLeft > lastRealLeft + threshold) {
-        isScrolling = true
-        container.scrollLeft = firstRealLeft - (container.offsetWidth - cardWidth) / 2
-        setTimeout(() => { isScrolling = false }, 50)
-      }
     }
 
-    // Инициализация: скроллим к первому реальному слайду (после клонов в начале)
-    const initScroll = () => {
-      const firstRealIndex = benefitsData.length
-      const firstRealCard = container.children[firstRealIndex] as HTMLElement
-      if (firstRealCard) {
-        isScrolling = true
-        container.scrollLeft = firstRealCard.offsetLeft - (container.offsetWidth - firstRealCard.offsetWidth) / 2
-        setTimeout(() => {
-          isScrolling = false
-          handleScroll()
-        }, 100)
-      }
-    }
-
-    // Небольшая задержка для правильного расчета размеров
-    setTimeout(initScroll, 100)
+    // Небольшая задержка для правильного расчета размеров и установки стартового индекса
+    setTimeout(() => {
+      handleScroll()
+    }, 100)
     
     container.addEventListener('scroll', handleScroll, { passive: true })
     return () => container.removeEventListener('scroll', handleScroll)
@@ -718,28 +656,6 @@ export default function HomePage() {
                 scrollPaddingRight: '0.5rem'
               }}
             >
-              {/* Клоны последних слайдов в начале для бесконечной прокрутки */}
-              {benefitsData.slice(-benefitsData.length).map((benefit, index) => {
-                const Icon = benefit.icon
-                return (
-                  <Card
-                    key={`clone-start-${index}`}
-                    className="flex-shrink-0 w-[85vw] max-w-sm snap-center bg-card/10 border-border"
-                  >
-                    <CardContent className="p-6 space-y-4">
-                      <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Icon className="h-7 w-7 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold">{benefit.title}</h3>
-                      <p className="text-muted-foreground">
-                        {benefit.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-              
-              {/* Реальные слайды */}
               {benefitsData.map((benefit, index) => {
                 const Icon = benefit.icon
                 return (
@@ -759,58 +675,6 @@ export default function HomePage() {
                   </Card>
                 )
               })}
-
-              {/* Клоны первых слайдов в конце для бесконечной прокрутки */}
-              {benefitsData.slice(0, benefitsData.length).map((benefit, index) => {
-                const Icon = benefit.icon
-                return (
-                  <Card
-                    key={`clone-end-${index}`}
-                    className="flex-shrink-0 w-[85vw] max-w-sm snap-center bg-card/10 border-border"
-                  >
-                    <CardContent className="p-6 space-y-4">
-                      <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Icon className="h-7 w-7 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold">{benefit.title}</h3>
-                      <p className="text-muted-foreground">
-                        {benefit.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-
-            {/* Pagination Dots */}
-            <div className="flex justify-center gap-3 mt-6">
-              {benefitsData.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    const container = benefitsScrollRef.current
-                    if (container) {
-                      // Реальный слайд находится после клонов в начале
-                      const realIndex = index + benefitsData.length
-                      const card = container.children[realIndex] as HTMLElement
-                      if (card) {
-                        container.scrollTo({
-                          left: card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2,
-                          behavior: 'smooth'
-                        })
-                      }
-                    }
-                  }}
-                  className={`rounded-full transition-all ${
-                    activeBenefitIndex === index ? 'bg-primary' : 'bg-muted-foreground/30'
-                  }`}
-                  style={{
-                    width: activeBenefitIndex === index ? '1.25rem' : '0.5rem',
-                    height: '0.5rem'
-                  }}
-                  aria-label={`Перейти к слайду ${index + 1}`}
-                />
-              ))}
             </div>
           </div>
         </div>

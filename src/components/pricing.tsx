@@ -11,7 +11,6 @@ interface PricingProps {
 export function Pricing({ onContactClick }: PricingProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
-  const [activePlanIndex, setActivePlanIndex] = useState(1) // Начинаем с Basic плана (индекс 1)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [selectedPlanId, setSelectedPlanId] = useState<string>("")
   const [selectedPlanName, setSelectedPlanName] = useState<string>("")
@@ -34,37 +33,7 @@ export function Pricing({ onContactClick }: PricingProps) {
       const cardWidth = container.children[0]?.clientWidth || 0
       const gap = 32 // 2rem gap
       container.scrollLeft = cardWidth + gap
-      setActivePlanIndex(1) // Basic план
     }
-  }, [isMobile])
-
-  // Отслеживание активного слайда для пагинации
-  useEffect(() => {
-    const container = scrollContainerRef.current
-    if (!container || !isMobile) return
-
-    const handleScroll = () => {
-      const scrollLeft = container.scrollLeft
-      let closestIndex = 0
-      let closestDistance = Infinity
-
-      Array.from(container.children).forEach((child, index) => {
-        const card = child as HTMLElement
-        const cardLeft = card.offsetLeft
-        const cardCenter = cardLeft + card.offsetWidth / 2
-        const distance = Math.abs(scrollLeft + container.offsetWidth / 2 - cardCenter)
-        
-        if (distance < closestDistance) {
-          closestDistance = distance
-          closestIndex = index
-        }
-      })
-
-      setActivePlanIndex(closestIndex)
-    }
-
-    container.addEventListener('scroll', handleScroll, { passive: true })
-    return () => container.removeEventListener('scroll', handleScroll)
   }, [isMobile])
 
   const plans = [
@@ -225,32 +194,6 @@ export function Pricing({ onContactClick }: PricingProps) {
             ))}
           </div>
           
-          {/* Dots indicator */}
-          <div className="flex justify-center gap-3 mt-6">
-            {plans.map((plan, idx) => (
-              <button
-                key={plan.id}
-                onClick={() => {
-                  const container = scrollContainerRef.current
-                  if (container && container.children[idx]) {
-                    const card = container.children[idx] as HTMLElement
-                    container.scrollTo({
-                      left: card.offsetLeft - (container.offsetWidth - card.offsetWidth) / 2,
-                      behavior: 'smooth'
-                    })
-                  }
-                }}
-                className={`rounded-full transition-all ${
-                  activePlanIndex === idx ? 'bg-primary' : 'bg-muted-foreground/30'
-                }`}
-                style={{
-                  width: activePlanIndex === idx ? '1.25rem' : '0.5rem',
-                  height: '0.5rem'
-                }}
-                aria-label={`Перейти к тарифу ${plan.name}`}
-              />
-            ))}
-          </div>
         </div>
 
         {/* Desktop: Grid */}
