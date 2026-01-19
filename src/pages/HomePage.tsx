@@ -1745,12 +1745,18 @@ export default function HomePage() {
                 {/* CTA Button */}
                 <div className="flex justify-center md:justify-start">
                   <Button 
+                    asChild
                     size="lg" 
                     className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6"
-                    onClick={() => setIsModalOpen(true)}
                   >
-                    КОНСУЛЬТАЦИЯ С АЛЕКСАНДРОМ
-                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    <a
+                      href="https://t.me/aslysov"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      КОНСУЛЬТАЦИЯ С АЛЕКСАНДРОМ
+                      <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    </a>
                   </Button>
                 </div>
               </div>
