@@ -264,6 +264,14 @@ export default function AdminDashboardPage() {
               </Button>
               <Button 
                 variant="outline" 
+                onClick={() => navigate('/admin/business-cases')}
+                type="button"
+                className="touch-manipulation"
+              >
+                Админка кейсов
+              </Button>
+              <Button 
+                variant="outline" 
                 onClick={handleSignOut}
                 type="button"
                 className="touch-manipulation min-w-[80px]"
@@ -447,6 +455,17 @@ export default function AdminDashboardPage() {
                   </p>
                 </div>
                 <Button size="sm" onClick={() => navigate('/admin/blog')}>
+                  Перейти
+                </Button>
+              </div>
+              <div className="flex items-center justify-between gap-3 pt-3 border-t border-border">
+                <div>
+                  <div className="font-medium">Управление кейсами</div>
+                  <p className="text-sm text-muted-foreground">
+                    Создание, редактирование и удаление бизнес-кейсов.
+                  </p>
+                </div>
+                <Button size="sm" onClick={() => navigate('/admin/business-cases')}>
                   Перейти
                 </Button>
               </div>

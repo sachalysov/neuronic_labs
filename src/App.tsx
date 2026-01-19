@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import HomePage from './pages/HomePage'
 import AdminLoginPage from './pages/AdminLoginPage'
 import AdminBlogPage from './pages/AdminBlogPage'
+import AdminBusinessCasesPage from './pages/AdminBusinessCasesPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 
 const ADMIN_THEME_STORAGE_KEY = "admin_theme"
@@ -155,6 +156,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboardPage />} />
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin/blog" element={<AdminBlogPage />} />
+        <Route path="/admin/business-cases" element={<AdminBusinessCasesPage />} />
       </Routes>
     </BrowserRouter>
   )

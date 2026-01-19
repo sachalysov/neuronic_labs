@@ -805,7 +805,7 @@ export default function HomePage() {
                       }
                     }}
                   >
-                    Посмотреть демо
+                    Попробовать демо
                   </Button>
                 </div>
               </CardContent>
