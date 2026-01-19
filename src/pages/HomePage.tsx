@@ -1709,7 +1709,7 @@ export default function HomePage() {
                         <Info className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                       </div>
                       <p className="text-base sm:text-lg text-foreground pt-1">
-                        Кандидат экономических наук
+                        Имею опыт построения команды в сфере информационных технологий  
                       </p>
                     </CardContent>
                   </Card>
@@ -1720,7 +1720,7 @@ export default function HomePage() {
                         <Info className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                       </div>
                       <p className="text-base sm:text-lg text-foreground pt-1">
-                        Более 15 лет опыта работы в руководстве банка
+                        Более 5 лет опыта работы в разработке <br /> IT решений для бизнеса
                       </p>
                     </CardContent>
                   </Card>
@@ -1731,7 +1731,7 @@ export default function HomePage() {
                         <Info className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                       </div>
                       <p className="text-base sm:text-lg text-foreground pt-1">
-                        Автор курса по работе с нейросетями «Нейрогенез»
+                        Автор курса <br /> "Создание сайтов с помощью Нейросетей"
                       </p>
                     </CardContent>
                   </Card>
