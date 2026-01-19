@@ -41,6 +41,7 @@ import {
   Wrench,
   Briefcase,
   Info,
+  ChevronDown,
 } from "lucide-react"
 
 export default function HomePage() {
@@ -62,7 +63,12 @@ export default function HomePage() {
     comment?: string
   }>({})
   const benefitsScrollRef = useRef<HTMLDivElement>(null)
+  const businessTypesScrollRef = useRef<HTMLDivElement>(null)
+  const examplesScrollRef = useRef<HTMLDivElement>(null)
+  const stagesScrollRef = useRef<HTMLDivElement>(null)
   const [testimonialsEnabled, setTestimonialsEnabled] = useState(true)
+  const [expandedDirections, setExpandedDirections] = useState<number | null>(null)
+  const [expandedProductInfo, setExpandedProductInfo] = useState(false)
   const benefitsData = [
     {
       icon: Bot,
@@ -539,7 +545,8 @@ export default function HomePage() {
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Для какого бизнеса это работает лучше всего</h2>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+          {/* Desktop Grid */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
             <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
               <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
@@ -599,6 +606,43 @@ export default function HomePage() {
                 <p className="text-sm md:text-base text-muted-foreground">Консультант работает только с готовыми клиентами</p>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Mobile Slider */}
+          <div className="md:hidden relative">
+            <div
+              ref={businessTypesScrollRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
+              style={{
+                scrollPaddingLeft: '0.5rem',
+                scrollPaddingRight: '0.5rem'
+              }}
+            >
+              {[
+                { icon: Scissors, title: "САЛОНЫ И СПА", desc: "+50% клиентов, 0 пропущенных звонков" },
+                { icon: Home, title: "РИЭЛТОРЫ", desc: "+300% просмотров, ответ за 30 сек" },
+                { icon: ShoppingCart, title: "E-COMMERCE", desc: "Чек +40%, конверсия +50%" },
+                { icon: Cross, title: "КЛИНИКИ", desc: "No-show упали на 60%" },
+                { icon: Wrench, title: "АВТОСЕРВИСЫ", desc: "Полная запись на неделю вперед" },
+                { icon: Briefcase, title: "КОНСУЛЬТАНТЫ", desc: "Консультант работает только с готовыми клиентами" },
+              ].map((item, index) => {
+                const Icon = item.icon
+                return (
+                  <Card
+                    key={index}
+                    className="flex-shrink-0 w-[85vw] max-w-sm snap-center bg-card/10 border-border"
+                  >
+                    <CardContent className="p-6 space-y-4 text-center">
+                      <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                        <Icon className="h-7 w-7 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-bold">{item.title}</h3>
+                      <p className="text-muted-foreground">{item.desc}</p>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -876,7 +920,8 @@ export default function HomePage() {
           </div>
 
           {/* Остальные направления – большие блоки по стилю «Автоматизация продаж» */}
-          <div className="space-y-8 sm:space-y-10">
+          {/* Desktop: обычные карточки */}
+          <div className="hidden md:block space-y-8 sm:space-y-10">
             {/* ИИ‑контроль качества */}
             <Card className="bg-card/90 border-border shadow-xl">
               <CardContent className="p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full space-y-6 sm:space-y-8">
@@ -1008,6 +1053,98 @@ export default function HomePage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Mobile: Аккордеон */}
+          <div className="md:hidden space-y-4">
+            {[
+              {
+                category: "Контроль качества и стандарты сервиса",
+                title: "ИИ‑контроль качества колл‑центра и отдела продаж",
+                description: "Система, которая анализирует 100% звонков и переписок по скриптам, сразу находит проблемные точки и формирует понятные отчёты и рекомендации.",
+                items: [
+                  "Контроль соблюдения скриптов и стандартов сервиса по каждому диалогу.",
+                  "Оценка конверсий и качества работы каждого менеджера в режиме реального времени.",
+                  "Готовые чек‑листы и подсказки для обучения, роста и мотивации команды."
+                ],
+                buttonText: "Подробнее про ИИ‑контроль качества"
+              },
+              {
+                category: "Голосовые и текстовые боты",
+                title: "Голосовые и текстовые чат‑боты для 24/7‑коммуникаций",
+                description: "ИИ‑боты, которые не пропускают звонки и сообщения, консультируют по скриптам и передают сложные вопросы человеку.",
+                items: [
+                  "Интеграция с WhatsApp, Telegram, VK, сайтом и телефонией в единую систему.",
+                  "Естественная речь и диалоги в тоне бренда, с учётом вашего стиля и сценариев.",
+                  "Сбор и передача лидов в CRM‑систему с комментариями и историей общения."
+                ],
+                buttonText: "Подробнее про чат‑ботов"
+              },
+              {
+                category: "Компьютерное зрение и аналитика",
+                title: "Компьютерное зрение и предиктивная аналитика",
+                description: "Решения на базе ИИ, которые видят, прогнозируют и помогают управлять бизнес‑процессами на данных.",
+                items: [
+                  "Анализ видео и изображений: контроль качества, безопасность, мониторинг процессов.",
+                  "Прогноз спроса, LTV и оттока клиентов для уверенных управленческих решений.",
+                  "Предотвращение аварий и простоев оборудования за счёт предиктивной аналитики."
+                ],
+                buttonText: "Подробнее про компьютерное зрение"
+              }
+            ].map((item, index) => (
+              <Card
+                key={index}
+                className="bg-card/90 border-border shadow-xl cursor-pointer hover:border-primary/50 transition-all"
+                onClick={() => setExpandedDirections(expandedDirections === index ? null : index)}
+              >
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <p className="uppercase tracking-[0.18em] text-xs text-primary font-semibold mb-2">
+                        {item.category}
+                      </p>
+                      <h3 className="text-lg sm:text-xl font-bold text-balance">
+                        {item.title}
+                      </h3>
+                    </div>
+                    <ChevronDown
+                      className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${
+                        expandedDirections === index ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                  
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      expandedDirections === index ? "max-h-[2000px] opacity-100 mt-4" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {item.description}
+                    </p>
+                    <ul className="space-y-2 text-sm text-muted-foreground mb-4">
+                      {item.items.map((listItem, idx) => (
+                        <li key={idx} className="flex gap-2 items-start">
+                          <span className="mt-1 text-primary">●</span>
+                          <span>{listItem}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      size="lg"
+                      className="w-full text-sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setIsModalOpen(true)
+                      }}
+                    >
+                      {item.buttonText}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -1024,7 +1161,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
+          {/* Desktop Grid */}
+          <div className="hidden lg:grid lg:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
             <Card className="bg-card border-border shadow-md">
               <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
                 <p className="text-primary text-3xl sm:text-4xl font-bold">1.</p>
@@ -1074,6 +1212,52 @@ export default function HomePage() {
             </Card>
           </div>
 
+          {/* Mobile Slider */}
+          <div className="lg:hidden relative mb-10 sm:mb-12">
+            <div
+              ref={stagesScrollRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
+              style={{
+                scrollPaddingLeft: '0.5rem',
+                scrollPaddingRight: '0.5rem'
+              }}
+            >
+              {[
+                {
+                  number: "1.",
+                  title: "Глубокое исследование ваших бизнес‑процессов",
+                  description: "Проводим аудит процессов и находим точки роста с помощью ИИ‑аналитики. Показываем конкретные цифры потенциальной экономии и прироста выручки."
+                },
+                {
+                  number: "2.",
+                  title: "Формирование индивидуальной стратегии действий",
+                  description: "Подготавливаем персональную стратегию под ваши задачи: какие ИИ‑решения запускать, в каком порядке, какие KPI и сроки ожидаем."
+                },
+                {
+                  number: "3.",
+                  title: "Подготовка и запуск проекта",
+                  description: "Создаём и настраиваем ИИ‑решение под ваш сценарий: интегрируем с CRM, мессенджерами и телефонией, тестируем на реальных диалогах."
+                },
+                {
+                  number: "4.",
+                  title: "Оптимизация процессов после запуска",
+                  description: "Сопровождаем вас первый месяц после запуска: дорабатываем сценарии, усиливаем конверсию, подключаем дополнительные каналы и отчётность."
+                }
+              ].map((item, index) => (
+                <Card
+                  key={index}
+                  className="flex-shrink-0 w-[88vw] max-w-md snap-center bg-card border-border shadow-md"
+                >
+                  <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
+                    <p className="text-primary text-3xl sm:text-4xl font-bold">{item.number}</p>
+                    <h3 className="text-lg sm:text-2xl font-bold">{item.title}</h3>
+                    <p className="text-sm sm:text-base text-muted-foreground">{item.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
           <div className="max-w-xl mx-auto text-center space-y-4">
             <p className="text-sm sm:text-base text-muted-foreground">
               Получите бесплатный аудит ваших бизнес‑процессов и расчёт перспектив внедрения ИИ‑решений в ваш бизнес.
@@ -1103,7 +1287,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4 md:gap-6 max-w-5xl mx-auto">
+          {/* Desktop Grid */}
+          <div className="hidden md:grid md:grid-cols-2 gap-4 md:gap-6 max-w-5xl mx-auto">
             <Card className="bg-card border-dashed border-border">
               <CardContent className="p-5 sm:p-6 space-y-3">
                 <h3 className="text-lg sm:text-xl font-bold">Здравоохранение</h3>
@@ -1207,6 +1392,71 @@ export default function HomePage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Mobile Slider */}
+          <div className="md:hidden relative">
+            <div
+              ref={examplesScrollRef}
+              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
+              style={{
+                scrollPaddingLeft: '0.5rem',
+                scrollPaddingRight: '0.5rem'
+              }}
+            >
+              {[
+                {
+                  title: "Здравоохранение",
+                  problem: "дефицит специалистов, высокая нагрузка на врачей и потребность в ранней диагностике",
+                  solution: "ИИ‑ассистент для анализа изображений и обработки медицинской документации",
+                  benefit: "повышение точности диагностики, сокращение времени на документацию до 60%"
+                },
+                {
+                  title: "Digital‑маркетинг",
+                  problem: "неэффективные рекламные кампании и отток клиентов",
+                  solution: "предиктивная аналитика и ИИ‑модели сегментации",
+                  benefit: "прогнозирование LTV и оттока, сокращение расходов на рекламу"
+                },
+                {
+                  title: "Юриспруденция",
+                  problem: "рутинный и медленный анализ судебных документов",
+                  solution: "Legal‑ИИ‑агент для анализа договоров и судебной практики",
+                  benefit: "сокращение времени на анализ до 62% и автоматическое заполнение типовых форм"
+                },
+                {
+                  title: "Промышленность и логистика",
+                  problem: "незапланированные поломки и неэффективное управление запасами",
+                  solution: "предиктивная аналитика и компьютерное зрение для мониторинга оборудования и складов",
+                  benefit: "снижение затрат на обслуживание на 20–30% и снижение рисков простоев"
+                }
+              ].map((item, index) => (
+                <Card
+                  key={index}
+                  className="flex-shrink-0 w-[88vw] max-w-md snap-center bg-card border-dashed border-border"
+                >
+                  <CardContent className="p-5 sm:p-6 space-y-3">
+                    <h3 className="text-lg sm:text-xl font-bold">{item.title}</h3>
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      <span className="font-semibold">Ключевая проблема:</span> {item.problem}
+                    </p>
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      <span className="font-semibold">Решение:</span> {item.solution}
+                    </p>
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      <span className="font-semibold">Измеримая выгода:</span> {item.benefit}
+                    </p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="mt-2 w-full"
+                      onClick={() => setIsModalOpen(true)}
+                    >
+                      Получить консультацию
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1302,7 +1552,8 @@ export default function HomePage() {
                 </div>
 
                 {/* Text Section - Below Video */}
-                <div className="w-full space-y-4 sm:space-y-6">
+                {/* Desktop: обычный текст */}
+                <div className="hidden md:block w-full space-y-4 sm:space-y-6">
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-bold">О нашем продукте</h3>
                   <div className="space-y-3 sm:space-y-4 text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">
                     <p>
@@ -1336,6 +1587,64 @@ export default function HomePage() {
                       </ul>
                     </div>
                   </div>
+                </div>
+
+                {/* Mobile: Аккордеон */}
+                <div className="md:hidden w-full">
+                  <Card
+                    className="bg-card border-border cursor-pointer hover:border-primary/50 transition-all"
+                    onClick={() => setExpandedProductInfo(!expandedProductInfo)}
+                  >
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-xl sm:text-2xl font-bold flex-1">О нашем продукте</h3>
+                        <ChevronDown
+                          className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${
+                            expandedProductInfo ? "rotate-180" : ""
+                          }`}
+                        />
+                      </div>
+                      
+                      <div
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                          expandedProductInfo ? "max-h-[3000px] opacity-100 mt-4" : "max-h-0 opacity-0"
+                        }`}
+                      >
+                        <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
+                          <p>
+                            Наш ИИ-агент и чат-бот — это не просто автоматизация. Это интеллектуальная автоматизация бизнеса с помощью нейросети. Создаём ИИ-помощника, который понимает контекст вашего бизнеса, знает ваши продукты и услуги, и способен вести диалог с клиентами на уровне опытного менеджера.
+                          </p>
+                          <p>
+                            Технология построена на базе передовых языковых моделей, адаптированных под специфику вашей отрасли. Мы создаём ИИ-агента, обучая систему на ваших данных: прайс-листах, описаниях услуг, типовых вопросах клиентов и скриптах продаж. Интеграция ИИ в работу позволяет автоматизировать не только продажи, но и рутинные задачи, генерацию контента, создание счетов и отчётов.
+                          </p>
+                          <p>
+                            Результат — ИИ-агент для бизнеса, который работает 24/7, никогда не устает, не уходит в отпуск и обрабатывает неограниченное количество обращений одновременно. Автоматизация с ИИ охватывает все бизнес-процессы: от обработки лидов до автоматизации счетов и отчётов. При этом каждый клиент получает персонализированный подход и мгновенные ответы на свои вопросы.
+                          </p>
+                          <div className="pt-3 border-t border-border">
+                            <h4 className="text-base font-bold mb-2">Ключевые возможности:</h4>
+                            <ul className="space-y-1.5">
+                              <li className="flex items-start gap-2">
+                                <span className="text-primary mt-1">✓</span>
+                                <span>Создание ИИ-агента и чат-бота с интеграцией во все популярные мессенджеры и CRM-системы</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-primary mt-1">✓</span>
+                                <span>Интеллектуальная автоматизация: квалификация лидов, автоматизация рутинных задач, передача горячих заявок менеджерам</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-primary mt-1">✓</span>
+                                <span>Автоматизация отчётов, счетов и генерация контента с помощью ИИ</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="text-primary mt-1">✓</span>
+                                <span>Интеграция ИИ в работу: нейросеть для бизнеса постоянно обучается и улучшается на основе реальных диалогов</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </div>
