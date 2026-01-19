@@ -23,6 +23,9 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
   const [isMenuDropdownOpen, setIsMenuDropdownOpen] = useState(false)
   const [isProductDropdownOpen, setIsProductDropdownOpen] = useState(false)
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false)
+  const [isMobileProductOpen, setIsMobileProductOpen] = useState(false)
+  const [isMobileAboutOpen, setIsMobileAboutOpen] = useState(false)
+  const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false)
   const [isSearchLoading, setIsSearchLoading] = useState(false)
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [showMaintenanceBanner, setShowMaintenanceBanner] = useState(false)
@@ -696,132 +699,197 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex items-center"
                 >
-                  <div className="flex items-baseline">
-                    <span className="text-xl font-bold text-primary">N</span>
-                    <span className="text-xl font-bold text-white">LABS</span>
-                  </div>
+                  <span className="text-xl font-bold text-white">
+                    <span className="text-primary">N</span>LABS
+                  </span>
                   <span className="text-white/80 text-sm ml-2">AI-решения для бизнеса</span>
                 </Link>
               </div>
 
               {/* Menu Items */}
               <div className="flex flex-col py-4">
-                {/* ИИ-продавец / Протестировать чат-бот */}
-              <button
+                {/* Протестировать чат-бот */}
+                <button
                   onClick={() => {
                     handleChatBotClick()
                     setIsMobileMenuOpen(false)
                   }}
-                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
+                  className="flex items-center px-4 py-3 text-white hover:bg-white/5 transition-colors"
                 >
-                  <span className="font-medium">ИИ-продавец</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-              </button>
-
-                {/* Контроль Колл-центров */}
-                <button
-                  onClick={() => {
-                    navigateToSection("demo-chat")
-                    setIsMobileMenuOpen(false)
-                  }}
-                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
-                >
-                  <span className="font-medium">Контроль Колл-центров</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
+                  <span className="font-medium">Протестировать чат-бот</span>
                 </button>
 
-                {/* Все продукты */}
-                    <button
-                      onClick={() => {
-                        navigateToSection("product")
-                        setIsMobileMenuOpen(false)
-                  }}
-                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
-                >
-                  <span className="font-medium">Все продукты</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {/* О продукте - разворачивающийся список */}
+                <div>
+                  <button
+                    onClick={() => setIsMobileProductOpen(!isMobileProductOpen)}
+                    className="flex items-center justify-between w-full px-4 py-3 text-white hover:bg-white/5 transition-colors"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                    </button>
-
-                {/* Separator */}
-                <div className="h-px bg-white/10 my-2" />
-
-                {/* Кейсы бизнеса */}
-                    {businessCasesEnabled && (
-                      <Link
-                        to="/business-cases"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
-                  >
-                    <span className="font-medium">Кейсы бизнеса</span>
+                    <span className="font-medium">О продукте</span>
                     <svg
-                      className="w-5 h-5"
+                      className={`w-5 h-5 transition-transform ${isMobileProductOpen ? 'rotate-90' : ''}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                     </svg>
-                  </Link>
-                )}
+                  </button>
+                  {isMobileProductOpen && (
+                    <div className="pl-4 space-y-0">
+                      <button
+                        onClick={() => {
+                          navigateToSection("product")
+                          setIsMobileMenuOpen(false)
+                        }}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">О продукте</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigateToSection("pricing")
+                          setIsMobileMenuOpen(false)
+                        }}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">Тарифы и цены</span>
+                      </button>
+                      <Link
+                        to="/calculator"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">Рассчитать стоимость внедрения самостоятельно</span>
+                      </Link>
+                      {businessCasesEnabled && (
+                        <Link
+                          to="/business-cases"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                        >
+                          <span className="font-medium">Кейсы бизнеса</span>
+                        </Link>
+                      )}
+                      {testimonialsEnabled && (
+                        <button
+                          onClick={() => {
+                            navigateToSection("testimonials")
+                            setIsMobileMenuOpen(false)
+                          }}
+                          className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                        >
+                          <span className="font-medium">Отзывы клиентов</span>
+                        </button>
+                      )}
+                      <button
+                        onClick={() => {
+                          navigateToSection("faq")
+                          setIsMobileMenuOpen(false)
+                        }}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">Частые вопросы</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
 
-                {/* Как мы работаем */}
-                <button
-                  onClick={() => {
-                    navigateToSection("pricing")
-                    setIsMobileMenuOpen(false)
-                  }}
-                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
-                >
-                  <span className="font-medium">Как мы работаем</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+                {/* Separator */}
+                <div className="h-px bg-white/10 my-2" />
 
-                {/* О нас */}
-                    <button
-                      onClick={() => {
-                        navigateToSection("about")
-                        setIsMobileMenuOpen(false)
-                  }}
-                  className="flex items-center justify-between px-4 py-3 text-white hover:bg-white/5 transition-colors"
-                >
-                  <span className="font-medium">О нас</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {/* О нас - разворачивающийся список */}
+                <div>
+                  <button
+                    onClick={() => setIsMobileAboutOpen(!isMobileAboutOpen)}
+                    className="flex items-center justify-between w-full px-4 py-3 text-white hover:bg-white/5 transition-colors"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
+                    <span className="font-medium">О нас</span>
+                    <svg
+                      className={`w-5 h-5 transition-transform ${isMobileAboutOpen ? 'rotate-90' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  {isMobileAboutOpen && (
+                    <div className="pl-4 space-y-0">
+                      <button
+                        onClick={() => {
+                          navigateToSection("about")
+                          setIsMobileMenuOpen(false)
+                        }}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">О нас</span>
+                      </button>
+                      <Link
+                        to="/contacts"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">Контакты</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          navigateToContactsSection("payment-methods")
+                          setIsMobileMenuOpen(false)
+                        }}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">Способы оплаты</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Separator */}
+                <div className="h-px bg-white/10 my-2" />
+
+                {/* Еще - разворачивающийся список */}
+                <div>
+                  <button
+                    onClick={() => setIsMobileMoreOpen(!isMobileMoreOpen)}
+                    className="flex items-center justify-between w-full px-4 py-3 text-white hover:bg-white/5 transition-colors"
+                  >
+                    <span className="font-medium">Еще</span>
+                    <svg
+                      className={`w-5 h-5 transition-transform ${isMobileMoreOpen ? 'rotate-90' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  {isMobileMoreOpen && (
+                    <div className="pl-4 space-y-0">
+                      <Link
+                        to="/blog"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">Блог</span>
+                      </Link>
+                      <Link
+                        to="/conference"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">Для участников конференции</span>
+                      </Link>
+                      <Link
+                        to="/partners"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center w-full px-4 py-3 text-white/80 hover:bg-white/5 transition-colors"
+                      >
+                        <span className="font-medium">Партнерская программа</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Phone Section */}
