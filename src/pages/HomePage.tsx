@@ -448,8 +448,8 @@ export default function HomePage() {
               <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
                 Ваш ИИ-продавец<br />
                 работает <span className="text-primary">24/7</span><br />
-                Пока вы спите, он<br />
-                зарабатывает
+                Пока конкуренты спят,<br />
+                он зарабатывает
               </h1>
 
               {/* Description */}
