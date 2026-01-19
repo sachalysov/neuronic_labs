@@ -1678,12 +1678,12 @@ export default function HomePage() {
             {/* Main Content */}
             <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12">
               {/* Portrait - Mobile: centered, Desktop: left */}
-              <div className="w-full md:order-1 flex justify-center md:justify-start">
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-md md:max-w-none">
+              <div className="w-full md:order-1 flex justify-center md:justify-start md:self-stretch">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-md md:max-w-none md:h-full">
                   <img 
                     src="/images/founder-portrait.jpg" 
                     alt="Александр Лысов - Основатель NEURONIC LABS" 
-                    className="w-full h-auto object-cover"
+                    className="w-full h-full object-cover"
                     loading="lazy"
                   />
                 </div>
