@@ -884,7 +884,7 @@ export default function HomePage() {
                 <CardContent className="p-5 sm:p-6 flex items-center justify-center h-full">
                   <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-background overflow-hidden shadow-2xl">
                     <img 
-                      src="/images/demo-chat-mobile.png" 
+                      src="/images/demo-chat-mobile.jpg" 
                       alt="Пример диалога ИИ‑продавца" 
                       className="w-full h-full object-cover"
                       loading="lazy"
