@@ -205,9 +205,10 @@ export default function ContactsPage() {
                     <p>
                       <strong>Возможна поэтапная оплата</strong>
                     </p>
+                    {/* Кнопка сворачивания - только на мобильных устройствах */}
                     <button
                       onClick={() => setIsPaymentMethodsOpen(!isPaymentMethodsOpen)}
-                      className="flex items-center justify-between w-full text-left font-semibold mb-2 hover:text-primary transition-colors"
+                      className="md:hidden flex items-center justify-between w-full text-left font-semibold mb-2 hover:text-primary transition-colors"
                     >
                       <span>Доступные способы оплаты:</span>
                       <ChevronDown
@@ -216,9 +217,12 @@ export default function ContactsPage() {
                         }`}
                       />
                     </button>
+                    {/* Заголовок для десктопа - всегда видимый */}
+                    <h3 className="hidden md:block font-semibold mb-2">Доступные способы оплаты:</h3>
+                    {/* Контент - всегда раскрыт на десктопе, сворачивается на мобильных */}
                     <div
-                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                        isPaymentMethodsOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'
+                      className={`overflow-hidden transition-all duration-300 ease-in-out md:!max-h-none md:!opacity-100 ${
+                        isPaymentMethodsOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 md:max-h-none md:opacity-100'
                       }`}
                     >
                       <div className="pt-2">
