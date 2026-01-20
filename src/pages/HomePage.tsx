@@ -372,9 +372,9 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiIgc3Ryb2tlPSJyZ2JhKDI1NSwgMjU1LCAyNTUsIDAuMDIpIi8+PC9nPjwvc3ZnPg==')] opacity-20 z-[1]" />
 
         {/* Content */}
-        <div className="container mx-auto px-4 py-20 relative z-10">
+        <div className="container mx-auto px-4 pt-20 !pb-0 md:!pb-20 relative z-10">
           <div className="max-w-3xl">
-            <div className="space-y-6 sm:space-y-8">
+            <div className="space-y-6 sm:space-y-8 [&>*:last-child]:mb-0">
               {/* Top badges with checkmarks */}
               <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
                 <div className="flex items-center gap-1.5 sm:gap-2">
@@ -406,6 +406,9 @@ export default function HomePage() {
                 <p className="text-primary font-semibold">Конверсия растет в 3-5 раз за первый месяц</p>
               </div>
 
+              {/* Spacer for buttons */}
+              <div className="h-[100px]"></div>
+
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
                 <Button size="lg" className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 animate-pulse w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
                   Бесплатный аудит + демо за 5 минут
@@ -434,7 +437,7 @@ export default function HomePage() {
               </div>
 
               {/* Mobile scroll hint under CTA */}
-              <div className="md:hidden flex flex-col items-center mt-6 gap-1 text-muted-foreground/80">
+              <div className="md:hidden flex flex-col items-center mt-6 gap-1 text-muted-foreground/80 -mb-6 sm:-mb-8">
                 <span className="text-xs tracking-wide uppercase">
                   Листайте ниже
                 </span>
