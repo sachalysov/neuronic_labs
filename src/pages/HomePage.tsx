@@ -432,6 +432,14 @@ export default function HomePage() {
                   Попробовать демо
                 </Button>
               </div>
+
+              {/* Mobile scroll hint under CTA */}
+              <div className="md:hidden flex flex-col items-center mt-6 gap-1 text-muted-foreground/80">
+                <span className="text-xs tracking-wide uppercase">
+                  Листайте ниже
+                </span>
+                <ChevronDown className="h-6 w-6 animate-bounce" />
+              </div>
             </div>
           </div>
         </div>
