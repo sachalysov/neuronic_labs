@@ -282,10 +282,10 @@ html[data-theme="dark"] .hero-bottom-fade {
     padding-right: 0.75rem !important;
   }
 
-  /* Секции - уменьшаем вертикальные отступы для py-12 и py-20 */
+  /* Секции - увеличиваем вертикальные отступы для мобильных */
   section {
-    padding-top: 2rem !important;
-    padding-bottom: 2rem !important;
+    padding-top: 5rem !important;
+    padding-bottom: 5rem !important;
   }
 
   /* Hero секция - уменьшаем padding контента, но не трогаем изображение робота */
