@@ -32,8 +32,8 @@ export function CapabilitiesList() {
               <h4 className="font-semibold text-card-foreground mb-3">Что он умеет?</h4>
               <ul className="space-y-1.5 list-disc list-inside ml-2 text-muted-foreground">
                 <li>Консультирует по наличию</li>
-                <li>Расчитывает стоимость</li>
-                <li>Предлагает дополниельный товар и услуги</li>
+                <li>Рассчитывает стоимость</li>
+                <li>Предлагает дополнительный товар и услуги</li>
                 <li>Закрывает возражения</li>
                 <li>Записывает номера телефонов, имена, адреса</li>
                 <li>Подсказывает ближайший магазин или офис от дома клиента</li>
