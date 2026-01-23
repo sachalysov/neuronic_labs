@@ -1939,9 +1939,9 @@ export default function HomePage() {
 
       {/* Mobile Demo Chat Modal */}
       {isDemoChatOpen && (
-        <div className="md:hidden fixed inset-0 bg-background z-50 flex flex-col">
+        <div className="md:hidden fixed inset-0 bg-background z-50 flex flex-col h-screen">
           {/* Demo Chat Content - Full Screen */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden h-full">
             <DemoChat onClose={() => setIsDemoChatOpen(false)} isMobile={true} />
           </div>
         </div>

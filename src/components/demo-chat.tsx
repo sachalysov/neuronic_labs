@@ -163,6 +163,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const inputContainerRef = useRef<HTMLDivElement>(null)
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
   const handleResetChatRef = useRef<(() => void) | null>(null)
+  const [inputContainerHeight, setInputContainerHeight] = useState(0)
 
   // Функция для проверки, содержит ли сообщение фразу о записи
   const containsBookingConfirmation = (text: string | undefined | null): boolean => {
@@ -675,6 +676,31 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     }
   }
 
+  // Измерение высоты контейнера ввода для мобильных устройств
+  useEffect(() => {
+    if (!isMobile || !inputContainerRef.current) return
+
+    const updateHeight = () => {
+      if (inputContainerRef.current) {
+        const height = inputContainerRef.current.offsetHeight
+        setInputContainerHeight(height)
+      }
+    }
+
+    // Измеряем высоту при монтировании и изменениях
+    updateHeight()
+
+    // Используем ResizeObserver для отслеживания изменений высоты
+    const resizeObserver = new ResizeObserver(updateHeight)
+    if (inputContainerRef.current) {
+      resizeObserver.observe(inputContainerRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [isMobile, linkButtonsVisible, showProtecResultButton, showVomolokoResultButton, messages.length, selectedImage])
+
   // Прокрутка к полю ввода при фокусе на мобильных устройствах
   useEffect(() => {
     if (!isMobile || typeof window === 'undefined') return
@@ -736,7 +762,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   return (
     <>
-    <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} ${isMobile ? '' : 'mx-auto'} ${isMobile ? '' : 'shadow-2xl'} border-gray-200 bg-white ${isMobile ? 'rounded-none border-0' : ''} ${isMobile ? 'flex flex-col' : ''} relative`}>
+    <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} ${isMobile ? '' : 'mx-auto'} ${isMobile ? '' : 'shadow-2xl'} border-gray-200 bg-white ${isMobile ? 'rounded-none border-0' : ''} ${isMobile ? 'flex flex-col h-full' : ''} relative`}>
       <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -771,8 +797,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0' : ''}`}>
-        <div ref={messagesContainerRef} className={`relative ${isMobile ? 'flex-1 min-h-0' : 'h-[500px]'} overflow-y-auto p-6 space-y-4 bg-gray-50`}>
+      <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0 overflow-hidden' : ''}`}>
+        <div 
+          ref={messagesContainerRef} 
+          className={`relative ${isMobile ? 'flex-1 min-h-0 overflow-y-auto' : 'h-[500px]'} ${isMobile ? '' : 'overflow-y-auto'} p-6 space-y-4 bg-gray-50`}
+          style={isMobile ? { paddingBottom: `${inputContainerHeight}px` } : undefined}
+        >
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
               <div
@@ -863,7 +893,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
         <div 
           ref={inputContainerRef}
-          className={`p-4 border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}
+          className={`${isMobile ? 'px-4 pt-4' : 'p-4'} border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'fixed bottom-0 left-0 right-0 z-10' : ''}`}
+          style={isMobile ? { 
+            paddingBottom: `max(1rem, env(safe-area-inset-bottom))`,
+            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)'
+          } : undefined}
         >
           {linkButtonsVisible && (
             <div className="flex gap-2 mb-2">
