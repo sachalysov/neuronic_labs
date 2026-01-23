@@ -534,13 +534,13 @@ function formatLinks(text: string, startKey: number): React.ReactNode {
     // Добавляем текст до ссылки
     if (match.index > lastIndex) {
       const textBefore = text.substring(lastIndex, match.index);
-      const formatted = formatBoldItalic(textBefore, key * 1000);
+      const formatted = formatHeaders(textBefore, key * 1000);
       if (Array.isArray(formatted)) {
         parts.push(...formatted);
       } else {
         parts.push(formatted);
       }
-      key += (textBefore.match(/\*\*|\*|_/g) || []).length;
+      key += (textBefore.match(/\*\*|\*|_|###/g) || []).length;
     }
     
     // Добавляем ссылку
@@ -555,6 +555,58 @@ function formatLinks(text: string, startKey: number): React.ReactNode {
         {match[1]}
       </a>
     );
+    
+    lastIndex = regex.lastIndex;
+  }
+  
+  // Обрабатываем оставшийся текст
+  if (lastIndex < text.length) {
+    const textAfter = text.substring(lastIndex);
+    const formatted = formatHeaders(textAfter, key * 1000);
+    if (Array.isArray(formatted)) {
+      parts.push(...formatted);
+    } else {
+      parts.push(formatted);
+    }
+  }
+  
+  return parts.length > 0 ? parts : formatHeaders(text, startKey);
+}
+
+// Обработка заголовков с ### для увеличения размера текста
+function formatHeaders(text: string, startKey: number): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let key = startKey;
+  
+  // Обрабатываем ###текст или ### текст (с пробелом или без)
+  // Ищем ### за которым следует текст до следующего ###, конца строки или конца текста
+  const regex = /###([^\n#]+?)(?=###|$|\n)/g;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    // Добавляем текст до заголовка
+    if (match.index > lastIndex) {
+      const textBefore = text.substring(lastIndex, match.index);
+      const formatted = formatBoldItalic(textBefore, key * 1000);
+      if (Array.isArray(formatted)) {
+        parts.push(...formatted);
+      } else {
+        parts.push(formatted);
+      }
+      key += (textBefore.match(/\*\*|\*|_/g) || []).length;
+    }
+    
+    // Обрабатываем текст после ### с увеличенным размером
+    const headerText = match[1].trim();
+    if (headerText) {
+      parts.push(
+        <span key={key++} style={{ fontSize: '1rem', fontWeight: 600 }}>
+          {formatBoldItalic(headerText, key * 1000)}
+        </span>
+      );
+      key += 100;
+    }
     
     lastIndex = regex.lastIndex;
   }

@@ -1010,9 +1010,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Напишите нам свой вопрос..."
-              className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none"
+              className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none text-base"
               rows={1}
               disabled={!isUnlocked}
+              style={{ fontSize: '16px' }}
             />
             <Button type="submit" disabled={isLoading || (!input.trim() && !selectedImage) || !isUnlocked} size="icon" className="shrink-0">
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
