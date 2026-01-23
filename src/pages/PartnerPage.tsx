@@ -4,8 +4,10 @@ import { ChatWidget } from "@/components/chat-widget"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { DemoChat } from "@/components/demo-chat"
 import { useMeta } from "@/hooks/useMeta"
 import { createPartnerMetaTags } from "@/lib/meta"
+import { useState } from "react"
 import {
   DollarSign,
   CheckCircle,
@@ -14,12 +16,15 @@ import {
   ArrowRight,
   FileText,
   Zap,
+  MessageCircle,
+  Sparkles,
 } from "lucide-react"
 
 const PARTNER_FORM_URL = "https://forms.gle/WvPJUvesbsyx25xM8"
 
 export default function PartnerPage() {
   useMeta(createPartnerMetaTags())
+  const [isDemoChatOpen, setIsDemoChatOpen] = useState(false)
 
   const advantages = [
     {
@@ -345,6 +350,52 @@ export default function PartnerPage() {
         </div>
       </section>
 
+      {/* Demo Chat Section - Desktop */}
+      <section className="hidden md:block py-28 sm:py-32 px-4 bg-gradient-to-b from-background to-secondary/20">
+        <div className="container mx-auto">
+          <div className="max-w-4xl mx-auto text-center space-y-8 mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-balance section-title">Попробуйте ИИ-продавца прямо сейчас</h2>
+            <p className="text-xl text-muted-foreground">
+              Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
+              закрывает возражения 24/7.
+            </p>
+          </div>
+
+          <DemoChat />
+
+          <p className="text-center text-muted-foreground mt-8 text-sm">
+            Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
+          </p>
+        </div>
+      </section>
+
+      {/* Demo Chat Section - Mobile with Button */}
+      <section className="md:hidden py-28 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
+        <div className="container mx-auto">
+          <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-balance section-title">Попробуйте ИИ-продавца прямо сейчас</h2>
+            <p className="text-base sm:text-lg text-muted-foreground">
+              Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
+              закрывает возражения 24/7.
+            </p>
+            
+            <Button
+              onClick={() => setIsDemoChatOpen(true)}
+              className="h-12 sm:h-14 px-6 sm:px-8 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2 sm:gap-3 text-sm sm:text-base font-semibold mx-auto"
+              size="lg"
+            >
+              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
+              Протестировать ИИ-бот
+              <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
+            </Button>
+            
+            <p className="text-center text-muted-foreground mt-4 text-sm">
+              Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-12 sm:py-20 px-3 sm:px-4 bg-gradient-to-br from-primary/20 to-secondary/20">
         <div className="container mx-auto max-w-3xl text-center">
@@ -371,6 +422,16 @@ export default function PartnerPage() {
       <Footer />
 
       <ChatWidget />
+
+      {/* Mobile Demo Chat Modal */}
+      {isDemoChatOpen && (
+        <div className="md:hidden fixed inset-0 bg-background z-50 flex flex-col">
+          {/* Demo Chat Content - Full Screen */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <DemoChat onClose={() => setIsDemoChatOpen(false)} isMobile={true} />
+          </div>
+        </div>
+      )}
     </main>
   )
 }
