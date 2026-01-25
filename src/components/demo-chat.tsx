@@ -164,6 +164,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [showProtecResultButton, setShowProtecResultButton] = useState(false)
   // Состояние для отображения кнопки результата заказа для vomoloko.ru
   const [showVomolokoResultButton, setShowVomolokoResultButton] = useState(false)
+  // Состояние для имени бота
+  const [botName, setBotName] = useState("Бот Мария")
+  // Состояние для отображения текста "Отвечает мгновенно"
+  const [showInstantResponse, setShowInstantResponse] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -262,6 +266,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     // Блокируем чат снова при сбросе (новый session ID, заглушка должна появиться)
     setIsUnlocked(false)
     setShowRules(false)
+
+    // Сбрасываем имя бота на начальное
+    setBotName("Бот Мария")
+    // Восстанавливаем текст "Отвечает мгновенно"
+    setShowInstantResponse(true)
 
     // Закрываем модальные окна консультации и контекста при сбросе
     setIsConsultationModalOpen(false)
@@ -500,6 +509,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
     // Если это кнопка vomoloko.ru, переключаемся на новый webhook
     if (link === "vomoloko.ru") {
+      // Обновляем имя бота
+      setBotName("Мария Во!Молоко")
+      // Скрываем текст "Отвечает мгновенно"
+      setShowInstantResponse(false)
       // Открываем модальное окно с контекстом
       setIsVomolokoContextModalOpen(true)
 
@@ -563,6 +576,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         setIsLoading(false)
       }
     } else if (link === "protec.one") {
+      // Обновляем имя бота
+      setBotName("Мария Protec.One")
+      // Скрываем текст "Отвечает мгновенно"
+      setShowInstantResponse(false)
       // Открываем модальное окно с контекстом
       setIsProtecContextModalOpen(true)
 
@@ -777,12 +794,17 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
+              <div className="relative w-12 h-12">
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                  <img src="/images/bot-mariya.png" alt="AI" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900">Бот Мария</h3>
-                <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
+                <h3 className="text-lg font-bold text-gray-900">{botName}</h3>
+                <p className="text-sm text-gray-600">
+                  Онлайн{showInstantResponse && " • Отвечает мгновенно"}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">

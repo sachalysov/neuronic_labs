@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Send, Smile, X, RotateCcw } from "lucide-react"
+import { Send, X, RotateCcw } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
@@ -28,7 +28,7 @@ export function ChatWidget() {
   const [sessionId, setSessionId] = useState(() => {
     const stored = getLocalStorage('chat-widget-session-id')
     const lastActivity = getLocalStorage('chat-widget-last-activity')
-    
+
     // Проверяем неактивность при загрузке
     if (lastActivity) {
       const lastActivityTime = parseInt(lastActivity, 10)
@@ -44,7 +44,7 @@ export function ChatWidget() {
         return newId
       }
     }
-    
+
     if (stored) {
       // Обновляем время последней активности при загрузке
       setLocalStorage('chat-widget-last-activity', Date.now().toString())
@@ -55,12 +55,12 @@ export function ChatWidget() {
     setLocalStorage('chat-widget-last-activity', Date.now().toString())
     return newId
   })
-  
+
   const [isOpen, setIsOpen] = useState(false)
   // Загружаем сообщения из localStorage или используем начальные
   const [messages, setMessages] = useState<Message[]>(() => {
     const lastActivity = getLocalStorage('chat-widget-last-activity')
-    
+
     // Если сессия истекла, возвращаем начальные сообщения
     if (lastActivity) {
       const lastActivityTime = parseInt(lastActivity, 10)
@@ -69,7 +69,7 @@ export function ChatWidget() {
         return getInitialMessages()
       }
     }
-    
+
     const stored = getLocalStorage('chat-widget-messages')
     if (stored) {
       try {
@@ -104,19 +104,19 @@ export function ChatWidget() {
     // Генерируем новый sessionId
     const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
     setSessionId(newId)
-    
+
     // Очищаем localStorage
     removeLocalStorage('chat-widget-session-id')
     removeLocalStorage('chat-widget-messages')
     removeLocalStorage('chat-widget-last-activity')
-    
+
     // Сохраняем новый sessionId и время активности
     setLocalStorage('chat-widget-session-id', newId)
     setLocalStorage('chat-widget-last-activity', Date.now().toString())
-    
+
     // Сбрасываем сообщения на начальные
     setMessages(getInitialMessages())
-    
+
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
       clearTimeout(inactivityTimerRef.current)
@@ -136,12 +136,12 @@ export function ChatWidget() {
   // Функция для обновления времени последней активности
   const updateLastActivity = useCallback(() => {
     setLocalStorage('chat-widget-last-activity', Date.now().toString())
-    
+
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
       clearTimeout(inactivityTimerRef.current)
     }
-    
+
     // Устанавливаем новый таймер на 60 минут
     inactivityTimerRef.current = setTimeout(() => {
       if (handleResetChatRef.current) {
@@ -160,7 +160,7 @@ export function ChatWidget() {
   // Инициализация таймера неактивности при монтировании
   useEffect(() => {
     updateLastActivity()
-    
+
     return () => {
       if (inactivityTimerRef.current) {
         clearTimeout(inactivityTimerRef.current)
@@ -241,68 +241,61 @@ export function ChatWidget() {
       <div className="w-[380px] h-[600px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="bg-secondary/50 border-b border-border p-4 sm:p-6 flex items-center justify-between rounded-t-2xl">
-        <div className="flex items-center gap-3 flex-1">
-          <div className="text-2xl sm:text-3xl">💬</div>
-          <h3 className="font-semibold text-lg">Добро пожаловать в чат!</h3>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleResetChat}
-            className="hover:bg-secondary flex-shrink-0"
-            title="Начать сначала"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:bg-secondary flex-shrink-0">
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${
-              message.sender === "user" ? "justify-end" : "justify-start"
-            } animate-slide-in-${message.sender === "user" ? "right" : "left"}`}
-          >
-            <div
-              className={`flex items-start gap-2 max-w-[85%] ${
-                message.sender === "user" ? "flex-row-reverse" : "flex-row"
-              }`}
-            >
-              <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  message.sender === "user" ? "bg-muted/50" : "bg-primary/50"
-                }`}
-              >
-                <span className="text-sm font-semibold">{message.sender === "user" ? "👤" : "🤖"}</span>
+          <div className="flex items-center gap-3 flex-1">
+            <div className="relative w-12 h-12">
+              <div className="w-12 h-12 rounded-full overflow-hidden">
+                <img src="/images/bot-mariya.png" alt="AI" className="w-full h-full object-cover" />
               </div>
-              <div
-                className={`p-3 rounded-2xl ${
-                  message.sender === "user"
-                    ? "bg-muted/50 text-foreground rounded-tr-sm"
-                    : "bg-primary/50 text-primary-foreground rounded-tl-sm"
-                }`}
-              >
-                <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
-                <p className={`text-xs mt-2 ${message.sender === "user" ? "text-foreground/70" : "text-primary-foreground/70"}`}>
-                  {formatTime(message.timestamp)}
-                </p>
-              </div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">Бот Мария</h3>
+              <p className="text-sm text-muted-foreground">Онлайн</p>
             </div>
           </div>
-        ))}
-        {isLoading && (
-          <div className="flex justify-start animate-slide-in-left">
-            <div className="flex items-start gap-2">
-              <div className="w-10 h-10 rounded-full bg-primary/50 flex items-center justify-center">
-                <span className="text-sm">🤖</span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleResetChat}
+              className="hover:bg-secondary flex-shrink-0"
+              title="Начать сначала"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:bg-secondary flex-shrink-0">
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"
+                } animate-slide-in-${message.sender === "user" ? "right" : "left"}`}
+            >
+              <div
+                className={`max-w-[85%]`}
+              >
+                <div
+                  className={`p-3 rounded-2xl ${message.sender === "user"
+                    ? "bg-muted/50 text-foreground rounded-tr-sm"
+                    : "bg-primary/50 text-primary-foreground rounded-tl-sm"
+                    }`}
+                >
+                  <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
+                  <p className={`text-xs mt-2 ${message.sender === "user" ? "text-foreground/70" : "text-primary-foreground/70"}`}>
+                    {formatTime(message.timestamp)}
+                  </p>
+                </div>
               </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="flex justify-start animate-slide-in-left">
               <div className="bg-primary/50 text-primary-foreground p-3 rounded-2xl rounded-tl-sm">
                 <div className="flex gap-1">
                   <span
@@ -320,36 +313,32 @@ export function ChatWidget() {
                 </div>
               </div>
             </div>
-          </div>
-        )}
-        {error && <div className="text-center text-sm text-destructive bg-destructive/10 p-2 rounded">{error}</div>}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Input */}
-      <div className="p-4 border-t border-border">
-        <div className="flex items-center gap-2">
-          <Input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Напишите свой вопрос..."
-            disabled={isLoading}
-            className="flex-1 bg-secondary border-border"
-          />
-          <Button size="icon" variant="ghost" className="flex-shrink-0" disabled>
-            <Smile className="h-5 w-5" />
-          </Button>
-          <Button
-            size="icon"
-            onClick={handleSendMessage}
-            disabled={!inputValue.trim() || isLoading}
-            className="flex-shrink-0"
-          >
-            <Send className="h-5 w-5" />
-          </Button>
+          )}
+          {error && <div className="text-center text-sm text-destructive bg-destructive/10 p-2 rounded">{error}</div>}
+          <div ref={messagesEndRef} />
         </div>
-      </div>
+
+        {/* Input */}
+        <div className="p-4 border-t border-border">
+          <div className="flex items-center gap-2">
+            <Input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Напишите свой вопрос..."
+              disabled={isLoading}
+              className="flex-1 bg-secondary border-border"
+            />
+            <Button
+              size="icon"
+              onClick={handleSendMessage}
+              disabled={!inputValue.trim() || isLoading}
+              className="flex-shrink-0"
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   )
