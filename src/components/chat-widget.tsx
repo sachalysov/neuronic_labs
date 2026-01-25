@@ -249,7 +249,7 @@ export function ChatWidget() {
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Бот Мария</h3>
+              <h3 className="font-semibold text-lg">Мария</h3>
               <p className="text-sm text-muted-foreground">Онлайн</p>
             </div>
           </div>
