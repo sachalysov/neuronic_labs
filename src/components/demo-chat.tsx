@@ -886,7 +886,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                       <p>• Назови свою нишу и я расскажу что мы можем в ней автоматизировать</p>
                       <p>• Либо протестируй ИИ-продавца нажав на любую кнопку над строкой ввода</p>
                       <p>• Ознакомься с контекстом сайта в появившемся окне</p>
-                      <p>• Чтобы начать сначала, используй кнопку "Начать сначала" в шапке чата</p>                      
+                      <p>• Чтобы начать сначала, используй кнопку "Начать сначала" в шапке чата</p>
                     </div>
                     <Button
                       onClick={handleUnlockChat}
@@ -995,7 +995,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 e.preventDefault()
                 handleSend()
               }}
-              className="flex gap-2 items-end"
+              className="flex gap-2 items-start"
             >
               <input
                 type="file"
@@ -1010,7 +1010,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isLoading || !isUnlocked}
-                className="shrink-0"
+                className="shrink-0 h-[44px] w-[44px]"
               >
                 <ImageIcon className="h-5 w-5" />
               </Button>
@@ -1020,12 +1020,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Напишите нам свой вопрос..."
-                className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none text-base"
+                className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none text-sm py-3"
                 rows={1}
                 disabled={!isUnlocked}
-                style={{ fontSize: '16px' }}
               />
-              <Button type="submit" disabled={isLoading || (!input.trim() && !selectedImage) || !isUnlocked} size="icon" className="shrink-0">
+              <Button type="submit" disabled={isLoading || (!input.trim() && !selectedImage) || !isUnlocked} size="icon" className="shrink-0 h-[44px] w-[44px]">
                 {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
               </Button>
             </form>
