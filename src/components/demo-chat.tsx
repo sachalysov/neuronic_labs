@@ -32,7 +32,7 @@ const getInitialMessages = (): Message[] => [
   },
   {
     id: "2",
-    text: "**Либо добавь в чат ссылку на свой сайт** и протестируй то как будет работать ИИ-продавец на твоем сайте. Но есть небольшая пометка, если на выбранном сайте стоит проверка от роботов, я не смогу его проанализировать, так что жмите -**Начать сначала**- и пробуйте другой",
+    text: "Либо **назови свою нишу**, я расскажу что мы можем в ней **автоматизировать**",
     sender: "bot",
     timestamp: new Date(),
   },
@@ -52,7 +52,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [sessionId, setSessionId] = useState(() => {
     const stored = getLocalStorage('demo-chat-session-id')
     const lastActivity = getLocalStorage('demo-chat-last-activity')
-    
+
     // Проверяем неактивность при загрузке
     if (lastActivity) {
       const lastActivityTime = parseInt(lastActivity, 10)
@@ -62,13 +62,15 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         removeLocalStorage('demo-chat-session-id')
         removeLocalStorage('demo-chat-messages')
         removeLocalStorage('demo-chat-last-activity')
+        // Очищаем информацию о разблокировке для истекшего session ID
+        removeLocalStorage('demo-chat-unlocked-session-id')
         const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
         setLocalStorage('demo-chat-session-id', newId)
         setLocalStorage('demo-chat-last-activity', Date.now().toString())
         return newId
       }
     }
-    
+
     if (stored) {
       // Обновляем время последней активности при загрузке
       setLocalStorage('demo-chat-last-activity', Date.now().toString())
@@ -79,11 +81,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setLocalStorage('demo-chat-last-activity', Date.now().toString())
     return newId
   })
-  
+
   // Загружаем сообщения из localStorage или используем начальные
   const [messages, setMessages] = useState<Message[]>(() => {
     const lastActivity = getLocalStorage('demo-chat-last-activity')
-    
+
     // Если сессия истекла, возвращаем начальные сообщения
     if (lastActivity) {
       const lastActivityTime = parseInt(lastActivity, 10)
@@ -92,7 +94,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         return getInitialMessages()
       }
     }
-    
+
     const stored = getLocalStorage('demo-chat-messages')
     if (stored) {
       try {
@@ -111,8 +113,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  // Состояние для блокировки чата заглушкой (всегда заблокирован при загрузке)
-  const [isUnlocked, setIsUnlocked] = useState(false)
+  // Состояние для блокировки чата заглушкой - проверяем, был ли разблокирован для текущего session ID
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    const unlockedSessionId = getLocalStorage('demo-chat-unlocked-session-id')
+    const currentSessionId = getLocalStorage('demo-chat-session-id')
+    // Если есть сохраненный разблокированный session ID и он совпадает с текущим, разблокируем
+    return unlockedSessionId === currentSessionId && !!unlockedSessionId
+  })
   // Состояние для показа правил использования
   const [showRules, setShowRules] = useState(false)
 
@@ -123,7 +130,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`
     }
   }, [input])
-  
+
   // Определяем видимость кнопок: скрываем если диалог уже начат (есть пользовательские сообщения)
   const [linkButtonsVisible, setLinkButtonsVisible] = useState(() => {
     // Проверяем сохраненные сообщения
@@ -169,29 +176,29 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const containsBookingConfirmation = (text: string | undefined | null): boolean => {
     if (!text) return false
     const lowerText = text.toLowerCase()
-    return lowerText.includes('подтверждаете запись') || 
-           lowerText.includes('записала!') || 
-           lowerText.includes('записала') ||
-           lowerText.includes('вам придет смс с подтверждением записи') ||
-           lowerText.includes('оформила заказ') ||
-           lowerText.includes('подтверждаете заказ') ||
-           lowerText.includes('оформила!') ||
-           lowerText.includes('оформила') ||
-           lowerText.includes('вам придет смс с подтверждением заказа') ||
-           lowerText.includes('заказ оформлен')
+    return lowerText.includes('подтверждаете запись') ||
+      lowerText.includes('записала!') ||
+      lowerText.includes('записала') ||
+      lowerText.includes('вам придет смс с подтверждением записи') ||
+      lowerText.includes('оформила заказ') ||
+      lowerText.includes('подтверждаете заказ') ||
+      lowerText.includes('оформила!') ||
+      lowerText.includes('оформила') ||
+      lowerText.includes('вам придет смс с подтверждением заказа') ||
+      lowerText.includes('заказ оформлен')
   }
 
   // Функция для проверки, содержит ли текст ссылки на изображения
   const hasImageUrlInText = (text: string): boolean => {
     if (!text) return false
-    
+
     const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)]*)?/i
     const urlRegex = /(https?:\/\/[^\s\)]+)/g
     const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
-    
+
     const urls = text.match(urlRegex)
     if (!urls) return false
-    
+
     return urls.some(url => {
       return imageExtensions.test(url) || imageIndicators.some(indicator => url.toLowerCase().includes(indicator))
     })
@@ -210,13 +217,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   // Функция для обновления времени последней активности
   const updateLastActivity = useCallback(() => {
     setLocalStorage('demo-chat-last-activity', Date.now().toString())
-    
+
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
       clearTimeout(inactivityTimerRef.current)
       inactivityTimerRef.current = null
     }
-    
+
     // Устанавливаем новый таймер на 60 минут
     inactivityTimerRef.current = setTimeout(() => {
       // Используем актуальную функцию через ref
@@ -231,48 +238,50 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     // Генерируем новый sessionId
     const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
     setSessionId(newId)
-    
+
     // Очищаем localStorage
     removeLocalStorage('demo-chat-session-id')
     removeLocalStorage('demo-chat-messages')
     removeLocalStorage('demo-chat-last-activity')
     removeLocalStorage('demo-chat-webhook-url')
     removeLocalStorage('demo-chat-buttons-hidden')
-    
+    // Очищаем информацию о разблокировке для старого session ID
+    removeLocalStorage('demo-chat-unlocked-session-id')
+
     // Сохраняем новый sessionId и время активности
     setLocalStorage('demo-chat-session-id', newId)
     setLocalStorage('demo-chat-last-activity', Date.now().toString())
-    
+
     // Сбрасываем сообщения на начальные
     setMessages(getInitialMessages())
-    
+
     // Показываем кнопки со ссылками снова и удаляем флаг из localStorage
     setLinkButtonsVisible(true)
     removeLocalStorage('demo-chat-buttons-hidden')
-    
-    // Блокируем чат снова при сбросе
+
+    // Блокируем чат снова при сбросе (новый session ID, заглушка должна появиться)
     setIsUnlocked(false)
     setShowRules(false)
-    
+
     // Закрываем модальные окна консультации и контекста при сбросе
     setIsConsultationModalOpen(false)
     setIsVomolokoContextModalOpen(false)
     setIsProtecContextModalOpen(false)
-    
+
     // Скрываем кнопки результатов при сбросе
     setShowProtecResultButton(false)
     setShowVomolokoResultButton(false)
-    
+
     // Сбрасываем изображение
     setSelectedImage(null)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
-    
+
     // Сбрасываем webhook на исходный (undefined = стандартный для demo)
     setCurrentWebhookUrl(undefined)
     removeLocalStorage('demo-chat-webhook-url')
-    
+
     // Переустанавливаем таймер неактивности для новой сессии
     updateLastActivity()
   }, [updateLastActivity])
@@ -291,7 +300,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   // Проверяем при загрузке и изменении сообщений/webhook, нужно ли показывать кнопку результата записи
   useEffect(() => {
-    const hasConfirmationMessage = messages.some(msg => 
+    const hasConfirmationMessage = messages.some(msg =>
       msg.sender === "bot" && msg.text && containsBookingConfirmation(msg.text)
     )
 
@@ -316,7 +325,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       try {
         const vomoloko = await getWebhookFromSettings('webhook_demo_chat_vomoloko')
         const protec = await getWebhookFromSettings('webhook_demo_chat_protec')
-        
+
         // Используем вебхуки из админки, если они есть, иначе используем константы
         setWebhookVomoloko(vomoloko || DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
         setWebhookProtec(protec || DEMO_CHAT_PROTEC_WEBHOOK_URL)
@@ -327,14 +336,14 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         setWebhookProtec(DEMO_CHAT_PROTEC_WEBHOOK_URL)
       }
     }
-    
+
     loadWebhooks()
   }, [])
 
   // Инициализация таймера неактивности при монтировании и очистка при размонтировании
   useEffect(() => {
     updateLastActivity()
-    
+
     return () => {
       if (inactivityTimerRef.current) {
         clearTimeout(inactivityTimerRef.current)
@@ -387,7 +396,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
     const messageText = input.trim() || ""
     const imageBase64 = selectedImage || undefined
-    
+
     const userMessage: Message = {
       id: Date.now().toString(),
       text: messageText,
@@ -398,9 +407,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
     // Проверяем, есть ли уже пользовательские сообщения перед добавлением нового
     const hasExistingUserMessages = messages.some(msg => msg.sender === "user")
-    
+
     setMessages((prev) => addUserMessage(prev, userMessage))
-    
+
     // Если это первое пользовательское сообщение, скрываем кнопки
     if (!hasExistingUserMessages && linkButtonsVisible) {
       setLinkButtonsVisible(false)
@@ -434,7 +443,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       }
 
       setMessages((prev) => [...prev, botMessage])
-      
+
       // Проверяем, нужно ли показать кнопку результата записи/заказа
       if (containsBookingConfirmation(response.message)) {
         if (currentWebhookUrl === webhookProtec) {
@@ -444,7 +453,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           setShowVomolokoResultButton(true)
         }
       }
-      
+
       updateLastActivity() // Обновляем активность при получении ответа
     } catch (error) {
       const errorText = error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже."
@@ -478,6 +487,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const handleUnlockChat = () => {
     setIsUnlocked(true)
     setShowRules(false)
+    // Сохраняем текущий session ID как разблокированный
+    setLocalStorage('demo-chat-unlocked-session-id', sessionId)
   }
 
   const handleSendLink = async (link: string) => {
@@ -491,20 +502,20 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     if (link === "vomoloko.ru") {
       // Открываем модальное окно с контекстом
       setIsVomolokoContextModalOpen(true)
-      
+
       // Используем вебхук из админ настроек или константу
       const vomolokoWebhook = webhookVomoloko || DEMO_CHAT_VOMOLOKO_WEBHOOK_URL
-      
+
       // Устанавливаем новый webhook
       setCurrentWebhookUrl(vomolokoWebhook)
       setLocalStorage('demo-chat-webhook-url', vomolokoWebhook)
-      
+
       setIsLoading(true)
       updateLastActivity()
 
       try {
         const messageText = "У меня есть пара вопросов"
-        
+
         // Показываем отправленное сообщение в чате сразу
         const userMessage: Message = {
           id: Date.now().toString(),
@@ -513,10 +524,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           timestamp: new Date(),
         }
         setMessages((prev) => addUserMessage(prev, userMessage))
-        
+
         console.log('Отправка запроса на webhook:', vomolokoWebhook)
         console.log('Данные запроса:', { messageText, sessionId })
-        
+
         // Отправляем фиксированное сообщение на новый webhook
         const response = await sendChatMessage(messageText, 'demo', sessionId, vomolokoWebhook)
 
@@ -532,12 +543,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
 
         setMessages((prev) => [...prev, botMessage])
-        
+
         // Проверяем, нужно ли показать кнопку результата заказа для vomoloko.ru
         if (containsBookingConfirmation(response.message)) {
           setShowVomolokoResultButton(true)
         }
-        
+
         updateLastActivity()
       } catch (error) {
         console.error('Ошибка при отправке на webhook:', error)
@@ -554,20 +565,20 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     } else if (link === "protec.one") {
       // Открываем модальное окно с контекстом
       setIsProtecContextModalOpen(true)
-      
+
       // Используем вебхук из админ настроек или константу
       const protecWebhook = webhookProtec || DEMO_CHAT_PROTEC_WEBHOOK_URL
-      
+
       // Устанавливаем новый webhook
       setCurrentWebhookUrl(protecWebhook)
       setLocalStorage('demo-chat-webhook-url', protecWebhook)
-      
+
       setIsLoading(true)
       updateLastActivity()
 
       try {
         const messageText = "У меня есть пара вопросов"
-        
+
         // Показываем отправленное сообщение в чате сразу
         const userMessage: Message = {
           id: Date.now().toString(),
@@ -576,10 +587,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           timestamp: new Date(),
         }
         setMessages((prev) => addUserMessage(prev, userMessage))
-        
+
         console.log('Отправка запроса на webhook:', protecWebhook)
         console.log('Данные запроса:', { messageText, sessionId })
-        
+
         // Отправляем фиксированное сообщение на новый webhook
         const response = await sendChatMessage(messageText, 'demo', sessionId, protecWebhook)
 
@@ -595,12 +606,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
 
         setMessages((prev) => [...prev, botMessage])
-        
+
         // Проверяем, нужно ли показать кнопку результата записи для protec.one
         if (containsBookingConfirmation(response.message)) {
           setShowProtecResultButton(true)
         }
-        
+
         updateLastActivity()
       } catch (error) {
         console.error('Ошибка при отправке на webhook:', error)
@@ -625,9 +636,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
       // Проверяем, есть ли уже пользовательские сообщения перед добавлением нового
       const hasExistingUserMessages = messages.some(msg => msg.sender === "user")
-      
+
       setMessages((prev) => addUserMessage(prev, userMessage))
-      
+
       // Если это первое пользовательское сообщение, скрываем кнопки
       if (!hasExistingUserMessages && linkButtonsVisible) {
         setLinkButtonsVisible(false)
@@ -649,7 +660,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         }
 
         setMessages((prev) => [...prev, botMessage])
-        
+
         // Проверяем, нужно ли показать кнопку результата записи/заказа
         if (containsBookingConfirmation(response.message)) {
           if (currentWebhookUrl === webhookProtec) {
@@ -659,7 +670,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
             setShowVomolokoResultButton(true)
           }
         }
-        
+
         updateLastActivity()
       } catch (error) {
         const errorText = error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже."
@@ -715,19 +726,19 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
           const viewport = window.visualViewport
           const inputRect = inputContainerRef.current.getBoundingClientRect()
           const viewportHeight = viewport.height
-          
+
           // Если поле ввода находится ниже видимой области (закрыто клавиатурой)
           if (inputRect.bottom > viewportHeight) {
-            inputContainerRef.current.scrollIntoView({ 
-              behavior: 'smooth', 
+            inputContainerRef.current.scrollIntoView({
+              behavior: 'smooth',
               block: 'end',
               inline: 'nearest'
             })
           }
         } else {
           // Fallback для браузеров без visualViewport
-          inputContainerRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
+          inputContainerRef.current.scrollIntoView({
+            behavior: 'smooth',
             block: 'end',
             inline: 'nearest'
           })
@@ -747,7 +758,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     }
 
     input.addEventListener('focus', handleFocus)
-    
+
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', handleViewportResize)
     }
@@ -762,281 +773,280 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   return (
     <>
-    <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} ${isMobile ? '' : 'mx-auto'} ${isMobile ? '' : 'shadow-2xl'} border-gray-200 bg-white ${isMobile ? 'rounded-none border-0' : ''} ${isMobile ? 'flex flex-col h-full' : ''} relative`}>
-      <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-              <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
+      <Card className={`w-full ${isMobile ? 'h-full max-h-full' : 'max-w-[717px]'} ${isMobile ? '' : 'mx-auto'} ${isMobile ? '' : 'shadow-2xl'} border-gray-200 bg-white ${isMobile ? 'rounded-none border-0' : ''} ${isMobile ? 'flex flex-col h-full' : ''} relative`}>
+        <CardHeader className={`border-b border-gray-200 bg-white backdrop-blur ${isMobile ? 'flex-shrink-0' : ''}`}>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                <img src="/images/robot-transparent.png" alt="AI" className="w-8 h-8 object-contain" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Бот Мария</h3>
+                <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-gray-900">Бот Мария</h3>
-              <p className="text-sm text-gray-600">Онлайн • Отвечает мгновенно</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size={isMobile ? "icon" : "sm"}
-              onClick={handleResetChat}
-              className="hover:bg-gray-100 hover:text-black flex-shrink-0 text-gray-700"
-            >
-              <RotateCcw className="h-4 w-4" />
-              {!isMobile && <span className="ml-2">Начать сначала</span>}
-            </Button>
-            {isMobile && onClose && (
+            <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
-                size="icon"
-                onClick={onClose}
-                className="hover:bg-gray-100 flex-shrink-0"
+                size={isMobile ? "icon" : "sm"}
+                onClick={handleResetChat}
+                className="hover:bg-gray-100 hover:text-black flex-shrink-0 text-gray-700"
               >
-                <X className="h-5 w-5 text-gray-900" />
+                <RotateCcw className="h-4 w-4" />
+                {!isMobile && <span className="ml-2">Начать сначала</span>}
               </Button>
-            )}
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0 overflow-hidden' : ''}`}>
-        <div 
-          ref={messagesContainerRef} 
-          className={`relative ${isMobile ? 'flex-1 min-h-0 overflow-y-auto' : 'h-[500px]'} ${isMobile ? '' : 'overflow-y-auto'} p-6 space-y-4 bg-gray-50`}
-          style={isMobile ? { paddingBottom: `${inputContainerHeight}px` } : undefined}
-        >
-          {messages.map((message) => (
-            <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
-              <div
-                className={`max-w-[75%] rounded-2xl px-5 py-3 ${
-                  message.sender === "user" ? "bg-white border border-gray-200 text-gray-900" : "bg-white border border-gray-200 text-gray-900"
-                }`}
-              >
-                {/* Отображаем изображение отдельно только если оно не встроено в текст */}
-                {(message.imageUrl || message.imageBase64) && !hasImageUrlInText(message.text || '') && (
-                  <div className="mb-2">
-                    <img
-                      src={message.imageUrl || message.imageBase64 || ''}
-                      alt="Изображение"
-                      className="max-w-full max-h-64 rounded-lg object-contain"
-                    />
-                  </div>
-                )}
-                {message.text && (
-                  <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
-                )}
-                <p className={`text-xs mt-2 text-gray-500`}>
-                  {formatTime(message.timestamp)}
-                </p>
-              </div>
+              {isMobile && onClose && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onClose}
+                  className="hover:bg-gray-100 flex-shrink-0"
+                >
+                  <X className="h-5 w-5 text-gray-900" />
+                </Button>
+              )}
             </div>
-          ))}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-white border border-gray-200 rounded-2xl px-5 py-3">
-                <div className="flex gap-1">
-                  <span
-                    className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
-                    style={{ animationDelay: "0ms" }}
-                  />
-                  <span
-                    className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
-                    style={{ animationDelay: "150ms" }}
-                  />
-                  <span
-                    className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
-                    style={{ animationDelay: "300ms" }}
-                  />
+          </div>
+        </CardHeader>
+        <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0 overflow-hidden' : ''}`}>
+          <div
+            ref={messagesContainerRef}
+            className={`relative ${isMobile ? 'flex-1 min-h-0 overflow-y-auto' : 'h-[500px]'} ${isMobile ? '' : 'overflow-y-auto'} p-6 space-y-4 bg-gray-50`}
+            style={isMobile ? { paddingBottom: `${inputContainerHeight}px` } : undefined}
+          >
+            {messages.map((message) => (
+              <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`max-w-[75%] rounded-2xl px-5 py-3 ${message.sender === "user" ? "bg-white border border-gray-200 text-gray-900" : "bg-white border border-gray-200 text-gray-900"
+                    }`}
+                >
+                  {/* Отображаем изображение отдельно только если оно не встроено в текст */}
+                  {(message.imageUrl || message.imageBase64) && !hasImageUrlInText(message.text || '') && (
+                    <div className="mb-2">
+                      <img
+                        src={message.imageUrl || message.imageBase64 || ''}
+                        alt="Изображение"
+                        className="max-w-full max-h-64 rounded-lg object-contain"
+                      />
+                    </div>
+                  )}
+                  {message.text && (
+                    <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
+                  )}
+                  <p className={`text-xs mt-2 text-gray-500`}>
+                    {formatTime(message.timestamp)}
+                  </p>
                 </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-          
-          {/* Заглушка с размытым фоном и кнопкой - только над областью сообщений */}
-          {!isUnlocked && !showRules && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
-              <div className="text-center px-6">
-                <Button
-                  onClick={handleShowRules}
-                  size="lg"
-                  className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-semibold shadow-lg hover:shadow-xl transition-all"
-                >
-                  Попробуй ИИ продавца прямо сейчас
-                </Button>
-              </div>
-            </div>
-          )}
-          
-          {/* Второй overlay с правилами использования - едва размытый */}
-          {!isUnlocked && showRules && (
-            <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-[2px]">
-              <div className="text-center px-6 max-w-md">
-                <div className="bg-white rounded-lg p-6 shadow-lg space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Правила использования</h3>
-                  <div className="text-sm text-gray-700 space-y-2 text-left">
-                    <p>• Добавь в чат ссылку на свой сайт и протестируй работу ИИ-продавца</p>
-                    <p>• Либо используй готовый вариант с кнопок над строкой ввода</p>
-                    <p>• Чтобы начать сначала, используй кнопку "Начать сначала" в шапке чата</p>
-                    <p>• Ознакомься с контекстом сайта, указанного в кнопке</p>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-white border border-gray-200 rounded-2xl px-5 py-3">
+                  <div className="flex gap-1">
+                    <span
+                      className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    />
+                    <span
+                      className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    />
+                    <span
+                      className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    />
                   </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+
+            {/* Заглушка с размытым фоном и кнопкой - только над областью сообщений */}
+            {!isUnlocked && !showRules && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+                <div className="text-center px-6">
                   <Button
-                    onClick={handleUnlockChat}
+                    onClick={handleShowRules}
                     size="lg"
-                    className="w-full mt-6 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-semibold shadow-lg hover:shadow-xl transition-all"
+                    className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-semibold shadow-lg hover:shadow-xl transition-all"
                   >
-                    Начать
+                    Попробуй ИИ продавца прямо сейчас
                   </Button>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
 
-        <div 
-          ref={inputContainerRef}
-          className={`${isMobile ? 'px-4 pt-4' : 'p-4'} border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'fixed bottom-0 left-0 right-0 z-10' : ''}`}
-          style={isMobile ? { 
-            paddingBottom: `max(1rem, env(safe-area-inset-bottom))`,
-            boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)'
-          } : undefined}
-        >
-          {linkButtonsVisible && (
-            <div className="flex gap-2 mb-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleSendLink("vomoloko.ru")}
-              disabled={isLoading || !isUnlocked}
-              className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
+            {/* Второй overlay с правилами использования - едва размытый */}
+            {!isUnlocked && showRules && (
+              <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-[2px]">
+                <div className="text-center px-6 max-w-md">
+                  <div className="bg-white rounded-lg p-6 shadow-lg space-y-4">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">Правила использования</h3>
+                    <div className="text-sm text-gray-700 space-y-2 text-left">
+                      <p>• Назови свою нишу и я расскажу что мы можем в ней автоматизировать</p>
+                      <p>• Либо протестируй ИИ-продавца нажав на любую кнопку над строкой ввода</p>
+                      <p>• Ознакомься с контекстом сайта в появившемся окне</p>
+                      <p>• Чтобы начать сначала, используй кнопку "Начать сначала" в шапке чата</p>                      
+                    </div>
+                    <Button
+                      onClick={handleUnlockChat}
+                      size="lg"
+                      className="w-full mt-6 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-semibold shadow-lg hover:shadow-xl transition-all"
+                    >
+                      Начать
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div
+            ref={inputContainerRef}
+            className={`${isMobile ? 'px-4 pt-4' : 'p-4'} border-t border-gray-200 bg-white backdrop-blur ${isMobile ? 'fixed bottom-0 left-0 right-0 z-10' : ''}`}
+            style={isMobile ? {
+              paddingBottom: `max(1rem, env(safe-area-inset-bottom))`,
+              boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)'
+            } : undefined}
+          >
+            {linkButtonsVisible && (
+              <div className="flex gap-2 mb-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleSendLink("vomoloko.ru")}
+                  disabled={isLoading || !isUnlocked}
+                  className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
+                >
+                  vomoloko.ru
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleSendLink("protec.one")}
+                  disabled={isLoading || !isUnlocked}
+                  className="flex-1 text-sm"
+                >
+                  protec.one
+                </Button>
+              </div>
+            )}
+            {showProtecResultButton && (
+              <div className="mb-2">
+                <Button
+                  type="button"
+                  variant="default"
+                  onClick={() => window.open('https://docs.google.com/spreadsheets/d/1O_TP4AiIH260OTCiHESVTSyWiZm2GAGHTzRiEcRYq5w/edit?gid=0#gid=0', '_blank')}
+                  className="w-full text-sm py-2"
+                >
+                  Показать результат записи в таблице
+                </Button>
+              </div>
+            )}
+            {showVomolokoResultButton && (
+              <div className="mb-2">
+                <Button
+                  type="button"
+                  variant="default"
+                  onClick={() => window.open('https://docs.google.com/spreadsheets/d/1DFPTgFBKTW28z-eF6yW_O_d5KexInIZUGLp_AJS8UtY/edit?usp=sharing', '_blank')}
+                  className="w-full text-sm py-2"
+                >
+                  Посмотреть результаты в таблице
+                </Button>
+              </div>
+            )}
+            {messages.length >= 8 && (
+              <div className="mb-2">
+                <Button
+                  type="button"
+                  variant="default"
+                  onClick={() => setIsConsultationModalOpen(true)}
+                  className="w-full text-sm py-2"
+                >
+                  Заказать внедрение бота
+                </Button>
+              </div>
+            )}
+            {selectedImage && (
+              <div className="mb-2 relative inline-block">
+                <img
+                  src={selectedImage}
+                  alt="Предпросмотр"
+                  className="max-w-full max-h-32 rounded-lg object-contain"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setSelectedImage(null)
+                    if (fileInputRef.current) {
+                      fileInputRef.current.value = ''
+                    }
+                  }}
+                  className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/50 hover:bg-black/70 text-white"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleSend()
+              }}
+              className="flex gap-2 items-end"
             >
-              vomoloko.ru
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleSendLink("protec.one")}
-              disabled={isLoading || !isUnlocked}
-              className="flex-1 text-sm"
-            >
-              protec.one
-            </Button>
-            </div>
-          )}
-          {showProtecResultButton && (
-            <div className="mb-2">
-              <Button
-                type="button"
-                variant="default"
-                onClick={() => window.open('https://docs.google.com/spreadsheets/d/1O_TP4AiIH260OTCiHESVTSyWiZm2GAGHTzRiEcRYq5w/edit?gid=0#gid=0', '_blank')}
-                className="w-full text-sm py-2"
-              >
-                Показать результат записи в таблице
-              </Button>
-            </div>
-          )}
-          {showVomolokoResultButton && (
-            <div className="mb-2">
-              <Button
-                type="button"
-                variant="default"
-                onClick={() => window.open('https://docs.google.com/spreadsheets/d/1DFPTgFBKTW28z-eF6yW_O_d5KexInIZUGLp_AJS8UtY/edit?usp=sharing', '_blank')}
-                className="w-full text-sm py-2"
-              >
-                Посмотреть результаты в таблице
-              </Button>
-            </div>
-          )}
-          {messages.length >= 8 && (
-            <div className="mb-2">
-              <Button
-                type="button"
-                variant="default"
-                onClick={() => setIsConsultationModalOpen(true)}
-                className="w-full text-sm py-2"
-              >
-                Заказать внедрение бота
-              </Button>
-            </div>
-          )}
-          {selectedImage && (
-            <div className="mb-2 relative inline-block">
-              <img
-                src={selectedImage}
-                alt="Предпросмотр"
-                className="max-w-full max-h-32 rounded-lg object-contain"
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageSelect}
+                accept="image/*"
+                className="hidden"
               />
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 size="icon"
-                onClick={() => {
-                  setSelectedImage(null)
-                  if (fileInputRef.current) {
-                    fileInputRef.current.value = ''
-                  }
-                }}
-                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/50 hover:bg-black/70 text-white"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isLoading || !isUnlocked}
+                className="shrink-0"
               >
-                <X className="h-3 w-3" />
+                <ImageIcon className="h-5 w-5" />
               </Button>
-            </div>
-          )}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              handleSend()
-            }}
-            className="flex gap-2 items-end"
-          >
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageSelect}
-              accept="image/*"
-              className="hidden"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading || !isUnlocked}
-              className="shrink-0"
-            >
-              <ImageIcon className="h-5 w-5" />
-            </Button>
-            <Textarea
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Напишите нам свой вопрос..."
-              className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none text-base"
-              rows={1}
-              disabled={!isUnlocked}
-              style={{ fontSize: '16px' }}
-            />
-            <Button type="submit" disabled={isLoading || (!input.trim() && !selectedImage) || !isUnlocked} size="icon" className="shrink-0">
-              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-            </Button>
-          </form>
-        </div>
-      </CardContent>
-      <ConsultationModal 
-        isOpen={isConsultationModalOpen}
-        onClose={() => setIsConsultationModalOpen(false)}
-      />
-      <VomolokoContextModal 
-        isOpen={isVomolokoContextModalOpen}
-        onClose={() => setIsVomolokoContextModalOpen(false)}
-      />
-      <ProtecContextModal 
-        isOpen={isProtecContextModalOpen}
-        onClose={() => setIsProtecContextModalOpen(false)}
-      />
-    </Card>
-    
-    {/* Выпадающий список возможностей */}
-    <CapabilitiesList />
+              <Textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Напишите нам свой вопрос..."
+                className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none text-base"
+                rows={1}
+                disabled={!isUnlocked}
+                style={{ fontSize: '16px' }}
+              />
+              <Button type="submit" disabled={isLoading || (!input.trim() && !selectedImage) || !isUnlocked} size="icon" className="shrink-0">
+                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+              </Button>
+            </form>
+          </div>
+        </CardContent>
+        <ConsultationModal
+          isOpen={isConsultationModalOpen}
+          onClose={() => setIsConsultationModalOpen(false)}
+        />
+        <VomolokoContextModal
+          isOpen={isVomolokoContextModalOpen}
+          onClose={() => setIsVomolokoContextModalOpen(false)}
+        />
+        <ProtecContextModal
+          isOpen={isProtecContextModalOpen}
+          onClose={() => setIsProtecContextModalOpen(false)}
+        />
+      </Card>
+
+      {/* Выпадающий список возможностей */}
+      <CapabilitiesList />
     </>
   )
 }

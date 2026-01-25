@@ -9,12 +9,14 @@ interface ProtecContextModalProps {
   onClose: () => void
 }
 
-const contextText = `Компания Protec.one производит и устанавливает полиуретановую защитную пленку для экранов и корпусов смартфонов, планшетов, смарт-часов и MacBook с пожизненной гарантией замены.
+const contextText = `Protec.one устанавливает защитную пленку для смартфонов, планшетов, часов с пожизненной гарантией замены.
+Цель - записаться на услугу.
 
 Примеры вопросов: 
-​- Сколько будет стоить защита для моей модели устройства и ближайший офис в Санкт-Петербурге?
-​- Как работает гарантия замены, сколько стоит работа мастера и средний срок службы пленки?
-​- Чем ваша пленка лучше стекла/гидрогеля, можно ли ходить без чехла и что если телефон упадет?
+​- Сколько стоит пленка на 15 pro
+​- Из чего состоит пленка?
+​- Чем ваша пленка лучше стекла/гидрогеля?
+​- Номер телефона филиала в Галерее
 ​`
 
 export function ProtecContextModal({ isOpen, onClose }: ProtecContextModalProps) {
@@ -38,7 +40,7 @@ export function ProtecContextModal({ isOpen, onClose }: ProtecContextModalProps)
         <CardHeader className="border-b border-border pb-3 sm:pb-4 bg-secondary/50">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg sm:text-2xl font-bold text-foreground">Погружение в контекст перед диалогом</h3>
+              <h3 className="text-lg sm:text-2xl font-bold text-foreground">Прочти перед диалогом</h3>
             </div>
             <Button
               variant="ghost"
