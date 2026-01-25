@@ -8,7 +8,9 @@ export async function sendChatMessage(
   chatType: ChatType = 'widget',
   sessionId: string,
   customWebhookUrl?: string,
-  imageBase64?: string
+  imageBase64?: string,
+  replyToId?: string,
+  replyToText?: string
 ): Promise<{ message: string; imageUrl?: string }> {
   try {
     // Если передан кастомный webhook, используем его
@@ -38,8 +40,15 @@ export async function sendChatMessage(
       }
     }
 
+    // Формируем сообщение с цитатой, если есть ответ на сообщение
+    let finalMessage = messageText
+    if (replyToId && replyToText) {
+      // В вебхук отправляем сообщение в кавычках с текстом, на который ссылаются
+      finalMessage = `"${replyToText}"\n\n${messageText}`
+    }
+
     const requestBody: any = {
-      message: messageText,
+      message: finalMessage,
       sessionId: sessionId, // Уникальный идентификатор сессии
       timestamp: new Date().toISOString(),
       chatType: chatType, // Добавляем тип чата для различения на бэкенде
@@ -48,6 +57,11 @@ export async function sendChatMessage(
     // Добавляем изображение если оно есть
     if (imageBase64) {
       requestBody.image = imageBase64
+    }
+    
+    // Добавляем информацию об ответе, если есть
+    if (replyToId) {
+      requestBody.replyToId = replyToId
     }
     
     console.log('Отправка запроса на webhook:', webhookUrl)

@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Send, Loader2, X, RotateCcw, Image as ImageIcon } from "lucide-react"
+import { Send, Loader2, X, RotateCcw, Image as ImageIcon, Reply, MoreVertical } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
@@ -112,7 +112,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [replyingTo, setReplyingTo] = useState<{ id: string; text: string } | null>(null)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
   // Состояние для блокировки чата заглушкой - проверяем, был ли разблокирован для текущего session ID
   const [isUnlocked, setIsUnlocked] = useState(() => {
     const unlockedSessionId = getLocalStorage('demo-chat-unlocked-session-id')
@@ -218,6 +221,29 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     scrollToBottom()
   }, [messages])
 
+  // Закрытие меню при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openMenuId) {
+        const menuElement = menuRefs.current[openMenuId]
+        const target = event.target as HTMLElement
+
+        // Проверяем, не кликнули ли на кнопку меню или само меню
+        if (menuElement && !menuElement.contains(target) && !target.closest('button[title="Меню"]')) {
+          setOpenMenuId(null)
+        }
+      }
+    }
+
+    if (openMenuId) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [openMenuId])
+
   // Функция для обновления времени последней активности
   const updateLastActivity = useCallback(() => {
     setLocalStorage('demo-chat-last-activity', Date.now().toString())
@@ -286,6 +312,12 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
+
+    // Сбрасываем ответ
+    setReplyingTo(null)
+
+    // Закрываем меню
+    setOpenMenuId(null)
 
     // Сбрасываем webhook на исходный (undefined = стандартный для demo)
     setCurrentWebhookUrl(undefined)
@@ -412,6 +444,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       sender: "user",
       timestamp: new Date(),
       imageBase64: imageBase64,
+      replyToId: replyingTo?.id,
+      replyToText: replyingTo?.text,
     }
 
     // Проверяем, есть ли уже пользовательские сообщения перед добавлением нового
@@ -426,6 +460,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     }
     setInput("")
     setSelectedImage(null)
+    const replyToId = replyingTo?.id
+    const replyToText = replyingTo?.text
+    setReplyingTo(null) // Сбрасываем ответ после отправки
     // Очищаем input файла
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -438,7 +475,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     updateLastActivity() // Обновляем активность при отправке сообщения
 
     try {
-      const response = await sendChatMessage(messageText, 'demo', sessionId, currentWebhookUrl, imageBase64)
+      const response = await sendChatMessage(messageText, 'demo', sessionId, currentWebhookUrl, imageBase64, replyToId, replyToText)
 
       // Если вебхук вернул imageUrl отдельно, используем его
       // Если ссылка на изображение есть в тексте, она будет обработана formatMessageText
@@ -837,27 +874,75 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
             style={isMobile ? { paddingBottom: `${inputContainerHeight}px` } : undefined}
           >
             {messages.map((message) => (
-              <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[75%] rounded-2xl px-5 py-3 ${message.sender === "user" ? "bg-white border border-gray-200 text-gray-900" : "bg-white border border-gray-200 text-gray-900"
-                    }`}
-                >
-                  {/* Отображаем изображение отдельно только если оно не встроено в текст */}
-                  {(message.imageUrl || message.imageBase64) && !hasImageUrlInText(message.text || '') && (
-                    <div className="mb-2">
-                      <img
-                        src={message.imageUrl || message.imageBase64 || ''}
-                        alt="Изображение"
-                        className="max-w-full max-h-64 rounded-lg object-contain"
-                      />
+              <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"} group`}>
+                <div className={`max-w-[75%] relative`}>
+                  <div
+                    className={`rounded-2xl px-5 py-3 relative ${message.sender === "user" ? "bg-white border border-gray-200 text-gray-900" : "bg-white border border-gray-200 text-gray-900"
+                      }`}
+                  >
+                    {/* Меню с тремя точками */}
+                    <div className="absolute top-2 right-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setOpenMenuId(openMenuId === message.id ? null : message.id)
+                        }}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        title="Меню"
+                      >
+                        <MoreVertical className="h-4 w-4 text-gray-500" />
+                      </button>
+                      {/* Выпадающее меню */}
+                      {openMenuId === message.id && (
+                        <div
+                          ref={(el) => { menuRefs.current[message.id] = el }}
+                          className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[120px]"
+                        >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setReplyingTo({ id: message.id, text: message.text || '' })
+                              setOpenMenuId(null)
+                              inputRef.current?.focus()
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
+                          >
+                            <Reply className="h-4 w-4" />
+                            Ответить
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {message.text && (
-                    <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
-                  )}
-                  <p className={`text-xs mt-2 text-gray-500`}>
-                    {formatTime(message.timestamp)}
-                  </p>
+                    {/* Цитата сообщения, на которое отвечают */}
+                    {message.replyToId && message.replyToText && (
+                      <div className="mb-2 pl-3 border-l-4 border-blue-500">
+                        <div className="text-xs text-blue-500 mb-1">
+                          В ответ {message.sender === "user" ? "боту" : "вам"}
+                        </div>
+                        <div className="text-xs text-gray-700 line-clamp-2">
+                          {message.replyToText.length > 100
+                            ? message.replyToText.substring(0, 100) + '...'
+                            : message.replyToText}
+                        </div>
+                      </div>
+                    )}
+                    {/* Отображаем изображение отдельно только если оно не встроено в текст */}
+                    {(message.imageUrl || message.imageBase64) && !hasImageUrlInText(message.text || '') && (
+                      <div className="mb-2">
+                        <img
+                          src={message.imageUrl || message.imageBase64 || ''}
+                          alt="Изображение"
+                          className="max-w-full max-h-64 rounded-lg object-contain"
+                        />
+                      </div>
+                    )}
+                    {message.text && (
+                      <div className="text-sm leading-relaxed pr-6">{formatMessageText(message.text)}</div>
+                    )}
+                    <p className={`text-xs mt-2 text-gray-500`}>
+                      {formatTime(message.timestamp)}
+                    </p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -986,6 +1071,29 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                   className="w-full text-sm py-2"
                 >
                   Заказать внедрение бота
+                </Button>
+              </div>
+            )}
+            {replyingTo && (
+              <div className="mb-2 p-2 bg-gray-50 rounded-lg border border-gray-200 relative">
+                <div className="pl-3 border-l-4 border-blue-500">
+                  <div className="text-xs text-blue-500 mb-1">
+                    В ответ
+                  </div>
+                  <div className="text-xs text-gray-700 line-clamp-2">
+                    {replyingTo.text.length > 100
+                      ? replyingTo.text.substring(0, 100) + '...'
+                      : replyingTo.text}
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setReplyingTo(null)}
+                  className="absolute top-1 right-1 h-6 w-6 rounded-full hover:bg-gray-200 text-black"
+                >
+                  <X className="h-3 w-3 text-black" />
                 </Button>
               </div>
             )}

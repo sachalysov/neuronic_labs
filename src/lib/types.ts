@@ -5,5 +5,7 @@ export interface Message {
   timestamp: Date
   imageUrl?: string
   imageBase64?: string
+  replyToId?: string
+  replyToText?: string
 }
 
