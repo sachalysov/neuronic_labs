@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Send, X, RotateCcw } from "lucide-react"
+import { Send, X, RotateCcw, Image as ImageIcon } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
@@ -87,6 +87,8 @@ export function ChatWidget() {
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
   const handleResetChatRef = useRef<(() => void) | null>(null)
@@ -117,6 +119,12 @@ export function ChatWidget() {
     // Сбрасываем сообщения на начальные
     setMessages(getInitialMessages())
 
+    // Сбрасываем изображение
+    setSelectedImage(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
       clearTimeout(inactivityTimerRef.current)
@@ -132,6 +140,22 @@ export function ChatWidget() {
   useEffect(() => {
     handleResetChatRef.current = handleResetChat
   }, [handleResetChat])
+
+  // Функция для проверки, содержит ли текст ссылки на изображения
+  const hasImageUrlInText = (text: string): boolean => {
+    if (!text) return false
+
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico|heic|heif|avif|tiff|tif)(\?[^\s\)]*)?/i
+    const urlRegex = /(https?:\/\/[^\s\)]+)/g
+    const imageIndicators = ['/image', '/img', '/photo', '/picture', '/media', '/upload', '/cdn', '/storage', '/assets', '/static']
+
+    const urls = text.match(urlRegex)
+    if (!urls) return false
+
+    return urls.some(url => {
+      return imageExtensions.test(url) || imageIndicators.some(indicator => url.toLowerCase().includes(indicator))
+    })
+  }
 
   // Функция для обновления времени последней активности
   const updateLastActivity = useCallback(() => {
@@ -168,24 +192,72 @@ export function ChatWidget() {
     }
   }, [updateLastActivity])
 
+  // Функция для конвертации файла в base64
+  const convertImageToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const result = reader.result as string
+        resolve(result)
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // Обработчик выбора файла
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Проверяем тип файла
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите изображение')
+      return
+    }
+
+    // Проверяем размер файла (макс 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Размер изображения не должен превышать 5MB')
+      return
+    }
+
+    try {
+      const base64 = await convertImageToBase64(file)
+      setSelectedImage(base64)
+    } catch (error) {
+      console.error('Ошибка при обработке изображения:', error)
+      alert('Не удалось загрузить изображение')
+    }
+  }
+
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return
+    if ((!inputValue.trim() && !selectedImage) || isLoading) return
+
+    const messageText = inputValue.trim() || ""
+    const imageBase64 = selectedImage || undefined
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputValue,
+      text: messageText,
       sender: "user",
       timestamp: new Date(),
+      imageBase64: imageBase64,
     }
 
     setMessages((prev) => [...prev, userMessage])
     setInputValue("")
+    setSelectedImage(null)
+    // Очищаем input файла
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
     setIsLoading(true)
     setError(null)
     updateLastActivity() // Обновляем активность при отправке сообщения
 
     try {
-      const response = await sendChatMessage(userMessage.text, 'widget', sessionId)
+      const response = await sendChatMessage(messageText, 'widget', sessionId, undefined, imageBase64)
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -286,7 +358,19 @@ export function ChatWidget() {
                     : "bg-primary/50 text-primary-foreground rounded-tl-sm"
                     }`}
                 >
-                  <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
+                  {/* Отображаем изображение отдельно только если оно не встроено в текст */}
+                  {(message.imageUrl || message.imageBase64) && !hasImageUrlInText(message.text || '') && (
+                    <div className="mb-2">
+                      <img
+                        src={message.imageUrl || message.imageBase64 || ''}
+                        alt="Изображение"
+                        className="max-w-full max-h-64 rounded-lg object-contain"
+                      />
+                    </div>
+                  )}
+                  {message.text && (
+                    <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
+                  )}
                   <p className={`text-xs mt-2 ${message.sender === "user" ? "text-foreground/70" : "text-primary-foreground/70"}`}>
                     {formatTime(message.timestamp)}
                   </p>
@@ -320,7 +404,47 @@ export function ChatWidget() {
 
         {/* Input */}
         <div className="p-4 border-t border-border">
+          {selectedImage && (
+            <div className="mb-2 relative inline-block">
+              <img
+                src={selectedImage}
+                alt="Предпросмотр"
+                className="max-w-full max-h-32 rounded-lg object-contain"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setSelectedImage(null)
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = ''
+                  }
+                }}
+                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/50 hover:bg-black/70 text-white"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
           <div className="flex items-center gap-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageSelect}
+              accept="image/*"
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading}
+              className="shrink-0"
+            >
+              <ImageIcon className="h-5 w-5" />
+            </Button>
             <Input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
@@ -332,7 +456,7 @@ export function ChatWidget() {
             <Button
               size="icon"
               onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
+              disabled={(!inputValue.trim() && !selectedImage) || isLoading}
               className="flex-shrink-0"
             >
               <Send className="h-5 w-5" />
