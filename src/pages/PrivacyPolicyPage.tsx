@@ -5,7 +5,7 @@ import { SpaceDust } from "@/components/space-dust"
 import { Footer } from "@/components/footer"
 import { useMeta } from "@/hooks/useMeta"
 import { createPrivacyPolicyMetaTags } from "@/lib/meta"
-import { Shield, FileText, Mail, ExternalLink } from "lucide-react"
+import { Shield, FileText, Mail } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 
 export default function PrivacyPolicyPage() {
