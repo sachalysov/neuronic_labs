@@ -881,22 +881,22 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                       }`}
                   >
                     {/* Меню с тремя точками */}
-                    <div className="absolute top-2 right-2">
+                    <div className="absolute z-10" style={isMobile ? { top: '1px', right: '-10px' } : { top: '8px', right: '8px' }}>
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
                           setOpenMenuId(openMenuId === message.id ? null : message.id)
                         }}
-                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        className={`${isMobile ? 'p-2 min-h-[44px] min-w-[44px]' : 'p-1'} hover:bg-gray-100 active:bg-gray-200 rounded transition-colors touch-manipulation`}
                         title="Меню"
                       >
-                        <MoreVertical className="h-4 w-4 text-gray-500" />
+                        <MoreVertical className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'} text-gray-500`} />
                       </button>
                       {/* Выпадающее меню */}
                       {openMenuId === message.id && (
                         <div
                           ref={(el) => { menuRefs.current[message.id] = el }}
-                          className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[120px]"
+                          className={`absolute ${isMobile ? 'right-0 top-12' : 'right-0 top-8'} bg-white border border-gray-200 rounded-lg shadow-lg z-50 ${isMobile ? 'min-w-[140px]' : 'min-w-[120px]'}`}
                         >
                           <button
                             onClick={(e) => {
@@ -905,9 +905,9 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                               setOpenMenuId(null)
                               inputRef.current?.focus()
                             }}
-                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
+                            className={`w-full text-left ${isMobile ? 'px-4 py-3 text-base min-h-[44px]' : 'px-4 py-2 text-sm'} hover:bg-gray-100 active:bg-gray-200 flex items-center gap-2 touch-manipulation`}
                           >
-                            <Reply className="h-4 w-4" />
+                            <Reply className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'}`} />
                             Ответить
                           </button>
                         </div>
@@ -937,7 +937,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                       </div>
                     )}
                     {message.text && (
-                      <div className="text-sm leading-relaxed pr-6">{formatMessageText(message.text)}</div>
+                      <div className={`text-sm leading-relaxed ${isMobile ? 'pr-8' : 'pr-8'}`}>{formatMessageText(message.text)}</div>
                     )}
                     <p className={`text-xs mt-2 text-gray-500`}>
                       {formatTime(message.timestamp)}
