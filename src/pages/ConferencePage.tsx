@@ -1,9 +1,7 @@
-import { useState } from "react"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { ChatWidget } from "@/components/chat-widget"
 import { Footer } from "@/components/footer"
-import { ConsultationModal } from "@/components/consultation-modal"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useMeta } from "@/hooks/useMeta"
@@ -17,7 +15,6 @@ import {
 
 export default function ConferencePage() {
   useMeta(createConferenceMetaTags())
-  const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
     <main className="min-h-screen">
@@ -61,11 +58,17 @@ export default function ConferencePage() {
                   </div>
                   <Button 
                     size="lg" 
-                    onClick={() => setIsModalOpen(true)}
+                    asChild
                     className="w-full sm:w-auto"
                   >
-                    Записаться на аудит
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <a 
+                      href="https://t.me/aslysov" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                    >
+                      Записаться на аудит
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </a>
                   </Button>
                 </div>
               </CardContent>
@@ -81,7 +84,7 @@ export default function ConferencePage() {
                     </div>
                     <div>
                       <h3 className="text-xl sm:text-2xl font-bold mb-2">
-                        Бесплатный бот финансит в телеграм канал
+                        Бесплатный бот финансит в телеграм
                       </h3>
                       <p className="text-muted-foreground">
                         Только для участников AI-Fest. Получите доступ к эксклюзивным материалам и боту
@@ -95,11 +98,11 @@ export default function ConferencePage() {
                     className="w-full sm:w-auto"
                   >
                     <a 
-                      href="https://t.me/your_channel" 
+                      href="https://t.me/neuroniclabs_financier_bot" 
                       target="_blank" 
                       rel="noopener noreferrer"
                     >
-                      Перейти в канал
+                      Перейти
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </a>
                   </Button>
@@ -142,8 +145,6 @@ export default function ConferencePage() {
       <Footer />
 
       <ChatWidget />
-
-      <ConsultationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </main>
   )
 }
