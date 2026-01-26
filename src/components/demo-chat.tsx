@@ -28,6 +28,8 @@ interface DemoChatProps {
   initialMessages?: Message[] // Кастомные начальные сообщения
   linkButton1ModalContent?: string // Контент модального окна для первой кнопки
   linkButton2ModalContent?: string // Контент модального окна для второй кнопки
+  linkButton1Message?: string // Сообщение для отправки при нажатии на первую кнопку (по умолчанию используется текст кнопки)
+  linkButton2Message?: string // Сообщение для отправки при нажатии на вторую кнопку (по умолчанию используется текст кнопки)
   defaultBotName?: string // Имя бота по умолчанию (по умолчанию "Бот Мария")
 }
 
@@ -62,7 +64,7 @@ const addUserMessage = (prevMessages: Message[], userMessage: Message): Message[
   return [...prevMessages, userMessage]
 }
 
-export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat', linkButton1 = 'vomoloko.ru', linkButton2 = 'protec.one', linkButton1Webhook, linkButton2Webhook, initialMessages, linkButton1ModalContent, linkButton2ModalContent, defaultBotName = 'Бот Мария' }: DemoChatProps) {
+export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat', linkButton1 = 'vomoloko.ru', linkButton2 = 'protec.one', linkButton1Webhook, linkButton2Webhook, initialMessages, linkButton1ModalContent, linkButton2ModalContent, linkButton1Message, linkButton2Message, defaultBotName = 'Бот Мария' }: DemoChatProps) {
   // Генерируем уникальный sessionId при монтировании компонента
   const [sessionId, setSessionId] = useState(() => {
     const stored = getLocalStorage(`${storagePrefix}-session-id`)
@@ -722,10 +724,18 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
         }
       }
 
+      // Определяем сообщение для отправки: используем кастомное сообщение, если указано, иначе текст кнопки
+      let messageToSend = link
+      if (link === linkButton1 && linkButton1Message) {
+        messageToSend = linkButton1Message
+      } else if (link === linkButton2 && linkButton2Message) {
+        messageToSend = linkButton2Message
+      }
+
       // Для других ссылок используем стандартную логику
       const userMessage: Message = {
         id: Date.now().toString(),
-        text: link,
+        text: messageToSend,
         sender: "user",
         timestamp: new Date(),
       }
@@ -744,7 +754,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
       updateLastActivity()
 
       try {
-        const response = await sendChatMessage(link, 'demo', sessionId, webhookToUse)
+        const response = await sendChatMessage(messageToSend, 'demo', sessionId, webhookToUse)
 
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),

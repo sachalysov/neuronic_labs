@@ -217,6 +217,8 @@ export default function PartnerPage() {
             initialMessages={partnerInitialMessages}
             linkButton1ModalContent={developerModalContent}
             linkButton2ModalContent={seoModalContent}
+            linkButton1Message="Мне нужен сайт"
+            linkButton2Message="Мне нужно продвижение сайта"
             defaultBotName="Бот Тимур"
           />
 
@@ -488,6 +490,8 @@ export default function PartnerPage() {
               initialMessages={partnerInitialMessages}
               linkButton1ModalContent={developerModalContent}
               linkButton2ModalContent={seoModalContent}
+              linkButton1Message="Мне нужен сайт"
+              linkButton2Message="Мне нужно продвижение сайта"
               defaultBotName="Бот Тимур"
             />
           </div>
