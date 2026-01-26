@@ -12,6 +12,7 @@ import { Message } from "@/lib/types"
 import { ConsultationModal } from "@/components/consultation-modal"
 import { VomolokoContextModal } from "@/components/vomoloko-context-modal"
 import { ProtecContextModal } from "@/components/protec-context-modal"
+import { CustomContextModal } from "@/components/custom-context-modal"
 import { CapabilitiesList } from "@/components/capabilities-list"
 import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL, DEMO_CHAT_PROTEC_WEBHOOK_URL } from "@/lib/constants"
 import { getWebhookFromSettings } from "@/services/admin-settings"
@@ -24,24 +25,33 @@ interface DemoChatProps {
   linkButton2?: string // Текст второй кнопки (по умолчанию "protec.one")
   linkButton1Webhook?: string // Webhook для первой кнопки
   linkButton2Webhook?: string // Webhook для второй кнопки
+  initialMessages?: Message[] // Кастомные начальные сообщения
+  linkButton1ModalContent?: string // Контент модального окна для первой кнопки
+  linkButton2ModalContent?: string // Контент модального окна для второй кнопки
+  defaultBotName?: string // Имя бота по умолчанию (по умолчанию "Бот Мария")
 }
 
 const INITIAL_MESSAGE_IDS = ["1", "2"] as const
 
-const getInitialMessages = (): Message[] => [
-  {
-    id: "1",
-    text: "**Привет! Меня зовут Маша и я бот)** Просто выбери кнопку над стройкой ввода сообщения и начнем тестирование.",
-    sender: "bot",
-    timestamp: new Date(),
-  },
-  {
-    id: "2",
-    text: "Либо **назови свою нишу**, я расскажу что мы можем в ней **автоматизировать**",
-    sender: "bot",
-    timestamp: new Date(),
-  },
-]
+const getInitialMessages = (customMessages?: Message[]): Message[] => {
+  if (customMessages) {
+    return customMessages
+  }
+  return [
+    {
+      id: "1",
+      text: "**Привет! Меня зовут Маша и я бот)** Просто выбери кнопку над стройкой ввода сообщения и начнем тестирование.",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+    {
+      id: "2",
+      text: "Либо **назови свою нишу**, я расскажу что мы можем в ней **автоматизировать**",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+  ]
+}
 
 // Вспомогательная функция для добавления пользовательского сообщения с удалением стартовых
 const addUserMessage = (prevMessages: Message[], userMessage: Message): Message[] => {
@@ -52,7 +62,7 @@ const addUserMessage = (prevMessages: Message[], userMessage: Message): Message[
   return [...prevMessages, userMessage]
 }
 
-export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat', linkButton1 = 'vomoloko.ru', linkButton2 = 'protec.one', linkButton1Webhook, linkButton2Webhook }: DemoChatProps) {
+export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat', linkButton1 = 'vomoloko.ru', linkButton2 = 'protec.one', linkButton1Webhook, linkButton2Webhook, initialMessages, linkButton1ModalContent, linkButton2ModalContent, defaultBotName = 'Бот Мария' }: DemoChatProps) {
   // Генерируем уникальный sessionId при монтировании компонента
   const [sessionId, setSessionId] = useState(() => {
     const stored = getLocalStorage(`${storagePrefix}-session-id`)
@@ -96,7 +106,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
       const lastActivityTime = parseInt(lastActivity, 10)
       const now = Date.now()
       if (now - lastActivityTime > DEMO_CHAT_INACTIVITY_TIMEOUT) {
-        return getInitialMessages()
+        return getInitialMessages(initialMessages)
       }
     }
 
@@ -112,7 +122,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
         console.error('Error parsing stored messages:', e)
       }
     }
-    return getInitialMessages()
+    return getInitialMessages(initialMessages)
   })
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -160,6 +170,8 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const [isVomolokoContextModalOpen, setIsVomolokoContextModalOpen] = useState(false)
   const [isProtecContextModalOpen, setIsProtecContextModalOpen] = useState(false)
+  const [isCustomContextModalOpen, setIsCustomContextModalOpen] = useState(false)
+  const [customContextModalContent, setCustomContextModalContent] = useState<string>("")
   // Вебхуки из админ настроек
   const [webhookVomoloko, setWebhookVomoloko] = useState<string | undefined>(undefined)
   const [webhookProtec, setWebhookProtec] = useState<string | undefined>(undefined)
@@ -173,7 +185,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
   // Состояние для отображения кнопки результата заказа для vomoloko.ru
   const [showVomolokoResultButton, setShowVomolokoResultButton] = useState(false)
   // Состояние для имени бота
-  const [botName, setBotName] = useState("Бот Мария")
+  const [botName, setBotName] = useState(defaultBotName)
   // Состояние для отображения текста "Отвечает мгновенно"
   const [showInstantResponse, setShowInstantResponse] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -288,7 +300,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     setLocalStorage(`${storagePrefix}-last-activity`, Date.now().toString())
 
     // Сбрасываем сообщения на начальные
-    setMessages(getInitialMessages())
+    setMessages(getInitialMessages(initialMessages))
 
     // Показываем кнопки со ссылками снова и удаляем флаг из localStorage
     setLinkButtonsVisible(true)
@@ -299,7 +311,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     setShowRules(false)
 
     // Сбрасываем имя бота на начальное
-    setBotName("Бот Мария")
+    setBotName(defaultBotName)
     // Восстанавливаем текст "Отвечает мгновенно"
     setShowInstantResponse(true)
 
@@ -694,10 +706,20 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
         webhookToUse = linkButton1Webhook
         setCurrentWebhookUrl(linkButton1Webhook)
         setLocalStorage(`${storagePrefix}-webhook-url`, linkButton1Webhook)
+        // Показываем кастомное модальное окно, если есть контент
+        if (linkButton1ModalContent) {
+          setCustomContextModalContent(linkButton1ModalContent)
+          setIsCustomContextModalOpen(true)
+        }
       } else if (link === linkButton2 && linkButton2Webhook) {
         webhookToUse = linkButton2Webhook
         setCurrentWebhookUrl(linkButton2Webhook)
         setLocalStorage(`${storagePrefix}-webhook-url`, linkButton2Webhook)
+        // Показываем кастомное модальное окно, если есть контент
+        if (linkButton2ModalContent) {
+          setCustomContextModalContent(linkButton2ModalContent)
+          setIsCustomContextModalOpen(true)
+        }
       }
 
       // Для других ссылок используем стандартную логику
@@ -1191,6 +1213,11 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
         <ProtecContextModal
           isOpen={isProtecContextModalOpen}
           onClose={() => setIsProtecContextModalOpen(false)}
+        />
+        <CustomContextModal
+          isOpen={isCustomContextModalOpen}
+          onClose={() => setIsCustomContextModalOpen(false)}
+          contextText={customContextModalContent}
         />
       </Card>
 

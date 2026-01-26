@@ -8,6 +8,7 @@ import { DemoChat } from "@/components/demo-chat"
 import { useMeta } from "@/hooks/useMeta"
 import { createPartnerMetaTags } from "@/lib/meta"
 import { useState } from "react"
+import { Message } from "@/lib/types"
 import {
   DollarSign,
   CheckCircle,
@@ -25,6 +26,44 @@ const PARTNER_FORM_URL = "https://forms.gle/WvPJUvesbsyx25xM8"
 export default function PartnerPage() {
   useMeta(createPartnerMetaTags())
   const [isDemoChatOpen, setIsDemoChatOpen] = useState(false)
+
+  // Кастомные начальные сообщения для партнерской программы
+  const partnerInitialMessages: Message[] = [
+    {
+      id: "1",
+      text: "**Привет! Меня зовут Тимур и я бот)** Выбери кнопку над строкой ввода сообщения, чтобы протестировать ИИ-продавца для твоей ниши.",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+    {
+      id: "2",
+      text: "Либо **назови свою нишу**, я расскажу что мы можем в ней **автоматизировать**",
+      sender: "bot",
+      timestamp: new Date(),
+    },
+  ]
+
+  // Контент модального окна для кнопки "Разработчик сайтов"
+  const developerModalContent = `Разработчик сайтов — специалист, который создает и поддерживает веб-сайты для клиентов.
+Цель — показать, как ИИ-продавец может помочь автоматизировать обработку заявок и консультации по разработке сайтов.
+
+Примеры вопросов:
+- Сколько стоит разработка сайта?
+- Какие технологии вы используете?
+- Какой срок разработки?
+- Можно ли посмотреть примеры ваших работ?
+- Предоставляете ли вы поддержку после запуска?`
+
+  // Контент модального окна для кнопки "SEO - специалист"
+  const seoModalContent = `SEO-специалист — эксперт по поисковой оптимизации, который помогает клиентам улучшить видимость сайтов в поисковых системах.
+Цель — продемонстрировать, как ИИ-продавец может автоматизировать консультации по SEO-услугам и обработку заявок.
+
+Примеры вопросов:
+- Сколько стоит SEO-продвижение?
+- Какие услуги входят в SEO?
+- Какой срок выхода в ТОП?
+- Работаете ли вы с моей нишей?
+- Предоставляете ли отчеты о проделанной работе?`
 
   const advantages = [
     {
@@ -169,12 +208,16 @@ export default function PartnerPage() {
             </p>
           </div>
 
-          <DemoChat 
-            storagePrefix="partner-demo-chat" 
+          <DemoChat
+            storagePrefix="partner-demo-chat"
             linkButton1="Разработчик сайтов"
             linkButton2="SEO - специалист"
             linkButton1Webhook="https://n8n.asn1ght-ai.store/webhook/dd2626a2-1848-4bf8-bdbd-621cb1b3e273/chat"
             linkButton2Webhook="https://n8n.asn1ght-ai.store/webhook/7487af1d-e45e-4efa-ba7e-b99fd362b2f1/chat"
+            initialMessages={partnerInitialMessages}
+            linkButton1ModalContent={developerModalContent}
+            linkButton2ModalContent={seoModalContent}
+            defaultBotName="Бот Тимур"
           />
 
           <p className="text-center text-muted-foreground mt-8 text-sm">
@@ -192,7 +235,7 @@ export default function PartnerPage() {
               Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
               закрывает возражения 24/7.
             </p>
-            
+
             <Button
               onClick={() => setIsDemoChatOpen(true)}
               className="h-12 sm:h-14 px-6 sm:px-8 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2 sm:gap-3 text-sm sm:text-base font-semibold mx-auto"
@@ -202,7 +245,7 @@ export default function PartnerPage() {
               Протестировать ИИ-бот
               <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
-            
+
             <p className="text-center text-muted-foreground mt-4 text-sm">
               Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
             </p>
@@ -322,13 +365,13 @@ export default function PartnerPage() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               asChild
             >
-              <a 
-                href={PARTNER_FORM_URL} 
-                target="_blank" 
+              <a
+                href={PARTNER_FORM_URL}
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 Стать партнером
@@ -409,13 +452,13 @@ export default function PartnerPage() {
           <p className="text-lg text-muted-foreground mb-8">
             Присоединяйтесь к партнёрской программе и получайте стабильный доход от рекомендаций
           </p>
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             asChild
           >
-            <a 
-              href={PARTNER_FORM_URL} 
-              target="_blank" 
+            <a
+              href={PARTNER_FORM_URL}
+              target="_blank"
               rel="noopener noreferrer"
             >
               Стать партнером
@@ -434,14 +477,18 @@ export default function PartnerPage() {
         <div className="md:hidden fixed inset-0 bg-background z-50 flex flex-col h-screen">
           {/* Demo Chat Content - Full Screen */}
           <div className="flex-1 flex flex-col overflow-hidden h-full">
-            <DemoChat 
-              onClose={() => setIsDemoChatOpen(false)} 
-              isMobile={true} 
+            <DemoChat
+              onClose={() => setIsDemoChatOpen(false)}
+              isMobile={true}
               storagePrefix="partner-demo-chat"
               linkButton1="Разработчик сайтов"
               linkButton2="SEO - специалист"
               linkButton1Webhook="https://n8n.asn1ght-ai.store/webhook/dd2626a2-1848-4bf8-bdbd-621cb1b3e273/chat"
               linkButton2Webhook="https://n8n.asn1ght-ai.store/webhook/7487af1d-e45e-4efa-ba7e-b99fd362b2f1/chat"
+              initialMessages={partnerInitialMessages}
+              linkButton1ModalContent={developerModalContent}
+              linkButton2ModalContent={seoModalContent}
+              defaultBotName="Бот Тимур"
             />
           </div>
         </div>
