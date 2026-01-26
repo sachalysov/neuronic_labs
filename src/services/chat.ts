@@ -60,11 +60,8 @@ export async function sendChatMessage(
     }
     
     // Добавляем информацию об ответе, если есть
-    if (replyToId && replyToText) {
-      requestBody.isReply = true // Явный флаг, что это ответ на сообщение
-      requestBody.replyToId = replyToId // ID сообщения, на которое отвечают
-      requestBody.replyToText = replyToText // Текст сообщения, на которое отвечают
-      requestBody.originalMessage = messageText // Оригинальное сообщение без цитаты
+    if (replyToId) {
+      requestBody.replyToId = replyToId
     }
     
     console.log('Отправка запроса на webhook:', webhookUrl)
