@@ -276,7 +276,7 @@ export function Pricing({ onContactClick }: PricingProps) {
 
         <div className="mt-8 sm:mt-12 text-center">
           <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 px-4">
-            Не уверены, какой тариф выбрать? Закажите бесплатную консультацию
+            Нужна индивидуальная разработка? Закажите бесплатную консультацию
           </p>
           <Button variant="outline" size="lg" onClick={onContactClick} className="text-sm sm:text-base w-full sm:w-auto">
             Получить консультацию
