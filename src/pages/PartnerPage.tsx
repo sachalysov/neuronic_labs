@@ -169,7 +169,13 @@ export default function PartnerPage() {
             </p>
           </div>
 
-          <DemoChat />
+          <DemoChat 
+            storagePrefix="partner-demo-chat" 
+            linkButton1="Разработчик сайтов"
+            linkButton2="SEO - специалист"
+            linkButton1Webhook="https://n8n.asn1ght-ai.store/webhook/dd2626a2-1848-4bf8-bdbd-621cb1b3e273/chat"
+            linkButton2Webhook="https://n8n.asn1ght-ai.store/webhook/7487af1d-e45e-4efa-ba7e-b99fd362b2f1/chat"
+          />
 
           <p className="text-center text-muted-foreground mt-8 text-sm">
             Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
@@ -428,7 +434,15 @@ export default function PartnerPage() {
         <div className="md:hidden fixed inset-0 bg-background z-50 flex flex-col h-screen">
           {/* Demo Chat Content - Full Screen */}
           <div className="flex-1 flex flex-col overflow-hidden h-full">
-            <DemoChat onClose={() => setIsDemoChatOpen(false)} isMobile={true} />
+            <DemoChat 
+              onClose={() => setIsDemoChatOpen(false)} 
+              isMobile={true} 
+              storagePrefix="partner-demo-chat"
+              linkButton1="Разработчик сайтов"
+              linkButton2="SEO - специалист"
+              linkButton1Webhook="https://n8n.asn1ght-ai.store/webhook/dd2626a2-1848-4bf8-bdbd-621cb1b3e273/chat"
+              linkButton2Webhook="https://n8n.asn1ght-ai.store/webhook/7487af1d-e45e-4efa-ba7e-b99fd362b2f1/chat"
+            />
           </div>
         </div>
       )}

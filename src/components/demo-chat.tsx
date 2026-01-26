@@ -19,6 +19,11 @@ import { getWebhookFromSettings } from "@/services/admin-settings"
 interface DemoChatProps {
   onClose?: () => void
   isMobile?: boolean
+  storagePrefix?: string // Префикс для ключей localStorage, чтобы разделить хранилище для разных страниц
+  linkButton1?: string // Текст первой кнопки (по умолчанию "vomoloko.ru")
+  linkButton2?: string // Текст второй кнопки (по умолчанию "protec.one")
+  linkButton1Webhook?: string // Webhook для первой кнопки
+  linkButton2Webhook?: string // Webhook для второй кнопки
 }
 
 const INITIAL_MESSAGE_IDS = ["1", "2"] as const
@@ -47,11 +52,11 @@ const addUserMessage = (prevMessages: Message[], userMessage: Message): Message[
   return [...prevMessages, userMessage]
 }
 
-export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
+export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat', linkButton1 = 'vomoloko.ru', linkButton2 = 'protec.one', linkButton1Webhook, linkButton2Webhook }: DemoChatProps) {
   // Генерируем уникальный sessionId при монтировании компонента
   const [sessionId, setSessionId] = useState(() => {
-    const stored = getLocalStorage('demo-chat-session-id')
-    const lastActivity = getLocalStorage('demo-chat-last-activity')
+    const stored = getLocalStorage(`${storagePrefix}-session-id`)
+    const lastActivity = getLocalStorage(`${storagePrefix}-last-activity`)
 
     // Проверяем неактивность при загрузке
     if (lastActivity) {
@@ -59,32 +64,32 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       const now = Date.now()
       if (now - lastActivityTime > DEMO_CHAT_INACTIVITY_TIMEOUT) {
         // Сессия истекла, очищаем и создаем новую
-        removeLocalStorage('demo-chat-session-id')
-        removeLocalStorage('demo-chat-messages')
-        removeLocalStorage('demo-chat-last-activity')
+        removeLocalStorage(`${storagePrefix}-session-id`)
+        removeLocalStorage(`${storagePrefix}-messages`)
+        removeLocalStorage(`${storagePrefix}-last-activity`)
         // Очищаем информацию о разблокировке для истекшего session ID
-        removeLocalStorage('demo-chat-unlocked-session-id')
+        removeLocalStorage(`${storagePrefix}-unlocked-session-id`)
         const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-        setLocalStorage('demo-chat-session-id', newId)
-        setLocalStorage('demo-chat-last-activity', Date.now().toString())
+        setLocalStorage(`${storagePrefix}-session-id`, newId)
+        setLocalStorage(`${storagePrefix}-last-activity`, Date.now().toString())
         return newId
       }
     }
 
     if (stored) {
       // Обновляем время последней активности при загрузке
-      setLocalStorage('demo-chat-last-activity', Date.now().toString())
+      setLocalStorage(`${storagePrefix}-last-activity`, Date.now().toString())
       return stored
     }
     const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
-    setLocalStorage('demo-chat-session-id', newId)
-    setLocalStorage('demo-chat-last-activity', Date.now().toString())
+    setLocalStorage(`${storagePrefix}-session-id`, newId)
+    setLocalStorage(`${storagePrefix}-last-activity`, Date.now().toString())
     return newId
   })
 
   // Загружаем сообщения из localStorage или используем начальные
   const [messages, setMessages] = useState<Message[]>(() => {
-    const lastActivity = getLocalStorage('demo-chat-last-activity')
+    const lastActivity = getLocalStorage(`${storagePrefix}-last-activity`)
 
     // Если сессия истекла, возвращаем начальные сообщения
     if (lastActivity) {
@@ -95,7 +100,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       }
     }
 
-    const stored = getLocalStorage('demo-chat-messages')
+    const stored = getLocalStorage(`${storagePrefix}-messages`)
     if (stored) {
       try {
         const parsed = JSON.parse(stored)
@@ -118,8 +123,8 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
   // Состояние для блокировки чата заглушкой - проверяем, был ли разблокирован для текущего session ID
   const [isUnlocked, setIsUnlocked] = useState(() => {
-    const unlockedSessionId = getLocalStorage('demo-chat-unlocked-session-id')
-    const currentSessionId = getLocalStorage('demo-chat-session-id')
+    const unlockedSessionId = getLocalStorage(`${storagePrefix}-unlocked-session-id`)
+    const currentSessionId = getLocalStorage(`${storagePrefix}-session-id`)
     // Если есть сохраненный разблокированный session ID и он совпадает с текущим, разблокируем
     return unlockedSessionId === currentSessionId && !!unlockedSessionId
   })
@@ -137,7 +142,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   // Определяем видимость кнопок: скрываем если диалог уже начат (есть пользовательские сообщения)
   const [linkButtonsVisible, setLinkButtonsVisible] = useState(() => {
     // Проверяем сохраненные сообщения
-    const stored = getLocalStorage('demo-chat-messages')
+    const stored = getLocalStorage(`${storagePrefix}-messages`)
     if (stored) {
       try {
         const parsed = JSON.parse(stored)
@@ -160,7 +165,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
   const [webhookProtec, setWebhookProtec] = useState<string | undefined>(undefined)
   // Храним текущий webhook URL (по умолчанию стандартный для demo)
   const [currentWebhookUrl, setCurrentWebhookUrl] = useState<string | undefined>(() => {
-    const stored = getLocalStorage('demo-chat-webhook-url')
+    const stored = getLocalStorage(`${storagePrefix}-webhook-url`)
     return stored || undefined
   })
   // Состояние для отображения кнопки результата записи для protec.one
@@ -246,7 +251,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   // Функция для обновления времени последней активности
   const updateLastActivity = useCallback(() => {
-    setLocalStorage('demo-chat-last-activity', Date.now().toString())
+    setLocalStorage(`${storagePrefix}-last-activity`, Date.now().toString())
 
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
@@ -261,7 +266,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         handleResetChatRef.current()
       }
     }, DEMO_CHAT_INACTIVITY_TIMEOUT)
-  }, [])
+  }, [storagePrefix])
 
   // Функция для сброса чата
   const handleResetChat = useCallback(() => {
@@ -270,24 +275,24 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setSessionId(newId)
 
     // Очищаем localStorage
-    removeLocalStorage('demo-chat-session-id')
-    removeLocalStorage('demo-chat-messages')
-    removeLocalStorage('demo-chat-last-activity')
-    removeLocalStorage('demo-chat-webhook-url')
-    removeLocalStorage('demo-chat-buttons-hidden')
+    removeLocalStorage(`${storagePrefix}-session-id`)
+    removeLocalStorage(`${storagePrefix}-messages`)
+    removeLocalStorage(`${storagePrefix}-last-activity`)
+    removeLocalStorage(`${storagePrefix}-webhook-url`)
+    removeLocalStorage(`${storagePrefix}-buttons-hidden`)
     // Очищаем информацию о разблокировке для старого session ID
-    removeLocalStorage('demo-chat-unlocked-session-id')
+    removeLocalStorage(`${storagePrefix}-unlocked-session-id`)
 
     // Сохраняем новый sessionId и время активности
-    setLocalStorage('demo-chat-session-id', newId)
-    setLocalStorage('demo-chat-last-activity', Date.now().toString())
+    setLocalStorage(`${storagePrefix}-session-id`, newId)
+    setLocalStorage(`${storagePrefix}-last-activity`, Date.now().toString())
 
     // Сбрасываем сообщения на начальные
     setMessages(getInitialMessages())
 
     // Показываем кнопки со ссылками снова и удаляем флаг из localStorage
     setLinkButtonsVisible(true)
-    removeLocalStorage('demo-chat-buttons-hidden')
+    removeLocalStorage(`${storagePrefix}-buttons-hidden`)
 
     // Блокируем чат снова при сбросе (новый session ID, заглушка должна появиться)
     setIsUnlocked(false)
@@ -321,11 +326,11 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
     // Сбрасываем webhook на исходный (undefined = стандартный для demo)
     setCurrentWebhookUrl(undefined)
-    removeLocalStorage('demo-chat-webhook-url')
+    removeLocalStorage(`${storagePrefix}-webhook-url`)
 
     // Переустанавливаем таймер неактивности для новой сессии
     updateLastActivity()
-  }, [updateLastActivity])
+  }, [updateLastActivity, storagePrefix])
 
   // Сохраняем актуальную ссылку на handleResetChat в ref
   useEffect(() => {
@@ -334,10 +339,10 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
   // Сохраняем сообщения в localStorage при каждом изменении
   useEffect(() => {
-    setLocalStorage('demo-chat-messages', JSON.stringify(messages))
+    setLocalStorage(`${storagePrefix}-messages`, JSON.stringify(messages))
     // Обновляем время активности при изменении сообщений (не сразу, чтобы избежать лишних таймеров)
     // Это будет вызываться только при реальных изменениях сообщений, не при каждом рендере
-  }, [messages])
+  }, [messages, storagePrefix])
 
   // Проверяем при загрузке и изменении сообщений/webhook, нужно ли показывать кнопку результата записи
   useEffect(() => {
@@ -456,7 +461,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     // Если это первое пользовательское сообщение, скрываем кнопки
     if (!hasExistingUserMessages && linkButtonsVisible) {
       setLinkButtonsVisible(false)
-      setLocalStorage('demo-chat-buttons-hidden', 'true')
+      setLocalStorage(`${storagePrefix}-buttons-hidden`, 'true')
     }
     setInput("")
     setSelectedImage(null)
@@ -534,7 +539,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
     setIsUnlocked(true)
     setShowRules(false)
     // Сохраняем текущий session ID как разблокированный
-    setLocalStorage('demo-chat-unlocked-session-id', sessionId)
+    setLocalStorage(`${storagePrefix}-unlocked-session-id`, sessionId)
   }
 
   const handleSendLink = async (link: string) => {
@@ -542,10 +547,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
     // Скрываем кнопки сразу при нажатии и сохраняем в localStorage
     setLinkButtonsVisible(false)
-    setLocalStorage('demo-chat-buttons-hidden', 'true')
+    setLocalStorage(`${storagePrefix}-buttons-hidden`, 'true')
+
+    // Если используются кастомные кнопки (не стандартные vomoloko.ru/protec.one), используем стандартную логику
+    const isCustomButtons = linkButton1 !== 'vomoloko.ru' || linkButton2 !== 'protec.one'
 
     // Если это кнопка vomoloko.ru, переключаемся на новый webhook
-    if (link === "vomoloko.ru") {
+    if (!isCustomButtons && link === "vomoloko.ru") {
       // Обновляем имя бота
       setBotName("Мария Во!Молоко")
       // Скрываем текст "Отвечает мгновенно"
@@ -558,7 +566,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
       // Устанавливаем новый webhook
       setCurrentWebhookUrl(vomolokoWebhook)
-      setLocalStorage('demo-chat-webhook-url', vomolokoWebhook)
+      setLocalStorage(`${storagePrefix}-webhook-url`, vomolokoWebhook)
 
       setIsLoading(true)
       updateLastActivity()
@@ -612,7 +620,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       } finally {
         setIsLoading(false)
       }
-    } else if (link === "protec.one") {
+    } else if (!isCustomButtons && link === "protec.one") {
       // Обновляем имя бота
       setBotName("Мария Protec.One")
       // Скрываем текст "Отвечает мгновенно"
@@ -625,7 +633,7 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
 
       // Устанавливаем новый webhook
       setCurrentWebhookUrl(protecWebhook)
-      setLocalStorage('demo-chat-webhook-url', protecWebhook)
+      setLocalStorage(`${storagePrefix}-webhook-url`, protecWebhook)
 
       setIsLoading(true)
       updateLastActivity()
@@ -680,6 +688,18 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
         setIsLoading(false)
       }
     } else {
+      // Проверяем, есть ли кастомный webhook для этой кнопки
+      let webhookToUse = currentWebhookUrl
+      if (link === linkButton1 && linkButton1Webhook) {
+        webhookToUse = linkButton1Webhook
+        setCurrentWebhookUrl(linkButton1Webhook)
+        setLocalStorage(`${storagePrefix}-webhook-url`, linkButton1Webhook)
+      } else if (link === linkButton2 && linkButton2Webhook) {
+        webhookToUse = linkButton2Webhook
+        setCurrentWebhookUrl(linkButton2Webhook)
+        setLocalStorage(`${storagePrefix}-webhook-url`, linkButton2Webhook)
+      }
+
       // Для других ссылок используем стандартную логику
       const userMessage: Message = {
         id: Date.now().toString(),
@@ -696,13 +716,13 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
       // Если это первое пользовательское сообщение, скрываем кнопки
       if (!hasExistingUserMessages && linkButtonsVisible) {
         setLinkButtonsVisible(false)
-        setLocalStorage('demo-chat-buttons-hidden', 'true')
+        setLocalStorage(`${storagePrefix}-buttons-hidden`, 'true')
       }
       setIsLoading(true)
       updateLastActivity()
 
       try {
-        const response = await sendChatMessage(link, 'demo', sessionId, currentWebhookUrl)
+        const response = await sendChatMessage(link, 'demo', sessionId, webhookToUse)
 
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
@@ -1021,20 +1041,20 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => handleSendLink("vomoloko.ru")}
+                  onClick={() => handleSendLink(linkButton1)}
                   disabled={isLoading || !isUnlocked}
                   className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
                 >
-                  vomoloko.ru
+                  {linkButton1}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => handleSendLink("protec.one")}
+                  onClick={() => handleSendLink(linkButton2)}
                   disabled={isLoading || !isUnlocked}
-                  className="flex-1 text-sm"
+                  className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
                 >
-                  protec.one
+                  {linkButton2}
                 </Button>
               </div>
             )}
