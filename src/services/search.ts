@@ -28,7 +28,7 @@ const STATIC_PAGES = [
     id: 'contacts',
     type: 'page' as const,
     title: 'Контакты',
-    content: `Контакты NEURONIC LABS. Телефон: +7 993 079 91 77, +7 905 009 91 77. Email: neuroniclabs@yandex.ru, contact@neuroniclabs.ru. Telegram: @aslysov, @neuroniclabs. Агентство по внедрению нейро-продавцов и автоматизации бизнеса. Москва, Россия.`,
+    content: `Контакты NEURONIC LABS. Телефон: +7 993 079 91 77, +7 905 009 91 77. Email: neuroniclabs@yandex.ru, contact@neuroniclabs.ru. Telegram: @aslysov, @neuroniclabs. Агентство по внедрению нейро-продавцов и автоматизации бизнеса. Санкт-Петербург, Россия.`,
     url: '/contacts'
   },
   {
@@ -109,17 +109,17 @@ async function loadData() {
       fetchBlogPosts(),
       fetchBusinessCases()
     ])
-    
+
     blogPostsCache = posts
     businessCasesCache = cases
     cacheTimestamp = now
-    
+
     return { posts, cases }
   } catch (error) {
     console.error('Ошибка загрузки данных для поиска:', error)
-    return { 
-      posts: blogPostsCache || [], 
-      cases: businessCasesCache || [] 
+    return {
+      posts: blogPostsCache || [],
+      cases: businessCasesCache || []
     }
   }
 }
@@ -148,27 +148,27 @@ export async function search(query: string): Promise<SearchResult[]> {
 
   const normalizedQuery = normalizeText(trimmedQuery)
   const queryWords = normalizedQuery.split(/\s+/).filter(w => w.length > 0)
-  
+
   const results: SearchResult[] = []
-  
+
   // Загружаем данные
   const { posts, cases } = await loadData()
-  
+
   // Поиск по блогам
   posts.forEach(post => {
     const searchableText = normalizeText(
       `${post.title} ${post.excerpt || ''} ${extractTextFromHtml(post.content || '', 500)}`
     )
     const hasMatch = queryWords.every(word => searchableText.includes(word)) ||
-                     normalizedQuery.length > 0 && searchableText.includes(normalizedQuery)
-    
+      normalizedQuery.length > 0 && searchableText.includes(normalizedQuery)
+
     if (hasMatch) {
       const excerpt = post.excerpt || extractTextFromHtml(post.content || '', 150)
       const matchIndex = excerpt.toLowerCase().indexOf(trimmedQuery.toLowerCase())
       const start = Math.max(0, matchIndex > -1 ? matchIndex - 40 : 0)
       const end = Math.min(excerpt.length, matchIndex > -1 ? matchIndex + trimmedQuery.length + 40 : 150)
       const snippet = excerpt.substring(start, end).trim()
-      
+
       results.push({
         id: `blog-${post.id}`,
         type: 'blog',
@@ -183,22 +183,22 @@ export async function search(query: string): Promise<SearchResult[]> {
       })
     }
   })
-  
+
   // Поиск по кейсам
   cases.forEach(businessCase => {
     const searchableText = normalizeText(
       `${businessCase.title} ${businessCase.description} ${businessCase.challenge} ${businessCase.solution} ${extractTextFromHtml(businessCase.content || '', 500)}`
     )
     const hasMatch = queryWords.every(word => searchableText.includes(word)) ||
-                     normalizedQuery.length > 0 && searchableText.includes(normalizedQuery)
-    
+      normalizedQuery.length > 0 && searchableText.includes(normalizedQuery)
+
     if (hasMatch) {
       const description = businessCase.description || extractTextFromHtml(businessCase.content || '', 150)
       const matchIndex = description.toLowerCase().indexOf(trimmedQuery.toLowerCase())
       const start = Math.max(0, matchIndex > -1 ? matchIndex - 40 : 0)
       const end = Math.min(description.length, matchIndex > -1 ? matchIndex + trimmedQuery.length + 40 : 150)
       const snippet = description.substring(start, end).trim()
-      
+
       results.push({
         id: `case-${businessCase.id}`,
         type: 'case',
@@ -211,19 +211,19 @@ export async function search(query: string): Promise<SearchResult[]> {
       })
     }
   })
-  
+
   // Поиск по статическим страницам
   STATIC_PAGES.forEach(page => {
     const searchableText = normalizeText(`${page.title} ${page.content}`)
     const hasMatch = queryWords.every(word => searchableText.includes(word)) ||
-                     normalizedQuery.length > 0 && searchableText.includes(normalizedQuery)
-    
+      normalizedQuery.length > 0 && searchableText.includes(normalizedQuery)
+
     if (hasMatch) {
       const matchIndex = page.content.toLowerCase().indexOf(trimmedQuery.toLowerCase())
       const start = Math.max(0, matchIndex > -1 ? matchIndex - 40 : 0)
       const end = Math.min(page.content.length, matchIndex > -1 ? matchIndex + trimmedQuery.length + 40 : 150)
       const snippet = page.content.substring(start, end).trim()
-      
+
       results.push({
         id: page.id,
         type: page.type,
@@ -233,13 +233,13 @@ export async function search(query: string): Promise<SearchResult[]> {
       })
     }
   })
-  
+
   // Поиск по секциям главной страницы (статические описания + динамический контент если доступен)
   HOME_SECTIONS.forEach(section => {
     const searchableText = normalizeText(`${section.title} ${section.content}`)
     const hasMatch = queryWords.every(word => searchableText.includes(word)) ||
-                     normalizedQuery.length > 0 && searchableText.includes(normalizedQuery)
-    
+      normalizedQuery.length > 0 && searchableText.includes(normalizedQuery)
+
     if (hasMatch) {
       // Пытаемся получить актуальный контент с главной страницы, если она загружена
       let snippet = section.content
@@ -263,7 +263,7 @@ export async function search(query: string): Promise<SearchResult[]> {
           snippet = section.content.substring(start, end).trim()
         }
       }
-      
+
       results.push({
         id: section.id,
         type: 'section',
@@ -273,18 +273,18 @@ export async function search(query: string): Promise<SearchResult[]> {
       })
     }
   })
-  
+
   // Сортировка: сначала точные совпадения, потом по типу
   results.sort((a, b) => {
     const aExact = a.title.toLowerCase().includes(normalizedQuery) ? 1 : 0
     const bExact = b.title.toLowerCase().includes(normalizedQuery) ? 1 : 0
     if (aExact !== bExact) return bExact - aExact
-    
+
     // Приоритет типов: blog > case > section > page
     const typePriority = { blog: 4, case: 3, section: 2, page: 1 }
     return (typePriority[b.type] || 0) - (typePriority[a.type] || 0)
   })
-  
+
   return results.slice(0, 10) // Ограничиваем 10 результатами
 }
 

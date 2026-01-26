@@ -79,7 +79,7 @@ export default function ContactsPage() {
       icon: MapPin,
       title: "Офис",
       values: [
-        { label: "Россия, Москва" }
+        { label: "Россия, Санкт-Петербург" }
       ]
     },
     {
@@ -212,18 +212,16 @@ export default function ContactsPage() {
                     >
                       <span>Доступные способы оплаты:</span>
                       <ChevronDown
-                        className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${
-                          isPaymentMethodsOpen ? 'rotate-180' : ''
-                        }`}
+                        className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 ${isPaymentMethodsOpen ? 'rotate-180' : ''
+                          }`}
                       />
                     </button>
                     {/* Заголовок для десктопа - всегда видимый */}
                     <h3 className="hidden md:block font-semibold mb-2">Доступные способы оплаты:</h3>
                     {/* Контент - всегда раскрыт на десктопе, сворачивается на мобильных */}
                     <div
-                      className={`overflow-hidden transition-all duration-300 ease-in-out md:!max-h-none md:!opacity-100 ${
-                        isPaymentMethodsOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 md:max-h-none md:opacity-100'
-                      }`}
+                      className={`overflow-hidden transition-all duration-300 ease-in-out md:!max-h-none md:!opacity-100 ${isPaymentMethodsOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0 md:max-h-none md:opacity-100'
+                        }`}
                     >
                       <div className="pt-2">
                         <ul className="list-disc list-inside space-y-2">
@@ -264,7 +262,7 @@ export default function ContactsPage() {
                   Оставьте заявку и мы свяжемся с вами в ближайшее время
                 </p>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <a

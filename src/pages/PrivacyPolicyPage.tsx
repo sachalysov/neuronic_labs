@@ -72,7 +72,7 @@ export default function PrivacyPolicyPage() {
                     <div className="space-y-2 text-base">
                       <p><strong>Наименование:</strong> NEURONIC LABS</p>
                       <p><strong>ИНН:</strong> 130102424667</p>
-                      <p><strong>Адрес:</strong> Россия, Москва</p>
+                      <p><strong>Адрес:</strong> Россия, Санкт-Петербург</p>
                       <p>
                         <strong>Email:</strong>{" "}
                         <a
