@@ -272,6 +272,8 @@ html[data-theme="dark"] .hero-bottom-fade {
   [id="testimonials"] blockquote {
     font-size: 0.93rem !important;
   }
+
+  
 }
 
 /* Адаптация для экранов 320-475px (без изменения текстов и изображения робота) */

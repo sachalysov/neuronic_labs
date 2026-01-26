@@ -661,7 +661,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       
       {/* Side Menu */}
       <nav 
-        className="lg:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-black z-[70] shadow-2xl transition-transform duration-300 ease-out overflow-y-auto flex flex-col"
+        className="lg:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-black/80 backdrop-blur-md z-[70] shadow-2xl transition-transform duration-300 ease-out overflow-y-auto flex flex-col"
         style={{
           transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(100%)'
         }}

@@ -867,30 +867,43 @@ export function DemoChat({ onClose, isMobile = false }: DemoChatProps) {
             </div>
           </div>
         </CardHeader>
-        <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0 overflow-hidden' : ''}`}>
+        <CardContent className={`p-0 ${isMobile ? 'flex flex-col flex-1 min-h-0 overflow-y-hidden' : ''}`} style={{ overflowX: 'visible' }}>
           <div
             ref={messagesContainerRef}
             className={`relative ${isMobile ? 'flex-1 min-h-0 overflow-y-auto' : 'h-[500px]'} ${isMobile ? '' : 'overflow-y-auto'} p-6 space-y-4 bg-gray-50`}
-            style={isMobile ? { paddingBottom: `${inputContainerHeight}px` } : undefined}
+            style={isMobile ? { paddingBottom: `${inputContainerHeight}px`, overflowX: 'visible' } : { overflowX: 'visible' }}
           >
             {messages.map((message) => (
-              <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"} group`}>
-                <div className={`max-w-[75%] relative`}>
+              <div key={message.id} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[75%] relative`} style={{ overflow: 'visible' }}>
                   <div
                     className={`rounded-2xl px-5 py-3 relative ${message.sender === "user" ? "bg-white border border-gray-200 text-gray-900" : "bg-white border border-gray-200 text-gray-900"
                       }`}
+                    style={{ position: 'relative', overflow: 'visible' }}
                   >
                     {/* Меню с тремя точками */}
-                    <div className="absolute top-2 right-2">
+                    <div
+                      className="absolute pointer-events-auto"
+                      style={isMobile ? {
+                        top: '2px',
+                        right: '-15px',
+                        zIndex: 20
+                      } : {
+                        top: '8px',
+                        right: '8px',
+                        zIndex: 20
+                      }}
+                    >
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
                           setOpenMenuId(openMenuId === message.id ? null : message.id)
                         }}
-                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        className="p-1 hover:bg-gray-100 active:bg-gray-200 rounded transition-colors touch-manipulation"
                         title="Меню"
+                        type="button"
                       >
-                        <MoreVertical className="h-4 w-4 text-gray-500" />
+                        <MoreVertical className="h-4 w-4 text-gray-600 pointer-events-none" />
                       </button>
                       {/* Выпадающее меню */}
                       {openMenuId === message.id && (
