@@ -322,3 +322,26 @@ export function createConferenceMetaTags(): MetaTags {
   }
 }
 
+/**
+ * Хелпер для создания мета-тегов для страницы политики конфиденциальности
+ */
+export function createPrivacyPolicyMetaTags(): MetaTags {
+  const fullUrl = `${BASE_URL}/politika-konfidentsialnosti`
+  
+  return {
+    title: 'Политика конфиденциальности | NEURONIC LABS',
+    description: 'Политика конфиденциальности и обработки персональных данных в соответствии с Федеральным законом № 152-ФЗ. Информация о сборе, использовании и защите персональных данных.',
+    keywords: 'политика конфиденциальности, персональные данные, 152-ФЗ, защита данных, обработка данных',
+    canonical: fullUrl,
+    ogTitle: 'Политика конфиденциальности | NEURONIC LABS',
+    ogDescription: 'Политика конфиденциальности и обработки персональных данных в соответствии с Федеральным законом № 152-ФЗ.',
+    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    ogUrl: fullUrl,
+    ogType: 'website',
+    twitterTitle: 'Политика конфиденциальности | NEURONIC LABS',
+    twitterDescription: 'Политика конфиденциальности и обработки персональных данных в соответствии с Федеральным законом № 152-ФЗ.',
+    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    url: fullUrl,
+  }
+}
+

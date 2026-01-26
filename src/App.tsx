@@ -5,6 +5,9 @@ import AdminLoginPage from './pages/AdminLoginPage'
 import AdminBlogPage from './pages/AdminBlogPage'
 import AdminBusinessCasesPage from './pages/AdminBusinessCasesPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import ConsentRequiredPage from './pages/ConsentRequiredPage'
+import { ConsentGate } from './components/consent-gate'
 
 const ADMIN_THEME_STORAGE_KEY = "admin_theme"
 const USER_THEME_STORAGE_KEY = "theme"
@@ -87,77 +90,83 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeManager />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route 
-          path="/blog" 
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <BlogPage />
-            </Suspense>
-          } 
-        />
-        <Route 
-          path="/blog/:slug" 
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <BlogPostPage />
-            </Suspense>
-          } 
-        />
-        <Route 
-          path="/business-cases" 
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <BusinessCasesPage />
-            </Suspense>
-          } 
-        />
-        <Route 
-          path="/business-cases/:id" 
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <BusinessCasePage />
-            </Suspense>
-          } 
-        />
-        <Route 
-          path="/partners" 
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <PartnerPage />
-            </Suspense>
-          } 
-        />
-        <Route 
-          path="/contacts" 
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <ContactsPage />
-            </Suspense>
-          } 
-        />
-        <Route 
-          path="/conference" 
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <ConferencePage />
-            </Suspense>
-          } 
-        />
-        <Route 
-          path="/calculator" 
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <CalculatorPage />
-            </Suspense>
-          } 
-        />
-        <Route path="/admin" element={<AdminDashboardPage />} />
-        <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route path="/admin/blog" element={<AdminBlogPage />} />
-        <Route path="/admin/business-cases" element={<AdminBusinessCasesPage />} />
-      </Routes>
+      <ConsentGate>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route 
+            path="/blog" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <BlogPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/blog/:slug" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <BlogPostPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/business-cases" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <BusinessCasesPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/business-cases/:id" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <BusinessCasePage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/partners" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <PartnerPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/contacts" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ContactsPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/conference" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ConferencePage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/calculator" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <CalculatorPage />
+              </Suspense>
+            } 
+          />
+          {/* Страницы, доступные без согласия */}
+          <Route path="/politika-konfidentsialnosti" element={<PrivacyPolicyPage />} />
+          <Route path="/consent-required" element={<ConsentRequiredPage />} />
+          {/* Админ-панель доступна без согласия */}
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin/blog" element={<AdminBlogPage />} />
+          <Route path="/admin/business-cases" element={<AdminBusinessCasesPage />} />
+        </Routes>
+      </ConsentGate>
     </BrowserRouter>
   )
 }

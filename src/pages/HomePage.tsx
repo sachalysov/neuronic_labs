@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { PhoneInput } from "@/components/ui/phone-input"
+import { Checkbox } from "@/components/ui/checkbox"
 import { ChatWidget } from "@/components/chat-widget"
 import { StickyHeader } from "@/components/sticky-header"
 import { DemoChat } from "@/components/demo-chat"
@@ -57,11 +58,13 @@ export default function HomePage() {
   const [telegram, setTelegram] = useState("")
   const [comment, setComment] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [consentAccepted, setConsentAccepted] = useState(false)
   const [selectedCountry, setSelectedCountry] = useState<Country>(CIS_COUNTRIES[0])
   const [errors, setErrors] = useState<{
     name?: string
     phone?: string
     comment?: string
+    consent?: string
   }>({})
   const benefitsScrollRef = useRef<HTMLDivElement>(null)
   const businessTypesScrollRef = useRef<HTMLDivElement>(null)
@@ -310,6 +313,9 @@ export default function HomePage() {
     if (!commentValidation.valid) {
       newErrors.comment = commentValidation.error
     }
+    if (!consentAccepted) {
+      newErrors.consent = "Необходимо согласие на обработку персональных данных"
+    }
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -338,6 +344,7 @@ export default function HomePage() {
         setEmail("")
         setTelegram("")
         setComment("")
+        setConsentAccepted(false)
         setErrors({})
         setSelectedCountry(CIS_COUNTRIES[0])
       }, 5000)
@@ -1904,14 +1911,55 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full text-sm sm:text-base md:text-lg py-3 sm:py-3 md:py-3 px-4 h-auto min-h-[50px] sm:min-h-[60px] whitespace-normal leading-tight">
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <Checkbox
+                          id="consent-home"
+                          checked={consentAccepted}
+                          onCheckedChange={(checked) => {
+                            setConsentAccepted(checked === true)
+                            if (checked) {
+                              setErrors(prev => {
+                                const newErrors = { ...prev }
+                                delete newErrors.consent
+                                return newErrors
+                              })
+                            }
+                          }}
+                          className="mt-1"
+                        />
+                        <label
+                          htmlFor="consent-home"
+                          className="text-xs sm:text-sm text-foreground cursor-pointer leading-relaxed"
+                        >
+                          Я согласен(а) на обработку персональных данных в соответствии с{" "}
+                          <a
+                            href="/politika-konfidentsialnosti"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              window.location.href = '/politika-konfidentsialnosti'
+                            }}
+                            className="text-primary hover:underline"
+                          >
+                            Политикой конфиденциальности
+                          </a>
+                          {" "}*
+                        </label>
+                      </div>
+                      {errors.consent && (
+                        <p className="text-xs text-destructive">{errors.consent}</p>
+                      )}
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      size="lg" 
+                      className="w-full text-sm sm:text-base md:text-lg py-3 sm:py-3 md:py-3 px-4 h-auto min-h-[50px] sm:min-h-[60px] whitespace-normal leading-tight"
+                      disabled={!consentAccepted}
+                    >
                       Получить бесплатную консультацию
                       <Send className="ml-2 h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
                     </Button>
-
-                    <p className="text-sm text-muted-foreground">
-                      Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-                    </p>
                   </form>
                 ) : (
                   <div className="py-8 text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">

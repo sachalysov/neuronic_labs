@@ -1,11 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { PhoneInput } from "@/components/ui/phone-input"
+import { Checkbox } from "@/components/ui/checkbox"
 import { X, Send, CheckCircle } from "lucide-react"
 import { submitFormData } from "@/services/form"
 import { validatePhone, validateName, validateComment, CIS_COUNTRIES, type Country } from "@/lib/phone-validation"
@@ -25,11 +27,14 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedCountry, setSelectedCountry] = useState<Country>(CIS_COUNTRIES[0])
+  const [consentAccepted, setConsentAccepted] = useState(false)
   const [errors, setErrors] = useState<{
     name?: string
     phone?: string
     comment?: string
+    consent?: string
   }>({})
+  const navigate = useNavigate()
 
   // Устанавливаем начальный комментарий при открытии модального окна
   useEffect(() => {
@@ -46,6 +51,7 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
       setEmail("")
       setTelegram("")
       setComment("")
+      setConsentAccepted(false)
       setIsSubmitted(false)
       setErrors({})
     }
@@ -158,6 +164,9 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
     }
     if (!commentValidation.valid) {
       newErrors.comment = commentValidation.error
+    }
+    if (!consentAccepted) {
+      newErrors.consent = "Необходимо согласие на обработку персональных данных"
     }
     
     if (Object.keys(newErrors).length > 0) {
@@ -326,19 +335,55 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="consent"
+                    checked={consentAccepted}
+                    onCheckedChange={(checked) => {
+                      setConsentAccepted(checked === true)
+                      if (checked) {
+                        setErrors(prev => {
+                          const newErrors = { ...prev }
+                          delete newErrors.consent
+                          return newErrors
+                        })
+                      }
+                    }}
+                    className="mt-1"
+                  />
+                  <label
+                    htmlFor="consent"
+                    className="text-xs sm:text-sm text-foreground cursor-pointer leading-relaxed"
+                  >
+                    Я согласен(а) на обработку персональных данных в соответствии с{" "}
+                    <a
+                      href="/politika-konfidentsialnosti"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        navigate('/politika-konfidentsialnosti')
+                      }}
+                      className="text-primary hover:underline"
+                    >
+                      Политикой конфиденциальности
+                    </a>
+                    {" "}*
+                  </label>
+                </div>
+                {errors.consent && (
+                  <p className="text-xs text-destructive">{errors.consent}</p>
+                )}
+              </div>
+
               <Button 
                 type="submit" 
                 size="lg" 
                 className="w-full text-sm sm:text-lg py-4 sm:py-6 mt-4 sm:mt-6"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !consentAccepted}
               >
                 {isSubmitting ? "Отправка..." : "Отправить заявку"}
                 <Send className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
-
-              <p className="text-[10px] sm:text-xs text-center text-muted-foreground mt-3 sm:mt-4">
-                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
-              </p>
             </form>
           ) : (
             <div className="py-6 sm:py-8 text-center space-y-3 sm:space-y-4 animate-in fade-in zoom-in-95 duration-300">
