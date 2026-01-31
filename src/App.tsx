@@ -29,6 +29,15 @@ const PageLoader = () => (
   </div>
 )
 
+// При смене страницы — прокрутка вверх (ссылки в хедере/футере)
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  return null
+}
+
 // Компонент для управления темой в зависимости от пути
 function ThemeManager() {
   const location = useLocation()
@@ -90,6 +99,7 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeManager />
+      <ScrollToTop />
       <ConsentGate>
         <Routes>
           <Route path="/" element={<HomePage />} />
