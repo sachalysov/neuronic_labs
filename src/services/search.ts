@@ -28,7 +28,7 @@ const STATIC_PAGES = [
     id: 'contacts',
     type: 'page' as const,
     title: 'Контакты',
-    content: `Контакты NEURONIC LABS. Телефон: +7 993 079 91 77, +7 905 009 91 77. Email: neuroniclabs@yandex.ru, contact@neuroniclabs.ru. Telegram: @aslysov, @neuroniclabs. Агентство по внедрению нейро-продавцов и автоматизации бизнеса. Санкт-Петербург, Россия.`,
+    content: `Контакты NEURONIC LABS. Телефон: +7 993 079 91 77, +7 905 009 91 77. Email: neuroniclabs@yandex.ru, alexandarlysov@yandex.ru. Telegram: @aslysov, @neuroniclabs. Агентство по внедрению нейро-продавцов и автоматизации бизнеса. Санкт-Петербург, Россия.`,
     url: '/contacts'
   },
   {

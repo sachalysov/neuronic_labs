@@ -14,7 +14,6 @@ import {
   MessageCircle,
   MapPin,
   Clock,
-  Building2,
   CreditCard,
   ChevronDown,
 } from "lucide-react"
@@ -35,11 +34,11 @@ export default function ContactsPage() {
           const headerOffset = 80
           const elementPosition = element.getBoundingClientRect().top
           const offsetPosition = elementPosition + window.pageYOffset - headerOffset
-          window.scrollTo({ top: offsetPosition, behavior: "auto" })
-          // Убираем hash из URL после скролла
+          window.scrollTo({ top: offsetPosition, behavior: "smooth" })
+          // Убираем hash из URL после завершения плавного скролла
           setTimeout(() => {
             window.history.replaceState(null, '', window.location.pathname)
-          }, 100)
+          }, 800)
         }, 50)
       } else {
         // Если элемент не найден, просто убираем hash
@@ -62,7 +61,7 @@ export default function ContactsPage() {
       title: "Email",
       values: [
         { label: "neuroniclabs@yandex.ru", href: "mailto:neuroniclabs@yandex.ru" },
-        { label: "contact@neuroniclabs.ru", href: "mailto:contact@neuroniclabs.ru" }
+        { label: "alexandarlysov@yandex.ru", href: "mailto:alexandarlysov@yandex.ru" }
       ]
     },
     {
@@ -108,38 +107,6 @@ export default function ContactsPage() {
               Свяжитесь с нами любым удобным способом
             </p>
           </div>
-        </div>
-      </section>
-
-      {/* О компании */}
-      <section className="py-2 sm:py-12 px-3 sm:px-4">
-        <div className="container mx-auto max-w-6xl">
-          <Card className="bg-card/10 border-0">
-            <CardContent className="p-6 sm:p-8">
-              <div className="flex flex-col sm:flex-row items-start gap-4 mb-1.5 sm:mb-6">
-                <div className="hidden sm:flex w-12 h-12 rounded-lg bg-primary/10 items-center justify-center flex-shrink-0">
-                  <Building2 className="h-6 w-6 text-primary" />
-                </div>
-                <div className="w-full sm:flex-1">
-                  <h2 className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-4">О NEURONIC LABS</h2>
-                  <div className="space-y-4 text-lg">
-                    <p>
-                      <strong>NEURONIC LABS</strong> — агентство по внедрению нейро-продавцов и автоматизации бизнеса.
-                    </p>
-                    <p>
-                      Мы создаем ИИ-агентов и чат-ботов для автоматизации бизнеса. Специализируемся на интеллектуальной автоматизации процессов, интеграции ИИ в работу, автоматизации рутинных задач, счетов и отчётов.
-                    </p>
-                    <p>
-                      Наши решения помогают бизнесу увеличить конверсию в 2-3 раза, сократить фонд оплаты труда и обеспечить круглосуточную коммуникацию с клиентами через Telegram, WhatsApp, Avito и другие каналы.
-                    </p>
-                    <p>
-                      Внедрение ИИ-решений занимает 7-14 дней без необходимости кодинга. Мы работаем с компаниями различных отраслей и помогаем им автоматизировать продажи, лидогенерацию и консультации.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </section>
 

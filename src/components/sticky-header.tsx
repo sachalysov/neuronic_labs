@@ -114,7 +114,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       const headerOffset = 80
       const elementPosition = element.getBoundingClientRect().top
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset
-      window.scrollTo({ top: offsetPosition, behavior: "auto" })
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" })
       setIsMobileMenuOpen(false) // Закрываем меню после клика
     }
   }

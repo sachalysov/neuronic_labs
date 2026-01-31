@@ -108,11 +108,11 @@ export default function HomePage() {
           const headerOffset = 80
           const elementPosition = element.getBoundingClientRect().top
           const offsetPosition = elementPosition + window.pageYOffset - headerOffset
-          window.scrollTo({ top: offsetPosition, behavior: "auto" })
-          // Убираем hash из URL после скролла
+          window.scrollTo({ top: offsetPosition, behavior: "smooth" })
+          // Убираем hash из URL после завершения плавного скролла
           setTimeout(() => {
             window.history.replaceState(null, '', window.location.pathname)
-          }, 100)
+          }, 800)
         }, 50)
       } else {
         // Если элемент не найден, просто убираем hash
