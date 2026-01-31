@@ -345,3 +345,26 @@ export function createPrivacyPolicyMetaTags(): MetaTags {
   }
 }
 
+/**
+ * Хелпер для создания мета-тегов для страницы публичной оферты
+ */
+export function createOfferMetaTags(): MetaTags {
+  const fullUrl = `${BASE_URL}/publichnaya-oferta`
+
+  return {
+    title: 'Публичная оферта | Условия использования | NEURONIC LABS',
+    description: 'Публичная оферта и условия предоставления услуг NEURONIC LABS. Описание услуг, условия оплаты, ответственность сторон, возврат средств.',
+    keywords: 'публичная оферта, условия использования, договор оферты, услуги, NEURONIC LABS',
+    canonical: fullUrl,
+    ogTitle: 'Публичная оферта | Условия использования | NEURONIC LABS',
+    ogDescription: 'Публичная оферта и условия предоставления услуг NEURONIC LABS. Описание услуг, условия оплаты.',
+    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    ogUrl: fullUrl,
+    ogType: 'website',
+    twitterTitle: 'Публичная оферта | Условия использования | NEURONIC LABS',
+    twitterDescription: 'Публичная оферта и условия предоставления услуг NEURONIC LABS.',
+    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    url: fullUrl,
+  }
+}
+

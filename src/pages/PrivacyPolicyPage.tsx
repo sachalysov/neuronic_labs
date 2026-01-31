@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer"
 import { useMeta } from "@/hooks/useMeta"
 import { createPrivacyPolicyMetaTags } from "@/lib/meta"
 import { Shield, FileText, Mail } from "lucide-react"
+import { Link } from "react-router-dom"
 import { Card, CardContent } from "@/components/ui/card"
 
 export default function PrivacyPolicyPage() {
@@ -257,6 +258,28 @@ export default function PrivacyPolicyPage() {
               </CardContent>
             </Card>
 
+            {/* Реестр операторов */}
+            <Card className="bg-card/10 border-border">
+              <CardContent className="p-6 sm:p-8">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+                  Реестр операторов персональных данных
+                </h2>
+                <p className="mb-4">
+                  В соответствии с требованиями Федерального закона № 152-ФЗ «О персональных данных» 
+                  оператор обязан уведомить Роскомнадзор о начале обработки персональных данных (за исключением 
+                  случаев, когда обработка осуществляется без использования средств автоматизации).
+                </p>
+                <p>
+                  Информация о регистрации в реестре операторов персональных данных Роскомнадзора 
+                  (при наличии) может быть предоставлена по запросу на{" "}
+                  <a href="mailto:neuroniclabs@yandex.ru" className="text-primary hover:underline">
+                    neuroniclabs@yandex.ru
+                  </a>
+                  .
+                </p>
+              </CardContent>
+            </Card>
+
             {/* Правовая основа */}
             <Card className="bg-card/10 border-border">
               <CardContent className="p-6 sm:p-8">
@@ -270,6 +293,21 @@ export default function PrivacyPolicyPage() {
                   </li>
                   <li>
                     Постановлением Правительства РФ от 01.11.2012 № 1119 «Об утверждении требований к защите персональных данных при их обработке в информационных системах персональных данных»
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            {/* Ссылки на связанные документы */}
+            <Card className="bg-card/10 border-border">
+              <CardContent className="p-6 sm:p-8">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-4">Связанные документы</h2>
+                <ul className="space-y-2 list-disc list-inside">
+                  <li>
+                    <Link to="/publichnaya-oferta" className="text-primary hover:underline">
+                      Публичная оферта
+                    </Link>{" "}
+                    — условия предоставления услуг, правила использования контента
                   </li>
                 </ul>
               </CardContent>

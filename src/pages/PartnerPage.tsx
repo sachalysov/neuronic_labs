@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { ChatWidget } from "@/components/chat-widget"
@@ -438,7 +439,11 @@ export default function PartnerPage() {
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-6 w-6 text-primary mt-0.5 flex-shrink-0" />
                   <span>
-                    Партнёрство регулируется договором-офертой.
+                    Партнёрство регулируется{" "}
+                    <Link to="/publichnaya-oferta" className="text-primary hover:underline">
+                      договором-офертой
+                    </Link>
+                    .
                   </span>
                 </li>
               </ul>

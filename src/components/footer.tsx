@@ -48,12 +48,28 @@ export function Footer() {
                 <span className="text-2xl font-bold text-foreground">LABS</span>
               </div>
             </Link>
-            <p className="text-sm text-muted-foreground">
-              2025 © NEURONIC LABS. Все права защищены.
-            </p>
             <p className="text-sm text-foreground/80 leading-relaxed">
               Агентство по внедрению нейро-продавцов и автоматизации бизнеса. Создаём ИИ-агентов и чат-ботов для автоматизации бизнеса. Интеллектуальная автоматизация процессов, интеграция ИИ в работу, автоматизация рутинных задач.
             </p>
+
+             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+              <Link
+                to="/politika-konfidentsialnosti"
+                className="text-primary hover:underline"
+              >
+                Политика конфиденциальности
+              </Link>
+              <Link
+                to="/publichnaya-oferta"
+                className="text-primary hover:underline"
+              >
+                Публичная оферта
+              </Link>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              2025 © NEURONIC LABS. Все права защищены.
+            </p>
+           
           </div>
 
           {/* Колонка 2 - Продукт */}

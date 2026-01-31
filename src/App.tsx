@@ -6,6 +6,7 @@ import AdminBlogPage from './pages/AdminBlogPage'
 import AdminBusinessCasesPage from './pages/AdminBusinessCasesPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import OfferPage from './pages/OfferPage'
 import ConsentRequiredPage from './pages/ConsentRequiredPage'
 import { ConsentGate } from './components/consent-gate'
 
@@ -169,6 +170,7 @@ function App() {
           />
           {/* Страницы, доступные без согласия */}
           <Route path="/politika-konfidentsialnosti" element={<PrivacyPolicyPage />} />
+          <Route path="/publichnaya-oferta" element={<OfferPage />} />
           <Route path="/consent-required" element={<ConsentRequiredPage />} />
           {/* Админ-панель доступна без согласия */}
           <Route path="/admin" element={<AdminDashboardPage />} />

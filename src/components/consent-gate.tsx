@@ -13,7 +13,7 @@ interface ConsentGateProps {
 }
 
 // Страницы, доступные без согласия
-const PUBLIC_PAGES = ['/politika-konfidentsialnosti', '/consent-required']
+const PUBLIC_PAGES = ['/politika-konfidentsialnosti', '/publichnaya-oferta', '/consent-required']
 
 // Проверка, является ли путь админ-страницей
 const isAdminPage = (pathname: string): boolean => {
@@ -53,8 +53,7 @@ export function ConsentGate({ children }: ConsentGateProps) {
   const handleDecline = () => {
     setConsentStatus('declined')
     setConsentStatusState('declined')
-    // Перенаправляем на страницу с требованием согласия
-    navigate('/consent-required')
+    // Пользователь отказался от cookies/аналитики — разрешаем просмотр без Яндекс.Метрики
   }
 
   // Показываем загрузку только при первой проверке
@@ -67,42 +66,12 @@ export function ConsentGate({ children }: ConsentGateProps) {
     return <>{children}</>
   }
 
-  // Если согласие отклонено, показываем gate (будет перенаправление)
+  // Если согласие отклонено — показываем контент без аналитики (возможность отказа от cookies)
   if (consentStatus === 'declined') {
-    return (
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md border-border bg-card">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
-                <Lock className="h-6 w-6 text-destructive" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">Доступ требует согласия</h2>
-                <p className="text-sm text-muted-foreground">
-                  Для использования сайта необходимо согласие на обработку персональных данных
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <Button onClick={handleAccept} className="flex-1">
-                Принять
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate('/politika-konfidentsialnosti')}
-                className="flex-1"
-              >
-                Политика конфиденциальности
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
+    return <>{children}</>
   }
 
-  // Если согласие не дано, показываем модальное окно согласия
+  // Если согласие не дано, показываем модальное окно согласия (персональные данные + cookies)
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <Card className="w-full max-w-md border-border bg-card">
@@ -112,7 +81,7 @@ export function ConsentGate({ children }: ConsentGateProps) {
               <Lock className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Согласие на обработку персональных данных</h2>
+              <h2 className="text-xl font-bold">Согласие на обработку данных и cookies</h2>
               <p className="text-xs text-muted-foreground">
                 В соответствии с Федеральным законом № 152-ФЗ
               </p>
@@ -121,10 +90,13 @@ export function ConsentGate({ children }: ConsentGateProps) {
 
           <div className="space-y-3 text-sm">
             <p>
-              Для работы сайта и предоставления услуг нам необходимо обрабатывать ваши персональные данные.
+              Для работы сайта и предоставления услуг нам необходимо обрабатывать ваши персональные данные и использовать cookies.
             </p>
             <p>
-              Мы собираем и обрабатываем следующие данные: имя, телефон, email, сообщения в чате и формах обратной связи.
+              <strong>Cookies:</strong> используем для анализа посещаемости (Яндекс.Метрика) — IP, данные браузера, поведение на сайте. Вы можете отказаться — сайт будет работать без аналитики.
+            </p>
+            <p>
+              <strong>Персональные данные:</strong> имя, телефон, email, сообщения в чате и формах обратной связи.
             </p>
             <p>
               Подробная информация о целях обработки, сроках хранения и ваших правах указана в{" "}
