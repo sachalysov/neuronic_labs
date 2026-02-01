@@ -93,11 +93,24 @@ export async function sendChatMessage(
     }
     console.log('Webhook response:', data)
 
-    // Parse response based on common formats
-    return {
-      message: data.response || data.message || data.text || data.output || JSON.stringify(data) || "Извините, не удалось получить ответ",
-      imageUrl: data.imageUrl || data.image || data.image_url
+    const pickString = (...values: unknown[]): string | undefined => {
+      for (const value of values) {
+        if (typeof value === "string" && value.trim()) return value
+        if (typeof value === "number" || typeof value === "boolean") return String(value)
+      }
+      return undefined
     }
+
+    const message =
+      pickString(data.response, data.message, data.text, data.output) ??
+      (raw.trim() ? raw : undefined) ??
+      (Object.keys(data).length ? JSON.stringify(data) : undefined) ??
+      "Извините, не удалось получить ответ"
+
+    const imageUrl = pickString(data.imageUrl, data.image, data.image_url)
+
+    // Parse response based on common formats
+    return { message, imageUrl }
   } catch (err) {
     console.error(`Chat service error (${chatType}):`, err)
     

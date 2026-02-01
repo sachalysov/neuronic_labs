@@ -4,20 +4,12 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { ChatWidget } from "@/components/chat-widget"
 import { StickyHeader } from "@/components/sticky-header"
-import { DemoChat } from "@/components/demo-chat"
-import { CapabilitiesList } from "@/components/capabilities-list"
 import { ConsultationModal } from "@/components/consultation-modal"
-import { SpaceDust } from "@/components/space-dust"
-import { Pricing } from "@/components/pricing"
-import { FAQ } from "@/components/faq"
-import { Testimonials } from "@/components/testimonials"
 import { CountdownTimer } from "@/components/countdown-timer"
-import { Footer } from "@/components/footer"
 import { SliderPagination } from "@/components/slider-pagination"
 import { submitFormData } from "@/services/form"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, lazy, Suspense } from "react"
 import { useLocation } from "react-router-dom"
 import { useMeta } from "@/hooks/useMeta"
 import { getAdminSettings, subscribeToAdminSettings, type AdminSettings } from "@/services/admin-settings"
@@ -45,6 +37,15 @@ import {
   Info,
   ChevronDown,
 } from "lucide-react"
+
+const SpaceDust = lazy(() => import("@/components/space-dust").then((module) => ({ default: module.SpaceDust })))
+const DemoChat = lazy(() => import("@/components/demo-chat").then((module) => ({ default: module.DemoChat })))
+const CapabilitiesList = lazy(() => import("@/components/capabilities-list").then((module) => ({ default: module.CapabilitiesList })))
+const Pricing = lazy(() => import("@/components/pricing").then((module) => ({ default: module.Pricing })))
+const FAQ = lazy(() => import("@/components/faq").then((module) => ({ default: module.FAQ })))
+const Testimonials = lazy(() => import("@/components/testimonials").then((module) => ({ default: module.Testimonials })))
+const Footer = lazy(() => import("@/components/footer").then((module) => ({ default: module.Footer })))
+const ChatWidget = lazy(() => import("@/components/chat-widget").then((module) => ({ default: module.ChatWidget })))
 
 export default function HomePage() {
   useMeta(createHomeMetaTags())
@@ -356,7 +357,9 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen">
-      <SpaceDust />
+      <Suspense fallback={null}>
+        <SpaceDust />
+      </Suspense>
       <StickyHeader onOpenDemoChat={() => setIsDemoChatOpen(true)} />
 
       {/* Hero Section */}
@@ -520,7 +523,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          <DemoChat />
+          <Suspense fallback={null}>
+            <DemoChat />
+          </Suspense>
 
           <p className="text-center text-muted-foreground mt-8 text-sm">
             Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
@@ -548,7 +553,9 @@ export default function HomePage() {
               <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
             
-            <CapabilitiesList />
+            <Suspense fallback={null}>
+              <CapabilitiesList />
+            </Suspense>
             
             <p className="text-center text-muted-foreground mt-4 text-sm">
               Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
@@ -1518,7 +1525,9 @@ export default function HomePage() {
 
 
       {/* Pricing Section */}
-      <Pricing onContactClick={() => setIsModalOpen(true)} />
+      <Suspense fallback={null}>
+        <Pricing onContactClick={() => setIsModalOpen(true)} />
+      </Suspense>
 
       {/* About Us Section */}
       <section id="about" className="py-28 sm:py-32 px-3 sm:px-4">
@@ -1808,10 +1817,16 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      {testimonialsEnabled && <Testimonials />}
+      {testimonialsEnabled && (
+        <Suspense fallback={null}>
+          <Testimonials />
+        </Suspense>
+      )}
 
       {/* FAQ Section */}
-      <FAQ />
+      <Suspense fallback={null}>
+        <FAQ />
+      </Suspense>
 
       {/* Final CTA Section */}
       <section className="py-28 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background">
@@ -1981,17 +1996,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
 
       {/* Chat Widget */}
-      <ChatWidget />
+      <Suspense fallback={null}>
+        <ChatWidget />
+      </Suspense>
 
       {/* Mobile Demo Chat Modal */}
       {isDemoChatOpen && (
         <div className="md:hidden fixed inset-0 bg-background z-50 flex flex-col h-screen">
           {/* Demo Chat Content - Full Screen */}
           <div className="flex-1 flex flex-col overflow-hidden h-full">
-            <DemoChat onClose={() => setIsDemoChatOpen(false)} isMobile={true} />
+            <Suspense fallback={null}>
+              <DemoChat onClose={() => setIsDemoChatOpen(false)} isMobile={true} />
+            </Suspense>
           </div>
         </div>
       )}
