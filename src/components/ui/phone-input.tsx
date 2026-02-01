@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Input } from "@/components/ui/input"
 import { CIS_COUNTRIES, type Country } from "@/lib/phone-validation"
+import { cn } from "@/lib/utils"
 import { ChevronDown } from "lucide-react"
 
 interface PhoneInputProps {
@@ -127,7 +127,7 @@ export function PhoneInput({
     <div className="relative">
       <div 
         ref={containerRef}
-        className={`flex border rounded-md bg-background transition-[border-color,box-shadow] ${
+        className={`flex items-center border rounded-md bg-background transition-[border-color,box-shadow] ${
           error 
             ? 'border-destructive' 
             : isFocused || isDropdownOpen
@@ -175,23 +175,35 @@ export function PhoneInput({
           )}
         </div>
         
-        {/* Поле ввода телефона - показываем только цифры номера (без кода страны) */}
-        <Input
-          type="tel"
-          value={getDisplayValue()}
-          onChange={handlePhoneChange}
-          onFocus={() => setIsFocused(true)}
-          onBlur={(e) => {
-            // Не убираем фокус, если фокус переходит на кнопку
-            if (!dropdownRef.current?.contains(e.relatedTarget as Node)) {
-              setTimeout(() => setIsFocused(false), 100)
-            }
-          }}
-          placeholder={placeholder || "(___) ___-__-__"}
-          required={required}
-          className={`flex-1 border-0 rounded-l-none rounded-r-md focus-visible:ring-0 focus-visible:border-0 ${className || ''}`}
-          aria-invalid={error ? 'true' : 'false'}
-        />
+        {/* Поле ввода телефона - показываем только цифры номера (без кода страны). Обёртка для центрирования на iOS/Safari. */}
+        <div className="flex-1 flex items-center min-h-9">
+          <input
+            data-phone-input
+            type="tel"
+            value={getDisplayValue()}
+            onChange={handlePhoneChange}
+            onFocus={() => setIsFocused(true)}
+            onBlur={(e) => {
+              if (!dropdownRef.current?.contains(e.relatedTarget as Node)) {
+                setTimeout(() => setIsFocused(false), 100)
+              }
+            }}
+            placeholder={placeholder || "(___) ___-__-__"}
+            required={required}
+            aria-invalid={error ? 'true' : 'false'}
+            className={cn(
+              'w-full min-w-0 h-9 py-2 px-3 leading-5 border-0 rounded-l-none rounded-r-md bg-transparent text-base md:text-sm outline-none transition-[color,box-shadow]',
+              'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground',
+              'focus-visible:ring-0 focus-visible:border-0',
+              'disabled:pointer-events-none disabled:opacity-50',
+              'file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium',
+              'appearance-none [-webkit-appearance:none]',
+              '[&::placeholder]:leading-5',
+              error && 'border-destructive aria-invalid:border-destructive',
+              className
+            )}
+          />
+        </div>
       </div>
     </div>
   )

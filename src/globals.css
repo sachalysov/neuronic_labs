@@ -346,8 +346,8 @@ html[data-theme="dark"] .hero-bottom-fade {
     margin-bottom: 2rem !important;
   }
 
-  /* Input поля - только padding, не размер шрифта */
-  input,
+  /* Input поля - только padding, не размер шрифта (поле телефона центрируется своими стилями) */
+  input:not([data-phone-input]),
   textarea {
     padding: 0.625rem !important;
   }
@@ -401,12 +401,27 @@ html[data-theme="dark"] .hero-bottom-fade {
     padding: 0.75rem !important;
   }
 
-  /* Input fields */
-  input,
+  /* Input fields (поле телефона — свои стили для вертикального центрирования) */
+  input:not([data-phone-input]),
   textarea {
     font-size: 16px !important;
     /* Prevents zoom on iOS */
     padding: 0.5rem !important;
+  }
+
+  /* Поле телефона: фиксированная высота и симметричный padding для центрирования на iOS/Safari */
+  input[data-phone-input] {
+    height: 36px !important;
+    min-height: 36px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    line-height: 20px !important;
+    font-size: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  input[data-phone-input]::placeholder {
+    line-height: 20px !important;
   }
 
   /* Countdown timer */
@@ -510,6 +525,14 @@ html[data-theme="dark"] .hero-bottom-fade {
     min-height: 0 !important;
     min-width: 0 !important;
     padding: 0 !important;
+  }
+
+  /* Чекбоксы (согласие и др.) — как на десктопе, 16×16px */
+  button[role="checkbox"] {
+    min-height: 1rem !important;
+    min-width: 1rem !important;
+    height: 1rem !important;
+    width: 1rem !important;
   }
 }
 
