@@ -1570,7 +1570,7 @@ export default function HomePage() {
                 <div className="w-full">
                   <div className="relative rounded-xl overflow-hidden shadow-2xl w-full aspect-video">
                     <iframe
-                      src="https://www.youtube.com/embed/gX5ai9KTeMA?rel=0"
+                      src="https://rutube.ru/play/embed/851a991a487b9f5d84f291495c77e6ba/?p=cDHWmAuDyzbq3xhmbAS4vA"
                       title="ИИ-робот NEURONIC LABS"
                       className="absolute inset-0 w-full h-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
