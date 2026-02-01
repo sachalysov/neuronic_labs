@@ -1292,7 +1292,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Напишите нам свой вопрос..."
-                className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none text-sm py-3"
+                className="flex-1 bg-white border-gray-200 text-gray-900 min-h-[44px] max-h-[120px] resize-none text-[16px] sm:text-sm py-3"
                 rows={1}
                 disabled={!isUnlocked}
               />
