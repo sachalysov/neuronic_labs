@@ -1174,7 +1174,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                   type="button"
                   variant="default"
                   onClick={() => window.open('https://docs.google.com/spreadsheets/d/1O_TP4AiIH260OTCiHESVTSyWiZm2GAGHTzRiEcRYq5w/edit?gid=0#gid=0', '_blank')}
-                  className="w-full text-sm py-2"
+                  className="w-full text-sm py-2 bg-green-600 hover:bg-green-700 text-white"
                 >
                   Показать результат записи в таблице
                 </Button>
@@ -1186,7 +1186,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                   type="button"
                   variant="default"
                   onClick={() => window.open('https://docs.google.com/spreadsheets/d/1DFPTgFBKTW28z-eF6yW_O_d5KexInIZUGLp_AJS8UtY/edit?usp=sharing', '_blank')}
-                  className="w-full text-sm py-2"
+                  className="w-full text-sm py-2 bg-green-600 hover:bg-green-700 text-white"
                 >
                   Посмотреть результаты в таблице
                 </Button>
@@ -1198,7 +1198,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                   type="button"
                   variant="default"
                   onClick={() => window.open('https://docs.google.com/spreadsheets/d/1BH-XYLDFXMPxcR2ffP6tKdBow_QGM4e6ZTJGGLPoUXQ/edit?usp=sharing', '_blank')}
-                  className="w-full text-sm py-2"
+                  className="w-full text-sm py-2 bg-green-600 hover:bg-green-700 text-white"
                 >
                   Показать результаты в таблице
                 </Button>
