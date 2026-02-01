@@ -39,29 +39,31 @@ export async function submitFormData(formData: FormData): Promise<void> {
     console.log('Ответ от вебхука:', { status: response.status, statusText: response.statusText })
 
     if (!response.ok) {
-      let errorText = ''
+      const raw = await response.text().catch(() => '')
+      let errorText = raw
       try {
-        const errorData = await response.json()
-        errorText = errorData.message || JSON.stringify(errorData)
-        
-        if (response.status === 404) {
-          throw new Error("Вебхук не найден. Убедитесь, что workflow активирован в n8n.")
+        if (raw.trim()) {
+          const errorData = JSON.parse(raw)
+          errorText = errorData.message || raw
         }
-      } catch (parseError) {
-        errorText = await response.text().catch(() => 'Не удалось прочитать ответ')
+      } catch {
+        // оставляем errorText = raw
       }
-      
+      if (response.status === 404) {
+        throw new Error("Вебхук не найден. Убедитесь, что workflow активирован в n8n.")
+      }
       console.error('Ошибка ответа:', errorText)
-      throw new Error(`Ошибка сервера (${response.status}): ${errorText}`)
+      throw new Error(`Ошибка сервера (${response.status}): ${errorText || response.statusText}`)
     }
 
-    // Попытаемся прочитать ответ, даже если он пустой
-    try {
-      const data = await response.json()
-      console.log('Данные ответа:', data)
-    } catch (e) {
-      // Игнорируем, если ответ не JSON
-      console.log('Ответ не содержит JSON, это нормально для вебхуков')
+    const raw = await response.text().catch(() => '')
+    if (raw.trim()) {
+      try {
+        const data = JSON.parse(raw)
+        console.log('Данные ответа:', data)
+      } catch {
+        console.log('Ответ не JSON, это нормально для вебхуков')
+      }
     }
 
     console.log('Форма успешно отправлена в n8n')

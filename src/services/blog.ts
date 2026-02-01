@@ -410,18 +410,14 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       })
 
       if (response.ok) {
-        const data = await response.json()
-        
-        if (Array.isArray(data)) {
-          return data
-        }
-        
-        if (data.posts && Array.isArray(data.posts)) {
-          return data.posts
-        }
-        
-        if (data.data && Array.isArray(data.data)) {
-          return data.data
+        const raw = await response.text().catch(() => '')
+        try {
+          const data = raw.trim() ? JSON.parse(raw) : null
+          if (data && Array.isArray(data)) return data
+          if (data?.posts && Array.isArray(data.posts)) return data.posts
+          if (data?.data && Array.isArray(data.data)) return data.data
+        } catch {
+          console.error('Вебхук блога вернул невалидный JSON')
         }
       }
     } catch (error) {
@@ -480,9 +476,14 @@ export async function fetchBlogPostById(id: string): Promise<BlogPost | null> {
       })
 
       if (response.ok) {
-        const data = await response.json()
-        const post = data.post || data.data || data
-        if (post) return post
+        const raw = await response.text().catch(() => '')
+        try {
+          const data = raw.trim() ? JSON.parse(raw) : null
+          const post = data?.post || data?.data || data
+          if (post) return post
+        } catch {
+          console.error('Вебхук блога вернул невалидный JSON')
+        }
       }
     } catch (error) {
       console.error('Ошибка при получении статьи из вебхука:', error)
@@ -556,9 +557,14 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       })
 
       if (response.ok) {
-        const data = await response.json()
-        const post = data.post || data.data || data
-        if (post) return post
+        const raw = await response.text().catch(() => '')
+        try {
+          const data = raw.trim() ? JSON.parse(raw) : null
+          const post = data?.post || data?.data || data
+          if (post) return post
+        } catch {
+          console.error('Вебхук блога вернул невалидный JSON')
+        }
       }
     } catch (error) {
       console.error('Ошибка при получении статьи из вебхука:', error)

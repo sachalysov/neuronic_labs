@@ -83,8 +83,14 @@ export async function sendChatMessage(
       throw new Error(`Webhook returned status ${response.status}: ${errorText || response.statusText}`)
     }
 
-    const data = await response.json()
-    
+    const raw = await response.text()
+    let data: Record<string, unknown>
+    try {
+      data = raw.trim() ? JSON.parse(raw) : {}
+    } catch {
+      console.error('Webhook вернул не JSON:', raw.slice(0, 200))
+      throw new Error("Сервер вернул некорректный ответ")
+    }
     console.log('Webhook response:', data)
 
     // Parse response based on common formats

@@ -1,8 +1,47 @@
 /**
  * Модуль для инициализации Yandex Metrika
+ * Подавляет ошибки партнёрского кода (adhigh, yastatic), которые не контролируются нами.
  */
 
 const YANDEX_METRIKA_ID = 106099175;
+
+/** Подавить необработанные reject от партнёрского кода Метрики/Bitrix (adhigh, fetchSegments, пустой JSON). Вызывать при старте приложения. */
+export function suppressThirdPartyRejectionErrors() {
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = event.reason;
+    const msg = typeof reason?.message === 'string' ? reason.message : '';
+    const stack = typeof reason?.stack === 'string' ? reason.stack : '';
+    const isFailedFetch = msg.includes('Failed to fetch');
+    const isJsonParseError =
+      msg.includes('Unexpected end of JSON input') ||
+      msg.includes("Failed to execute 'json' on 'Response'");
+    const stackFromThirdParty =
+      stack.includes('fetchSegments') ||
+      stack.includes('setPuidSegments') ||
+      stack.includes('adhigh') ||
+      stack.includes('fetchActivities') ||
+      (stack.includes('boot') && stack.includes('init'));
+    const metrikaOrBitrixLoaded = Array.from(document.scripts).some(
+      (s) => s.src.includes('mc.yandex.ru/metrika') || s.src.includes('bitrix24')
+    );
+    const shouldSuppressFetch =
+      isFailedFetch && (stackFromThirdParty || (metrikaOrBitrixLoaded && !stack));
+    const shouldSuppressJson = isJsonParseError && (stackFromThirdParty || (metrikaOrBitrixLoaded && !stack));
+    if (shouldSuppressFetch || shouldSuppressJson) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  });
+}
+
+/** Удалить preload для yastatic (добавляется Метрикой), чтобы не было предупреждения "preloaded but not used" */
+function removeYastaticPreload() {
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll<HTMLLinkElement>('link[rel="preload"][href*="yastatic.net"]').forEach((el) => el.remove());
+  });
+  observer.observe(document.head, { childList: true, subtree: true });
+  document.querySelectorAll<HTMLLinkElement>('link[rel="preload"][href*="yastatic.net"]').forEach((el) => el.remove());
+}
 
 interface YandexMetrikaConfig {
   ssr?: boolean;
@@ -84,6 +123,7 @@ export function loadYandexMetrikaScript() {
  * Полная инициализация Yandex Metrika (загрузка скрипта + инициализация)
  */
 export function setupYandexMetrika(config?: YandexMetrikaConfig) {
+  removeYastaticPreload();
   loadYandexMetrikaScript();
   initYandexMetrika(config);
 }

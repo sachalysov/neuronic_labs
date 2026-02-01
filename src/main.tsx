@@ -4,6 +4,9 @@ import App from './App'
 import './globals.css'
 // Инициализация Yandex Metrika перенесена в ConsentGate - выполняется только после согласия
 import { initSchemaOrg } from './lib/schema-org-data'
+import { suppressThirdPartyRejectionErrors } from './lib/yandex-metrika'
+
+suppressThirdPartyRejectionErrors()
 
 // Отключаем автоматическое восстановление позиции скролла
 if ('scrollRestoration' in history) {
