@@ -12,9 +12,10 @@ import { Message } from "@/lib/types"
 import { ConsultationModal } from "@/components/consultation-modal"
 import { VomolokoContextModal } from "@/components/vomoloko-context-modal"
 import { ProtecContextModal } from "@/components/protec-context-modal"
+import { CliningContextModal } from "@/components/clining-context-modal"
 import { CustomContextModal } from "@/components/custom-context-modal"
 import { CapabilitiesList } from "@/components/capabilities-list"
-import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL, DEMO_CHAT_PROTEC_WEBHOOK_URL } from "@/lib/constants"
+import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL, DEMO_CHAT_PROTEC_WEBHOOK_URL, DEMO_CHAT_CLINING_WEBHOOK_URL } from "@/lib/constants"
 import { getWebhookFromSettings } from "@/services/admin-settings"
 
 interface DemoChatProps {
@@ -172,11 +173,13 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false)
   const [isVomolokoContextModalOpen, setIsVomolokoContextModalOpen] = useState(false)
   const [isProtecContextModalOpen, setIsProtecContextModalOpen] = useState(false)
+  const [isCliningContextModalOpen, setIsCliningContextModalOpen] = useState(false)
   const [isCustomContextModalOpen, setIsCustomContextModalOpen] = useState(false)
   const [customContextModalContent, setCustomContextModalContent] = useState<string>("")
   // Вебхуки из админ настроек
   const [webhookVomoloko, setWebhookVomoloko] = useState<string | undefined>(undefined)
   const [webhookProtec, setWebhookProtec] = useState<string | undefined>(undefined)
+  const [webhookClining, setWebhookClining] = useState<string | undefined>(undefined)
   // Храним текущий webhook URL (по умолчанию стандартный для demo)
   const [currentWebhookUrl, setCurrentWebhookUrl] = useState<string | undefined>(() => {
     const stored = getLocalStorage(`${storagePrefix}-webhook-url`)
@@ -321,6 +324,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     setIsConsultationModalOpen(false)
     setIsVomolokoContextModalOpen(false)
     setIsProtecContextModalOpen(false)
+    setIsCliningContextModalOpen(false)
 
     // Скрываем кнопки результатов при сбросе
     setShowProtecResultButton(false)
@@ -389,11 +393,13 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
         // Используем вебхуки из админки, если они есть, иначе используем константы
         setWebhookVomoloko(vomoloko || DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
         setWebhookProtec(protec || DEMO_CHAT_PROTEC_WEBHOOK_URL)
+        setWebhookClining(DEMO_CHAT_CLINING_WEBHOOK_URL)
       } catch (error) {
         console.error('Ошибка загрузки вебхуков:', error)
         // Используем константы при ошибке
         setWebhookVomoloko(DEMO_CHAT_VOMOLOKO_WEBHOOK_URL)
         setWebhookProtec(DEMO_CHAT_PROTEC_WEBHOOK_URL)
+        setWebhookClining(DEMO_CHAT_CLINING_WEBHOOK_URL)
       }
     }
 
@@ -688,6 +694,50 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
           setShowProtecResultButton(true)
         }
 
+        updateLastActivity()
+      } catch (error) {
+        console.error('Ошибка при отправке на webhook:', error)
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: error instanceof Error ? error.message : "Извините, произошла ошибка. Попробуйте позже.",
+          sender: "bot",
+          timestamp: new Date(),
+        }
+        setMessages((prev) => [...prev, errorMessage])
+      } finally {
+        setIsLoading(false)
+      }
+    } else if (!isCustomButtons && link === "Клининг") {
+      setBotName("Мария Клининг")
+      setShowInstantResponse(false)
+      setIsCliningContextModalOpen(true)
+
+      const cliningWebhook = webhookClining || DEMO_CHAT_CLINING_WEBHOOK_URL
+      setCurrentWebhookUrl(cliningWebhook)
+      setLocalStorage(`${storagePrefix}-webhook-url`, cliningWebhook)
+
+      setIsLoading(true)
+      updateLastActivity()
+
+      try {
+        const messageText = "У меня есть пара вопросов"
+        const userMessage: Message = {
+          id: Date.now().toString(),
+          text: messageText,
+          sender: "user",
+          timestamp: new Date(),
+        }
+        setMessages((prev) => addUserMessage(prev, userMessage))
+
+        const response = await sendChatMessage(messageText, 'demo', sessionId, cliningWebhook)
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: response.message,
+          sender: "bot",
+          timestamp: new Date(),
+          imageUrl: response.imageUrl && !hasImageUrlInText(response.message) ? response.imageUrl : undefined,
+        }
+        setMessages((prev) => [...prev, botMessage])
         updateLastActivity()
       } catch (error) {
         console.error('Ошибка при отправке на webhook:', error)
@@ -1069,13 +1119,13 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
             } : undefined}
           >
             {linkButtonsVisible && (
-              <div className="flex gap-2 mb-2">
+              <div className="flex flex-wrap gap-2 mb-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => handleSendLink(linkButton1)}
                   disabled={isLoading || !isUnlocked}
-                  className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
+                  className="flex-1 min-w-0 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
                 >
                   {linkButton1}
                 </Button>
@@ -1084,9 +1134,18 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                   variant="outline"
                   onClick={() => handleSendLink(linkButton2)}
                   disabled={isLoading || !isUnlocked}
-                  className="flex-1 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
+                  className="flex-1 min-w-0 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
                 >
                   {linkButton2}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleSendLink("Клининг")}
+                  disabled={isLoading || !isUnlocked}
+                  className="flex-1 min-w-0 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
+                >
+                  Клининг
                 </Button>
               </div>
             )}
@@ -1223,6 +1282,10 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
         <ProtecContextModal
           isOpen={isProtecContextModalOpen}
           onClose={() => setIsProtecContextModalOpen(false)}
+        />
+        <CliningContextModal
+          isOpen={isCliningContextModalOpen}
+          onClose={() => setIsCliningContextModalOpen(false)}
         />
         <CustomContextModal
           isOpen={isCustomContextModalOpen}
