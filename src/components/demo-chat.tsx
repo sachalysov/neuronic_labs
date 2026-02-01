@@ -189,6 +189,8 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
   const [showProtecResultButton, setShowProtecResultButton] = useState(false)
   // Состояние для отображения кнопки результата заказа для vomoloko.ru
   const [showVomolokoResultButton, setShowVomolokoResultButton] = useState(false)
+  // Состояние для отображения кнопки результата для клининга
+  const [showCliningResultButton, setShowCliningResultButton] = useState(false)
   // Состояние для имени бота
   const [botName, setBotName] = useState(defaultBotName)
   // Состояние для отображения текста "Отвечает мгновенно"
@@ -329,6 +331,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     // Скрываем кнопки результатов при сбросе
     setShowProtecResultButton(false)
     setShowVomolokoResultButton(false)
+    setShowCliningResultButton(false)
 
     // Сбрасываем изображение
     setSelectedImage(null)
@@ -381,7 +384,14 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     } else {
       setShowVomolokoResultButton(false)
     }
-  }, [messages, currentWebhookUrl, webhookProtec, webhookVomoloko])
+
+    if (currentWebhookUrl === webhookClining) {
+      // Для клининга показываем кнопку результата
+      setShowCliningResultButton(hasConfirmationMessage)
+    } else {
+      setShowCliningResultButton(false)
+    }
+  }, [messages, currentWebhookUrl, webhookProtec, webhookVomoloko, webhookClining])
 
   // Загрузка вебхуков из админ настроек при монтировании
   useEffect(() => {
@@ -738,6 +748,12 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
           imageUrl: response.imageUrl && !hasImageUrlInText(response.message) ? response.imageUrl : undefined,
         }
         setMessages((prev) => [...prev, botMessage])
+
+        // Проверяем, нужно ли показать кнопку результата для клининга
+        if (containsBookingConfirmation(response.message)) {
+          setShowCliningResultButton(true)
+        }
+
         updateLastActivity()
       } catch (error) {
         console.error('Ошибка при отправке на webhook:', error)
@@ -825,6 +841,9 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
           if (currentWebhookUrl === webhookVomoloko) {
             setShowVomolokoResultButton(true)
           }
+          if (currentWebhookUrl === webhookClining) {
+            setShowCliningResultButton(true)
+          }
         }
 
         updateLastActivity()
@@ -866,7 +885,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     return () => {
       resizeObserver.disconnect()
     }
-  }, [isMobile, linkButtonsVisible, showProtecResultButton, showVomolokoResultButton, messages.length, selectedImage])
+  }, [isMobile, linkButtonsVisible, showProtecResultButton, showVomolokoResultButton, showCliningResultButton, messages.length, selectedImage])
 
   // Прокрутка к полю ввода при фокусе на мобильных устройствах
   useEffect(() => {
@@ -1170,6 +1189,18 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                   className="w-full text-sm py-2"
                 >
                   Посмотреть результаты в таблице
+                </Button>
+              </div>
+            )}
+            {showCliningResultButton && (
+              <div className="mb-2">
+                <Button
+                  type="button"
+                  variant="default"
+                  onClick={() => window.open('https://docs.google.com/spreadsheets/d/1BH-XYLDFXMPxcR2ffP6tKdBow_QGM4e6ZTJGGLPoUXQ/edit?usp=sharing', '_blank')}
+                  className="w-full text-sm py-2"
+                >
+                  Показать результаты в таблице
                 </Button>
               </div>
             )}
