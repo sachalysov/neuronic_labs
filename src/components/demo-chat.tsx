@@ -592,7 +592,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
       updateLastActivity()
 
       try {
-        const messageText = "У меня есть пара вопросов"
+        const messageText = "Хочу сделать заказ"
 
         // Показываем отправленное сообщение в чате сразу
         const userMessage: Message = {
@@ -659,7 +659,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
       updateLastActivity()
 
       try {
-        const messageText = "У меня есть пара вопросов"
+        const messageText = "Мне нужно наклеить пленку"
 
         // Показываем отправленное сообщение в чате сразу
         const userMessage: Message = {
@@ -720,7 +720,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
       updateLastActivity()
 
       try {
-        const messageText = "У меня есть пара вопросов"
+        const messageText = "Мне нужна уборка помещения"
         const userMessage: Message = {
           id: Date.now().toString(),
           text: messageText,
