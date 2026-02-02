@@ -53,6 +53,10 @@ export async function sendChatMessage(
       timestamp: new Date().toISOString(),
       chatType: chatType, // Добавляем тип чата для различения на бэкенде
     }
+
+    // Дублируем текст в поле text для совместимости с вебхуками,
+    // которые ожидают caption/text вместе с изображением
+    requestBody.text = finalMessage
     
     // Добавляем изображение если оно есть
     if (imageBase64) {
