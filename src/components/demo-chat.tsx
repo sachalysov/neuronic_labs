@@ -461,6 +461,10 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     try {
       const base64 = await convertImageToBase64(file)
       setSelectedImage(base64)
+      // Возвращаем фокус в поле ввода, чтобы Enter отправлял сообщение
+      requestAnimationFrame(() => {
+        inputRef.current?.focus()
+      })
     } catch (error) {
       console.error('Ошибка при обработке изображения:', error)
       alert('Не удалось загрузить изображение')
@@ -1267,6 +1271,16 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                 e.preventDefault()
                 handleSend()
               }}
+            onKeyDown={(e) => {
+              if ((e.key === "Enter" || e.key === "Return") && !e.shiftKey) {
+                const target = e.target as HTMLElement
+                // Если фокус не в textarea, не даем Enter открыть загрузчик
+                if (!(target instanceof HTMLTextAreaElement)) {
+                  e.preventDefault()
+                  handleSend()
+                }
+              }
+            }}
               className="flex gap-2 items-start"
             >
               <input
