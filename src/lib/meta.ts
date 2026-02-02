@@ -367,4 +367,3 @@ export function createOfferMetaTags(): MetaTags {
     url: fullUrl,
   }
 }
-

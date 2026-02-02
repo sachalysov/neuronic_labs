@@ -45,11 +45,10 @@ export function Pricing({ onContactClick }: PricingProps) {
       period: "",
       description: "Простой старт",
       features: [
-        "Общение на сайте",
-        "Консультирует и передает сложные диалоги человеку",
+        "1 канал продаж",
+        "Записывает заявки в таблицу",
         "База знаний из FAQ и прайса",
-        "GPT — ответы в тоне бренда",
-        "Отчеты в Google Sheets",
+        "Отчеты в Телеграмм",
         "Поддержка"
       ],
       highlighted: false,
@@ -62,14 +61,10 @@ export function Pricing({ onContactClick }: PricingProps) {
       period: "",
       description: "Для малого бизнеса",
       features: [
-        "1 канал связи",
-        "Бот для общения 24/7",
-        "Авторасчёт цен и смет",
+        "Все из Lite",
+        "1 канал продаж",
         "Сбор лидов в CRM",
-        "Уведомления (SMS/email)",
-        "Базовый ИИ",
-        "Отчёты в Google Sheets",
-        "Техническая поддержка"
+        "Уведомления клиенту (SMS/email)",
       ],
       highlighted: false,
       badge: null
@@ -83,9 +78,7 @@ export function Pricing({ onContactClick }: PricingProps) {
       features: [
         "Всё из Basic",
         "3 канала связи",
-        "Подключение маркетплейсов",
-        "CRM-интеграции",
-        "Платежи",
+        "Прием оплаты",
         "Маркетинг и рассылки",
         "Аналитика",
         "Продвинутый ИИ",
@@ -102,10 +95,8 @@ export function Pricing({ onContactClick }: PricingProps) {
       description: "Для крупного бизнеса",
       features: [
         "Всё из Business",
-        "Автоматизация внутренних процессов",
         "Телефония",
         "Продвинутый ИИ+",
-        "Масштабирование",
         "Премиум-поддержка 24/7"
       ],
       highlighted: false,
