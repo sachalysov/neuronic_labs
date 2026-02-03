@@ -5,6 +5,7 @@ export interface Message {
   timestamp: Date
   imageUrl?: string
   imageBase64?: string
+  imageUploadStatus?: "uploading" | "ready"
   replyToId?: string
   replyToText?: string
 }

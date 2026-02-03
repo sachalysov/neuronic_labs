@@ -201,6 +201,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
   const inputContainerRef = useRef<HTMLDivElement>(null)
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
   const handleResetChatRef = useRef<(() => void) | null>(null)
+  const imageUploadTimeoutsRef = useRef<Record<string, NodeJS.Timeout>>({})
   const [inputContainerHeight, setInputContainerHeight] = useState(0)
 
   // Функция для проверки, содержит ли сообщение фразу о записи
@@ -345,6 +346,10 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     // Закрываем меню
     setOpenMenuId(null)
 
+    // Сбрасываем таймеры загрузки изображений
+    Object.values(imageUploadTimeoutsRef.current).forEach((timeout) => clearTimeout(timeout))
+    imageUploadTimeoutsRef.current = {}
+
     // Сбрасываем webhook на исходный (undefined = стандартный для demo)
     setCurrentWebhookUrl(undefined)
     removeLocalStorage(`${storagePrefix}-webhook-url`)
@@ -352,6 +357,14 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     // Переустанавливаем таймер неактивности для новой сессии
     updateLastActivity()
   }, [updateLastActivity, storagePrefix])
+
+  // Очистка таймеров загрузки изображений при размонтировании
+  useEffect(() => {
+    return () => {
+      Object.values(imageUploadTimeoutsRef.current).forEach((timeout) => clearTimeout(timeout))
+      imageUploadTimeoutsRef.current = {}
+    }
+  }, [])
 
   // Сохраняем актуальную ссылку на handleResetChat в ref
   useEffect(() => {
@@ -483,6 +496,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
       sender: "user",
       timestamp: new Date(),
       imageBase64: imageBase64,
+      imageUploadStatus: imageBase64 ? "uploading" : undefined,
       replyToId: replyingTo?.id,
       replyToText: replyingTo?.text,
     }
@@ -491,6 +505,17 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     const hasExistingUserMessages = messages.some(msg => msg.sender === "user")
 
     setMessages((prev) => addUserMessage(prev, userMessage))
+    if (imageBase64) {
+      const timeout = setTimeout(() => {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === userMessage.id ? { ...msg, imageUploadStatus: "ready" } : msg
+          )
+        )
+        delete imageUploadTimeoutsRef.current[userMessage.id]
+      }, 5000)
+      imageUploadTimeoutsRef.current[userMessage.id] = timeout
+    }
 
     // Если это первое пользовательское сообщение, скрываем кнопки
     if (!hasExistingUserMessages && linkButtonsVisible) {
@@ -1054,11 +1079,25 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                     {/* Отображаем изображение отдельно только если оно не встроено в текст */}
                     {(message.imageUrl || message.imageBase64) && !hasImageUrlInText(message.text || '') && (
                       <div className="mb-2">
-                        <img
-                          src={message.imageUrl || message.imageBase64 || ''}
-                          alt="Изображение"
-                          className="max-w-full max-h-64 rounded-lg object-contain"
-                        />
+                        {message.imageUploadStatus === "uploading" ? (
+                          <div className="relative inline-block">
+                            <img
+                              src={message.imageUrl || message.imageBase64 || ''}
+                              alt="Изображение"
+                              className="max-w-full max-h-64 rounded-lg object-contain blur-sm"
+                            />
+                            <div className="absolute inset-0 rounded-lg bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
+                              <Loader2 className="h-5 w-5 animate-spin text-gray-600" />
+                              <span className="ml-2 text-xs text-gray-600">Загрузка изображения...</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <img
+                            src={message.imageUrl || message.imageBase64 || ''}
+                            alt="Изображение"
+                            className="max-w-full max-h-64 rounded-lg object-contain"
+                          />
+                        )}
                       </div>
                     )}
                     {message.text && (
