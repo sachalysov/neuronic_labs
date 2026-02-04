@@ -82,7 +82,6 @@ export function Pricing({ onContactClick }: PricingProps) {
         "Маркетинг и рассылки",
         "Аналитика",
         "Продвинутый ИИ",
-        "Мониторинг и A/B-тесты"
       ],
       highlighted: true,
       badge: " Популярный"
