@@ -549,47 +549,72 @@ export default function HomePage() {
       </section>
 
       {/* Demo Chat Section - Mobile with Button */}
-      <section className="md:hidden py-28 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-balance section-title">Попробуйте ИИ-продавца прямо сейчас</h2>
-            <p className="text-base sm:text-lg text-muted-foreground">
-              Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
-              закрывает возражения 24/7.
-            </p>
-            
+      <section className="md:hidden py-20 sm:py-28 px-4 sm:px-5 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/10 to-background pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-500/[0.03] rounded-full blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto relative">
+          <div className="max-w-md mx-auto text-center">
+            {/* Header */}
+            <div className="space-y-4 mb-8">
+              <div className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/5 px-4 py-1.5 text-xs font-medium text-red-400 mb-2">
+                <Bot className="h-3.5 w-3.5" />
+                Живая демонстрация
+              </div>
+              <h2 className="text-[26px] sm:text-3xl font-bold text-balance section-title leading-tight">
+                Попробуйте ИИ-продавца прямо сейчас
+              </h2>
+              <p className="text-[15px] sm:text-base text-muted-foreground leading-relaxed">
+                Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях
+              </p>
+            </div>
+
+            {/* Primary CTA */}
             <Button
               onClick={() => setIsDemoChatOpen(true)}
-              className="h-12 sm:h-14 px-6 sm:px-8 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2 sm:gap-3 text-sm sm:text-base font-semibold mx-auto"
+              className="h-14 px-8 rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.2)] hover:shadow-[0_0_40px_rgba(239,68,68,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center gap-3 text-[15px] font-semibold mx-auto"
               size="lg"
             >
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
+              <Sparkles className="h-5 w-5 animate-pulse" />
               Протестировать ИИ-бот
-              <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
+              <MessageCircle className="h-5 w-5" />
             </Button>
-            
+
+            {/* Capabilities */}
             <Suspense fallback={null}>
               <CapabilitiesList />
             </Suspense>
-            
-            <p className="text-center text-muted-foreground mt-4 text-sm">
-              Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
-            </p>
-            <div className="mt-4">
-              <Button
-                variant="default"
-                size="lg"
-                className="gap-2 text-sm"
-                onClick={() => {
-                  const el = document.getElementById('pricing')
-                  if (el) el.scrollIntoView({ behavior: 'smooth' })
-                  setTimeout(() => window.dispatchEvent(new Event('open-pricing-quiz')), 600)
-                }}
-              >
-                <Sparkles className="h-4 w-4" />
-                Тест для выбора тарифа
-              </Button>
+
+            {/* Disclaimer */}
+            <div className="mt-6 flex items-start gap-2.5 rounded-xl border border-border/40 bg-card/40 backdrop-blur-sm px-4 py-3 text-left">
+              <Info className="h-4 w-4 text-muted-foreground/60 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-muted-foreground/80 leading-relaxed">
+                Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе.
+              </p>
             </div>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-7">
+              <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border/50" />
+              <span className="text-[11px] text-muted-foreground/50 uppercase tracking-widest font-medium">или</span>
+              <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border/50" />
+            </div>
+
+            {/* Secondary CTA */}
+            <Button
+              variant="outline"
+              size="lg"
+              className="gap-2.5 text-sm rounded-xl border-border/60 hover:border-red-500/30 hover:bg-red-500/5 transition-all duration-300 w-full max-w-[280px]"
+              onClick={() => {
+                const el = document.getElementById('pricing')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+                setTimeout(() => window.dispatchEvent(new Event('open-pricing-quiz')), 600)
+              }}
+            >
+              <Sparkles className="h-4 w-4 text-red-400" />
+              Тест для выбора тарифа
+            </Button>
           </div>
         </div>
       </section>
