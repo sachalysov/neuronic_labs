@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { CheckCircle, Star, ChevronRight } from "lucide-react"
 import { useRef, useState, useEffect } from "react"
 import { PricingDetailModal } from "@/components/pricing-detail-modal"
+import { PricingQuiz } from "@/components/pricing-quiz"
 import { SliderPagination } from "@/components/slider-pagination"
 
 interface PricingProps {
@@ -268,10 +269,14 @@ export function Pricing({ onContactClick }: PricingProps) {
           <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 px-4">
             Нужна индивидуальная разработка? Закажите бесплатную консультацию
           </p>
-          <Button variant="outline" size="lg" onClick={onContactClick} className="text-sm sm:text-base w-full sm:w-auto">
-            Получить консультацию
-          </Button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Button variant="outline" size="lg" onClick={onContactClick} className="text-sm sm:text-base w-full sm:w-auto">
+              Получить консультацию
+            </Button>
+          </div>
         </div>
+
+        <PricingQuiz onContactClick={onContactClick} />
       </div>
 
       <PricingDetailModal
