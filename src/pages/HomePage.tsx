@@ -530,6 +530,21 @@ export default function HomePage() {
           <p className="text-center text-muted-foreground mt-8 text-sm">
             Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
           </p>
+          <div className="text-center mt-6">
+            <Button
+              variant="default"
+              size="lg"
+              className="gap-2"
+              onClick={() => {
+                const el = document.getElementById('pricing')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+                setTimeout(() => window.dispatchEvent(new Event('open-pricing-quiz')), 600)
+              }}
+            >
+              <Sparkles className="h-4 w-4" />
+              Тест для выбора тарифа
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -560,6 +575,21 @@ export default function HomePage() {
             <p className="text-center text-muted-foreground mt-4 text-sm">
               Демо-версия показывает базовые возможности. Полная версия подключается через вебхук к вашей системе
             </p>
+            <div className="mt-4">
+              <Button
+                variant="default"
+                size="lg"
+                className="gap-2 text-sm"
+                onClick={() => {
+                  const el = document.getElementById('pricing')
+                  if (el) el.scrollIntoView({ behavior: 'smooth' })
+                  setTimeout(() => window.dispatchEvent(new Event('open-pricing-quiz')), 600)
+                }}
+              >
+                <Sparkles className="h-4 w-4" />
+                Тест для выбора тарифа
+              </Button>
+            </div>
           </div>
         </div>
       </section>

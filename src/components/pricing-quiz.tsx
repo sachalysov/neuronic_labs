@@ -342,6 +342,13 @@ export function PricingQuiz({ onContactClick }: PricingQuizProps) {
 
   const totalBlocks = quizBlocks.length
 
+  // Listen for external open event
+  useEffect(() => {
+    const handler = () => setIsOpen(true)
+    window.addEventListener("open-pricing-quiz", handler)
+    return () => window.removeEventListener("open-pricing-quiz", handler)
+  }, [])
+
   // Scroll into view on open
   useEffect(() => {
     if (isOpen && quizRef.current) {
@@ -429,7 +436,7 @@ export function PricingQuiz({ onContactClick }: PricingQuizProps) {
           className="text-sm sm:text-base w-full sm:w-auto gap-2"
         >
           <Sparkles className="h-4 w-4" />
-          Пройди тест
+          Тест для выбора тарифа
         </Button>
       </div>
     )
