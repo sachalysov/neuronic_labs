@@ -14,7 +14,7 @@ export function CapabilitiesList() {
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center justify-between gap-4">
-          <h3 className="text-base font-bold text-card-foreground">Самые базовые возможности этого бота</h3>
+          <h3 className="text-base font-bold text-card-foreground">Базовые возможности демо бота</h3>
           <ChevronDown
             className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 text-muted-foreground ${
               isOpen ? "rotate-180" : ""
