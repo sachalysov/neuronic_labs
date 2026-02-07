@@ -257,7 +257,7 @@ const planResults = [
   {
     id: "basic",
     name: "Basic",
-    price: "30 000",
+    price: "60 000",
     minScore: 6,
     maxScore: 11,
     description: "Для малого бизнеса — автоматизация основных процессов и CRM-интеграция.",
@@ -267,7 +267,7 @@ const planResults = [
   {
     id: "business",
     name: "Business",
-    price: "60 000",
+    price: "100 000",
     minScore: 12,
     maxScore: 18,
     description: "Оптимальный для роста — мультиканальность, аналитика и продвинутый ИИ.",
@@ -277,7 +277,7 @@ const planResults = [
   {
     id: "enterprise",
     name: "Enterprise",
-    price: "100 000",
+    price: "170 000",
     minScore: 19,
     maxScore: Infinity,
     description: "Для крупного бизнеса — полная интеграция, телефония и премиум-поддержка.",

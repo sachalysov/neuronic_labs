@@ -136,7 +136,7 @@ export default function PartnerPage() {
       total3Months: "от 5 100 ₽",
     },
     {
-      tariff: "30 000 ₽",
+      tariff: "60 000 ₽",
       subscription: "10 000 ₽+",
       salePercent: "18%",
       oneTime: "от 5 400 ₽",
@@ -144,7 +144,7 @@ export default function PartnerPage() {
       total3Months: "от 10 800 ₽",
     },
     {
-      tariff: "60 000 ₽",
+      tariff: "100 000 ₽",
       subscription: "15 000 ₽+",
       salePercent: "19%",
       oneTime: "от 11 400 ₽",
@@ -152,7 +152,7 @@ export default function PartnerPage() {
       total3Months: "от 19 950 ₽",
     },
     {
-      tariff: "100 000 ₽",
+      tariff: "170 000 ₽",
       subscription: "25 000 ₽+",
       salePercent: "20%",
       oneTime: "от 20 000 ₽",
@@ -163,12 +163,12 @@ export default function PartnerPage() {
 
   const examples = [
     {
-      clients: "3 клиента/месяц на тариф 30 000 ₽",
-      calculation: "3 × 5 400 ₽ (внедрение) + 3 × 2 700 ₽ × 3 месяца (подписка)",
+      clients: "3 клиента/месяц на тариф 60 000 ₽",
+      calculation: "3 × 5 400 ₽ (внедрение) + 3 × 1 800 ₽ × 3 месяца (подписка)",
       result: "40 500 ₽",
     },
     {
-      clients: "3 клиента/месяц на тариф 100 000 ₽",
+      clients: "3 клиента/месяц на тариф 100   000 ₽",
       calculation: "3 × 20 000 ₽ + 3 × 5 000 ₽ × 3 месяца",
       result: "105 000 ₽",
     },

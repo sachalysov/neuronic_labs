@@ -59,7 +59,7 @@ export function Pricing({ onContactClick }: PricingProps) {
     {
       id: "basic",
       name: "Basic",
-      price: "30 000",
+      price: "60 000",
       period: "",
       description: "Для малого бизнеса",
       features: [
@@ -74,7 +74,7 @@ export function Pricing({ onContactClick }: PricingProps) {
     {
       id: "business",
       name: "Business",
-      price: "60 000",
+      price: "100 000",
       period: "",
       description: "Оптимальный для роста",
       features: [
@@ -91,7 +91,7 @@ export function Pricing({ onContactClick }: PricingProps) {
     {
       id: "pro",
       name: "Enterprise",
-      price: "100 000",
+      price: "170 000",
       period: "",
       description: "Для крупного бизнеса",
       features: [
