@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, Quote } from "lucide-react"
 import { SliderPagination } from "@/components/slider-pagination"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
+import { useInView, useCountUp } from "@/hooks/useInView"
 
 interface Testimonial {
   id: number
@@ -70,6 +72,32 @@ const testimonials: Testimonial[] = [
     result: "+165% конверсия сайта"
   }
 ]
+
+function TestimonialsStats() {
+  const { ref, isInView } = useInView<HTMLDivElement>({ threshold: 0.3 })
+  const satisfied = useCountUp(isInView, { end: 98, suffix: "%" })
+  const projects = useCountUp(isInView, { end: 90, suffix: "+" })
+
+  return (
+    <div
+      ref={ref}
+      className="grid grid-cols-3 gap-2 sm:gap-4 mt-8 sm:mt-12 max-w-3xl mx-auto"
+    >
+      <div className="text-center">
+        <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">{satisfied}</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Довольных клиентов</p>
+      </div>
+      <div className="text-center">
+        <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">4.9/5</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Средняя оценка</p>
+      </div>
+      <div className="text-center">
+        <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">{projects}</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Успешных проектов</p>
+      </div>
+    </div>
+  )
+}
 
 export function Testimonials() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -152,12 +180,12 @@ export function Testimonials() {
   return (
     <section id="testimonials" className="py-20 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-background to-secondary/20">
       <div className="container mx-auto">
-        <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
+        <AnimateOnScroll animation="fade-up" duration={700} className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Отзывы клиентов</h2>
           <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             Реальные истории бизнесов, которые увеличили продажи с нашим ИИ-продавцом
           </p>
-        </div>
+        </AnimateOnScroll>
 
         <div className="max-w-5xl mx-auto">
           <div
@@ -178,20 +206,7 @@ export function Testimonials() {
           />
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-8 sm:mt-12 max-w-3xl mx-auto">
-            <div className="text-center">
-              <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">98%</p>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Довольных клиентов</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">4.9/5</p>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Средняя оценка</p>
-            </div>
-            <div className="text-center">
-              <p className="text-xl sm:text-3xl md:text-4xl font-bold text-primary">90+</p>
-              <p className="text-xs sm:text-sm text-muted-foreground mt-1">Успешных проектов</p>
-            </div>
-          </div>
+          <TestimonialsStats />
         </div>
       </div>
     </section>

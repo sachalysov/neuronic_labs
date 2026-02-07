@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Mail, Send } from "lucide-react"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
 export function Footer() {
   const location = useLocation()
@@ -39,6 +40,7 @@ export function Footer() {
   return (
     <footer className="py-8 sm:py-12 px-3 sm:px-4 border-t border-border mt-20 bg-background">
       <div className="container mx-auto">
+        <AnimateOnScroll animation="fade-up" duration={800}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 mb-8 sm:mb-12 pb-8 sm:pb-12 border-b border-border">
           {/* Колонка 1 - Логотип и информация о компании */}
           <div className="flex flex-col gap-4">
@@ -194,6 +196,7 @@ export function Footer() {
             </div>
           </div>
         </div>
+        </AnimateOnScroll>
       </div>
     </footer>
   )

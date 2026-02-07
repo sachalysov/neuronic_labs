@@ -993,3 +993,237 @@ html[data-theme="dark"] .hero-bottom-fade {
     animation: none;
   }
 }
+
+/* ============================================ */
+/* Scroll-triggered & interactive animations    */
+/* ============================================ */
+
+/* --- Card hover lift with glow --- */
+.card-hover-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15),
+    0 0 20px -5px var(--primary);
+}
+
+html[data-theme="dark"] .card-hover-lift:hover {
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5),
+    0 0 30px -5px oklch(0.55 0.22 27 / 0.25);
+}
+
+/* --- Icon hover spin --- */
+.icon-hover-spin {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.icon-hover-spin:hover {
+  transform: rotate(12deg) scale(1.15);
+}
+
+/* --- Icon container hover glow --- */
+.icon-hover-glow {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.icon-hover-glow:hover {
+  box-shadow: 0 0 20px var(--primary);
+}
+
+/* --- Button hover shine effect --- */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.btn-shine:hover::after {
+  left: 130%;
+}
+
+/* --- Text gradient shimmer on hover --- */
+.text-shimmer {
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  transition: background-position 0.6s ease;
+}
+
+.text-shimmer:hover {
+  background-position: 100% 50%;
+}
+
+/* --- Floating animation for decorative elements --- */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* --- Subtle parallax-like glow pulse for hero --- */
+@keyframes heroGlow {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.hero-glow-pulse {
+  animation: heroGlow 4s ease-in-out infinite;
+}
+
+/* --- Stagger-reveal for numbered list items --- */
+@keyframes numberPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* --- Badge bounce --- */
+@keyframes badgeBounce {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+.badge-bounce {
+  animation: badgeBounce 2s ease-in-out infinite;
+}
+
+/* --- Underline grow from center on hover --- */
+.hover-underline-grow {
+  position: relative;
+}
+
+.hover-underline-grow::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary);
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.hover-underline-grow:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* --- Gradient border animation --- */
+@keyframes gradientBorder {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-border-animated {
+  position: relative;
+}
+
+.gradient-border-animated::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(270deg,
+      var(--primary),
+      oklch(0.7 0.15 30),
+      var(--primary));
+  background-size: 200% 200%;
+  animation: gradientBorder 4s ease infinite;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gradient-border-animated:hover::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .card-hover-lift:hover {
+    transform: none;
+  }
+
+  .animate-float {
+    animation: none;
+  }
+
+  .hero-glow-pulse {
+    animation: none;
+  }
+
+  .badge-bounce {
+    animation: none;
+  }
+
+  .gradient-border-animated::before {
+    animation: none;
+  }
+}

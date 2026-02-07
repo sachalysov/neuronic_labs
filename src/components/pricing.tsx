@@ -5,6 +5,7 @@ import { useRef, useState, useEffect } from "react"
 import { PricingDetailModal } from "@/components/pricing-detail-modal"
 import { PricingQuiz } from "@/components/pricing-quiz"
 import { SliderPagination } from "@/components/slider-pagination"
+import { AnimateOnScroll, StaggerChildren } from "@/components/animate-on-scroll"
 
 interface PricingProps {
   onContactClick: () => void
@@ -107,12 +108,12 @@ export function Pricing({ onContactClick }: PricingProps) {
   return (
     <section id="pricing" className="py-20 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background">
       <div className="container mx-auto">
-        <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
+        <AnimateOnScroll animation="fade-up" duration={700} className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Тарифы и цены</h2>
           <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
             Выберите оптимальный план для вашего бизнеса. Все тарифы включают полную настройку и внедрение
           </p>
-        </div>
+        </AnimateOnScroll>
 
         {/* Mobile: Slider */}
         <div className="md:hidden relative">
@@ -192,14 +193,14 @@ export function Pricing({ onContactClick }: PricingProps) {
         </div>
 
         {/* Desktop: Grid */}
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <StaggerChildren staggerDelay={120} animation="fade-up" className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {plans.map((plan) => (
             <Card
               key={plan.id}
-              className={`relative flex flex-col cursor-pointer overflow-visible ${
+              className={`relative flex flex-col cursor-pointer overflow-visible card-hover-lift ${
                 plan.highlighted
-                  ? "border-primary border-2 shadow-2xl scale-105 bg-primary/5"
-                  : "bg-card/50 hover:border-primary/50 transition-all"
+                  ? "border-primary border-2 shadow-2xl scale-105 bg-primary/5 gradient-border-animated"
+                  : "bg-card/50 hover:border-primary/50 transition-all gradient-border-animated"
               } hover:shadow-lg`}
               onClick={() => {
                 setSelectedPlanId(plan.id)
@@ -208,7 +209,7 @@ export function Pricing({ onContactClick }: PricingProps) {
               }}
             >
               {plan.badge && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1 whitespace-nowrap">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1 whitespace-nowrap badge-bounce">
                   <Star className="h-4 w-4" />
                   {plan.badge}
                 </div>
@@ -263,7 +264,7 @@ export function Pricing({ onContactClick }: PricingProps) {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </StaggerChildren>
 
         <div className="mt-8 sm:mt-12 text-center">
           <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4 px-4">

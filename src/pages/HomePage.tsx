@@ -46,6 +46,7 @@ const FAQ = lazy(() => import("@/components/faq").then((module) => ({ default: m
 const Testimonials = lazy(() => import("@/components/testimonials").then((module) => ({ default: module.Testimonials })))
 const Footer = lazy(() => import("@/components/footer").then((module) => ({ default: module.Footer })))
 const ChatWidget = lazy(() => import("@/components/chat-widget").then((module) => ({ default: module.ChatWidget })))
+import { AnimateOnScroll, StaggerChildren } from "@/components/animate-on-scroll"
 
 export default function HomePage() {
   useMeta(createHomeMetaTags())
@@ -386,65 +387,73 @@ export default function HomePage() {
           <div className="max-w-3xl">
             <div className="space-y-6 sm:space-y-8 [&>*:last-child]:mb-0">
               {/* Top badges with checkmarks */}
-              <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                  <span className="text-sm sm:text-base text-foreground">90+ довольных клиентов</span>
+              <AnimateOnScroll animation="fade-down" duration={500} delay={200}>
+                <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                    <span className="text-sm sm:text-base text-foreground">90+ довольных клиентов</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                    <span className="text-sm sm:text-base text-foreground">Внедрение за 7-14 дней</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                    <span className="text-sm sm:text-base text-foreground">Поддержка 24/7</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                  <span className="text-sm sm:text-base text-foreground">Внедрение за 7-14 дней</span>
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                  <span className="text-sm sm:text-base text-foreground">Поддержка 24/7</span>
-                </div>
-              </div>
+              </AnimateOnScroll>
 
               {/* Main headline */}
-              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
-                Ваш ИИ-продавец<br />
-                работает <span className="text-primary">24/7</span><br />
-                Пока конкуренты спят,<br />
-                он зарабатывает
-              </h1>
+              <AnimateOnScroll animation="fade-up" duration={700} delay={400}>
+                <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
+                  Ваш ИИ-продавец<br />
+                  работает <span className="text-primary">24/7</span><br />
+                  Пока конкуренты спят,<br />
+                  он зарабатывает
+                </h1>
+              </AnimateOnScroll>
 
               {/* Description */}
-              <div className="space-y-2 sm:space-y-3 text-base sm:text-xl md:text-2xl text-muted-foreground leading-relaxed">
-                <p>Обрабатывает лиды за секунды в любом канале продаж<br /></p>
-                <p>Менеджеры сосредотачиваются только на горячих клиентах</p>
-                <p className="text-primary font-semibold">Конверсия растет в 3-5 раз за первый месяц</p>
-              </div>
+              <AnimateOnScroll animation="fade-up" duration={700} delay={600}>
+                <div className="space-y-2 sm:space-y-3 text-base sm:text-xl md:text-2xl text-muted-foreground leading-relaxed">
+                  <p>Обрабатывает лиды за секунды в любом канале продаж<br /></p>
+                  <p>Менеджеры сосредотачиваются только на горячих клиентах</p>
+                  <p className="text-primary font-semibold">Конверсия растет в 3-5 раз за первый месяц</p>
+                </div>
+              </AnimateOnScroll>
 
               {/* Spacer for buttons */}
               <div className="h-[100px]"></div>
 
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
-                <Button size="lg" className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 animate-pulse w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
-                  Бесплатный аудит + демо за 5 минут
-                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 border-2 hover:scale-105 transition-transform w-full sm:w-auto" 
-                  onClick={() => {
-                    // На мобильных устройствах (меньше md breakpoint = 768px) открываем демо чат
-                    // На более широких экранах скроллим к секции
-                    if (window.innerWidth < 768) {
-                      setIsDemoChatOpen(true)
-                    } else {
-                      const demoSection = document.getElementById('demo-chat')
-                      if (demoSection) {
-                        demoSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              <AnimateOnScroll animation="fade-up" duration={700} delay={800}>
+                <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+                  <Button size="lg" className="btn-shine text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 animate-pulse w-full sm:w-auto" onClick={() => setIsModalOpen(true)}>
+                    Бесплатный аудит + демо за 5 минут
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 border-2 hover:scale-105 transition-transform w-full sm:w-auto" 
+                    onClick={() => {
+                      // На мобильных устройствах (меньше md breakpoint = 768px) открываем демо чат
+                      // На более широких экранах скроллим к секции
+                      if (window.innerWidth < 768) {
+                        setIsDemoChatOpen(true)
+                      } else {
+                        const demoSection = document.getElementById('demo-chat')
+                        if (demoSection) {
+                          demoSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        }
                       }
-                    }
-                  }}
-                >
-                  <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  Попробовать демо
-                </Button>
-              </div>
+                    }}
+                  >
+                    <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    Попробовать демо
+                  </Button>
+                </div>
+              </AnimateOnScroll>
 
               {/* Mobile scroll hint under CTA */}
               <div className="md:hidden flex flex-col items-center mt-6 gap-1 text-muted-foreground/80 -mb-6 sm:-mb-8">
@@ -462,12 +471,14 @@ export default function HomePage() {
       <section className="py-28 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background border-y border-border">
         <div className="container mx-auto">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-center mb-8 sm:mb-12 text-balance">
-              80% лидов уходят к конкурентам из-за медленных менеджеров
-            </h2>
+            <AnimateOnScroll animation="fade-up" duration={700}>
+              <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-center mb-8 sm:mb-12 text-balance">
+                80% лидов уходят к конкурентам из-за медленных менеджеров
+              </h2>
+            </AnimateOnScroll>
             
-            <div className="grid md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
-              <Card className="bg-destructive/10 border-destructive/30 hover:scale-105 transition-all">
+            <StaggerChildren staggerDelay={150} animation="fade-up" className="grid md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
+              <Card className="bg-destructive/10 border-destructive/30 card-hover-lift">
                 <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
                   <div className="text-3xl sm:text-5xl">💸</div>
                   <h3 className="text-lg sm:text-2xl font-bold text-destructive">Теряешь 150к₽/мес</h3>
@@ -477,7 +488,7 @@ export default function HomePage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-primary/10 border-primary/30 hover:scale-105 transition-all">
+              <Card className="bg-primary/10 border-primary/30 card-hover-lift">
                 <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
                   <div className="text-3xl sm:text-5xl">⏱️</div>
                   <h3 className="text-lg sm:text-2xl font-bold text-primary">Ответ за 3 секунды</h3>
@@ -487,7 +498,7 @@ export default function HomePage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-accent/10 border-accent/30 hover:scale-105 transition-all">
+              <Card className="bg-accent/10 border-accent/30 card-hover-lift">
                 <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
                   <div className="text-3xl sm:text-5xl">📈</div>
                   <h3 className="text-lg sm:text-2xl font-bold">+200% конверсия</h3>
@@ -496,7 +507,7 @@ export default function HomePage() {
                   </p>
                 </CardContent>
               </Card>
-            </div>
+            </StaggerChildren>
 
             <div className="text-center">
               <Button 
@@ -515,13 +526,13 @@ export default function HomePage() {
       {/* Demo Chat Section - Desktop */}
       <section id="demo-chat" className="hidden md:block py-28 sm:py-32 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto text-center space-y-8 mb-12">
+          <AnimateOnScroll animation="fade-up" duration={700} className="max-w-4xl mx-auto text-center space-y-8 mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-balance section-title">Попробуйте ИИ-продавца прямо сейчас</h2>
             <p className="text-xl text-muted-foreground">
               Задайте вопрос нашему ИИ-ассистенту и убедитесь в его возможностях. Он отвечает мгновенно, консультирует и
               закрывает возражения 24/7.
             </p>
-          </div>
+          </AnimateOnScroll>
 
           <Suspense fallback={null}>
             <DemoChat />
@@ -623,15 +634,15 @@ export default function HomePage() {
       {/* Business Types Section */}
       <section id="services" className="py-28 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-10 sm:mb-16">
+          <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Для какого бизнеса это работает лучше всего</h2>
-          </div>
+          </AnimateOnScroll>
 
           {/* Desktop Grid */}
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+          <StaggerChildren staggerDelay={100} animation="scale-in" className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
               <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                   <Scissors className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">САЛОНЫ И СПА</h3>
@@ -639,9 +650,9 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
               <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                   <Home className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">РИЭЛТОРЫ</h3>
@@ -649,9 +660,9 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
               <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                   <ShoppingCart className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">E-COMMERCE</h3>
@@ -659,9 +670,9 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
               <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                   <Cross className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">КЛИНИКИ</h3>
@@ -669,9 +680,9 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
               <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                   <Wrench className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">АВТОСЕРВИСЫ</h3>
@@ -679,16 +690,16 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
               <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                   <Briefcase className="h-6 w-6 md:h-8 md:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">КОНСУЛЬТАНТЫ</h3>
                 <p className="text-sm md:text-base text-muted-foreground">Консультант работает только с готовыми клиентами</p>
               </CardContent>
             </Card>
-          </div>
+          </StaggerChildren>
 
           {/* Mobile Slider */}
           <div className="md:hidden relative">
@@ -736,34 +747,36 @@ export default function HomePage() {
       {/* Benefits Section */}
       <section id="product" className="py-28 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
-          <div className="text-center mb-3 sm:mb-4">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-balance section-title">
-              Внедрим ИИ-продавца в ваш бизнес за 7 дней
-            </h2>
-          </div>
-          <p className="text-base sm:text-xl text-center text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto">
-            Интеллектуальная автоматизация с ИИ: создаём ИИ-агента, чат-бота, автоматизируем рутинные задачи, счета и отчёты. Интеграция ИИ в работу увеличивает конверсию в 2-3 раза
-          </p>
+          <AnimateOnScroll animation="fade-up" duration={700}>
+            <div className="text-center mb-3 sm:mb-4">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-balance section-title">
+                Внедрим ИИ-продавца в ваш бизнес за 7 дней
+              </h2>
+            </div>
+            <p className="text-base sm:text-xl text-center text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto">
+              Интеллектуальная автоматизация с ИИ: создаём ИИ-агента, чат-бота, автоматизируем рутинные задачи, счета и отчёты. Интеграция ИИ в работу увеличивает конверсию в 2-3 раза
+            </p>
+          </AnimateOnScroll>
 
-          <div className="text-center mb-10 sm:mb-16">
+          <AnimateOnScroll animation="scale-in" duration={500} className="text-center mb-10 sm:mb-16">
             <Button
               size="lg"
-              className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
+              className="btn-shine text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
               onClick={() => setIsModalOpen(true)}
             >
               Хочу увеличить продажи
               <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
-          </div>
+          </AnimateOnScroll>
 
           {/* Desktop Grid */}
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerChildren staggerDelay={120} animation="fade-up" className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefitsData.map((benefit, index) => {
               const Icon = benefit.icon
               return (
-                <Card key={index} className="bg-card/10 border-border hover:border-primary transition-all duration-300">
+                <Card key={index} className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
                   <CardContent className="p-6 space-y-4">
-                    <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center icon-hover-glow">
                       <Icon className="h-7 w-7 text-primary" />
                     </div>
                     <h3 className="text-xl font-bold">{benefit.title}</h3>
@@ -774,7 +787,7 @@ export default function HomePage() {
                 </Card>
               )
             })}
-          </div>
+          </StaggerChildren>
 
           {/* Mobile Slider */}
           <div className="md:hidden relative">
@@ -818,7 +831,7 @@ export default function HomePage() {
       {/* Directions & Products Section – аналог «Направления и продукты» */}
       <section className="py-28 sm:py-32 px-3 sm:px-4 bg-secondary/40 border-y border-border">
         <div className="container mx-auto">
-          <div className="text-center mb-10 sm:mb-16">
+          <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
               Направления и продукты NEURONIC LABS
             </h2>
@@ -826,7 +839,7 @@ export default function HomePage() {
               Разрабатываем и внедряем ИИ-решения под ключ: от умных чат-ботов до компьютерного зрения и
               предиктивной аналитики.
             </p>
-          </div>
+          </AnimateOnScroll>
 
           {/* Автоматизация продаж – десктопная сетка */}
           <div className="hidden md:grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 lg:gap-10 items-stretch mb-8 sm:mb-12">
@@ -1222,7 +1235,7 @@ export default function HomePage() {
       {/* Stages of Implementation – «Этапы внедрения ИИ в ваш бизнес» */}
       <section className="py-28 sm:py-32 px-3 sm:px-4 bg-background">
         <div className="container mx-auto">
-          <div className="text-center mb-10 sm:mb-16">
+          <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
               Этапы внедрения ИИ в ваш бизнес
             </h2>
@@ -1230,11 +1243,11 @@ export default function HomePage() {
               Работаем по прозрачной пошаговой воронке: от глубокого аудита процессов до оптимизации и роста
               показателей после запуска.
             </p>
-          </div>
+          </AnimateOnScroll>
 
           {/* Desktop Grid */}
-          <div className="hidden lg:grid lg:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
-            <Card className="bg-card border-border shadow-md">
+          <StaggerChildren staggerDelay={150} animation="fade-left" className="hidden lg:grid lg:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
+            <Card className="bg-card border-border shadow-md card-hover-lift">
               <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
                 <p className="text-primary text-3xl sm:text-4xl font-bold">1.</p>
                 <h3 className="text-lg sm:text-2xl font-bold">
@@ -1247,7 +1260,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-border shadow-md">
+            <Card className="bg-card border-border shadow-md card-hover-lift">
               <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
                 <p className="text-primary text-3xl sm:text-4xl font-bold">2.</p>
                 <h3 className="text-lg sm:text-2xl font-bold">
@@ -1260,7 +1273,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-border shadow-md">
+            <Card className="bg-card border-border shadow-md card-hover-lift">
               <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
                 <p className="text-primary text-3xl sm:text-4xl font-bold">3.</p>
                 <h3 className="text-lg sm:text-2xl font-bold">Подготовка и запуск проекта</h3>
@@ -1271,7 +1284,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card border-border shadow-md">
+            <Card className="bg-card border-border shadow-md card-hover-lift">
               <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
                 <p className="text-primary text-3xl sm:text-4xl font-bold">4.</p>
                 <h3 className="text-lg sm:text-2xl font-bold">Оптимизация процессов после запуска</h3>
@@ -1281,7 +1294,7 @@ export default function HomePage() {
                 </p>
               </CardContent>
             </Card>
-          </div>
+          </StaggerChildren>
 
           {/* Mobile Slider */}
           <div className="lg:hidden relative mb-10 sm:mb-12">
@@ -1352,7 +1365,7 @@ export default function HomePage() {
       {/* Examples of Use – «Примеры применения ИИ‑решений» */}
       <section className="py-28 sm:py-32 px-3 sm:px-4 bg-secondary/30 border-y border-border">
         <div className="container mx-auto">
-          <div className="text-center mb-10 sm:mb-16">
+          <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
               Примеры применения ИИ‑решений
             </h2>
@@ -1360,7 +1373,7 @@ export default function HomePage() {
               Показываем, как ИИ даёт измеримую выгоду в разных отраслях: от здравоохранения и логистики до
               digital‑маркетинга и юриспруденции.
             </p>
-          </div>
+          </AnimateOnScroll>
 
           {/* Desktop Grid */}
           <div className="hidden md:grid md:grid-cols-2 gap-4 md:gap-6 max-w-5xl mx-auto">
@@ -1552,6 +1565,7 @@ export default function HomePage() {
       {/* Complex AI Implementation CTA – «Комплексное внедрение ИИ» */}
       <section className="py-28 sm:py-32 px-3 sm:px-4 bg-background">
         <div className="container mx-auto">
+          <AnimateOnScroll animation="scale-in" duration={800}>
           <Card className="bg-card border-border shadow-2xl">
             <CardContent className="p-6 sm:p-10 md:p-12 text-center space-y-4 sm:space-y-6">
               <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-balance">
@@ -1567,7 +1581,7 @@ export default function HomePage() {
               </p>
               <Button
                 size="lg"
-                className="w-full sm:w-auto text-sm sm:text-lg px-6 sm:px-10 py-4 sm:py-5"
+                className="btn-shine w-full sm:w-auto text-sm sm:text-lg px-6 sm:px-10 py-4 sm:py-5"
                 onClick={() => setIsModalOpen(true)}
               >
                 Получить аудит бизнеса
@@ -1575,6 +1589,7 @@ export default function HomePage() {
               </Button>
             </CardContent>
           </Card>
+          </AnimateOnScroll>
         </div>
       </section>
 
@@ -1588,17 +1603,17 @@ export default function HomePage() {
       <section id="about" className="py-28 sm:py-32 px-3 sm:px-4">
         <div className="container mx-auto">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
+            <AnimateOnScroll animation="fade-up" duration={700} className="text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
               <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">О нас</h2>
               <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
                 Мы команда экспертов по созданию ИИ-агентов, чат-ботов и интеллектуальной автоматизации бизнес-процессов. Интеграция ИИ в работу, автоматизация рутинных задач, счетов и отчётов
               </p>
-            </div>
+            </AnimateOnScroll>
 
-            <div className="grid md:grid-cols-3 gap-3 md:gap-8 mb-12">
-              <Card className="bg-card/10 border-border text-center">
+            <StaggerChildren staggerDelay={150} animation="scale-in" className="grid md:grid-cols-3 gap-3 md:gap-8 mb-12">
+              <Card className="bg-card/10 border-border text-center card-hover-lift">
                 <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
-                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                     <Target className="h-5 w-5 md:h-8 md:w-8 text-primary" />
                   </div>
                   <h3 className="text-lg md:text-2xl font-bold">90+</h3>
@@ -1606,9 +1621,9 @@ export default function HomePage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card/10 border-border text-center">
+              <Card className="bg-card/10 border-border text-center card-hover-lift">
                 <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
-                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                     <Award className="h-5 w-5 md:h-8 md:w-8 text-primary" />
                   </div>
                   <h3 className="text-lg md:text-2xl font-bold">5 лет</h3>
@@ -1616,16 +1631,16 @@ export default function HomePage() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-card/10 border-border text-center">
+              <Card className="bg-card/10 border-border text-center card-hover-lift">
                 <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
-                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
+                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
                     <Zap className="h-5 w-5 md:h-8 md:w-8 text-primary" />
                   </div>
                   <h3 className="text-lg md:text-2xl font-bold">14 дней</h3>
                   <p className="text-sm md:text-base text-muted-foreground">Среднее время внедрения</p>
                 </CardContent>
               </Card>
-            </div>
+            </StaggerChildren>
 
             {/* Video and Product Description */}
             <div className="mb-8 sm:mb-12">
@@ -1772,19 +1787,19 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto">
             {/* Top Slogan */}
-            <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-8 sm:mb-12 md:mb-16">
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
                 <span className="text-primary">ЛИЧНО КОНТРОЛИРУЮ</span>
               </h2>
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
                 КАЖДЫЙ ПРОЕКТ
               </h2>
-            </div>
+            </AnimateOnScroll>
 
             {/* Main Content */}
             <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12">
               {/* Portrait - Mobile: centered, Desktop: left */}
-              <div className="w-full md:order-1 flex justify-center md:justify-start md:self-stretch">
+              <AnimateOnScroll animation="fade-right" duration={800} className="w-full md:order-1 flex justify-center md:justify-start md:self-stretch">
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-md md:max-w-none md:h-full">
                   <img 
                     src="/images/founder-portrait.jpg" 
@@ -1793,10 +1808,10 @@ export default function HomePage() {
                     loading="lazy"
                   />
                 </div>
-              </div>
+              </AnimateOnScroll>
 
               {/* Info Section - Mobile: below image, Desktop: right */}
-              <div className="w-full md:order-2 space-y-6 sm:space-y-8">
+              <AnimateOnScroll animation="fade-left" duration={800} delay={200} className="w-full md:order-2 space-y-6 sm:space-y-8">
                 {/* Name and Title */}
                 <div>
                   <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-2">
@@ -1865,7 +1880,7 @@ export default function HomePage() {
                     </a>
                   </Button>
                 </div>
-              </div>
+              </AnimateOnScroll>
             </div>
           </div>
         </div>
@@ -1886,6 +1901,7 @@ export default function HomePage() {
       {/* Final CTA Section */}
       <section className="py-28 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background">
         <div className="container mx-auto">
+          <AnimateOnScroll animation="scale-in" duration={800}>
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/30 shadow-2xl">
             <CardContent className="p-6 sm:p-8 md:p-12">
               <div className="max-w-3xl mx-auto text-center space-y-4 sm:space-y-6">
@@ -2048,6 +2064,7 @@ export default function HomePage() {
               </div>
             </CardContent>
           </Card>
+          </AnimateOnScroll>
         </div>
       </section>
 
