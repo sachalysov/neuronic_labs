@@ -4,8 +4,8 @@ import type React from "react"
 
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Send, X, RotateCcw } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { Send, X, RotateCcw, Loader2, Image as ImageIcon } from "lucide-react"
 import { sendChatMessage } from "@/services/chat"
 import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
@@ -87,9 +87,13 @@ export function ChatWidget() {
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null)
   const handleResetChatRef = useRef<(() => void) | null>(null)
+  const imageUploadTimeoutsRef = useRef<Record<string, NodeJS.Timeout>>({})
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -98,6 +102,43 @@ export function ChatWidget() {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Функция для конвертации файла в base64
+  const convertImageToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // Обработчик выбора изображения
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      alert('Пожалуйста, выберите изображение')
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Размер изображения не должен превышать 5MB')
+      return
+    }
+
+    try {
+      const base64 = await convertImageToBase64(file)
+      setSelectedImage(base64)
+      requestAnimationFrame(() => {
+        inputRef.current?.focus()
+      })
+    } catch (error) {
+      console.error('Ошибка при обработке изображения:', error)
+      alert('Не удалось загрузить изображение')
+    }
+  }
 
   // Функция для сброса чата
   const handleResetChat = useCallback(() => {
@@ -116,6 +157,16 @@ export function ChatWidget() {
 
     // Сбрасываем сообщения на начальные
     setMessages(getInitialMessages())
+
+    // Сбрасываем изображение
+    setSelectedImage(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+
+    // Сбрасываем таймеры загрузки изображений
+    Object.values(imageUploadTimeoutsRef.current).forEach((timeout) => clearTimeout(timeout))
+    imageUploadTimeoutsRef.current = {}
 
     // Сбрасываем таймер неактивности
     if (inactivityTimerRef.current) {
@@ -168,34 +219,77 @@ export function ChatWidget() {
     }
   }, [updateLastActivity])
 
+  // Очистка таймеров загрузки изображений при размонтировании
+  useEffect(() => {
+    return () => {
+      Object.values(imageUploadTimeoutsRef.current).forEach((timeout) => clearTimeout(timeout))
+      imageUploadTimeoutsRef.current = {}
+    }
+  }, [])
+
+  // Автоматическое изменение высоты textarea
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto'
+      inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`
+    }
+  }, [inputValue])
+
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return
+    if ((!inputValue.trim() && !selectedImage) || isLoading) return
+
+    const messageText = inputValue.trim() || ""
+    const imageBase64 = selectedImage || undefined
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: inputValue,
+      text: messageText,
       sender: "user",
       timestamp: new Date(),
+      imageBase64: imageBase64,
+      imageUploadStatus: imageBase64 ? "uploading" : undefined,
     }
 
     setMessages((prev) => [...prev, userMessage])
+
+    if (imageBase64) {
+      const timeout = setTimeout(() => {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === userMessage.id ? { ...msg, imageUploadStatus: "ready" } : msg
+          )
+        )
+        delete imageUploadTimeoutsRef.current[userMessage.id]
+      }, 5000)
+      imageUploadTimeoutsRef.current[userMessage.id] = timeout
+    }
+
     setInputValue("")
+    setSelectedImage(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+    // Сбрасываем высоту textarea
+    if (inputRef.current) {
+      inputRef.current.style.height = 'auto'
+    }
     setIsLoading(true)
     setError(null)
-    updateLastActivity() // Обновляем активность при отправке сообщения
+    updateLastActivity()
 
     try {
-      const response = await sendChatMessage(userMessage.text, 'widget', sessionId)
+      const response = await sendChatMessage(messageText, 'widget', sessionId, undefined, imageBase64)
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: response.message,
         sender: "bot",
         timestamp: new Date(),
+        imageUrl: response.imageUrl || undefined,
       }
 
       setMessages((prev) => [...prev, botMessage])
-      updateLastActivity() // Обновляем активность при получении ответа
+      updateLastActivity()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Произошла ошибка")
       console.error('Error sending message:', err)
@@ -204,8 +298,8 @@ export function ChatWidget() {
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.key === "Enter" || e.key === "Return") && !e.shiftKey) {
       e.preventDefault()
       handleSendMessage()
     }
@@ -286,6 +380,30 @@ export function ChatWidget() {
                     : "bg-primary/50 text-primary-foreground rounded-tl-sm"
                     }`}
                 >
+                  {/* Отображение изображения */}
+                  {(message.imageUrl || message.imageBase64) && (
+                    <div className="mb-2">
+                      {message.imageUploadStatus === "uploading" ? (
+                        <div className="relative inline-block">
+                          <img
+                            src={message.imageUrl || message.imageBase64 || ''}
+                            alt="Изображение"
+                            className="max-w-full max-h-48 rounded-lg object-contain blur-sm"
+                          />
+                          <div className="absolute inset-0 rounded-lg bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
+                            <Loader2 className="h-5 w-5 animate-spin text-gray-600" />
+                            <span className="ml-2 text-xs text-gray-600">Загрузка...</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <img
+                          src={message.imageUrl || message.imageBase64 || ''}
+                          alt="Изображение"
+                          className="max-w-full max-h-48 rounded-lg object-contain"
+                        />
+                      )}
+                    </div>
+                  )}
                   {message.text && (
                     <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
                   )}
@@ -322,22 +440,64 @@ export function ChatWidget() {
 
         {/* Input */}
         <div className="p-4 border-t border-border">
-          <div className="flex items-center gap-2">
-            <Input
+          {selectedImage && (
+            <div className="mb-2 relative inline-block">
+              <img
+                src={selectedImage}
+                alt="Предпросмотр"
+                className="max-w-full max-h-24 rounded-lg object-contain"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setSelectedImage(null)
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = ''
+                  }
+                }}
+                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/50 hover:bg-black/70 text-white"
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          )}
+          <div className="flex items-end gap-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageSelect}
+              accept="image/*"
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading}
+              className="shrink-0 h-[40px] w-[40px]"
+            >
+              <ImageIcon className="h-4 w-4" />
+            </Button>
+            <Textarea
+              ref={inputRef}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               placeholder="Напишите свой вопрос..."
               disabled={isLoading}
-              className="flex-1 bg-secondary border-border"
+              className="flex-1 bg-secondary border-border min-h-[40px] max-h-[120px] resize-none text-sm py-2"
+              rows={1}
             />
             <Button
               size="icon"
               onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              className="flex-shrink-0"
+              disabled={(!inputValue.trim() && !selectedImage) || isLoading}
+              className="shrink-0 h-[40px] w-[40px]"
             >
-              <Send className="h-5 w-5" />
+              {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           </div>
         </div>
