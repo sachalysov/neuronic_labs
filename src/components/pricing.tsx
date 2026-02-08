@@ -43,7 +43,7 @@ export function Pricing({ onContactClick }: PricingProps) {
     {
       id: "lite",
       name: "Lite",
-      price: "15 000",
+      price: "25 000",
       period: "",
       description: "Простой старт",
       features: [
@@ -74,7 +74,7 @@ export function Pricing({ onContactClick }: PricingProps) {
     {
       id: "business",
       name: "Business",
-      price: "100 000",
+      price: "150 000",
       period: "",
       description: "Оптимальный для роста",
       features: [
@@ -91,7 +91,7 @@ export function Pricing({ onContactClick }: PricingProps) {
     {
       id: "pro",
       name: "Enterprise",
-      price: "170 000",
+      price: "250 000",
       period: "",
       description: "Для крупного бизнеса",
       features: [
@@ -193,11 +193,11 @@ export function Pricing({ onContactClick }: PricingProps) {
         </div>
 
         {/* Desktop: Grid */}
-        <StaggerChildren staggerDelay={120} animation="fade-up" className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <StaggerChildren staggerDelay={120} animation="fade-up" equalHeight className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {plans.map((plan) => (
             <Card
               key={plan.id}
-              className={`relative flex flex-col cursor-pointer overflow-visible card-hover-lift ${
+              className={`relative flex flex-col cursor-pointer overflow-visible card-hover-lift w-full h-full ${
                 plan.highlighted
                   ? "border-primary border-2 shadow-2xl scale-105 bg-primary/5 gradient-border-animated"
                   : "bg-card/50 hover:border-primary/50 transition-all gradient-border-animated"

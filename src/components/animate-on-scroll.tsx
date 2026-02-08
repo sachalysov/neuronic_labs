@@ -90,6 +90,8 @@ interface StaggerChildrenProps {
   threshold?: number
   /** Дополнительные CSS классы */
   className?: string
+  /** Растягивать дочерние элементы на одинаковую высоту */
+  equalHeight?: boolean
 }
 
 export function StaggerChildren({
@@ -99,6 +101,7 @@ export function StaggerChildren({
   duration = 600,
   threshold = 0.1,
   className = "",
+  equalHeight = false,
 }: StaggerChildrenProps) {
   const { ref, isInView } = useInView<HTMLDivElement>({ threshold })
 
@@ -137,6 +140,7 @@ export function StaggerChildren({
         return (
           <div
             key={index}
+            className={equalHeight ? "flex h-full" : undefined}
             style={{
               ...baseStyles,
               ...(isInView ? visibleStyles : hiddenMap[animation]),
