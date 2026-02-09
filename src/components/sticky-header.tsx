@@ -217,7 +217,15 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       <div className="container mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-1 sm:gap-3 hover:opacity-80 transition-opacity">
+          <Link
+            to="/"
+            className="flex items-center gap-1 sm:gap-3 hover:opacity-80 transition-opacity"
+            onClick={() => {
+              if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }
+            }}
+          >
             <div className="flex items-center gap-2 sm:gap-4">
               <div className="flex flex-col items-start">
                 <div className="flex items-baseline sm:gap-1">
