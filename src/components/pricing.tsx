@@ -215,9 +215,9 @@ export function Pricing({ onContactClick }: PricingProps) {
                 </div>
               )}
               
-              <CardContent className="p-5 md:p-6 lg:p-8 flex flex-col flex-1 space-y-4 md:space-y-5 lg:space-y-6">
+              <CardContent className="p-5 md:p-6 lg:p-5 xl:p-8 flex flex-col flex-1 space-y-4 md:space-y-5 lg:space-y-4 xl:space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-xl md:text-2xl font-bold">{plan.name}</h3>
+                  <h3 className="text-xl md:text-2xl lg:text-xl xl:text-2xl font-bold">{plan.name}</h3>
                   <p className="text-sm text-muted-foreground">{plan.description}</p>
                   <div className="flex items-baseline justify-center gap-1 whitespace-nowrap">
                     <span className="text-3xl md:text-4xl lg:text-3xl xl:text-5xl font-bold text-primary">{plan.price}</span>
