@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { ChatWidget } from "@/components/chat-widget"
@@ -10,6 +11,7 @@ import {
   Calendar,
   MessageCircle,
   ArrowRight,
+  Bot,
 } from "lucide-react"
 
 export default function ConferencePage() {
@@ -38,6 +40,37 @@ export default function ConferencePage() {
       <section className="py-12 sm:py-20 px-3 sm:px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="grid gap-6 md:gap-8">
+            {/* Кнопка 0: Протестировать Нейро продавца */}
+            <Card className="bg-card/10 border-border hover:border-primary transition-all">
+              <CardContent className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Bot className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl sm:text-2xl font-bold mb-2">
+                        Протестируйте Нейро продавца
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Убедитесь в работе ИИ-продавца на главной странице — попробуйте демо-чат и оцените, как бот общается с клиентами
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    size="lg" 
+                    asChild
+                    className="w-full sm:w-auto"
+                  >
+                    <Link to="/#demo-chat">
+                      Перейти к демо
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Кнопка 1: Бесплатный аудит */}
             <Card className="bg-card/10 border-border hover:border-primary transition-all">
               <CardContent className="p-6 sm:p-8">
