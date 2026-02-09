@@ -41,7 +41,7 @@ export function Footer() {
     <footer className="py-8 sm:py-12 px-3 sm:px-4 border-t border-border mt-20 bg-background">
       <div className="container mx-auto">
         <AnimateOnScroll animation="fade-up" duration={800}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 mb-8 sm:mb-12 pb-8 sm:pb-12 border-b border-border">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 mb-8 sm:mb-12 pb-8 sm:pb-12 border-b border-border">
           {/* Колонка 1 - Логотип и информация о компании */}
           <div className="flex flex-col gap-4">
             <Link to="/" className="flex items-center gap-2 mb-2">
