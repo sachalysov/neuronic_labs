@@ -332,9 +332,9 @@ export default function CalculatorPage() {
               <div className="text-muted-foreground">Загрузка калькулятора...</div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Левая колонка - Категории */}
-              <div className="lg:col-span-2 space-y-4">
+              <div className="md:col-span-2 space-y-4">
                 {categories.map((category) => {
                   const isOpen = openCategories.has(category.category)
                   const selectedOptionIds = selectedOptions.get(category.category)
@@ -520,7 +520,7 @@ export default function CalculatorPage() {
               </div>
 
               {/* Правая колонка - Калькулятор */}
-              <div className="lg:col-span-1">
+              <div className="md:col-span-1">
                 <Card id="calculator-total" className="sticky top-24">
                   <CardContent className="p-6">
                     <h3 className="text-xl font-bold mb-4">Итого</h3>

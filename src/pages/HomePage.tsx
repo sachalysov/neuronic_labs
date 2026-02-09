@@ -477,7 +477,7 @@ export default function HomePage() {
               </h2>
             </AnimateOnScroll>
             
-            <StaggerChildren staggerDelay={150} animation="fade-up" className="grid md:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12">
+            <StaggerChildren staggerDelay={150} animation="fade-up" className="grid md:grid-cols-3 gap-4 md:gap-5 lg:gap-6 mb-8 sm:mb-12">
               <Card className="bg-destructive/10 border-destructive/30 card-hover-lift">
                 <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
                   <div className="text-3xl sm:text-5xl">💸</div>
@@ -639,11 +639,11 @@ export default function HomePage() {
           </AnimateOnScroll>
 
           {/* Desktop Grid */}
-          <StaggerChildren staggerDelay={100} animation="scale-in" className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto">
+          <StaggerChildren staggerDelay={100} animation="scale-in" className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6 max-w-6xl mx-auto">
             <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Scissors className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                  <Scissors className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">САЛОНЫ И СПА</h3>
                 <p className="text-sm md:text-base text-muted-foreground">+50% клиентов, 0 пропущенных звонков</p>
@@ -651,9 +651,9 @@ export default function HomePage() {
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Home className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                  <Home className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">РИЭЛТОРЫ</h3>
                 <p className="text-sm md:text-base text-muted-foreground">+300% просмотров, ответ за 30 сек</p>
@@ -661,9 +661,9 @@ export default function HomePage() {
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <ShoppingCart className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                  <ShoppingCart className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">E-COMMERCE</h3>
                 <p className="text-sm md:text-base text-muted-foreground">Чек +40%, конверсия +50%</p>
@@ -671,9 +671,9 @@ export default function HomePage() {
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Cross className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                  <Cross className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">КЛИНИКИ</h3>
                 <p className="text-sm md:text-base text-muted-foreground">No-show упали на 60%</p>
@@ -681,9 +681,9 @@ export default function HomePage() {
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Wrench className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                  <Wrench className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">АВТОСЕРВИСЫ</h3>
                 <p className="text-sm md:text-base text-muted-foreground">Полная запись на неделю вперед</p>
@@ -691,9 +691,9 @@ export default function HomePage() {
             </Card>
 
             <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Briefcase className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
+                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                  <Briefcase className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                 </div>
                 <h3 className="text-lg md:text-xl font-bold">КОНСУЛЬТАНТЫ</h3>
                 <p className="text-sm md:text-base text-muted-foreground">Консультант работает только с готовыми клиентами</p>
@@ -770,7 +770,7 @@ export default function HomePage() {
           </AnimateOnScroll>
 
           {/* Desktop Grid */}
-          <StaggerChildren staggerDelay={120} animation="fade-up" className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerChildren staggerDelay={120} animation="fade-up" className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
             {benefitsData.map((benefit, index) => {
               const Icon = benefit.icon
               return (
@@ -842,7 +842,7 @@ export default function HomePage() {
           </AnimateOnScroll>
 
           {/* Автоматизация продаж – десктопная сетка */}
-          <div className="hidden md:grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 lg:gap-10 items-stretch mb-8 sm:mb-12">
+          <div className="hidden md:grid md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 lg:gap-10 items-stretch mb-8 sm:mb-12">
             {/* AI-продавец */}
             <Card className="bg-card/90 border-border shadow-xl">
               <CardContent className="p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full space-y-6 sm:space-y-8">
@@ -1246,7 +1246,7 @@ export default function HomePage() {
           </AnimateOnScroll>
 
           {/* Desktop Grid */}
-          <StaggerChildren staggerDelay={150} animation="fade-left" className="hidden lg:grid lg:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
+          <StaggerChildren staggerDelay={150} animation="fade-left" className="hidden md:grid md:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto mb-10 sm:mb-12">
             <Card className="bg-card border-border shadow-md card-hover-lift">
               <CardContent className="p-6 sm:p-8 space-y-3 sm:space-y-4">
                 <p className="text-primary text-3xl sm:text-4xl font-bold">1.</p>
@@ -1297,7 +1297,7 @@ export default function HomePage() {
           </StaggerChildren>
 
           {/* Mobile Slider */}
-          <div className="lg:hidden relative mb-10 sm:mb-12">
+          <div className="md:hidden relative mb-10 sm:mb-12">
             <div
               ref={stagesScrollRef}
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
@@ -1376,7 +1376,7 @@ export default function HomePage() {
           </AnimateOnScroll>
 
           {/* Desktop Grid */}
-          <div className="hidden md:grid md:grid-cols-2 gap-4 md:gap-6 max-w-5xl mx-auto">
+          <div className="hidden md:grid md:grid-cols-2 gap-4 md:gap-5 lg:gap-6 max-w-5xl mx-auto">
             <Card className="bg-card border-dashed border-border flex flex-col">
               <CardContent className="p-5 sm:p-6 flex flex-col flex-1">
                 <div className="space-y-3 flex-1">
@@ -1610,33 +1610,33 @@ export default function HomePage() {
               </p>
             </AnimateOnScroll>
 
-            <StaggerChildren staggerDelay={150} animation="scale-in" className="grid md:grid-cols-3 gap-3 md:gap-8 mb-12">
+            <StaggerChildren staggerDelay={150} animation="scale-in" className="grid grid-cols-3 gap-3 md:gap-6 lg:gap-8 mb-12">
               <Card className="bg-card/10 border-border text-center card-hover-lift">
-                <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
-                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                    <Target className="h-5 w-5 md:h-8 md:w-8 text-primary" />
+                <CardContent className="p-3 md:p-6 lg:p-8 space-y-1 md:space-y-3 lg:space-y-4">
+                  <div className="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                    <Target className="h-5 w-5 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                   </div>
-                  <h3 className="text-lg md:text-2xl font-bold">90+</h3>
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold">90+</h3>
                   <p className="text-sm md:text-base text-muted-foreground">Успешно внедренных проектов</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-card/10 border-border text-center card-hover-lift">
-                <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
-                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                    <Award className="h-5 w-5 md:h-8 md:w-8 text-primary" />
+                <CardContent className="p-3 md:p-6 lg:p-8 space-y-1 md:space-y-3 lg:space-y-4">
+                  <div className="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                    <Award className="h-5 w-5 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                   </div>
-                  <h3 className="text-lg md:text-2xl font-bold">5 лет</h3>
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold">5 лет</h3>
                   <p className="text-sm md:text-base text-muted-foreground">Опыта в разработке ИИ-решений</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-card/10 border-border text-center card-hover-lift">
-                <CardContent className="p-3 md:p-8 space-y-1 md:space-y-4">
-                  <div className="w-10 h-10 md:w-16 md:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                    <Zap className="h-5 w-5 md:h-8 md:w-8 text-primary" />
+                <CardContent className="p-3 md:p-6 lg:p-8 space-y-1 md:space-y-3 lg:space-y-4">
+                  <div className="w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
+                    <Zap className="h-5 w-5 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
                   </div>
-                  <h3 className="text-lg md:text-2xl font-bold">14 дней</h3>
+                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold">14 дней</h3>
                   <p className="text-sm md:text-base text-muted-foreground">Среднее время внедрения</p>
                 </CardContent>
               </Card>
@@ -1797,7 +1797,7 @@ export default function HomePage() {
             </AnimateOnScroll>
 
             {/* Main Content */}
-            <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12">
+            <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-8 lg:gap-12">
               {/* Portrait - Mobile: centered, Desktop: left */}
               <AnimateOnScroll animation="fade-right" duration={800} className="w-full md:order-1 flex justify-center md:justify-start md:self-stretch">
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-md md:max-w-none md:h-full">

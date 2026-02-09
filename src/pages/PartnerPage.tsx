@@ -189,8 +189,8 @@ export default function PartnerPage() {
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-2">
               Neuronic Labs — агентство по внедрению нейро-продавцов и автоматизации бизнеса
             </p>
-            <div className="mt-8 p-6 bg-primary/10 border border-primary/30 rounded-lg inline-block">
-              <p className="text-2xl sm:text-3xl font-bold text-primary">
+            <div className="mt-8 p-4 sm:p-6 bg-primary/10 border border-primary/30 rounded-lg inline-block">
+              <p className="text-xl sm:text-2xl md:text-3xl font-bold text-primary">
                 Привлекайте клиентов — получайте вознаграждение до 31 500 рублей за одного!
               </p>
             </div>
@@ -311,7 +311,7 @@ export default function PartnerPage() {
       <section className="py-12 sm:py-20 px-3 sm:px-4">
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-center">Преимущества</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
             {advantages.map((advantage, index) => {
               const Icon = advantage.icon
               return (
@@ -395,24 +395,24 @@ export default function PartnerPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="bg-secondary/50 border-b border-border">
-                      <th className="p-2 sm:p-4 text-left font-semibold text-xs sm:text-sm">Тариф<br className="hidden sm:block" /> клиента | Подписка</th>
-                      <th className="p-2 sm:p-4 text-center font-semibold text-xs sm:text-sm whitespace-nowrap">% Выплат<br className="hidden sm:block" /> за продажу</th>
-                      <th className="p-2 sm:p-4 text-center font-semibold text-xs sm:text-sm">Единоразовая<br className="hidden sm:block" /> выплата</th>
-                      <th className="p-2 sm:p-4 text-center font-semibold text-xs sm:text-sm">% С подписки<br className="hidden sm:block" /> (пассивный)</th>
-                      <th className="p-2 sm:p-4 text-center font-semibold text-xs sm:text-sm whitespace-nowrap">Выплата<br className="hidden sm:block" /> за 3 мес</th>
+                      <th className="p-2 sm:p-3 md:p-4 text-left font-semibold text-xs sm:text-sm">Тариф<br className="hidden sm:block" /> клиента | Подписка</th>
+                      <th className="p-2 sm:p-3 md:p-4 text-center font-semibold text-xs sm:text-sm whitespace-nowrap">% Выплат<br className="hidden sm:block" /> за продажу</th>
+                      <th className="p-2 sm:p-3 md:p-4 text-center font-semibold text-xs sm:text-sm">Единоразовая<br className="hidden sm:block" /> выплата</th>
+                      <th className="p-2 sm:p-3 md:p-4 text-center font-semibold text-xs sm:text-sm">% С подписки<br className="hidden sm:block" /> (пассивный)</th>
+                      <th className="p-2 sm:p-3 md:p-4 text-center font-semibold text-xs sm:text-sm whitespace-nowrap">Выплата<br className="hidden sm:block" /> за 3 мес</th>
                     </tr>
                   </thead>
                   <tbody>
                     {payoutTable.map((row, index) => (
                       <tr key={index} className="border-b border-border hover:bg-secondary/20 transition-colors">
-                        <td className="p-2 sm:p-4">
+                        <td className="p-2 sm:p-3 md:p-4">
                           <div className="font-medium whitespace-nowrap">{row.tariff}</div>
                           <div className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">{row.subscription}</div>
                         </td>
-                        <td className="p-2 sm:p-4 text-center font-medium whitespace-nowrap">{row.salePercent}</td>
-                        <td className="p-2 sm:p-4 text-center font-medium text-primary whitespace-nowrap">{row.oneTime}</td>
-                        <td className="p-2 sm:p-4 text-center font-medium text-primary whitespace-nowrap">{row.subscriptionPercent}</td>
-                        <td className="p-2 sm:p-4 text-center font-bold text-primary text-base sm:text-lg whitespace-nowrap">{row.total3Months}</td>
+                        <td className="p-2 sm:p-3 md:p-4 text-center font-medium whitespace-nowrap">{row.salePercent}</td>
+                        <td className="p-2 sm:p-3 md:p-4 text-center font-medium text-primary whitespace-nowrap">{row.oneTime}</td>
+                        <td className="p-2 sm:p-3 md:p-4 text-center font-medium text-primary whitespace-nowrap">{row.subscriptionPercent}</td>
+                        <td className="p-2 sm:p-3 md:p-4 text-center font-bold text-primary text-base sm:text-lg whitespace-nowrap">{row.total3Months}</td>
                       </tr>
                     ))}
                   </tbody>

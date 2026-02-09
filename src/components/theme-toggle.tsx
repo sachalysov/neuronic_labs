@@ -71,7 +71,7 @@ export function ThemeToggle() {
         disabled
       >
         <div className="w-5 h-5" />
-        <span className="text-sm font-medium hidden sm:inline">Загрузка...</span>
+        <span className="text-sm font-medium hidden xl:inline">Загрузка...</span>
       </button>
     )
   }
@@ -79,19 +79,19 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="theme-toggle-pulse flex items-center gap-2 px-4 py-2 rounded-lg bg-card hover:bg-secondary border border-border hover:border-primary text-foreground transition-all duration-250 hover:shadow-md shadow-sm"
+      className="theme-toggle-pulse flex items-center gap-2 px-2 py-2 xl:px-4 rounded-lg bg-card hover:bg-secondary border border-border hover:border-primary text-foreground transition-all duration-250 hover:shadow-md shadow-sm"
       aria-label="Переключить тему сайта"
       aria-pressed={theme === "dark"}
     >
       {theme === "dark" ? (
         <>
           <Sun className="w-5 h-5 text-primary" />
-          <span className="text-sm font-medium hidden sm:inline">Светлая тема</span>
+          <span className="text-sm font-medium hidden xl:inline">Светлая тема</span>
         </>
       ) : (
         <>
           <Moon className="w-5 h-5 text-primary" />
-          <span className="text-sm font-medium hidden sm:inline">Тёмная тема</span>
+          <span className="text-sm font-medium hidden xl:inline">Тёмная тема</span>
         </>
       )}
     </button>

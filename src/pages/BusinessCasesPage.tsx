@@ -100,7 +100,7 @@ export default function BusinessCasesPage() {
           )}
 
           {!loading && !error && cases.length > 0 && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-4 md:gap-5 lg:gap-6 max-w-6xl mx-auto">
               {cases.map((businessCase) => {
                 return (
                   <Link
@@ -108,7 +108,7 @@ export default function BusinessCasesPage() {
                     to={`/business-cases/${businessCase.id}`}
                     className="block"
                   >
-                    <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 hover:scale-105 flex flex-col cursor-pointer h-full">
+                    <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 lg:hover:scale-105 flex flex-col cursor-pointer h-full">
                       {businessCase.image && (
                         <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
                           <img

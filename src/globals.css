@@ -251,7 +251,7 @@ html[data-theme="dark"] .hero-bottom-fade {
 }
 
 /* Mobile optimization for new AIDA sections */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .hero h1 {
     font-size: 2.3rem !important;
     line-height: 1.2;
@@ -285,8 +285,26 @@ html[data-theme="dark"] .hero-bottom-fade {
   [id="testimonials"] blockquote {
     font-size: 0.93rem !important;
   }
+}
 
+/* Tablet optimization (768px – 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Reduce excessive section padding on tablets */
+  section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
 
+  /* Container padding for tablet */
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  /* Pricing cards tablet — ensure no overflow from scale */
+  [id="pricing"] .grid {
+    gap: 1rem;
+  }
 }
 
 /* Адаптация для экранов 320-475px (без изменения текстов и изображения робота) */
@@ -581,7 +599,7 @@ html[data-theme="dark"] .hero-bottom-fade {
 }
 
 /* Адаптация для мобильных */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
 
   .section-title::before,
   .section-title::after {
@@ -754,7 +772,7 @@ html[data-theme="dark"] .hero-bottom-fade {
 }
 
 /* Адаптация для мобильных */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .blog-content h2 {
     font-size: 1.4rem;
     margin-top: 2rem;
@@ -920,7 +938,7 @@ html[data-theme="dark"] .hero-bottom-fade {
 }
 
 /* Адаптация для мобильных */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .business-case-content h2 {
     font-size: 1.4rem;
     margin-top: 2rem;

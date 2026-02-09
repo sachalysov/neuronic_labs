@@ -229,7 +229,7 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
           </Link>
 
           {/* Search Bar */}
-          <div className="flex flex-1 max-w-xs sm:max-w-md mx-1 sm:mx-2 md:mx-8 relative">
+          <div className="flex flex-1 max-w-xs sm:max-w-sm md:max-w-xs xl:max-w-md mx-1 sm:mx-2 md:mx-4 xl:mx-8 relative">
             <div className="relative w-full">
               <input
                 type="text"
@@ -335,8 +335,8 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
           </div>
 
           {/* Navigation & Theme Toggle */}
-          <div className="flex items-center gap-6">
-            <nav className="hidden lg:flex items-center gap-8">
+          <div className="flex items-center gap-2 md:gap-3 xl:gap-6">
+            <nav className="hidden xl:flex items-center gap-8">
               <button
                 onClick={() => navigateToSection("demo-chat")}
                 className="text-foreground/90 hover:text-primary transition-colors font-medium"
@@ -601,13 +601,13 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              <span className="text-sm sm:text-base">+7 993 079 91 77</span>
+              <span className="text-xs md:text-sm lg:text-base whitespace-nowrap">+7 993 079 91 77</span>
             </a>
 
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden text-foreground p-2"
+              className="xl:hidden text-foreground p-2"
               aria-label="Toggle mobile menu"
             >
               {isMobileMenuOpen ? (
@@ -654,14 +654,14 @@ export function StickyHeader({ onOpenDemoChat }: StickyHeaderProps) {
       {/* Backdrop */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300"
+          className="xl:hidden fixed inset-0 bg-black/50 z-[60] transition-opacity duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
       
       {/* Side Menu */}
       <nav 
-        className="lg:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-black/80 backdrop-blur-md z-[70] shadow-2xl transition-transform duration-300 ease-out overflow-y-auto flex flex-col"
+        className="xl:hidden fixed top-0 right-0 h-full w-[85%] max-w-sm bg-black/80 backdrop-blur-md z-[70] shadow-2xl transition-transform duration-300 ease-out overflow-y-auto flex flex-col"
         style={{
           transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(100%)'
         }}

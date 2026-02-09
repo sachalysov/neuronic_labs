@@ -199,14 +199,14 @@ export default function BlogPage() {
 
               {/* Основной контент со статьями */}
               <div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 2xl:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
                   {posts.map((post) => (
                     <Link
                       key={post.id}
                       to={`/blog/${post.slug}`}
                       className="block"
                     >
-                      <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 hover:scale-105 flex flex-col cursor-pointer h-full">
+                      <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 lg:hover:scale-105 flex flex-col cursor-pointer h-full">
                         {post.imageUrl && (
                           <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
                             <img

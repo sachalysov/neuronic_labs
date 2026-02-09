@@ -193,13 +193,13 @@ export function Pricing({ onContactClick }: PricingProps) {
         </div>
 
         {/* Desktop: Grid */}
-        <StaggerChildren staggerDelay={120} animation="fade-up" equalHeight className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <StaggerChildren staggerDelay={120} animation="fade-up" equalHeight className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto">
           {plans.map((plan) => (
             <Card
               key={plan.id}
               className={`relative flex flex-col cursor-pointer overflow-visible card-hover-lift w-full h-full ${
                 plan.highlighted
-                  ? "border-primary border-2 shadow-2xl scale-105 bg-primary/5 gradient-border-animated"
+                  ? "border-primary border-2 shadow-2xl lg:scale-105 bg-primary/5 gradient-border-animated"
                   : "bg-card/50 hover:border-primary/50 transition-all gradient-border-animated"
               } hover:shadow-lg`}
               onClick={() => {
@@ -215,13 +215,13 @@ export function Pricing({ onContactClick }: PricingProps) {
                 </div>
               )}
               
-              <CardContent className="p-8 flex flex-col flex-1 space-y-6">
+              <CardContent className="p-5 md:p-6 lg:p-8 flex flex-col flex-1 space-y-4 md:space-y-5 lg:space-y-6">
                 <div className="text-center space-y-2">
-                  <h3 className="text-2xl font-bold">{plan.name}</h3>
+                  <h3 className="text-xl md:text-2xl font-bold">{plan.name}</h3>
                   <p className="text-sm text-muted-foreground">{plan.description}</p>
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="text-5xl font-bold text-primary">{plan.price}</span>
-                    <span className="text-xl text-muted-foreground">₽{plan.period}</span>
+                  <div className="flex items-baseline justify-center gap-1 whitespace-nowrap">
+                    <span className="text-3xl md:text-4xl lg:text-3xl xl:text-5xl font-bold text-primary">{plan.price}</span>
+                    <span className="text-lg md:text-xl lg:text-base xl:text-xl text-muted-foreground">₽{plan.period}</span>
                   </div>
                 </div>
 
