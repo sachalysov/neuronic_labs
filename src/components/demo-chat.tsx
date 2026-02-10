@@ -1191,15 +1191,17 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                 >
                   {linkButton1}
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => handleSendLink(linkButton2)}
-                  disabled={isLoading || !isUnlocked}
-                  className="flex-1 min-w-0 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
-                >
-                  {linkButton2}
-                </Button>
+                {linkButton2 !== 'protec.one' && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleSendLink(linkButton2)}
+                    disabled={isLoading || !isUnlocked}
+                    className="flex-1 min-w-0 text-xs sm:text-sm whitespace-normal break-words h-auto py-2 px-2"
+                  >
+                    {linkButton2}
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="outline"
