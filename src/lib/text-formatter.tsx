@@ -108,9 +108,11 @@ export function formatMessageText(text: string): React.ReactNode {
 
 // Основная функция для обработки markdown
 function formatMarkdown(text: string, startKey: number): React.ReactNode {
-  // Обрабатываем списки
   const lines = text.split('\n');
-  const hasList = lines.some(line => /^([-*]|\d+\.)\s+/.test(line.trim()));
+  // Обрабатываем списки:
+  // - поддерживаем маркеры "-", "*", "•"
+  // - поддерживаем нумерованные списки "1." и "1)"
+  const hasList = lines.some(line => /^([-*•]|\d+[.)])\s+/.test(line.trim()));
   
   if (hasList) {
     const parts: React.ReactNode[] = [];
@@ -120,7 +122,7 @@ function formatMarkdown(text: string, startKey: number): React.ReactNode {
     
     lines.forEach((line, index) => {
       const trimmed = line.trim();
-      const match = trimmed.match(/^([-*]|\d+\.)\s+(.+)$/);
+      const match = trimmed.match(/^([-*•]|\d+[.)])\s+(.+)$/);
       
       if (match) {
         const isOrdered = /^\d+\.$/.test(match[1]);
