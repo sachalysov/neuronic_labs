@@ -70,12 +70,19 @@ export function SpaceDust({ className, style, particleDensity = 8000 }: SpaceDus
       initParticles()
     }
 
-    // Инициализация частиц
+    // Инициализация частиц с оптимизацией: уменьшаем количество частиц на мобильных устройствах
     const initParticles = () => {
       particlesRef.current = []
-      const particleCount = Math.floor((canvas.width * canvas.height) / particleDensity) // Плотность частиц
+      // Оптимизация: уменьшаем плотность частиц на мобильных устройствах для лучшей производительности
+      const isMobile = window.innerWidth < 768
+      const adjustedDensity = isMobile ? particleDensity * 2 : particleDensity
+      const particleCount = Math.floor((canvas.width * canvas.height) / adjustedDensity)
       
-      for (let i = 0; i < particleCount; i++) {
+      // Ограничиваем максимальное количество частиц для предотвращения перегрузки
+      const maxParticles = isMobile ? 200 : 500
+      const finalParticleCount = Math.min(particleCount, maxParticles)
+      
+      for (let i = 0; i < finalParticleCount; i++) {
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,

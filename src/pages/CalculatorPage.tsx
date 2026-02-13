@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { StickyHeader } from '@/components/sticky-header'
 import { SpaceDust } from '@/components/space-dust'
 import { Footer } from '@/components/footer'
@@ -102,7 +102,8 @@ export default function CalculatorPage() {
     setOpenCategories(newOpenCategories)
   }
 
-  const toggleOption = (category: string, optionId: string, hasSubOptions?: boolean) => {
+  // Мемоизация колбэков для оптимизации производительности
+  const toggleOption = useCallback((category: string, optionId: string, hasSubOptions?: boolean) => {
     const newSelectedOptions = new Map(selectedOptions)
     const currentSelection = newSelectedOptions.get(category) || new Set<string>()
     const isSingleSelect = singleSelectCategories.has(category)
@@ -171,9 +172,9 @@ export default function CalculatorPage() {
     
     // Категории не закрываются автоматически при выборе опций или подвопросов
     // Пользователь должен самостоятельно переходить между категориями
-  }
+  }, [selectedOptions, selectedSubOptions, categories, singleSelectCategories])
 
-  const toggleSubOption = (parentOptionId: string, subOptionId: string) => {
+  const toggleSubOption = useCallback((parentOptionId: string, subOptionId: string) => {
     const newSelectedSubOptions = new Map(selectedSubOptions)
     const currentSubSelection = newSelectedSubOptions.get(parentOptionId) || new Set<string>()
     
@@ -192,17 +193,18 @@ export default function CalculatorPage() {
     }
     
     setSelectedSubOptions(newSelectedSubOptions)
-  }
+  }, [selectedSubOptions])
 
-  const calculateTotal = (): number => {
-    let total = 0
+  // Мемоизация вычисления общей стоимости для оптимизации производительности
+  const total = useMemo(() => {
+    let sum = 0
     selectedOptions.forEach((optionIds, category) => {
       const categoryData = categories.find(c => c.category === category)
       if (categoryData) {
         optionIds.forEach(optionId => {
           const option = categoryData.options.find(o => o.id === optionId)
           if (option) {
-            total += option.price
+            sum += option.price
             
             // Добавляем цены выбранных подвопросов
             if (option.sub_options && option.sub_options.length > 0) {
@@ -211,7 +213,7 @@ export default function CalculatorPage() {
                 subOptionIds.forEach(subOptionId => {
                   const subOption = option.sub_options?.find(so => so.id === subOptionId)
                   if (subOption) {
-                    total += subOption.price
+                    sum += subOption.price
                   }
                 })
               }
@@ -220,10 +222,10 @@ export default function CalculatorPage() {
         })
       }
     })
-    return total
-  }
+    return sum
+  }, [selectedOptions, selectedSubOptions, categories])
 
-  const getSelectedOptionNames = (category: string): string[] => {
+  const getSelectedOptionNames = useCallback((category: string): string[] => {
     const optionIds = selectedOptions.get(category)
     if (!optionIds || optionIds.size === 0) return []
     
@@ -236,9 +238,9 @@ export default function CalculatorPage() {
         return option ? option.option_name : null
       })
       .filter((name): name is string => name !== null)
-  }
+  }, [selectedOptions, categories])
 
-  const formatCalculatorDataForComment = (): string => {
+  const formatCalculatorDataForComment = useMemo((): string => {
     if (selectedOptions.size === 0) {
       return ""
     }
@@ -288,21 +290,19 @@ export default function CalculatorPage() {
       }
     })
 
-    const total = calculateTotal()
+    // Используем мемоизированное значение total
     if (total > 0) {
       lines.push(`Итоговая стоимость: ${formatPrice(total)}`)
     }
 
     return lines.join("\n")
-  }
+  }, [selectedOptions, selectedSubOptions, categories, total])
 
-  const resetCalculator = () => {
+  const resetCalculator = useCallback(() => {
     setSelectedOptions(new Map())
     setSelectedSubOptions(new Map())
     setExpandedOptions(new Set())
-  }
-
-  const total = calculateTotal()
+  }, [])
 
   return (
     <main className="min-h-screen">

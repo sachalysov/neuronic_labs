@@ -9,7 +9,7 @@ import { ConsultationModal } from "@/components/consultation-modal"
 import { CountdownTimer } from "@/components/countdown-timer"
 import { SliderPagination } from "@/components/slider-pagination"
 import { submitFormData } from "@/services/form"
-import { useEffect, useState, useRef, lazy, Suspense } from "react"
+import { useEffect, useState, useRef, lazy, Suspense, useMemo, useCallback } from "react"
 import { useLocation } from "react-router-dom"
 import { useMeta } from "@/hooks/useMeta"
 import { getAdminSettings, subscribeToAdminSettings, type AdminSettings } from "@/services/admin-settings"
@@ -77,7 +77,9 @@ export default function HomePage() {
   const [testimonialsEnabled, setTestimonialsEnabled] = useState(true)
   const [expandedDirections, setExpandedDirections] = useState<number | null>(null)
   const [expandedProductInfo, setExpandedProductInfo] = useState(false)
-  const benefitsData = [
+  
+  // Мемоизация данных для оптимизации производительности
+  const benefitsData = useMemo(() => [
     {
       icon: Bot,
       title: "ИИ-сотрудник работает 24/7, пока конкуренты спят",
@@ -98,7 +100,7 @@ export default function HomePage() {
       title: "Мгновенные ответы клиентам",
       description: "ИИ отвечает мгновенно, не заставляя клиентов ждать. Быстрая реакция повышает доверие и увеличивает конверсию"
     }
-  ]
+  ], [])
 
   useEffect(() => {
     // Обрабатываем hash из URL (если есть)
@@ -213,7 +215,7 @@ export default function HomePage() {
     return () => container.removeEventListener('scroll', handleScroll)
   }, [benefitsData.length])
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setName(value)
     
@@ -238,7 +240,7 @@ export default function HomePage() {
     }
   }
 
-  const handlePhoneChange = (value: string) => {
+  const handlePhoneChange = useCallback((value: string) => {
     setPhone(value)
     
     // Валидация в реальном времени
@@ -260,9 +262,9 @@ export default function HomePage() {
         return newErrors
       })
     }
-  }
+  }, [selectedCountry])
 
-  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleCommentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
     setComment(value)
     
@@ -287,7 +289,7 @@ export default function HomePage() {
     }
   }
 
-  const handleTelegramChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTelegramChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
     
     // Если значение не пустое и не начинается с @, добавляем @ в начале
@@ -296,9 +298,9 @@ export default function HomePage() {
     }
     
     setTelegram(value)
-  }
+  }, [])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     
     // Валидация всех полей
@@ -355,7 +357,7 @@ export default function HomePage() {
       console.error("Ошибка при отправке формы (HomePage):", error)
       alert(error instanceof Error ? error.message : "Не удалось отправить форму. Пожалуйста, попробуйте позже.")
     }
-  }
+  }, [name, phone, email, telegram, comment, consentAccepted, selectedCountry, errors])
 
   return (
     <main className="min-h-screen">
