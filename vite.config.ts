@@ -33,13 +33,36 @@ export default defineConfig({
           if (id.includes('node_modules/react-router')) {
             return 'vendor-router'
           }
-          // Radix UI - большая библиотека, отдельный чанк
+          // Radix UI - разделяем на более мелкие чанки для лучшей загрузки
           if (id.includes('node_modules/@radix-ui')) {
+            // Разделяем большие компоненты Radix UI
+            if (id.includes('@radix-ui/react-dialog') || 
+                id.includes('@radix-ui/react-popover') ||
+                id.includes('@radix-ui/react-alert-dialog')) {
+              return 'vendor-ui-dialogs'
+            }
+            if (id.includes('@radix-ui/react-select') ||
+                id.includes('@radix-ui/react-dropdown-menu')) {
+              return 'vendor-ui-selects'
+            }
             return 'vendor-ui'
           }
           // Lucide icons - отдельный чанк для иконок
           if (id.includes('node_modules/lucide-react')) {
             return 'vendor-icons'
+          }
+          // Supabase - большая библиотека, отдельный чанк
+          if (id.includes('node_modules/@supabase')) {
+            return 'vendor-supabase'
+          }
+          // Form libraries - отдельный чанк
+          if (id.includes('node_modules/react-hook-form') ||
+              id.includes('node_modules/@hookform')) {
+            return 'vendor-forms'
+          }
+          // Validation libraries
+          if (id.includes('node_modules/zod')) {
+            return 'vendor-validation'
           }
           // Class variance authority и другие утилиты
           if (id.includes('node_modules/class-variance-authority') || 
@@ -51,6 +74,10 @@ export default defineConfig({
           if (id.includes('node_modules/tailwindcss') ||
               id.includes('node_modules/@tailwindcss')) {
             return 'vendor-styles'
+          }
+          // Charts библиотеки
+          if (id.includes('node_modules/recharts')) {
+            return 'vendor-charts'
           }
           // Остальные node_modules - общий vendor чанк
           if (id.includes('node_modules')) {

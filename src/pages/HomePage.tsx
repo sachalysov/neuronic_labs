@@ -49,6 +49,54 @@ const ChatWidget = lazy(() => import("@/components/chat-widget").then((module) =
 import { AnimateOnScroll, StaggerChildren } from "@/components/animate-on-scroll"
 import { OptimizedImage } from "@/components/optimized-image"
 
+// Компонент для lazy loading видео Rutube - загружается только при прокрутке до него
+function LazyVideoEmbed() {
+  const [shouldLoad, setShouldLoad] = useState(false)
+  const videoRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (shouldLoad) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShouldLoad(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '200px' } // Начинаем загрузку за 200px до появления в viewport
+    )
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [shouldLoad])
+
+  return (
+    <div ref={videoRef} className="relative rounded-xl overflow-hidden shadow-2xl w-full aspect-video">
+      {shouldLoad ? (
+        <iframe
+          src="https://rutube.ru/play/embed/851a991a487b9f5d84f291495c77e6ba/?p=cDHWmAuDyzbq3xhmbAS4vA"
+          title="ИИ-робот NEURONIC LABS"
+          className="absolute inset-0 w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          loading="lazy"
+        />
+      ) : (
+        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-secondary/50 to-secondary/30 flex items-center justify-center">
+          <div className="text-center space-y-3">
+            <div className="w-16 h-16 mx-auto border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground">Загрузка видео...</p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function HomePage() {
   useMeta(createHomeMetaTags())
   const location = useLocation()
@@ -238,7 +286,7 @@ export default function HomePage() {
         return newErrors
       })
     }
-  }
+  }, [])
 
   const handlePhoneChange = useCallback((value: string) => {
     setPhone(value)
@@ -287,7 +335,7 @@ export default function HomePage() {
         return newErrors
       })
     }
-  }
+  }, [])
 
   const handleTelegramChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value
@@ -1650,17 +1698,9 @@ export default function HomePage() {
             {/* Video and Product Description */}
             <div className="mb-8 sm:mb-12">
               <div className="flex flex-col gap-6 sm:gap-8">
-                {/* Robot Video Section - Full Width */}
+                {/* Robot Video Section - Full Width с lazy loading для оптимизации производительности */}
                 <div className="w-full">
-                  <div className="relative rounded-xl overflow-hidden shadow-2xl w-full aspect-video">
-                    <iframe
-                      src="https://rutube.ru/play/embed/851a991a487b9f5d84f291495c77e6ba/?p=cDHWmAuDyzbq3xhmbAS4vA"
-                      title="ИИ-робот NEURONIC LABS"
-                      className="absolute inset-0 w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  </div>
+                  <LazyVideoEmbed />
                 </div>
 
                 {/* Text Section - Below Video */}
