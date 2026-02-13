@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Cookie } from "lucide-react"
-import { getCookieConsentStatus, setCookieConsentStatus } from "@/lib/consent"
+import { getCookiesConsentStatus, setCookiesConsentStatus } from "@/lib/consent"
 import { setupYandexMetrika } from "@/lib/yandex-metrika"
 
 export function CookieConsent() {
@@ -14,7 +14,7 @@ export function CookieConsent() {
 
   useEffect(() => {
     // Проверяем статус согласия при монтировании
-    const status = getCookieConsentStatus()
+    const status = getCookiesConsentStatus()
     
     // Показываем уведомление только если согласие еще не дано
     if (status === null) {
@@ -28,14 +28,14 @@ export function CookieConsent() {
   }, [])
 
   const handleAccept = () => {
-    setCookieConsentStatus('accepted')
+    setCookiesConsentStatus('accepted')
     setIsVisible(false)
     // Инициализируем сторонние сервисы после согласия
     setupYandexMetrika()
   }
 
   const handleDecline = () => {
-    setCookieConsentStatus('declined')
+    setCookiesConsentStatus('declined')
     setIsVisible(false)
     // Пользователь отказался от cookies/аналитики — сайт работает без аналитики
   }
