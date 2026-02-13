@@ -32,21 +32,21 @@ export function CapabilitiesList() {
             : "border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.1)]"
         }`}
       >
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10">
+        <span className="flex items-center justify-between gap-3">
+          <span className="flex items-center gap-3">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10">
               <MessageSquare className="h-4 w-4 text-red-400" />
-            </div>
+            </span>
             <span className="text-[15px] font-semibold text-card-foreground text-left">
               Возможности демо бота
             </span>
-          </div>
+          </span>
           <ChevronDown
             className={`h-5 w-5 flex-shrink-0 transition-transform duration-300 text-muted-foreground ${
               isOpen ? "rotate-180" : ""
             }`}
           />
-        </div>
+        </span>
       </button>
 
       <div
