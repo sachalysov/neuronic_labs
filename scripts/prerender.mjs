@@ -11,7 +11,7 @@
  */
 
 import puppeteer from 'puppeteer'
-import { spawn } from 'child_process'
+import { spawn, execSync } from 'child_process'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
@@ -77,7 +77,7 @@ async function prerenderPage(browser, route, baseUrl, outputDir) {
         const acceptButton = await page.$('button:has-text("Принять"), button:has-text("Согласен")')
         if (acceptButton) {
           await acceptButton.click()
-          await page.waitForTimeout(1000)
+          await new Promise(resolve => setTimeout(resolve, 1000))
         }
       } catch (e2) {
         // Игнорируем ошибки - возможно, согласие уже принято
@@ -136,6 +136,7 @@ function startPreviewServer() {
       cwd: rootDir,
       stdio: 'pipe',
       shell: true,
+      detached: false, // Важно: не делаем detached, чтобы можно было убить дочерние процессы
     })
     
     let serverReady = false
@@ -219,9 +220,36 @@ async function main() {
   } finally {
     // Останавливаем preview сервер
     if (previewServer) {
-      previewServer.kill()
-      console.log('\n🛑 Preview сервер остановлен')
+      try {
+        console.log('\n🛑 Остановка preview сервера...')
+        // Останавливаем процесс
+        previewServer.kill('SIGTERM')
+        
+        // Ждем немного для корректной остановки
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        // Если процесс все еще работает, принудительно убиваем
+        if (!previewServer.killed) {
+          previewServer.kill('SIGKILL')
+        }
+        
+        // Также убиваем процессы vite preview через pkill (для CI окружения)
+        if (process.platform !== 'win32') {
+          try {
+            execSync('pkill -f "vite preview" || true', { stdio: 'ignore' })
+          } catch (e) {
+            // Игнорируем ошибки
+          }
+        }
+        
+        console.log('✅ Preview сервер остановлен')
+      } catch (error) {
+        console.warn('⚠️  Предупреждение при остановке сервера:', error.message)
+      }
     }
+    
+    // Явно завершаем процесс после завершения всех операций
+    process.exit(0)
   }
 }
 
