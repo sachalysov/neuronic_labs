@@ -12,7 +12,7 @@ import { useMeta } from "@/hooks/useMeta"
 import { createBlogMetaTags } from "@/lib/meta"
 import { formatDate } from "@/lib/utils"
 import { OptimizedImage } from "@/components/optimized-image"
-import { generateBlogPostSchema, addSchemaToHead } from "@/lib/schema-org"
+import { generateBlogPostSchema, generateBreadcrumbList, addSchemaToHead } from "@/lib/schema-org"
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -37,7 +37,7 @@ export default function BlogPostPage() {
   
   useMeta(metaTags)
 
-  // Генерируем Schema.org разметку для статьи
+  // Генерируем Schema.org разметку для статьи и хлебных крошек
   useEffect(() => {
     if (post) {
       const schema = generateBlogPostSchema({
@@ -51,6 +51,14 @@ export default function BlogPostPage() {
         tags: post.tags
       })
       addSchemaToHead(schema, 'schema-blog-post')
+      
+      // Добавляем BreadcrumbList
+      const breadcrumbSchema = generateBreadcrumbList([
+        { name: 'Главная', url: '/' },
+        { name: 'Блог', url: '/blog' },
+        { name: post.title, url: `/blog/${post.slug}` }
+      ])
+      addSchemaToHead(breadcrumbSchema, 'schema-breadcrumb')
     }
   }, [post])
 

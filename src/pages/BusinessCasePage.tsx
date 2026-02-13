@@ -12,7 +12,7 @@ import { useMeta } from "@/hooks/useMeta"
 import { createBusinessCaseMetaTags } from "@/lib/meta"
 import { iconMap } from "@/lib/constants"
 import { OptimizedImage } from "@/components/optimized-image"
-import { generateBusinessCaseSchema, addSchemaToHead } from "@/lib/schema-org"
+import { generateBusinessCaseSchema, generateBreadcrumbList, addSchemaToHead } from "@/lib/schema-org"
 
 export default function BusinessCasePage() {
   const { id } = useParams<{ id: string }>()
@@ -36,7 +36,7 @@ export default function BusinessCasePage() {
   
   useMeta(metaTags)
 
-  // Генерируем Schema.org разметку для кейса
+  // Генерируем Schema.org разметку для кейса и хлебных крошек
   useEffect(() => {
     if (businessCase) {
       const schema = generateBusinessCaseSchema({
@@ -51,6 +51,14 @@ export default function BusinessCasePage() {
         url: `https://neuroniclabs.ru/business-cases/${businessCase.id}`
       })
       addSchemaToHead(schema, 'schema-business-case')
+      
+      // Добавляем BreadcrumbList
+      const breadcrumbSchema = generateBreadcrumbList([
+        { name: 'Главная', url: '/' },
+        { name: 'Кейсы бизнеса', url: '/business-cases' },
+        { name: businessCase.title, url: `/business-cases/${businessCase.id}` }
+      ])
+      addSchemaToHead(breadcrumbSchema, 'schema-breadcrumb')
     }
   }, [businessCase])
 

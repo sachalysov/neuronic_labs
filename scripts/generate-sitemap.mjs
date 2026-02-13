@@ -11,7 +11,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js'
-import { writeFileSync, existsSync, mkdirSync } from 'fs'
+import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -23,13 +23,51 @@ const rootDir = join(__dirname, '..')
 const BASE_URL = 'https://neuroniclabs.ru'
 const SITEMAP_PATH = join(rootDir, 'public', 'sitemap.xml')
 
-// Загружаем переменные окружения из .env файла (если используется dotenv)
-// В Node.js переменные окружения доступны через process.env
-// В CI/CD они передаются через GitHub Secrets
+/**
+ * Загружает переменные окружения из .env файла
+ */
+function loadEnvFile() {
+  const envPath = join(rootDir, '.env')
+  if (!existsSync(envPath)) {
+    return {}
+  }
+
+  const envContent = readFileSync(envPath, 'utf-8')
+  const envVars = {}
+  
+  envContent.split('\n').forEach(line => {
+    const trimmedLine = line.trim()
+    // Пропускаем комментарии и пустые строки
+    if (!trimmedLine || trimmedLine.startsWith('#')) {
+      return
+    }
+    
+    // Парсим KEY="VALUE" или KEY=VALUE
+    const match = trimmedLine.match(/^([^=]+)=(.*)$/)
+    if (match) {
+      const key = match[1].trim()
+      let value = match[2].trim()
+      
+      // Убираем кавычки если есть
+      if ((value.startsWith('"') && value.endsWith('"')) || 
+          (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1)
+      }
+      
+      envVars[key] = value
+    }
+  })
+  
+  return envVars
+}
+
+// Загружаем переменные из .env файла
+const envVars = loadEnvFile()
 
 // Получаем переменные окружения (поддерживаем оба формата: VITE_ и без префикса)
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
-const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY
+// Сначала проверяем process.env (для CI/CD), затем .env файл
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || envVars.VITE_SUPABASE_URL || envVars.SUPABASE_URL
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || envVars.VITE_SUPABASE_ANON_KEY || envVars.SUPABASE_ANON_KEY
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.error('❌ Ошибка: Не указаны переменные окружения для Supabase')

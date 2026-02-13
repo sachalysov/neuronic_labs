@@ -369,6 +369,24 @@ export function generateBlogListSchema(url: string, posts: Array<{ title: string
 }
 
 /**
+ * Генерирует Schema.org разметку для хлебных крошек (BreadcrumbList)
+ */
+export function generateBreadcrumbList(items: Array<{ name: string; url: string }>): object {
+  const BASE_URL = 'https://neuroniclabs.ru'
+  
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url.startsWith('http') ? item.url : `${BASE_URL}${item.url}`
+    }))
+  }
+}
+
+/**
  * Полная настройка Schema.org разметки для сайта
  */
 export function setupSchemaOrg(
