@@ -12,6 +12,8 @@ import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from
 import { Message } from "@/lib/types"
 import { TelegramLink } from "@/components/telegram-link"
 import { OptimizedImage } from "@/components/optimized-image"
+import { PersonalDataConsentModal } from "@/components/personal-data-consent-modal"
+import { hasPersonalDataConsent } from "@/lib/consent"
 
 const INACTIVITY_TIMEOUT = 60 * 60 * 1000 // 60 минут в миллисекундах
 
@@ -58,6 +60,8 @@ export function ChatWidget() {
   })
 
   const [isOpen, setIsOpen] = useState(false)
+  const [showPersonalDataConsent, setShowPersonalDataConsent] = useState(false)
+  const [isChatUnlocked, setIsChatUnlocked] = useState(false)
   // Загружаем сообщения из localStorage или используем начальные
   const [messages, setMessages] = useState<Message[]>(() => {
     const lastActivity = getLocalStorage('chat-widget-last-activity')
@@ -237,7 +241,7 @@ export function ChatWidget() {
   }, [inputValue])
 
   const handleSendMessage = async () => {
-    if ((!inputValue.trim() && !selectedImage) || isLoading) return
+    if ((!inputValue.trim() && !selectedImage) || isLoading || !isChatUnlocked) return
 
     const messageText = inputValue.trim() || ""
     const imageBase64 = selectedImage || undefined
@@ -306,34 +310,63 @@ export function ChatWidget() {
     }
   }
 
+  const handleOpenChat = () => {
+    // Проверяем согласие на обработку персональных данных
+    if (hasPersonalDataConsent()) {
+      setIsChatUnlocked(true)
+      setIsOpen(true)
+    } else {
+      // Если согласия нет, показываем модальное окно
+      setShowPersonalDataConsent(true)
+    }
+  }
+
+  const handleConsentAccept = () => {
+    setIsChatUnlocked(true)
+    setIsOpen(true)
+    setShowPersonalDataConsent(false)
+  }
+
+  const handleConsentClose = () => {
+    setShowPersonalDataConsent(false)
+  }
+
   if (!isOpen) {
     return (
-      <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-50">
-        <TelegramLink />
-        {/* Chat Button */}
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="h-16 w-16 rounded-full shadow-2xl hover:scale-110 transition-transform"
-          size="icon"
-        >
-          <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-            />
-          </svg>
-        </Button>
-      </div>
+      <>
+        <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-50">
+          <TelegramLink />
+          {/* Chat Button */}
+          <Button
+            onClick={handleOpenChat}
+            className="h-16 w-16 rounded-full shadow-2xl hover:scale-110 transition-transform"
+            size="icon"
+          >
+            <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+              />
+            </svg>
+          </Button>
+        </div>
+        <PersonalDataConsentModal
+          isOpen={showPersonalDataConsent}
+          onClose={handleConsentClose}
+          onAccept={handleConsentAccept}
+        />
+      </>
     )
   }
 
   return (
-    <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-50">
-      <TelegramLink />
-      {/* Chat Widget */}
-      <div className="w-[380px] h-[600px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+    <>
+      <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-50">
+        <TelegramLink />
+        {/* Chat Widget */}
+        <div className="w-[380px] h-[600px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="bg-secondary/50 border-b border-border p-4 sm:p-6 flex items-center justify-between rounded-t-2xl">
           <div className="flex items-center gap-3 flex-1">
@@ -358,7 +391,10 @@ export function ChatWidget() {
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="hover:bg-secondary flex-shrink-0">
+            <Button variant="ghost" size="icon" onClick={() => {
+              setIsOpen(false)
+              // При закрытии чата не сбрасываем isChatUnlocked, чтобы при повторном открытии (если согласие уже дано) чат открывался сразу
+            }} className="hover:bg-secondary flex-shrink-0">
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -477,7 +513,7 @@ export function ChatWidget() {
               variant="outline"
               size="icon"
               onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
+              disabled={isLoading || !isChatUnlocked}
               className="shrink-0 h-[40px] w-[40px]"
             >
               <ImageIcon className="h-4 w-4" />
@@ -488,22 +524,28 @@ export function ChatWidget() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Напишите свой вопрос..."
-              disabled={isLoading}
+              disabled={isLoading || !isChatUnlocked}
               className="flex-1 bg-secondary border-border min-h-[40px] max-h-[120px] resize-none text-sm py-2"
               rows={1}
             />
             <Button
               size="icon"
               onClick={handleSendMessage}
-              disabled={(!inputValue.trim() && !selectedImage) || isLoading}
+              disabled={(!inputValue.trim() && !selectedImage) || isLoading || !isChatUnlocked}
               className="shrink-0 h-[40px] w-[40px]"
             >
               {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+      <PersonalDataConsentModal
+        isOpen={showPersonalDataConsent}
+        onClose={handleConsentClose}
+        onAccept={handleConsentAccept}
+      />
+    </>
   )
 }
 

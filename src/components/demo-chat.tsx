@@ -14,10 +14,12 @@ import { VomolokoContextModal } from "@/components/vomoloko-context-modal"
 import { ProtecContextModal } from "@/components/protec-context-modal"
 import { CliningContextModal } from "@/components/clining-context-modal"
 import { CustomContextModal } from "@/components/custom-context-modal"
+import { PersonalDataConsentModal } from "@/components/personal-data-consent-modal"
 import { CapabilitiesList } from "@/components/capabilities-list"
 import { OptimizedImage } from "@/components/optimized-image"
 import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL, DEMO_CHAT_PROTEC_WEBHOOK_URL, DEMO_CHAT_CLINING_WEBHOOK_URL } from "@/lib/constants"
 import { getWebhookFromSettings } from "@/services/admin-settings"
+import { hasPersonalDataConsent } from "@/lib/consent"
 
 interface DemoChatProps {
   onClose?: () => void
@@ -139,9 +141,11 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
   const [isUnlocked, setIsUnlocked] = useState(() => {
     const unlockedSessionId = getLocalStorage(`${storagePrefix}-unlocked-session-id`)
     const currentSessionId = getLocalStorage(`${storagePrefix}-session-id`)
-    // Если есть сохраненный разблокированный session ID и он совпадает с текущим, разблокируем
-    return unlockedSessionId === currentSessionId && !!unlockedSessionId
+    // Если есть сохраненный разблокированный session ID и он совпадает с текущим, и есть согласие на обработку персональных данных, разблокируем
+    return unlockedSessionId === currentSessionId && !!unlockedSessionId && hasPersonalDataConsent()
   })
+  // Состояние для показа модального окна согласия на обработку персональных данных
+  const [showPersonalDataConsent, setShowPersonalDataConsent] = useState(false)
   // Состояние для показа правил использования
   const [showRules, setShowRules] = useState(false)
 
@@ -317,6 +321,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
 
     // Блокируем чат снова при сбросе (новый session ID, заглушка должна появиться)
     setIsUnlocked(false)
+    setShowPersonalDataConsent(false)
     setShowRules(false)
 
     // Сбрасываем имя бота на начальное
@@ -589,12 +594,26 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
     // Shift+Enter или Shift+Return позволяет сделать перенос строки
   }
 
-  // Функция для показа правил использования
-  const handleShowRules = () => {
+  // Функция для показа согласия на обработку персональных данных
+  const handleShowConsent = () => {
+    // Проверяем, есть ли уже согласие
+    if (hasPersonalDataConsent()) {
+      // Если согласие уже есть, показываем правила использования
+      setShowRules(true)
+    } else {
+      // Если согласия нет, показываем модальное окно согласия
+      setShowPersonalDataConsent(true)
+    }
+  }
+
+  // Функция для обработки принятия согласия на обработку персональных данных
+  const handleConsentAccept = () => {
+    // После принятия согласия показываем правила использования
+    setShowPersonalDataConsent(false)
     setShowRules(true)
   }
 
-  // Функция для полной разблокировки чата
+  // Функция для полной разблокировки чата (после принятия правил)
   const handleUnlockChat = () => {
     setIsUnlocked(true)
     setShowRules(false)
@@ -1138,7 +1157,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
               <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
                 <div className="text-center px-6">
                   <Button
-                    onClick={handleShowRules}
+                    onClick={handleShowConsent}
                     size="lg"
                     className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-semibold shadow-lg hover:shadow-xl transition-all"
                   >
@@ -1148,7 +1167,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
               </div>
             )}
 
-            {/* Второй overlay с правилами использования - едва размытый */}
+            {/* Второй overlay с правилами использования - показывается после согласия на обработку персональных данных */}
             {!isUnlocked && showRules && (
               <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-[2px]">
                 <div className="text-center px-6 max-w-md">
@@ -1378,6 +1397,11 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
           isOpen={isCustomContextModalOpen}
           onClose={() => setIsCustomContextModalOpen(false)}
           contextText={customContextModalContent}
+        />
+        <PersonalDataConsentModal
+          isOpen={showPersonalDataConsent}
+          onClose={() => setShowPersonalDataConsent(false)}
+          onAccept={handleConsentAccept}
         />
       </Card>
 
