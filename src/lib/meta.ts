@@ -21,6 +21,13 @@ export interface MetaTags {
   twitterDescription?: string
   twitterImage?: string
   
+  // Мобильные мета-теги
+  themeColor?: string
+  themeColorDark?: string
+  appleMobileWebAppCapable?: boolean
+  appleMobileWebAppStatusBarStyle?: 'default' | 'black' | 'black-translucent'
+  appleMobileWebAppTitle?: string
+  
   // Дополнительные
   image?: string
   url?: string
@@ -190,6 +197,37 @@ export function setMetaTags(meta: Partial<MetaTags>) {
   }
   if (merged.ogUrl || merged.url) {
     setMetaTag('twitter:url', merged.ogUrl || merged.url || DEFAULT_META.ogUrl || '')
+  }
+  
+  // Мобильные мета-теги
+  if (merged.themeColor) {
+    // Обновляем существующий или создаем новый theme-color для светлой темы
+    const existingLight = document.querySelector('meta[name="theme-color"]:not([media])')
+    if (existingLight) {
+      existingLight.setAttribute('content', merged.themeColor)
+    } else {
+      setMetaTag('theme-color', merged.themeColor)
+    }
+  }
+  if (merged.themeColorDark) {
+    // Создаем или обновляем theme-color для темной темы
+    let darkThemeColor = document.querySelector('meta[name="theme-color"][media="(prefers-color-scheme: dark)"]') as HTMLMetaElement
+    if (!darkThemeColor) {
+      darkThemeColor = document.createElement('meta')
+      darkThemeColor.setAttribute('name', 'theme-color')
+      darkThemeColor.setAttribute('media', '(prefers-color-scheme: dark)')
+      document.head.appendChild(darkThemeColor)
+    }
+    darkThemeColor.setAttribute('content', merged.themeColorDark)
+  }
+  if (merged.appleMobileWebAppCapable !== undefined) {
+    setMetaTag('apple-mobile-web-app-capable', merged.appleMobileWebAppCapable ? 'yes' : 'no')
+  }
+  if (merged.appleMobileWebAppStatusBarStyle) {
+    setMetaTag('apple-mobile-web-app-status-bar-style', merged.appleMobileWebAppStatusBarStyle)
+  }
+  if (merged.appleMobileWebAppTitle) {
+    setMetaTag('apple-mobile-web-app-title', merged.appleMobileWebAppTitle)
   }
 }
 

@@ -7,10 +7,44 @@
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <!-- Apple Touch Icons для разных размеров -->
+    <!-- Основная иконка 180x180 используется для всех устройств, если специфичные размеры отсутствуют -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <!-- Дополнительные размеры можно добавить позже для лучшей оптимизации:
+         sizes="57x57", "60x60", "72x72", "76x76", "114x114", "120x120", "144x144", "152x152" -->
+    
+    <!-- Safari Mask Icon (опционально, можно создать позже) -->
+    <!-- <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#6366f1" /> -->
+    
+    <!-- Microsoft Tiles (опционально, можно создать позже) -->
+    <!-- <meta name="msapplication-TileImage" content="/mstile-144x144.png" /> -->
+    <!-- <meta name="msapplication-square70x70logo" content="/mstile-70x70.png" /> -->
+    <!-- <meta name="msapplication-square150x150logo" content="/mstile-150x150.png" /> -->
+    <!-- <meta name="msapplication-wide310x150logo" content="/mstile-310x150.png" /> -->
+    <!-- <meta name="msapplication-square310x310logo" content="/mstile-310x310.png" /> -->
+    
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Viewport для мобильных устройств -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=yes" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    
+    <!-- Theme Color для мобильных браузеров -->
+    <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1e1e2e" media="(prefers-color-scheme: dark)" />
+    <meta name="msapplication-TileColor" content="#6366f1" />
+    <meta name="msapplication-navbutton-color" content="#6366f1" />
+    
+    <!-- Apple Mobile Web App мета-теги -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="NEURONIC LABS" />
+    
+    <!-- Дополнительные Apple мета-теги -->
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- Format Detection для мобильных -->
+    <meta name="format-detection" content="telephone=yes, address=yes, email=yes" />
     
     <!-- Primary Meta Tags -->
     <title>Автоматизация бизнеса с ИИ | Создать ИИ-агента и чат-бота | Интеллектуальная автоматизация процессов | NEURONIC LABS</title>
@@ -61,8 +95,17 @@
     <meta name="twitter:image" content="https://neuroniclabs.ru/images/robot-hero-2.jpeg" />
     
     <!-- Яндекс-специфичные теги -->
-    <meta name="format-detection" content="telephone=yes" />
     <meta name="yandex-verification" content="48f686a4748b74bb" />
+    
+    <!-- Дополнительные мобильные оптимизации -->
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-orientation" content="portrait" />
+    <meta name="full-screen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="browsermode" content="application" />
+    <meta name="x5-page-mode" content="app" />
     
     <!-- Google Search Console -->
     <meta name="google-site-verification" content="UI8RYYqWD0unN-6C8duAwkczlH4BL_cSLz5He8auuqg" />
