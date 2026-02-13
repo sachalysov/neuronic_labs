@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Lock } from "lucide-react"
-import { getPersonalDataConsentStatus, setPersonalDataConsentStatus } from "@/lib/consent"
+import { setPersonalDataConsentStatus } from "@/lib/consent"
 
 interface PersonalDataConsentModalProps {
   isOpen: boolean
