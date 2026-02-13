@@ -28,10 +28,11 @@ jobs:
       - name: Install Puppeteer dependencies
         run: |
           sudo apt-get update
+          # Устанавливаем зависимости для Puppeteer (совместимо с Ubuntu 24.04)
+          # Используем подход с fallback для совместимости со старыми версиями Ubuntu
           sudo apt-get install -y \
             ca-certificates \
             fonts-liberation \
-            libasound2 \
             libatk-bridge2.0-0 \
             libatk1.0-0 \
             libc6 \
@@ -41,8 +42,6 @@ jobs:
             libexpat1 \
             libfontconfig1 \
             libgbm1 \
-            libgcc1 \
-            libglib2.0-0 \
             libgtk-3-0 \
             libnspr4 \
             libnss3 \
@@ -65,6 +64,10 @@ jobs:
             lsb-release \
             wget \
             xdg-utils
+          # Устанавливаем пакеты с учетом версии Ubuntu (24.04 использует t64 суффикс)
+          sudo apt-get install -y libasound2t64 2>/dev/null || sudo apt-get install -y libasound2 || true
+          sudo apt-get install -y libgcc-s1 2>/dev/null || sudo apt-get install -y libgcc1 || true
+          sudo apt-get install -y libglib2.0-0t64 2>/dev/null || sudo apt-get install -y libglib2.0-0 || true
 
       - name: Verify environment variables
         env:
