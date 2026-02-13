@@ -114,10 +114,59 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://mc.yandex.ru">
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     
-    <!-- Google Fonts: Montserrat с font-display: swap для предотвращения FOIT (блокировки отображения текста) -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Асинхронная загрузка для предотвращения блокировки отрисовки -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Критический CSS inline для предотвращения блокировки отрисовки -->
+    <style>
+      :root {
+        --background: oklch(0.99 0 0);
+        --foreground: oklch(0.15 0 0);
+        --card: oklch(1 0 0);
+        --card-foreground: oklch(0.15 0 0);
+        --primary: oklch(0.42 0.24 25);
+        --primary-foreground: oklch(1 0 0);
+        --secondary: oklch(0.96 0 0);
+        --secondary-foreground: oklch(0.15 0 0);
+        --muted: oklch(0.96 0 0);
+        --muted-foreground: oklch(0.35 0 0);
+        --accent: oklch(0.42 0.24 25);
+        --accent-foreground: oklch(1 0 0);
+        --destructive: oklch(0.577 0.245 27.325);
+        --destructive-foreground: oklch(1 0 0);
+        --border: oklch(0.88 0 0);
+        --input: oklch(1 0 0);
+        --ring: oklch(0.42 0.24 25);
+        --radius: 1rem;
+      }
+      html[data-theme="dark"] {
+        --background: oklch(0.08 0 0);
+        --foreground: oklch(0.98 0 0);
+        --card: oklch(0.12 0 0);
+        --card-foreground: oklch(0.98 0 0);
+        --primary: oklch(0.55 0.22 27);
+        --primary-foreground: oklch(0.98 0 0);
+        --secondary: oklch(0.18 0 0);
+        --secondary-foreground: oklch(0.98 0 0);
+        --muted: oklch(0.25 0 0);
+        --muted-foreground: oklch(0.65 0 0);
+        --accent: oklch(0.55 0.22 27);
+        --accent-foreground: oklch(0.98 0 0);
+        --destructive: oklch(0.577 0.245 27.325);
+        --destructive-foreground: oklch(0.98 0 0);
+        --border: oklch(0.22 0 0);
+        --input: oklch(0.18 0 0);
+        --ring: oklch(0.55 0.22 27);
+      }
+      body {
+        margin: 0;
+        font-family: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+        background-color: var(--background);
+        color: var(--foreground);
+      }
+    </style>
     
     <!-- Скрипт инициализации темы для предотвращения мигания -->
     <script>
