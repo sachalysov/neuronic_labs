@@ -190,6 +190,7 @@ export function Footer() {
                     aria-label="Telegram"
                   >
                     <Send className="h-5 w-5" />
+                    <span className="sr-only">Telegram канал NEURONIC LABS</span>
                   </a>
                 </div>
               </div>
