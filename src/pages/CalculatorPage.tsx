@@ -629,7 +629,7 @@ export default function CalculatorPage() {
       <ConsultationModal
         isOpen={isConsultationModalOpen}
         onClose={() => setIsConsultationModalOpen(false)}
-        initialComment={formatCalculatorDataForComment()}
+        initialComment={formatCalculatorDataForComment}
       />
 
       <Footer />
