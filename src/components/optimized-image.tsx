@@ -13,6 +13,7 @@ interface OptimizedImageProps {
   height?: number
   onClick?: (e: React.MouseEvent<HTMLImageElement>) => void
   onError?: (e: React.SyntheticEvent<HTMLImageElement, Event>) => void
+  itemProp?: string
 }
 
 /**
@@ -32,6 +33,7 @@ export function OptimizedImage({
   height,
   onClick,
   onError,
+  itemProp,
 }: OptimizedImageProps) {
   const [webpError, setWebpError] = useState(false)
   
@@ -55,6 +57,7 @@ export function OptimizedImage({
         height={height}
         onClick={onClick as any}
         onError={onError}
+        itemProp={itemProp}
       />
     )
   }
@@ -92,6 +95,7 @@ export function OptimizedImage({
           setWebpError(true)
           onError?.(e)
         }}
+        itemProp={itemProp}
       />
     </picture>
   )
