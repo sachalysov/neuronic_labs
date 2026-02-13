@@ -4,9 +4,10 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <!-- Главная страница -->
   <url>
     <loc>https://neuroniclabs.ru</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-02-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -15,5 +16,68 @@
       <image:caption>NEURONIC LABS - Интеллектуальная автоматизация бизнеса, создание ИИ-агентов, чат-ботов, интеграция ИИ в работу</image:caption>
     </image:image>
   </url>
+  
+  <!-- Блог -->
+  <url>
+    <loc>https://neuroniclabs.ru/blog</loc>
+    <lastmod>2025-02-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Кейсы бизнеса -->
+  <url>
+    <loc>https://neuroniclabs.ru/business-cases</loc>
+    <lastmod>2025-02-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Партнерская программа -->
+  <url>
+    <loc>https://neuroniclabs.ru/partners</loc>
+    <lastmod>2025-02-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Контакты -->
+  <url>
+    <loc>https://neuroniclabs.ru/contacts</loc>
+    <lastmod>2025-02-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Конференция -->
+  <url>
+    <loc>https://neuroniclabs.ru/conference</loc>
+    <lastmod>2025-02-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Калькулятор -->
+  <url>
+    <loc>https://neuroniclabs.ru/calculator</loc>
+    <lastmod>2025-02-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Политика конфиденциальности -->
+  <url>
+    <loc>https://neuroniclabs.ru/politika-konfidentsialnosti</loc>
+    <lastmod>2025-02-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Публичная оферта -->
+  <url>
+    <loc>https://neuroniclabs.ru/publichnaya-oferta</loc>
+    <lastmod>2025-02-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>
-

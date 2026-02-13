@@ -350,7 +350,7 @@ export function createPrivacyPolicyMetaTags(): MetaTags {
  */
 export function createOfferMetaTags(): MetaTags {
   const fullUrl = `${BASE_URL}/publichnaya-oferta`
-
+  
   return {
     title: 'Публичная оферта | Условия использования | NEURONIC LABS',
     description: 'Публичная оферта и условия предоставления услуг NEURONIC LABS. Описание услуг, условия оплаты, ответственность сторон, возврат средств.',
