@@ -165,7 +165,7 @@ export default function PrivacyPolicyPage() {
                 <div className="space-y-4">
                   <div className="p-4 bg-secondary/20 rounded-lg border border-border">
                     <h3 className="font-semibold mb-2">Яндекс.Метрика</h3>
-                    <p className="text-sm text-muted-foreground mb-1">Счетчик: 106099175</p>
+                    <p className="text-sm text-muted-foreground mb-1">Счетчик: 106817617</p>
                     <p className="text-sm">
                       Собирает технические данные (IP-адрес, данные браузера, cookies) для анализа посещаемости сайта.
                     </p>

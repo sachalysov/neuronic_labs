@@ -3,7 +3,7 @@
  * Подавляет ошибки партнёрского кода (adhigh, yastatic), которые не контролируются нами.
  */
 
-const YANDEX_METRIKA_ID = 106099175;
+const YANDEX_METRIKA_ID = 106817617;
 
 /** Подавить необработанные reject от партнёрского кода Метрики/Bitrix (adhigh, fetchSegments, пустой JSON). Вызывать при старте приложения. */
 export function suppressThirdPartyRejectionErrors() {
