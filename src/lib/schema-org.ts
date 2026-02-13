@@ -207,6 +207,168 @@ export function addSchemaToHead(schema: object, id?: string): void {
 }
 
 /**
+ * Генерирует Schema.org разметку для статьи блога (BlogPosting)
+ */
+export function generateBlogPostSchema(data: {
+  title: string
+  description?: string
+  content?: string
+  imageUrl?: string
+  author?: string
+  publishedAt: string
+  updatedAt?: string
+  url: string
+  tags?: string[]
+}): object {
+  const schema: any = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: data.title,
+    description: data.description || data.content?.replace(/<[^>]*>/g, '').substring(0, 200) || '',
+    url: data.url,
+    datePublished: data.publishedAt,
+    dateModified: data.updatedAt || data.publishedAt,
+    inLanguage: 'ru-RU',
+    publisher: {
+      '@type': 'Organization',
+      name: 'NEURONIC LABS',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://neuroniclabs.ru/favicon-32x32.png'
+      }
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': data.url
+    }
+  }
+
+  if (data.imageUrl) {
+    schema.image = {
+      '@type': 'ImageObject',
+      url: data.imageUrl,
+      width: 1200,
+      height: 630
+    }
+  }
+
+  if (data.author) {
+    schema.author = {
+      '@type': 'Person',
+      name: data.author
+    }
+  }
+
+  if (data.content) {
+    schema.articleBody = data.content.replace(/<[^>]*>/g, '')
+  }
+
+  if (data.tags && data.tags.length > 0) {
+    schema.keywords = data.tags.join(', ')
+  }
+
+  return schema
+}
+
+/**
+ * Генерирует Schema.org разметку для бизнес-кейса (CaseStudy)
+ */
+export function generateBusinessCaseSchema(data: {
+  title: string
+  description: string
+  challenge?: string
+  solution?: string
+  image?: string
+  industry?: string
+  results?: Array<{
+    label: string
+    value: string
+  }>
+  publishedAt?: string
+  url: string
+}): object {
+  const schema: any = {
+    '@context': 'https://schema.org',
+    '@type': 'CaseStudy',
+    name: data.title,
+    description: data.description,
+    url: data.url,
+    inLanguage: 'ru-RU',
+    about: {
+      '@type': 'Thing',
+      name: 'Автоматизация бизнеса с помощью ИИ'
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'NEURONIC LABS',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://neuroniclabs.ru/favicon-32x32.png'
+      }
+    }
+  }
+
+  if (data.image) {
+    schema.image = {
+      '@type': 'ImageObject',
+      url: data.image,
+      width: 1200,
+      height: 630
+    }
+  }
+
+  if (data.industry) {
+    schema.industry = data.industry
+  }
+
+  if (data.publishedAt) {
+    schema.datePublished = data.publishedAt
+  }
+
+  if (data.challenge) {
+    schema.problem = data.challenge
+  }
+
+  if (data.solution) {
+    schema.solution = data.solution
+  }
+
+  if (data.results && data.results.length > 0) {
+    schema.result = data.results.map(r => `${r.label}: ${r.value}`).join(', ')
+  }
+
+  return schema
+}
+
+/**
+ * Генерирует Schema.org разметку для списка статей блога (CollectionPage)
+ */
+export function generateBlogListSchema(url: string, posts: Array<{ title: string; url: string; publishedAt: string }>): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Блог NEURONIC LABS',
+    description: 'Полезные статьи об автоматизации бизнеса, ИИ-технологиях и эффективных решениях',
+    url: url,
+    inLanguage: 'ru-RU',
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: posts.length,
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'BlogPosting',
+          headline: post.title,
+          url: post.url,
+          datePublished: post.publishedAt
+        }
+      }))
+    }
+  }
+}
+
+/**
  * Полная настройка Schema.org разметки для сайта
  */
 export function setupSchemaOrg(

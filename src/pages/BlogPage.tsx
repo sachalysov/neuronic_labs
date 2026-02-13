@@ -207,40 +207,42 @@ export default function BlogPage() {
                       to={`/blog/${post.slug}`}
                       className="block"
                     >
-                      <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 lg:hover:scale-105 flex flex-col cursor-pointer h-full">
-                        {post.imageUrl && (
-                          <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
-                            <OptimizedImage
-                              src={post.imageUrl}
-                              alt={`Обложка статьи "${post.title}" - ${post.excerpt ? post.excerpt.substring(0, 80) : 'статья блога об автоматизации бизнеса и ИИ'}`}
-                              className="w-full h-full object-cover"
-                              loading="lazy"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                          </div>
-                        )}
-                        <CardContent className="p-6 flex-1 flex flex-col">
+                      <article itemScope itemType="https://schema.org/BlogPosting">
+                        <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 lg:hover:scale-105 flex flex-col cursor-pointer h-full">
+                          {post.imageUrl && (
+                            <figure className="relative w-full h-48 overflow-hidden rounded-t-lg">
+                              <OptimizedImage
+                                src={post.imageUrl}
+                                alt={`Обложка статьи "${post.title}" - ${post.excerpt ? post.excerpt.substring(0, 80) : 'статья блога об автоматизации бизнеса и ИИ'}`}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                itemProp="image"
+                              />
+                            </figure>
+                          )}
+                          <CardContent className="p-6 flex-1 flex flex-col">
                           <div className="flex-1">
-                            <h2 className="text-xl font-bold mb-3 line-clamp-2">{post.title}</h2>
+                            <h2 className="text-xl font-bold mb-3 line-clamp-2" itemProp="headline">{post.title}</h2>
                             {post.excerpt && (
-                              <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+                              <p className="text-muted-foreground mb-4 line-clamp-3" itemProp="description">{post.excerpt}</p>
                             )}
                             {!post.excerpt && post.content && (
-                              <p className="text-muted-foreground mb-4 line-clamp-3">
+                              <p className="text-muted-foreground mb-4 line-clamp-3" itemProp="description">
                                 {post.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
                               </p>
                             )}
                           </div>
                           
-                          <div className="mt-4 pt-4 border-t border-border">
+                          <footer className="mt-4 pt-4 border-t border-border">
                             <div className="flex items-center justify-between text-sm text-muted-foreground mb-3 flex-wrap gap-2">
-                              <div className="flex items-center gap-2 whitespace-nowrap">
+                              <time dateTime={post.publishedAt} className="flex items-center gap-2 whitespace-nowrap" itemProp="datePublished">
                                 <Calendar className="h-4 w-4 flex-shrink-0" />
                                 <span>{formatDate(post.publishedAt)}</span>
-                              </div>
+                              </time>
                               {post.author && (
-                                <div className="flex items-center gap-2 whitespace-nowrap">
-                                  <span>{post.author}</span>
+                                <div className="flex items-center gap-2 whitespace-nowrap" itemProp="author" itemScope itemType="https://schema.org/Person">
+                                  <span itemProp="name">{post.author}</span>
                                 </div>
                               )}
                             </div>
@@ -262,9 +264,10 @@ export default function BlogPage() {
                               Читать далее
                               <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
-                          </div>
+                          </footer>
                         </CardContent>
-                      </Card>
+                        </Card>
+                      </article>
                     </Link>
                   ))}
                 </div>

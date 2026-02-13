@@ -104,35 +104,41 @@ export default function BusinessCasesPage() {
             <div className="grid md:grid-cols-2 gap-4 md:gap-5 lg:gap-6 max-w-6xl mx-auto">
               {cases.map((businessCase) => {
                 return (
-                  <Link
-                    key={businessCase.id}
-                    to={`/business-cases/${businessCase.id}`}
-                    className="block"
-                  >
-                    <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 lg:hover:scale-105 flex flex-col cursor-pointer h-full">
-                      {businessCase.image && (
-                        <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
-                          <OptimizedImage
-                            src={businessCase.image}
-                            alt={`Кейс внедрения ИИ-автоматизации: ${businessCase.title} в отрасли ${businessCase.industry} - ${businessCase.description ? businessCase.description.substring(0, 80) : 'реальный пример автоматизации бизнеса'}`}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                          <div className="absolute bottom-4 left-4 right-4">
-                            <span className="inline-block px-3 py-1 bg-primary/90 text-xs font-semibold rounded-full mb-2">
-                              {businessCase.industry}
-                            </span>
-                            <h2 className="text-xl font-bold text-white">{businessCase.title}</h2>
-                          </div>
-                        </div>
-                      )}
-                      <CardContent className="p-6 flex-1 flex flex-col">
-                        <div className="flex-1">
-                          {businessCase.description && (
-                            <p className="text-muted-foreground mb-4 line-clamp-3">{businessCase.description}</p>
-                          )}
+                  <article itemScope itemType="https://schema.org/CaseStudy">
+                    <Link
+                      key={businessCase.id}
+                      to={`/business-cases/${businessCase.id}`}
+                      className="block"
+                    >
+                      <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 lg:hover:scale-105 flex flex-col cursor-pointer h-full">
+                        {businessCase.image && (
+                          <header className="relative w-full h-48 overflow-hidden rounded-t-lg">
+                            <figure className="relative w-full h-full">
+                              <OptimizedImage
+                                src={businessCase.image}
+                                alt={`Кейс внедрения ИИ-автоматизации: ${businessCase.title} в отрасли ${businessCase.industry} - ${businessCase.description ? businessCase.description.substring(0, 80) : 'реальный пример автоматизации бизнеса'}`}
+                                className="w-full h-full object-cover"
+                                loading="lazy"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                itemProp="image"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                              <div className="absolute bottom-4 left-4 right-4">
+                                {businessCase.industry && (
+                                  <span className="inline-block px-3 py-1 bg-primary/90 text-xs font-semibold rounded-full mb-2" itemProp="industry">
+                                    {businessCase.industry}
+                                  </span>
+                                )}
+                                <h2 className="text-xl font-bold text-white" itemProp="name">{businessCase.title}</h2>
+                              </div>
+                            </figure>
+                          </header>
+                        )}
+                        <CardContent className="p-6 flex-1 flex flex-col">
+                          <div className="flex-1">
+                            {businessCase.description && (
+                              <p className="text-muted-foreground mb-4 line-clamp-3" itemProp="description">{businessCase.description}</p>
+                            )}
                           
                           {/* Results Preview */}
                           <div className="grid grid-cols-3 gap-4 mb-4">
@@ -161,9 +167,10 @@ export default function BusinessCasesPage() {
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </Button>
                         </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </article>
                 )
               })}
             </div>

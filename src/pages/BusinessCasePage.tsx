@@ -12,6 +12,7 @@ import { useMeta } from "@/hooks/useMeta"
 import { createBusinessCaseMetaTags } from "@/lib/meta"
 import { iconMap } from "@/lib/constants"
 import { OptimizedImage } from "@/components/optimized-image"
+import { generateBusinessCaseSchema, addSchemaToHead } from "@/lib/schema-org"
 
 export default function BusinessCasePage() {
   const { id } = useParams<{ id: string }>()
@@ -34,6 +35,24 @@ export default function BusinessCasePage() {
   }, [businessCase, id])
   
   useMeta(metaTags)
+
+  // Генерируем Schema.org разметку для кейса
+  useEffect(() => {
+    if (businessCase) {
+      const schema = generateBusinessCaseSchema({
+        title: businessCase.title,
+        description: businessCase.description,
+        challenge: businessCase.challenge,
+        solution: businessCase.solution,
+        image: businessCase.image,
+        industry: businessCase.industry,
+        results: businessCase.results.map(r => ({ label: r.label, value: r.value })),
+        publishedAt: businessCase.publishedAt,
+        url: `https://neuroniclabs.ru/business-cases/${businessCase.id}`
+      })
+      addSchemaToHead(schema, 'schema-business-case')
+    }
+  }, [businessCase])
 
   useEffect(() => {
     if (!id) {
@@ -106,25 +125,30 @@ export default function BusinessCasePage() {
             )}
 
             {!loading && !error && businessCase && (
-              <article className="pb-6 sm:pb-8 md:pb-12">
+              <article className="pb-6 sm:pb-8 md:pb-12" itemScope itemType="https://schema.org/CaseStudy">
                 {/* Hero Image */}
                 {businessCase.image && (
-                  <div className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
-                    <OptimizedImage
-                      src={businessCase.image}
-                      alt={`Кейс внедрения ИИ-автоматизации: ${businessCase.title} в отрасли ${businessCase.industry} - ${businessCase.description ? businessCase.description.substring(0, 100) : 'реальный пример автоматизации бизнеса с помощью ИИ'}`}
-                      className="w-full h-full object-cover"
-                      loading="eager"
-                      sizes="(max-width: 768px) 100vw, 800px"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <span className="inline-block px-3 py-1 bg-primary/90 text-sm font-semibold rounded-full mb-2">
-                        {businessCase.industry}
-                      </span>
-                      <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white">{businessCase.title}</h1>
-                    </div>
-                  </div>
+                  <header className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
+                    <figure className="relative w-full h-full">
+                      <OptimizedImage
+                        src={businessCase.image}
+                        alt={`Кейс внедрения ИИ-автоматизации: ${businessCase.title} в отрасли ${businessCase.industry} - ${businessCase.description ? businessCase.description.substring(0, 100) : 'реальный пример автоматизации бизнеса с помощью ИИ'}`}
+                        className="w-full h-full object-cover"
+                        loading="eager"
+                        sizes="(max-width: 768px) 100vw, 800px"
+                        itemProp="image"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                      <div className="absolute bottom-4 left-4 right-4">
+                        {businessCase.industry && (
+                          <span className="inline-block px-3 py-1 bg-primary/90 text-sm font-semibold rounded-full mb-2" itemProp="industry">
+                            {businessCase.industry}
+                          </span>
+                        )}
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white" itemProp="name">{businessCase.title}</h1>
+                      </div>
+                    </figure>
+                  </header>
                 )}
 
                 {/* Results */}
@@ -153,32 +177,36 @@ export default function BusinessCasePage() {
 
                 {/* Challenge & Solution */}
                 <div className="mb-8 space-y-4">
-                  <Card className="bg-card/10 border-border">
-                    <CardContent className="p-6">
-                      <h2 className="text-xl font-bold mb-3 text-foreground">Вызов</h2>
-                      <p className="text-muted-foreground">{businessCase.challenge}</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="bg-card/10 border-border">
-                    <CardContent className="p-6">
-                      <h2 className="text-xl font-bold mb-3 text-foreground">Решение</h2>
-                      <p className="text-muted-foreground">{businessCase.solution}</p>
-                    </CardContent>
-                  </Card>
+                  <section>
+                    <Card className="bg-card/10 border-border">
+                      <CardContent className="p-6">
+                        <h2 className="text-xl font-bold mb-3 text-foreground">Вызов</h2>
+                        <p className="text-muted-foreground" itemProp="problem">{businessCase.challenge}</p>
+                      </CardContent>
+                    </Card>
+                  </section>
+                  <section>
+                    <Card className="bg-card/10 border-border">
+                      <CardContent className="p-6">
+                        <h2 className="text-xl font-bold mb-3 text-foreground">Решение</h2>
+                        <p className="text-muted-foreground" itemProp="solution">{businessCase.solution}</p>
+                      </CardContent>
+                    </Card>
+                  </section>
                 </div>
 
                 {/* Full Content */}
                 {businessCase.content && (
-                  <div className="mt-8">
+                  <section className="mt-8" itemProp="description">
                     {renderContent(businessCase.content)}
-                  </div>
+                  </section>
                 )}
 
                 {/* Description if no content */}
                 {!businessCase.content && businessCase.description && (
-                  <div className="mt-8">
-                    <p className="text-muted-foreground text-lg leading-relaxed">{businessCase.description}</p>
-                  </div>
+                  <section className="mt-8">
+                    <p className="text-muted-foreground text-lg leading-relaxed" itemProp="description">{businessCase.description}</p>
+                  </section>
                 )}
 
                 <div className="mt-12 pt-8 border-t border-border">

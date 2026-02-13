@@ -135,58 +135,119 @@
     </script>
 
     <!-- Schema.org разметка для SEO -->
+    <!-- WebSite Schema для поисковой системы сайта -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": "WebSite",
+      "name": "NEURONIC LABS",
+      "alternateName": "Neuronic Labs",
+      "url": "https://neuroniclabs.ru",
+      "description": "Агентство по внедрению автоматизации бизнеса с помощью ИИ. Создаем ИИ-агентов и чат-ботов для автоматизации продаж.",
+      "inLanguage": "ru-RU",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://neuroniclabs.ru/?search={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "NEURONIC LABS",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://neuroniclabs.ru/favicon-32x32.png"
+        }
+      }
+    }
+    </script>
+
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["Organization", "LocalBusiness"],
       "name": "Neuronic Labs",
       "legalName": "Neuronic Labs Агентство по внедрению автоматизации в бизнес",
       "alternateName": "NEURONIC LABS",
       "description": "Агентство по внедрению автоматизации бизнеса с помощью ИИ. Внедряем ИИ-продавца для Telegram, WhatsApp, Avito за 7-14 дней.",
       "url": "https://neuroniclabs.ru",
-      "logo": "https://neuroniclabs.ru/favicon-32x32.png",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://neuroniclabs.ru/favicon-32x32.png",
+        "width": 32,
+        "height": 32
+      },
+      "image": "https://neuroniclabs.ru/images/robot-hero-2.jpeg",
       "foundingDate": "2020",
       "taxID": "130102424667",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+7-993-079-91-77",
-        "contactType": "Customer Service",
-        "email": "neuroniclabs@yandex.ru",
-        "availableLanguage": ["Russian"],
-        "areaServed": "RU",
-        "hoursAvailable": {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday"
-          ],
-          "opens": "00:00",
-          "closes": "23:59"
+      "priceRange": "15000-50000 RUB",
+      "currenciesAccepted": "RUB",
+      "paymentAccepted": "Банковский перевод, карта",
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+7-993-079-91-77",
+          "contactType": "Customer Service",
+          "email": "neuroniclabs@yandex.ru",
+          "availableLanguage": ["Russian"],
+          "areaServed": "RU",
+          "hoursAvailable": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday"
+            ],
+            "opens": "00:00",
+            "closes": "23:59"
+          }
+        },
+        {
+          "@type": "ContactPoint",
+          "contactType": "Sales",
+          "telephone": "+7-993-079-91-77",
+          "email": "neuroniclabs@yandex.ru",
+          "availableLanguage": ["Russian"]
         }
-      },
+      ],
       "sameAs": [
         "https://t.me/NeuronicLabs"
       ],
-      "areaServed": {
-        "@type": "Country",
-        "name": "Россия"
-      },
+      "areaServed": [
+        {
+          "@type": "Country",
+          "name": "Россия",
+          "alternateName": "RU"
+        },
+        {
+          "@type": "City",
+          "name": "Москва"
+        },
+        {
+          "@type": "City",
+          "name": "Санкт-Петербург"
+        }
+      ],
       "address": {
         "@type": "PostalAddress",
         "addressCountry": "RU",
-        "addressRegion": "Россия"
+        "addressRegion": "Россия",
+        "addressLocality": "Москва"
       },
       "offers": {
         "@type": "AggregateOffer",
         "priceCurrency": "RUB",
         "lowPrice": "15000",
         "highPrice": "50000",
-        "offerCount": "3"
+        "offerCount": "3",
+        "availability": "https://schema.org/InStock"
       },
       "aggregateRating": {
         "@type": "AggregateRating",
@@ -194,7 +255,17 @@
         "reviewCount": "90",
         "bestRating": "5",
         "worstRating": "1"
-      }
+      },
+      "knowsAbout": [
+        "Искусственный интеллект",
+        "Автоматизация бизнеса",
+        "Чат-боты",
+        "ИИ-агенты",
+        "Интеллектуальная автоматизация",
+        "CRM интеграция",
+        "Telegram боты",
+        "WhatsApp автоматизация"
+      ]
     }
     </script>
 
@@ -518,6 +589,7 @@
     }
     </script>
 
+    <!-- BreadcrumbList Schema для навигации -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -528,6 +600,53 @@
           "position": 1,
           "name": "Главная",
           "item": "https://neuroniclabs.ru"
+        }
+      ]
+    }
+    </script>
+
+    <!-- HowTo Schema для процесса внедрения -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "Как внедрить ИИ-продавца в бизнес",
+      "description": "Пошаговая инструкция по внедрению ИИ-агента для автоматизации продаж",
+      "image": "https://neuroniclabs.ru/images/robot-hero-2.jpeg",
+      "totalTime": "P14D",
+      "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": "RUB",
+        "value": "15000"
+      },
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Анализ бизнеса",
+          "text": "Проводим бесплатный аудит вашего бизнеса, определяем точки автоматизации и каналы продаж",
+          "image": "https://neuroniclabs.ru/images/robot-hero-2.jpeg"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Настройка ИИ",
+          "text": "Настраиваем ИИ-агента под вашу специфику, обучаем на ваших данных и скриптах продаж",
+          "image": "https://neuroniclabs.ru/images/robot-hero-2.jpeg"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Интеграция",
+          "text": "Интегрируем ИИ с вашими системами: CRM, мессенджеры, сайт, Avito и другие каналы",
+          "image": "https://neuroniclabs.ru/images/robot-hero-2.jpeg"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Тестирование и запуск",
+          "text": "Тестируем систему, обучаем вашу команду и запускаем ИИ-продавца в работу",
+          "image": "https://neuroniclabs.ru/images/robot-hero-2.jpeg"
         }
       ]
     }

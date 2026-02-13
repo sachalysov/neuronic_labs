@@ -12,6 +12,7 @@ import { useMeta } from "@/hooks/useMeta"
 import { createBlogMetaTags } from "@/lib/meta"
 import { formatDate } from "@/lib/utils"
 import { OptimizedImage } from "@/components/optimized-image"
+import { generateBlogPostSchema, addSchemaToHead } from "@/lib/schema-org"
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -35,6 +36,23 @@ export default function BlogPostPage() {
   }, [post])
   
   useMeta(metaTags)
+
+  // Генерируем Schema.org разметку для статьи
+  useEffect(() => {
+    if (post) {
+      const schema = generateBlogPostSchema({
+        title: post.title,
+        description: post.excerpt || post.content?.replace(/<[^>]*>/g, '').substring(0, 200),
+        content: post.content,
+        imageUrl: post.imageUrl,
+        author: post.author,
+        publishedAt: post.publishedAt,
+        url: `https://neuroniclabs.ru/blog/${post.slug}`,
+        tags: post.tags
+      })
+      addSchemaToHead(schema, 'schema-blog-post')
+    }
+  }, [post])
 
   useEffect(() => {
     if (!slug) {
@@ -109,52 +127,58 @@ export default function BlogPostPage() {
             )}
 
             {!loading && !error && post && (
-              <article className="pb-6 sm:pb-8 md:pb-12">
-                <div className="mb-6">
+              <article className="pb-6 sm:pb-8 md:pb-12" itemScope itemType="https://schema.org/BlogPosting">
+                <header className="mb-6">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
                     <Calendar className="h-4 w-4" />
-                    <span>{formatDate(post.publishedAt)}</span>
+                    <time dateTime={post.publishedAt} itemProp="datePublished">
+                      {formatDate(post.publishedAt)}
+                    </time>
                     {post.author && (
                       <>
                         <span>•</span>
-                        <span>{post.author}</span>
+                        <span itemProp="author" itemScope itemType="https://schema.org/Person">
+                          <span itemProp="name">{post.author}</span>
+                        </span>
                       </>
                     )}
                   </div>
                   
                   {post.tags && post.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-6">
+                    <nav aria-label="Теги статьи" className="flex flex-wrap gap-2 mb-6">
                       {post.tags.map((tag, index) => (
                         <span
                           key={index}
                           className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full"
+                          itemProp="keywords"
                         >
                           {tag}
                         </span>
                       ))}
-                    </div>
+                    </nav>
                   )}
-                </div>
+                </header>
 
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">{post.title}</h1>
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6" itemProp="headline">{post.title}</h1>
 
                 {post.imageUrl && (
-                  <div className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
+                  <figure className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
                     <OptimizedImage
                       src={post.imageUrl}
                       alt={`Иллюстрация к статье "${post.title}" - ${post.excerpt ? post.excerpt.substring(0, 100) : 'статья блога NEURONIC LABS об автоматизации бизнеса и ИИ'}`}
                       className="w-full h-full object-cover"
                       loading="eager"
                       sizes="(max-width: 768px) 100vw, 800px"
+                      itemProp="image"
                     />
-                  </div>
+                  </figure>
                 )}
 
-                <div className="mt-8">
+                <div className="mt-8" itemProp="articleBody">
                   {post.content ? (
                     renderContent(post.content)
                   ) : (
-                    <p className="text-muted-foreground text-lg leading-relaxed">{post.excerpt}</p>
+                    <p className="text-muted-foreground text-lg leading-relaxed" itemProp="description">{post.excerpt}</p>
                   )}
                 </div>
 
