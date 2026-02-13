@@ -11,6 +11,7 @@ import { ArrowRight, Loader2, Users } from "lucide-react"
 import { useMeta } from "@/hooks/useMeta"
 import { createBusinessCaseMetaTags } from "@/lib/meta"
 import { iconMap } from "@/lib/constants"
+import { OptimizedImage } from "@/components/optimized-image"
 
 export default function BusinessCasesPage() {
   useMeta(createBusinessCaseMetaTags(
@@ -111,10 +112,12 @@ export default function BusinessCasesPage() {
                     <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 lg:hover:scale-105 flex flex-col cursor-pointer h-full">
                       {businessCase.image && (
                         <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
-                          <img
+                          <OptimizedImage
                             src={businessCase.image}
                             alt={`Кейс внедрения ИИ-автоматизации: ${businessCase.title} в отрасли ${businessCase.industry} - ${businessCase.description ? businessCase.description.substring(0, 80) : 'реальный пример автоматизации бизнеса'}`}
                             className="w-full h-full object-cover"
+                            loading="lazy"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                           <div className="absolute bottom-4 left-4 right-4">

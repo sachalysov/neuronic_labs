@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "prerender": "node scripts/prerender.mjs",
     "check:prerender": "node scripts/check-prerender.mjs",
+    "convert:webp": "node scripts/convert-to-webp.mjs",
     "lint": "eslint .",
     "deploy": "bash deploy.sh",
     "deploy:preview": "HOSTING=timeweb bash deploy.sh"

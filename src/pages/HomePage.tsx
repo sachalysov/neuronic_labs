@@ -47,6 +47,7 @@ const Testimonials = lazy(() => import("@/components/testimonials").then((module
 const Footer = lazy(() => import("@/components/footer").then((module) => ({ default: module.Footer })))
 const ChatWidget = lazy(() => import("@/components/chat-widget").then((module) => ({ default: module.ChatWidget })))
 import { AnimateOnScroll, StaggerChildren } from "@/components/animate-on-scroll"
+import { OptimizedImage } from "@/components/optimized-image"
 
 export default function HomePage() {
   useMeta(createHomeMetaTags())
@@ -367,13 +368,14 @@ export default function HomePage() {
       <section className="relative overflow-hidden min-h-[90vh] flex items-center pt-20">
         {/* Background Image - eager для hero изображения (LCP optimization) */}
         <div className="absolute inset-0 z-[-2]">
-          <img 
+          <OptimizedImage 
             src="/images/robot-hero-2.jpeg" 
             alt="ИИ-робот для автоматизации бизнеса - создание ИИ-агентов и чат-ботов для увеличения продаж и оптимизации процессов" 
             className="w-full h-full object-cover object-center"
             loading="eager"
             fetchPriority="high"
             decoding="async"
+            sizes="100vw"
           />
           <div className="absolute inset-0 hero-image-overlay" />
           <div className="absolute bottom-0 left-0 right-0 hero-bottom-fade" />
@@ -908,11 +910,12 @@ export default function HomePage() {
             <Card className="bg-card border-border shadow-xl flex items-center justify-center">
               <CardContent className="p-6 sm:p-8 flex items-center justify-center h-full">
                 <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-background overflow-hidden shadow-2xl">
-                  <img 
+                  <OptimizedImage 
                     src="/images/demo-chat-mobile.jpg" 
                     alt="Пример диалога с ИИ-продавцом в мобильном приложении - автоматическая обработка запросов клиентов" 
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    sizes="(max-width: 768px) 100vw, 400px"
                   />
                 </div>
               </CardContent>
@@ -1801,11 +1804,12 @@ export default function HomePage() {
               {/* Portrait - Mobile: centered, Desktop: left */}
               <AnimateOnScroll animation="fade-right" duration={800} className="w-full md:order-1 flex justify-center md:justify-start md:self-stretch">
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-md md:max-w-none md:h-full">
-                  <img 
+                  <OptimizedImage 
                     src="/images/founder-portrait.jpg" 
                     alt="Александр Лысов - основатель и CEO NEURONIC LABS, эксперт по внедрению ИИ-автоматизации в бизнес" 
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </div>
               </AnimateOnScroll>

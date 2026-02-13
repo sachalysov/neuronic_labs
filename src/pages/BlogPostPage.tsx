@@ -11,6 +11,7 @@ import { Calendar, ArrowLeft, Loader2 } from "lucide-react"
 import { useMeta } from "@/hooks/useMeta"
 import { createBlogMetaTags } from "@/lib/meta"
 import { formatDate } from "@/lib/utils"
+import { OptimizedImage } from "@/components/optimized-image"
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>()
@@ -139,10 +140,12 @@ export default function BlogPostPage() {
 
                 {post.imageUrl && (
                   <div className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
-                    <img
+                    <OptimizedImage
                       src={post.imageUrl}
                       alt={`Иллюстрация к статье "${post.title}" - ${post.excerpt ? post.excerpt.substring(0, 100) : 'статья блога NEURONIC LABS об автоматизации бизнеса и ИИ'}`}
                       className="w-full h-full object-cover"
+                      loading="eager"
+                      sizes="(max-width: 768px) 100vw, 800px"
                     />
                   </div>
                 )}

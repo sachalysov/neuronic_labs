@@ -11,6 +11,7 @@ import { ArrowLeft, Loader2, Users } from "lucide-react"
 import { useMeta } from "@/hooks/useMeta"
 import { createBusinessCaseMetaTags } from "@/lib/meta"
 import { iconMap } from "@/lib/constants"
+import { OptimizedImage } from "@/components/optimized-image"
 
 export default function BusinessCasePage() {
   const { id } = useParams<{ id: string }>()
@@ -109,10 +110,12 @@ export default function BusinessCasePage() {
                 {/* Hero Image */}
                 {businessCase.image && (
                   <div className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
-                    <img
+                    <OptimizedImage
                       src={businessCase.image}
                       alt={`Кейс внедрения ИИ-автоматизации: ${businessCase.title} в отрасли ${businessCase.industry} - ${businessCase.description ? businessCase.description.substring(0, 100) : 'реальный пример автоматизации бизнеса с помощью ИИ'}`}
                       className="w-full h-full object-cover"
+                      loading="eager"
+                      sizes="(max-width: 768px) 100vw, 800px"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                     <div className="absolute bottom-4 left-4 right-4">

@@ -11,6 +11,7 @@ import { formatMessageText } from "@/lib/text-formatter"
 import { getLocalStorage, setLocalStorage, removeLocalStorage, formatTime } from "@/lib/utils"
 import { Message } from "@/lib/types"
 import { TelegramLink } from "@/components/telegram-link"
+import { OptimizedImage } from "@/components/optimized-image"
 
 const INACTIVITY_TIMEOUT = 60 * 60 * 1000 // 60 минут в миллисекундах
 
@@ -338,7 +339,7 @@ export function ChatWidget() {
           <div className="flex items-center gap-3 flex-1">
             <div className="relative w-12 h-12">
               <div className="w-12 h-12 rounded-full overflow-hidden">
-                <img src="/images/bot-mariya.png" alt="Аватар ИИ-ассистента NEURONIC LABS" className="w-full h-full object-cover" />
+                <OptimizedImage src="/images/bot-mariya.png" alt="Аватар ИИ-ассистента NEURONIC LABS" className="w-full h-full object-cover" loading="eager" sizes="48px" />
               </div>
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
             </div>

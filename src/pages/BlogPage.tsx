@@ -11,6 +11,7 @@ import { Calendar, ArrowRight, Loader2, Tag } from "lucide-react"
 import { useMeta } from "@/hooks/useMeta"
 import { createBlogMetaTags } from "@/lib/meta"
 import { formatDate } from "@/lib/utils"
+import { OptimizedImage } from "@/components/optimized-image"
 
 export default function BlogPage() {
   useMeta(createBlogMetaTags(
@@ -209,10 +210,12 @@ export default function BlogPage() {
                       <Card className="bg-card/10 border-border hover:border-primary transition-all duration-300 lg:hover:scale-105 flex flex-col cursor-pointer h-full">
                         {post.imageUrl && (
                           <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
-                            <img
+                            <OptimizedImage
                               src={post.imageUrl}
                               alt={`Обложка статьи "${post.title}" - ${post.excerpt ? post.excerpt.substring(0, 80) : 'статья блога об автоматизации бизнеса и ИИ'}`}
                               className="w-full h-full object-cover"
+                              loading="lazy"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                           </div>
                         )}

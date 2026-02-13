@@ -15,6 +15,7 @@ import { ProtecContextModal } from "@/components/protec-context-modal"
 import { CliningContextModal } from "@/components/clining-context-modal"
 import { CustomContextModal } from "@/components/custom-context-modal"
 import { CapabilitiesList } from "@/components/capabilities-list"
+import { OptimizedImage } from "@/components/optimized-image"
 import { DEMO_CHAT_INACTIVITY_TIMEOUT, DEMO_CHAT_VOMOLOKO_WEBHOOK_URL, DEMO_CHAT_PROTEC_WEBHOOK_URL, DEMO_CHAT_CLINING_WEBHOOK_URL } from "@/lib/constants"
 import { getWebhookFromSettings } from "@/services/admin-settings"
 
@@ -983,7 +984,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
             <div className="flex items-center gap-4">
               <div className="relative w-12 h-12">
                 <div className="w-12 h-12 rounded-full overflow-hidden">
-                  <img src="/images/bot-mariya.png" alt={`Аватар ИИ-ассистента ${botName}`} className="w-full h-full object-cover" />
+                  <OptimizedImage src="/images/bot-mariya.png" alt={`Аватар ИИ-ассистента ${botName}`} className="w-full h-full object-cover" loading="eager" sizes="48px" />
                 </div>
                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
               </div>

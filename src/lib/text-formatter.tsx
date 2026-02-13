@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { OptimizedImage } from '@/components/optimized-image';
 
 // Компонент для изображения с возможностью открытия в полноэкранном режиме
 function ImageWithModal({ src, alt, className, style, onError }: {
@@ -22,13 +23,15 @@ function ImageWithModal({ src, alt, className, style, onError }: {
 
   return (
     <>
-      <img
+      <OptimizedImage
         src={src}
         alt={alt}
         className={className}
         style={{ ...style, cursor: 'pointer' }}
         onClick={handleClick}
         onError={onError}
+        loading="lazy"
+        sizes="(max-width: 768px) 100vw, 50vw"
       />
       {isOpen && (
         <div
@@ -47,7 +50,7 @@ function ImageWithModal({ src, alt, className, style, onError }: {
             cursor: 'pointer'
           }}
         >
-          <img
+          <OptimizedImage
             src={src}
             alt={alt}
             style={{
@@ -55,7 +58,9 @@ function ImageWithModal({ src, alt, className, style, onError }: {
               maxHeight: '90%',
               objectFit: 'contain'
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e: React.MouseEvent<HTMLImageElement>) => e.stopPropagation()}
+            loading="eager"
+            sizes="90vw"
           />
           <button
             onClick={handleClose}
