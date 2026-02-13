@@ -369,7 +369,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-[-2]">
           <img 
             src="/images/robot-hero-2.jpeg" 
-            alt="Автоматизация бизнеса с ИИ - NEURONIC LABS" 
+            alt="ИИ-робот для автоматизации бизнеса - создание ИИ-агентов и чат-ботов для увеличения продаж и оптимизации процессов" 
             className="w-full h-full object-cover object-center"
             loading="eager"
             fetchPriority="high"
@@ -910,7 +910,7 @@ export default function HomePage() {
                 <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-background overflow-hidden shadow-2xl">
                   <img 
                     src="/images/demo-chat-mobile.jpg" 
-                    alt="Пример диалога ИИ‑продавца" 
+                    alt="Пример диалога с ИИ-продавцом в мобильном приложении - автоматическая обработка запросов клиентов" 
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
@@ -989,7 +989,7 @@ export default function HomePage() {
                   <div className="w-full max-w-xs mx-auto aspect-[9/19] rounded-[2.5rem] border border-border bg-background overflow-hidden shadow-2xl">
                     <img 
                       src="/images/demo-chat-mobile.jpg" 
-                      alt="Пример диалога ИИ‑продавца" 
+                      alt="Пример диалога с ИИ-продавцом в мобильном приложении - автоматическая обработка запросов клиентов" 
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
@@ -1803,7 +1803,7 @@ export default function HomePage() {
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl w-full max-w-md md:max-w-none md:h-full">
                   <img 
                     src="/images/founder-portrait.jpg" 
-                    alt="Александр Лысов - Основатель NEURONIC LABS" 
+                    alt="Александр Лысов - основатель и CEO NEURONIC LABS, эксперт по внедрению ИИ-автоматизации в бизнес" 
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />

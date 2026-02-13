@@ -211,7 +211,7 @@ export default function BlogPage() {
                           <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
                             <img
                               src={post.imageUrl}
-                              alt={post.title}
+                              alt={`Обложка статьи "${post.title}" - ${post.excerpt ? post.excerpt.substring(0, 80) : 'статья блога об автоматизации бизнеса и ИИ'}`}
                               className="w-full h-full object-cover"
                             />
                           </div>

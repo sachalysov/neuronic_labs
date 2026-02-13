@@ -338,7 +338,7 @@ export function ChatWidget() {
           <div className="flex items-center gap-3 flex-1">
             <div className="relative w-12 h-12">
               <div className="w-12 h-12 rounded-full overflow-hidden">
-                <img src="/images/bot-mariya.png" alt="AI" className="w-full h-full object-cover" />
+                <img src="/images/bot-mariya.png" alt="Аватар ИИ-ассистента NEURONIC LABS" className="w-full h-full object-cover" />
               </div>
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
             </div>
@@ -387,7 +387,7 @@ export function ChatWidget() {
                         <div className="relative inline-block">
                           <img
                             src={message.imageUrl || message.imageBase64 || ''}
-                            alt="Изображение"
+                            alt="Загружаемое изображение в чате"
                             className="max-w-full max-h-48 rounded-lg object-contain blur-sm"
                           />
                           <div className="absolute inset-0 rounded-lg bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
@@ -398,7 +398,7 @@ export function ChatWidget() {
                       ) : (
                         <img
                           src={message.imageUrl || message.imageBase64 || ''}
-                          alt="Изображение"
+                          alt={`Изображение в сообщении от ${message.sender === 'bot' ? 'ИИ-ассистента' : 'пользователя'}`}
                           className="max-w-full max-h-48 rounded-lg object-contain"
                         />
                       )}
@@ -444,7 +444,7 @@ export function ChatWidget() {
             <div className="mb-2 relative inline-block">
               <img
                 src={selectedImage}
-                alt="Предпросмотр"
+                alt="Предпросмотр изображения перед отправкой в чат"
                 className="max-w-full max-h-24 rounded-lg object-contain"
               />
               <Button

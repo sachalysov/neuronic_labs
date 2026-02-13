@@ -336,11 +336,21 @@ function formatImages(text: string, startKey: number): React.ReactNode {
               flexWrap: 'wrap'
             }}
           >
-            {consecutiveImages.map((img) => (
+            {consecutiveImages.map((img) => {
+              // Генерируем описательный alt из URL или используем дефолтный
+              const getImageAlt = (url: string) => {
+                const fileName = url.split('/').pop()?.split('?')[0] || ''
+                const nameWithoutExt = fileName.replace(/\.[^/.]+$/, '')
+                if (nameWithoutExt) {
+                  return `Изображение: ${nameWithoutExt.replace(/[-_]/g, ' ')}`
+                }
+                return 'Иллюстрация к тексту'
+              }
+              return (
               <ImageWithModal
                 key={key++}
                 src={img.url}
-                alt="Изображение"
+                alt={getImageAlt(img.url)}
                 className="rounded-2xl object-contain"
                 style={{ 
                   flex: '0 0 calc(50% - 2.5px)',
@@ -359,17 +369,27 @@ function formatImages(text: string, startKey: number): React.ReactNode {
                   target.parentNode?.insertBefore(link, target)
                 }}
               />
-            ))}
+              )
+            })}
           </div>
         )
         lastIndex = nextIndex
       } else {
         // Одно изображение - отображаем как обычно, но с минимальными отступами
+        // Генерируем описательный alt из URL
+        const getImageAlt = (url: string) => {
+          const fileName = url.split('/').pop()?.split('?')[0] || ''
+          const nameWithoutExt = fileName.replace(/\.[^/.]+$/, '')
+          if (nameWithoutExt) {
+            return `Изображение: ${nameWithoutExt.replace(/[-_]/g, ' ')}`
+          }
+          return 'Иллюстрация к тексту'
+        }
         parts.push(
           <ImageWithModal
             key={key++}
             src={urlMatch.url}
-            alt="Изображение"
+            alt={getImageAlt(urlMatch.url)}
             className="max-w-full max-h-64 rounded-2xl object-contain block"
             style={{ margin: '10px 0' }}
             onError={(e) => {

@@ -141,7 +141,7 @@ export default function BlogPostPage() {
                   <div className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
                     <img
                       src={post.imageUrl}
-                      alt={post.title}
+                      alt={`Иллюстрация к статье "${post.title}" - ${post.excerpt ? post.excerpt.substring(0, 100) : 'статья блога NEURONIC LABS об автоматизации бизнеса и ИИ'}`}
                       className="w-full h-full object-cover"
                     />
                   </div>

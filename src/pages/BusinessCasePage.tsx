@@ -111,7 +111,7 @@ export default function BusinessCasePage() {
                   <div className="relative w-full h-64 sm:h-96 mb-8 rounded-lg overflow-hidden">
                     <img
                       src={businessCase.image}
-                      alt={businessCase.title}
+                      alt={`Кейс внедрения ИИ-автоматизации: ${businessCase.title} в отрасли ${businessCase.industry} - ${businessCase.description ? businessCase.description.substring(0, 100) : 'реальный пример автоматизации бизнеса с помощью ИИ'}`}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
