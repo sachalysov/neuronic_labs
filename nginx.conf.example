@@ -45,8 +45,20 @@ server {
         add_header Link "</assets/index-*.js>; rel=preload; as=script";
     }
 
-    # SPA routing (React Router)
+    # Определение поисковых ботов и отдача pre-rendered HTML
+    # Для ботов сначала проверяем наличие pre-rendered версии
+    set $prerender 0;
+    if ($http_user_agent ~* (googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|sogou|exabot|facebot|ia_archiver|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator)) {
+        set $prerender 1;
+    }
+    
+    # Для ботов: проверяем наличие pre-rendered версии
     location / {
+        # Если это бот и существует pre-rendered версия
+        if ($prerender = 1) {
+            try_files $uri $uri/index.html /index.html;
+        }
+        # Для обычных пользователей - стандартный SPA routing
         try_files $uri $uri/ /index.html;
     }
 

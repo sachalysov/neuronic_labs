@@ -44,11 +44,24 @@
 </IfModule>
 
 # Перенаправление на index.html для SPA (React Router)
+# Для поисковых ботов отдаем pre-rendered HTML из соответствующих директорий
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  
+  # Исключаем статические файлы из обработки
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule . - [L]
+  
+  # Проверяем, является ли запрос от поискового бота
+  RewriteCond %{HTTP_USER_AGENT} (googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|sogou|exabot|facebot|ia_archiver|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator) [NC]
+  
+  # Если это бот и существует pre-rendered версия страницы
+  RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_URI}/index.html -f
+  RewriteRule ^(.*)$ /$1/index.html [L]
+  
+  # Стандартное перенаправление для SPA (обычные пользователи и боты без pre-rendered версии)
   RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
 </IfModule>

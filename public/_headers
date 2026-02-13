@@ -1,0 +1,15 @@
+# Netlify/Vercel headers для SEO
+# Этот файл используется для настройки заголовков ответа
+
+# Для поисковых ботов - отдаем pre-rendered HTML
+/*
+  X-Robots-Tag: index, follow
+  Cache-Control: public, max-age=3600
+
+# Для статических ресурсов - долгое кэширование
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Для HTML файлов - короткое кэширование
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
