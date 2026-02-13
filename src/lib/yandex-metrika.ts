@@ -88,12 +88,12 @@ export function initYandexMetrika(config?: YandexMetrikaConfig) {
 }
 
 /**
- * Загружает скрипт Yandex Metrika асинхронно
+ * Загружает скрипт Yandex Metrika асинхронно с оптимизацией кеширования
  */
 export function loadYandexMetrikaScript() {
   // Проверяем, не загружен ли уже скрипт
   for (let j = 0; j < document.scripts.length; j++) {
-    if (document.scripts[j].src === 'https://mc.yandex.ru/metrika/tag.js') {
+    if (document.scripts[j].src.includes('mc.yandex.ru/metrika/tag.js')) {
       return;
     }
   }
@@ -104,12 +104,26 @@ export function loadYandexMetrikaScript() {
   };
   (window as any).ym.l = new Date().getTime();
 
-  // Создаем и добавляем скрипт
+  // Оптимизация: добавляем preload для улучшения загрузки
+  const preloadLink = document.createElement('link');
+  preloadLink.rel = 'preload';
+  preloadLink.as = 'script';
+  preloadLink.href = `https://mc.yandex.ru/metrika/tag.js?id=${YANDEX_METRIKA_ID}`;
+  preloadLink.crossOrigin = 'anonymous';
+  document.head.appendChild(preloadLink);
+
+  // Создаем и добавляем скрипт с оптимизацией кеширования
   const script = document.createElement('script');
   script.type = 'text/javascript';
   script.async = true;
   script.defer = true;
+  script.crossOrigin = 'anonymous';
   script.src = `https://mc.yandex.ru/metrika/tag.js?id=${YANDEX_METRIKA_ID}`;
+  
+  // Добавляем обработчик для проверки загрузки из кеша
+  script.onload = () => {
+    // Скрипт загружен (из кеша или сети)
+  };
   
   const firstScript = document.getElementsByTagName('script')[0];
   if (firstScript && firstScript.parentNode) {

@@ -760,16 +760,39 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Основной скрипт приложения: type="module" уже обеспечивает defer поведение -->
     <script type="module" src="/src/main.tsx"></script>
     
-    <!-- Yandex.Metrika counter: Инициализация через модуль src/lib/yandex-metrika.ts -->
+    <!-- Yandex.Metrika counter: Инициализация через модуль src/lib/yandex-metrika.ts (загружается асинхронно после согласия) -->
     <noscript><div><img src="https://mc.yandex.ru/watch/106099175" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
-      <script>
-        (function (w, d, u) {
-          var s = d.createElement('script'); s.async = true; s.src = u + '?' + (Date.now() / 60000 | 0);
-          var h = d.getElementsByTagName('script')[0]; h.parentNode.insertBefore(s, h);
-        })(window, document, 'https://cdn-ru.bitrix24.ru/b36416982/crm/tag/call.tracker.js');
-      </script>
+    
+    <!-- Bitrix24: Загрузка с defer для предотвращения блокировки отрисовки -->
+    <script>
+      (function (w, d, u) {
+        var s = d.createElement('script'); 
+        s.async = true; 
+        s.defer = true;
+        s.src = u + '?' + (Date.now() / 60000 | 0);
+        // Загружаем после загрузки страницы для лучшей производительности
+        if (document.readyState === 'loading') {
+          d.addEventListener('DOMContentLoaded', function() {
+            var h = d.getElementsByTagName('script')[0]; 
+            if (h && h.parentNode) {
+              h.parentNode.insertBefore(s, h);
+            } else {
+              d.head.appendChild(s);
+            }
+          });
+        } else {
+          var h = d.getElementsByTagName('script')[0]; 
+          if (h && h.parentNode) {
+            h.parentNode.insertBefore(s, h);
+          } else {
+            d.head.appendChild(s);
+          }
+        }
+      })(window, document, 'https://cdn-ru.bitrix24.ru/b36416982/crm/tag/call.tracker.js');
+    </script>
   </body>
 </html>

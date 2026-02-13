@@ -26,9 +26,31 @@ document.body.scrollTop = 0
 // Инициализация Schema.org разметки
 initSchemaOrg()
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+// Регистрация Service Worker для кеширования сторонних ресурсов (только в production)
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((registration) => {
+        console.log('Service Worker зарегистрирован:', registration.scope)
+      })
+      .catch((error) => {
+        console.log('Ошибка регистрации Service Worker:', error)
+      })
+  })
+}
+
+// Оптимизация: StrictMode отключен в production для лучшей производительности
+// В development режиме StrictMode помогает находить проблемы
+const root = ReactDOM.createRoot(document.getElementById('root')!)
+
+if (import.meta.env.DEV) {
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  )
+} else {
+  root.render(<App />)
+}
 

@@ -1,13 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { lazy, Suspense, useEffect } from 'react'
 import HomePage from './pages/HomePage'
-import AdminLoginPage from './pages/AdminLoginPage'
-import AdminBlogPage from './pages/AdminBlogPage'
-import AdminBusinessCasesPage from './pages/AdminBusinessCasesPage'
-import AdminDashboardPage from './pages/AdminDashboardPage'
-import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
-import OfferPage from './pages/OfferPage'
-import ConsentRequiredPage from './pages/ConsentRequiredPage'
 import { ConsentGate } from './components/consent-gate'
 
 const ADMIN_THEME_STORAGE_KEY = "admin_theme"
@@ -22,6 +15,15 @@ const PartnerPage = lazy(() => import('./pages/PartnerPage'))
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
 const ConferencePage = lazy(() => import('./pages/ConferencePage'))
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage'))
+
+// Админ-страницы: lazy loading для уменьшения начального бандла
+const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage'))
+const AdminBlogPage = lazy(() => import('./pages/AdminBlogPage'))
+const AdminBusinessCasesPage = lazy(() => import('./pages/AdminBusinessCasesPage'))
+const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'))
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
+const OfferPage = lazy(() => import('./pages/OfferPage'))
+const ConsentRequiredPage = lazy(() => import('./pages/ConsentRequiredPage'))
 
 // Fallback компонент для загрузки (минимальный, чтобы не блокировать рендер)
 const PageLoader = () => (
@@ -169,14 +171,63 @@ function App() {
             } 
           />
           {/* Страницы, доступные без согласия */}
-          <Route path="/politika-konfidentsialnosti" element={<PrivacyPolicyPage />} />
-          <Route path="/publichnaya-oferta" element={<OfferPage />} />
-          <Route path="/consent-required" element={<ConsentRequiredPage />} />
+          <Route 
+            path="/politika-konfidentsialnosti" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <PrivacyPolicyPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/publichnaya-oferta" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <OfferPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/consent-required" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ConsentRequiredPage />
+              </Suspense>
+            } 
+          />
           {/* Админ-панель доступна без согласия */}
-          <Route path="/admin" element={<AdminDashboardPage />} />
-          <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route path="/admin/blog" element={<AdminBlogPage />} />
-          <Route path="/admin/business-cases" element={<AdminBusinessCasesPage />} />
+          <Route 
+            path="/admin" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <AdminDashboardPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/admin/login" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <AdminLoginPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/admin/blog" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <AdminBlogPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/admin/business-cases" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <AdminBusinessCasesPage />
+              </Suspense>
+            } 
+          />
         </Routes>
       </ConsentGate>
     </BrowserRouter>
