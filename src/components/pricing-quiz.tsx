@@ -509,16 +509,16 @@ export function PricingQuiz({ onContactClick }: PricingQuizProps) {
                                 : "border-border/50 hover:border-primary/40 hover:bg-primary/5 text-muted-foreground"
                             }`}
                           >
-                            <div className="flex items-center gap-3">
-                              <div
+                            <span className="flex items-center gap-3">
+                              <span
                                 className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${
                                   selected ? "border-primary" : "border-muted-foreground/40"
                                 }`}
                               >
-                                {selected && <div className="w-2 h-2 rounded-full bg-primary" />}
-                              </div>
+                                {selected && <span className="w-2 h-2 rounded-full bg-primary block" />}
+                              </span>
                               {opt.label}
-                            </div>
+                            </span>
                           </button>
                         )
                       })}
