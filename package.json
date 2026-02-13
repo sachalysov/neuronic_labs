@@ -7,10 +7,12 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "build:prerender": "tsc && vite build && npm run prerender",
+    "build:full": "npm run generate:sitemap && npm run build:prerender",
     "preview": "vite preview",
     "prerender": "node scripts/prerender.mjs",
     "check:prerender": "node scripts/check-prerender.mjs",
     "convert:webp": "node scripts/convert-to-webp.mjs",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "lint": "eslint .",
     "deploy": "bash deploy.sh",
     "deploy:preview": "HOSTING=timeweb bash deploy.sh"

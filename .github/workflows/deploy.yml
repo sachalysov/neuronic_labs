@@ -88,6 +88,12 @@ jobs:
             echo "✓ VITE_SUPABASE_ANON_KEY is set: ${VITE_SUPABASE_ANON_KEY:0:20}..."
           fi
 
+      - name: Generate sitemap
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: npm run generate:sitemap
+
       - name: Build project with pre-rendering
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
