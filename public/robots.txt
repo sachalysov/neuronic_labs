@@ -6,8 +6,21 @@ User-agent: Yandex
 Allow: /
 Crawl-delay: 1
 
+User-agent: Yandexbot
+Allow: /
+Crawl-delay: 1
+
+# Директива Host для Яндекса (указывает основной домен)
+Host: neuroniclabs.ru
+
 # Google
 User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Mobile
 Allow: /
 
 # Mail.ru
