@@ -116,7 +116,7 @@ async function fetchBlogPosts() {
     console.log('📝 Загрузка статей блога...')
     const { data, error } = await supabase
       .from('blog_posts')
-      .select('id, title, slug, published_at, updated_at')
+      .select('id, title, published_at, updated_at')
       .order('published_at', { ascending: false })
 
     if (error) {
