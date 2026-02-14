@@ -726,7 +726,7 @@ export default function HomePage() {
                     Автоматизация продаж
                   </p>
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-balance">
-                    Автоматизация и&nbsp;увеличение продаж на&nbsp;30% с&nbsp;помощью ИИ‑продавца
+                    ИИ-продавец
                   </h3>
                   <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
                     Умный чат‑бот на базе нейросети, который ведёт полноценные продающие диалоги с вашими лидами
