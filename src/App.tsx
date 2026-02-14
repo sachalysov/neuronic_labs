@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { lazy, Suspense, useEffect } from 'react'
-import HomePage from './pages/HomePage'
 import { ConsentGate } from './components/consent-gate'
+
+// Главная — lazy, чтобы не тянуть ~2000 строк и все секции в основной поток (Lighthouse: минимизировать работу main thread)
+const HomePage = lazy(() => import('./pages/HomePage'))
 
 const ADMIN_THEME_STORAGE_KEY = "admin_theme"
 const USER_THEME_STORAGE_KEY = "theme"
@@ -105,7 +107,7 @@ function App() {
       <ScrollToTop />
       <ConsentGate>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Suspense fallback={<PageLoader />}><HomePage /></Suspense>} />
           <Route 
             path="/blog" 
             element={

@@ -23,22 +23,22 @@ window.scrollTo(0, 0)
 document.documentElement.scrollTop = 0
 document.body.scrollTop = 0
 
-// Инициализация Schema.org разметки
-initSchemaOrg()
-
-// Регистрация Service Worker для кеширования сторонних ресурсов (только в production)
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((registration) => {
-        console.log('Service Worker зарегистрирован:', registration.scope)
-      })
-      .catch((error) => {
-        console.log('Ошибка регистрации Service Worker:', error)
-      })
-  })
+// Некритичную инициализацию откладываем, чтобы не блокировать main thread (Lighthouse)
+function defer(fn: () => void) {
+  if (typeof requestIdleCallback !== 'undefined') {
+    requestIdleCallback(fn, { timeout: 2000 })
+  } else {
+    setTimeout(fn, 1)
+  }
 }
+window.addEventListener('load', () => {
+  defer(initSchemaOrg)
+  if ('serviceWorker' in navigator && import.meta.env.PROD) {
+    defer(() => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {})
+    })
+  }
+})
 
 // Оптимизация: StrictMode отключен в production для лучшей производительности
 // В development режиме StrictMode помогает находить проблемы
