@@ -20,7 +20,6 @@ import {
   Clock,
   TrendingUp,
   DollarSign,
-  ShoppingCart,
   ArrowRight,
   Target,
   Award,
@@ -29,11 +28,6 @@ import {
   CheckCircle,
   MessageCircle,
   Sparkles,
-  Scissors,
-  Home,
-  Cross,
-  Wrench,
-  Briefcase,
   Info,
   ChevronDown,
 } from "lucide-react"
@@ -118,7 +112,6 @@ export default function HomePage() {
     consent?: string
   }>({})
   const benefitsScrollRef = useRef<HTMLDivElement>(null)
-  const businessTypesScrollRef = useRef<HTMLDivElement>(null)
   const examplesScrollRef = useRef<HTMLDivElement>(null)
   const stagesScrollRef = useRef<HTMLDivElement>(null)
   const automationSalesScrollRef = useRef<HTMLDivElement>(null)
@@ -519,62 +512,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Problem Section - AIDA: Attention */}
-      <section className="py-28 sm:py-32 px-3 sm:px-4 bg-gradient-to-b from-secondary/20 to-background border-y border-border">
-        <div className="container mx-auto">
-          <div className="max-w-5xl mx-auto">
-            <AnimateOnScroll animation="fade-up" duration={700}>
-              <h2 className="text-xl sm:text-3xl md:text-5xl font-bold text-center mb-8 sm:mb-12 text-balance">
-                80% лидов уходят к конкурентам из-за медленных менеджеров
-              </h2>
-            </AnimateOnScroll>
-            
-            <StaggerChildren staggerDelay={150} animation="fade-up" className="grid md:grid-cols-3 gap-4 md:gap-5 lg:gap-6 mb-8 sm:mb-12">
-              <Card className="bg-destructive/10 border-destructive/30 card-hover-lift">
-                <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
-                  <div className="text-3xl sm:text-5xl">💸</div>
-                  <h3 className="text-lg sm:text-2xl font-bold text-destructive">Теряешь 150к₽/мес</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground">
-                    Каждый неотвеченный лид стоит тебе денег. Менеджеры отвечают через 2 часа — клиент уже купил у конкурента
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-primary/10 border-primary/30 card-hover-lift">
-                <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
-                  <div className="text-3xl sm:text-5xl">⏱️</div>
-                  <h3 className="text-lg sm:text-2xl font-bold text-primary">Ответ за 3 секунды</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground">
-                    ИИ-продавец отвечает мгновенно 24/7. Никаких обедов, выходных и отпусков. Клиенты не ждут
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-accent/10 border-accent/30 card-hover-lift">
-                <CardContent className="p-4 sm:p-6 space-y-2 sm:space-y-4 text-center">
-                  <div className="text-3xl sm:text-5xl">📈</div>
-                  <h3 className="text-lg sm:text-2xl font-bold">+200% конверсия</h3>
-                  <p className="text-sm sm:text-base text-muted-foreground">
-                    Грамотный ИИ-продавец обрабатывает все лиды без исключения и конвертирует в 2-3 раза больше
-                  </p>
-                </CardContent>
-              </Card>
-            </StaggerChildren>
-
-            <div className="text-center">
-              <Button 
-                size="lg" 
-                className="text-sm sm:text-lg px-4 sm:px-8 py-4 sm:py-6 shadow-lg hover:shadow-xl w-full sm:w-auto"
-                onClick={() => setIsModalOpen(true)}
-              >
-                Узнать, как внедрить за 7 дней
-                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Demo Chat Section - Desktop */}
       <section id="demo-chat" className="hidden md:block py-28 sm:py-32 px-4 bg-gradient-to-b from-background to-secondary/20">
         <div className="container mx-auto">
@@ -678,120 +615,6 @@ export default function HomePage() {
               <Sparkles className="h-4 w-4 text-red-400" />
               Тест для выбора тарифа
             </Button>
-          </div>
-        </div>
-      </section>
-
-
-      {/* Business Types Section */}
-      <section id="services" className="py-28 sm:py-32 px-3 sm:px-4">
-        <div className="container mx-auto">
-          <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">Для какого бизнеса это работает лучше всего</h2>
-          </AnimateOnScroll>
-
-          {/* Desktop Grid */}
-          <StaggerChildren staggerDelay={100} animation="scale-in" className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6 max-w-6xl mx-auto">
-            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Scissors className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">САЛОНЫ И СПА</h3>
-                <p className="text-sm md:text-base text-muted-foreground">+50% клиентов, 0 пропущенных звонков</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Home className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">РИЭЛТОРЫ</h3>
-                <p className="text-sm md:text-base text-muted-foreground">+300% просмотров, ответ за 30 сек</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <ShoppingCart className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">E-COMMERCE</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Чек +40%, конверсия +50%</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Cross className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">КЛИНИКИ</h3>
-                <p className="text-sm md:text-base text-muted-foreground">No-show упали на 60%</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Wrench className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">АВТОСЕРВИСЫ</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Полная запись на неделю вперед</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
-              <CardContent className="p-4 md:p-5 lg:p-6 space-y-3 md:space-y-4 text-center">
-                <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-primary/10 rounded-xl flex items-center justify-center mx-auto icon-hover-glow">
-                  <Briefcase className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8 text-primary" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold">КОНСУЛЬТАНТЫ</h3>
-                <p className="text-sm md:text-base text-muted-foreground">Консультант работает только с готовыми клиентами</p>
-              </CardContent>
-            </Card>
-          </StaggerChildren>
-
-          {/* Mobile Slider */}
-          <div className="md:hidden relative">
-            <div
-              ref={businessTypesScrollRef}
-              className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
-              style={{
-                scrollPaddingLeft: '0.5rem',
-                scrollPaddingRight: '0.5rem'
-              }}
-            >
-              {[
-                { icon: Scissors, title: "САЛОНЫ И СПА", desc: "+50% клиентов, 0 пропущенных звонков" },
-                { icon: Home, title: "РИЭЛТОРЫ", desc: "+300% просмотров, ответ за 30 сек" },
-                { icon: ShoppingCart, title: "E-COMMERCE", desc: "Чек +40%, конверсия +50%" },
-                { icon: Cross, title: "КЛИНИКИ", desc: "No-show упали на 60%" },
-                { icon: Wrench, title: "АВТОСЕРВИСЫ", desc: "Полная запись на неделю вперед" },
-                { icon: Briefcase, title: "КОНСУЛЬТАНТЫ", desc: "Консультант работает только с готовыми клиентами" },
-              ].map((item, index) => {
-                const Icon = item.icon
-                return (
-                  <Card
-                    key={index}
-                    className="flex-shrink-0 w-[85vw] max-w-sm snap-center bg-card/10 border-border"
-                  >
-                    <CardContent className="p-6 space-y-4 text-center">
-                      <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                        <Icon className="h-7 w-7 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold">{item.title}</h3>
-                      <p className="text-muted-foreground">{item.desc}</p>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-            <SliderPagination 
-              containerRef={businessTypesScrollRef} 
-              itemCount={6}
-            />
           </div>
         </div>
       </section>
