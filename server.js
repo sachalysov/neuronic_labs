@@ -90,6 +90,23 @@ app.use((req, res, next) => {
   next()
 })
 
+// Прокси Yandex Metrika: отдаём с длинным кешем (Lighthouse — «эффективный период хранения кеша»)
+const METRIKA_ORIGIN = 'https://mc.yandex.ru'
+app.get('/metrika/tag.js', async (req, res) => {
+  try {
+    const url = `${METRIKA_ORIGIN}/metrika/tag.js${req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : ''}`
+    const r = await fetch(url)
+    const body = await r.arrayBuffer()
+    res.set({
+      'Content-Type': r.headers.get('content-type') || 'application/javascript; charset=utf-8',
+      'Cache-Control': 'public, max-age=604800', // 7 дней
+    })
+    res.send(Buffer.from(body))
+  } catch (e) {
+    res.status(502).send('Bad Gateway')
+  }
+})
+
 // Статические файлы (CSS, JS, изображения и т.д.)
 app.use(express.static(DIST_DIR, {
   maxAge: '1y',

@@ -3,14 +3,24 @@
 ## Проблема
 
 Сторонние ресурсы (Yandex Metrika, Vigo) загружаются с внешних доменов и имеют неоптимальное кеширование:
-- Yandex Metrika: кеш на 1 час (168 КиБ)
+- Yandex Metrika: кеш на 1 час (≈87 КиБ) — **решение:** скрипт загружается через прокси с нашего домена с Cache-Control 7 дней.
 - Vigo: отсутствие кеширования (16 КиБ)
 
 ## Решение
 
-### 1. Service Worker (уже реализовано)
+### 1. Прокси Metrika (реализовано)
 
-Service Worker (`/public/sw.js`) автоматически кеширует сторонние ресурсы на 7 дней:
+Скрипт Metrika загружается с нашего домена (`/metrika/tag.js?id=...`), ответ отдаётся с `Cache-Control: public, max-age=604800` (7 дней). Это устраняет предупреждение Lighthouse «Выбирайте эффективный период хранения кеша» для tag.js (~87 КиБ).
+
+- **server.js** — маршрут GET `/metrika/tag.js` проксирует на mc.yandex.ru и выставляет длинный кеш.
+- **nginx** — в `nginx.conf.example` добавлен `location /metrika/` с proxy_pass и Cache-Control.
+- **Vite dev** — в `vite.config.ts` proxy `/metrika` на mc.yandex.ru для локальной разработки.
+
+При **статическом хостинге без Node/Nginx** настройте rewrite: `/metrika/tag.js` → `https://mc.yandex.ru/metrika/tag.js` (Cloudflare, Vercel rewrites, Netlify _redirects и т.п.), иначе счётчик не загрузится.
+
+### 2. Service Worker (уже реализовано)
+
+Service Worker (`/public/sw.js`) кеширует сторонние ресурсы на 7 дней (резерв для advert.gif и др.):
 - `https://mc.yandex.ru/metrika/tag.js`
 - `https://mc.yandex.com/metrika/advert.gif`
 - `https://api.vigo.one/html5/Vigo.min.js`
@@ -21,13 +31,13 @@ Service Worker (`/public/sw.js`) автоматически кеширует с�
 - Обновляет кеш каждые 7 дней
 - Работает в фоне, не блокируя загрузку страницы
 
-### 2. Оптимизация загрузки (уже реализовано)
+### 3. Оптимизация загрузки (уже реализовано)
 
 - Добавлен `preload` для Yandex Metrika скрипта
 - Скрипты загружаются асинхронно с `async` и `defer`
 - Загрузка происходит только после согласия пользователя
 
-### 3. Настройка сервера (требуется настройка на сервере)
+### 4. Настройка сервера (требуется настройка на сервере)
 
 #### Для Apache (.htaccess)
 
@@ -53,7 +63,7 @@ location ~* \.(js|css)$ {
 }
 ```
 
-### 4. Дополнительные рекомендации
+### 5. Дополнительные рекомендации
 
 #### CDN для сторонних ресурсов (опционально)
 

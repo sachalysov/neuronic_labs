@@ -2,9 +2,31 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
+/** Делает CSS из entry (main bundle) неблокирующим: preload + onload → rel=stylesheet. Улучшает LCP. */
+function nonBlockingCssPlugin() {
+  return {
+    name: 'non-blocking-css',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        // Любой порядок атрибутов: ищем link с rel=stylesheet и href с /assets/*.css
+        return html.replace(
+          /<link(?=[^>]*rel=["']stylesheet["'])(?=[^>]*href=["']([^"']*\/assets\/[^"']+\.css)["'])[^>]*>/gi,
+          (match) => {
+            const hrefMatch = match.match(/href=["']([^"']+)["']/i)
+            const href = hrefMatch ? hrefMatch[1] : ''
+            if (!href) return match
+            return `<link rel="preload" href="${href}" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="${href}"></noscript>`
+          }
+        )
+      },
+    },
+  }
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), nonBlockingCssPlugin()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -93,7 +115,10 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    open: true
-  }
+    open: true,
+    proxy: {
+      '/metrika': { target: 'https://mc.yandex.ru', changeOrigin: true },
+    },
+  },
 })
 

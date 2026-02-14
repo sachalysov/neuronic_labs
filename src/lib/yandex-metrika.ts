@@ -22,7 +22,7 @@ export function suppressThirdPartyRejectionErrors() {
       stack.includes('fetchActivities') ||
       (stack.includes('boot') && stack.includes('init'));
     const metrikaOrBitrixLoaded = Array.from(document.scripts).some(
-      (s) => s.src.includes('mc.yandex.ru/metrika') || s.src.includes('bitrix24')
+      (s) => s.src.includes('/metrika/tag.js') || s.src.includes('mc.yandex.ru/metrika') || s.src.includes('bitrix24')
     );
     const shouldSuppressFetch =
       isFailedFetch && (stackFromThirdParty || (metrikaOrBitrixLoaded && !stack));
@@ -93,9 +93,7 @@ export function initYandexMetrika(config?: YandexMetrikaConfig) {
 export function loadYandexMetrikaScript() {
   // Проверяем, не загружен ли уже скрипт
   for (let j = 0; j < document.scripts.length; j++) {
-    if (document.scripts[j].src.includes('mc.yandex.ru/metrika/tag.js')) {
-      return;
-    }
+    if (document.scripts[j].src.includes('/metrika/tag.js')) return;
   }
 
   // Инициализируем очередь ym до загрузки скрипта
@@ -108,7 +106,7 @@ export function loadYandexMetrikaScript() {
   const preloadLink = document.createElement('link');
   preloadLink.rel = 'preload';
   preloadLink.as = 'script';
-  preloadLink.href = `https://mc.yandex.ru/metrika/tag.js?id=${YANDEX_METRIKA_ID}`;
+  preloadLink.href = `${typeof window !== 'undefined' ? window.location.origin : ''}/metrika/tag.js?id=${YANDEX_METRIKA_ID}`;
   preloadLink.crossOrigin = 'anonymous';
   document.head.appendChild(preloadLink);
 
@@ -118,7 +116,7 @@ export function loadYandexMetrikaScript() {
   script.async = true;
   script.defer = true;
   script.crossOrigin = 'anonymous';
-  script.src = `https://mc.yandex.ru/metrika/tag.js?id=${YANDEX_METRIKA_ID}`;
+  script.src = `${typeof window !== 'undefined' ? window.location.origin : ''}/metrika/tag.js?id=${YANDEX_METRIKA_ID}`;
   
   // Добавляем обработчик для проверки загрузки из кеша
   script.onload = () => {

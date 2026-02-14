@@ -26,6 +26,14 @@ server {
         access_log off;
     }
 
+    # Прокси Yandex Metrika: длинный кеш (Lighthouse — эффективный период хранения кеша)
+    location /metrika/ {
+        proxy_pass https://mc.yandex.ru/metrika/;
+        proxy_ssl_server_name on;
+        proxy_set_header Host mc.yandex.ru;
+        add_header Cache-Control "public, max-age=604800";  # 7 дней
+    }
+
     # Cache-Control для JS и CSS (с хэшем в имени файла)
     location ~* \.(js|css)$ {
         expires 1y;
