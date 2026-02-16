@@ -124,12 +124,12 @@ export default function HomePage() {
     {
       icon: Bot,
       title: "ИИ-сотрудник работает 24/7, пока конкуренты спят",
-      description: "Мгновенно отвечает на любые вопросы, 24/7 - круглосуточная коммуникация, недоступная вашим конкурентам"
+      description: "Мгновенно отвечает на любые вопросы, 24/7 - круглосуточная коммуникация."
     },
     {
       icon: TrendingUp,
       title: "В 2-3 раза больше клиентов",
-      description: "Грамотно внедренный ИИ-продавец + мультиканален + Яндекс. Директ может увеличить конверсию в заявку в 2-3 раза"
+      description: "Грамотно внедренный ИИ-продавец + Яндекс. Директ может увеличить конверсию в заявку в 2-3 раза"
     },
     {
       icon: DollarSign,
@@ -629,7 +629,7 @@ export default function HomePage() {
               </h2>
             </div>
             <p className="text-base sm:text-xl text-center text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto">
-              Интеллектуальная автоматизация с ИИ: создаём ИИ-агента, чат-бота, автоматизируем рутинные задачи, счета и отчёты. Интеграция ИИ в работу увеличивает конверсию в 2-3 раза
+              Cоздаём ИИ-агента, чат-бота, автоматизируем рутинные задачи, счета и отчёты.
             </p>
           </AnimateOnScroll>
 
@@ -736,7 +736,7 @@ export default function HomePage() {
                   <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-muted-foreground">
                     <li className="flex gap-2 items-start">
                       <span className="mt-1 text-primary">●</span>
-                      <span>Обрабатывает 100% входящих обращений за секунды, не теряя ни одного лида.</span>
+                      <span>Обрабатывает 100% входящих обращений за секунды.</span>
                     </li>
                     <li className="flex gap-2 items-start">
                       <span className="mt-1 text-primary">●</span>
@@ -744,7 +744,7 @@ export default function HomePage() {
                     </li>
                     <li className="flex gap-2 items-start">
                       <span className="mt-1 text-primary">●</span>
-                      <span>Передаёт «горячие» заявки менеджеру, фиксируя ключевые детали сделки.</span>
+                      <span>Передаёт «горячие» заявки менеджеру или полностью доводит сделку до конца включая.</span>
                     </li>
                     <li className="flex gap-2 items-start">
                       <span className="mt-1 text-primary">●</span>
