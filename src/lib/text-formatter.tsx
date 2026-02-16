@@ -90,24 +90,9 @@ function ImageWithModal({ src, alt, className, style, onError }: {
 }
 
 export function formatMessageText(text: string): React.ReactNode {
-  // Сначала обрабатываем переносы строк для параграфов
-  const paragraphs = text.split(/\n\n+/);
-  if (paragraphs.length > 1) {
-    const parts: React.ReactNode[] = [];
-    let key = 0;
-    paragraphs.forEach((para, index) => {
-      if (para.trim()) {
-        parts.push(
-          <div key={key++} style={{ marginBottom: index < paragraphs.length - 1 ? '12px' : '0' }}>
-            {formatMarkdown(para.trim(), key * 1000)}
-          </div>
-        );
-      }
-    });
-    return parts.length > 0 ? parts : text;
-  }
+  if (!text) return text;
   
-  // Обрабатываем весь текст целиком для правильной группировки изображений
+  // Обрабатываем весь текст целиком для правильной группировки изображений и markdown
   return formatMarkdown(text, 0);
 }
 
@@ -227,18 +212,37 @@ function formatMarkdown(text: string, startKey: number): React.ReactNode {
   if (lines.length > 1) {
     const parts: React.ReactNode[] = [];
     let key = startKey;
+    let prevLineWasEmpty = false;
+    
     lines.forEach((line, index) => {
-      if (line.trim()) {
+      const trimmed = line.trim();
+      const isEmpty = !trimmed;
+      
+      // Если текущая строка не пустая
+      if (!isEmpty) {
+        // Если предыдущая строка была пустой, добавляем дополнительный отступ (параграф)
+        if (prevLineWasEmpty && parts.length > 0) {
+          parts.push(<div key={key++} style={{ marginTop: '8px' }} />);
+        }
+        
         parts.push(formatMarkdownInline(line, key * 100));
+        
+        // Добавляем перенос строки, если это не последняя строка
         if (index < lines.length - 1) {
           parts.push(<br key={key * 100 + 1} />);
         }
         key++;
-      } else if (index < lines.length - 1) {
-        parts.push(<br key={key * 100 + 1} />);
-        key++;
+        prevLineWasEmpty = false;
+      } else {
+        // Пустая строка - добавляем перенос, если это не последняя строка
+        if (index < lines.length - 1) {
+          parts.push(<br key={key * 100 + 1} />);
+          key++;
+        }
+        prevLineWasEmpty = true;
       }
     });
+    
     return parts.length > 0 ? parts : text;
   }
   
@@ -652,15 +656,15 @@ function formatHeaders(text: string, startKey: number): React.ReactNode {
   return parts.length > 0 ? parts : formatBoldItalic(text, startKey);
 }
 
-// Обработка жирного и курсивного текста
+// Обработка жирного, курсивного и зачеркнутого текста
 function formatBoldItalic(text: string, startKey: number): React.ReactNode {
   const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let key = startKey;
   
-  // Обрабатываем жирный текст **текст** и курсив *текст* или _текст_
-  // Приоритет: жирный > курсив
-  const regex = /(\*\*([^*]+?)\*\*)|(\*([^*\n]+?)\*)|(_([^_\n]+?)_)/g;
+  // Обрабатываем зачеркнутый текст ~~текст~~, жирный текст **текст** и курсив *текст* или _текст_
+  // Приоритет: зачеркнутый > жирный > курсив
+  const regex = /(~~([^~]+?)~~)|(\*\*([^*]+?)\*\*)|(\*([^*\n]+?)\*)|(_([^_\n]+?)_)/g;
   let match;
 
   while ((match = regex.exec(text)) !== null) {
@@ -669,13 +673,17 @@ function formatBoldItalic(text: string, startKey: number): React.ReactNode {
       parts.push(text.substring(lastIndex, match.index));
     }
     
-    // Обрабатываем жирный текст **текст**
+    // Обрабатываем зачеркнутый текст ~~текст~~
     if (match[1] && match[2]) {
-      parts.push(<strong key={key++}>{match[2]}</strong>);
+      parts.push(<del key={key++} style={{ textDecoration: 'line-through' }}>{match[2]}</del>);
+    }
+    // Обрабатываем жирный текст **текст**
+    else if (match[3] && match[4]) {
+      parts.push(<strong key={key++}>{match[4]}</strong>);
     }
     // Обрабатываем курсив *текст* или _текст_
-    else if ((match[3] && match[4]) || (match[5] && match[6])) {
-      const italicText = match[4] || match[6];
+    else if ((match[5] && match[6]) || (match[7] && match[8])) {
+      const italicText = match[6] || match[8];
       parts.push(<em key={key++}>{italicText}</em>);
     }
     

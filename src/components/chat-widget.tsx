@@ -442,7 +442,7 @@ export function ChatWidget() {
                     </div>
                   )}
                   {message.text && (
-                    <div className="text-sm leading-relaxed">{formatMessageText(message.text)}</div>
+                    <div className="text-sm leading-relaxed" style={{ wordBreak: 'break-word' }}>{formatMessageText(message.text)}</div>
                   )}
                   <p className={`text-xs mt-2 ${message.sender === "user" ? "text-foreground/70" : "text-primary-foreground/70"}`}>
                     {formatTime(message.timestamp)}

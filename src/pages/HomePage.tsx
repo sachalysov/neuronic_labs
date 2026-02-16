@@ -723,32 +723,28 @@ export default function HomePage() {
               <CardContent className="p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full space-y-6 sm:space-y-8">
                 <div className="space-y-4 sm:space-y-6">
                   <p className="uppercase tracking-[0.18em] text-xs sm:text-sm text-primary font-semibold">
-                    Автоматизация продаж
+                    Голосовые и текстовые боты
                   </p>
                   <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-balance">
-                    ИИ-продавец
+                    Голосовые и текстовые чат‑боты для 24/7‑коммуникаций
                   </h3>
                   <p className="text-sm sm:text-base md:text-lg text-muted-foreground">
-                    Умный чат‑бот на базе нейросети, который ведёт полноценные продающие диалоги с вашими лидами
-                    24/7 во всех основных каналах: сайт, мессенджеры, соцсети.
+                    ИИ‑боты, которые не пропускают звонки и сообщения, консультируют по скриптам и передают сложные
+                    вопросы человеку.
                   </p>
 
                   <ul className="space-y-2 sm:space-y-3 text-sm sm:text-base text-muted-foreground">
                     <li className="flex gap-2 items-start">
                       <span className="mt-1 text-primary">●</span>
-                      <span>Обрабатывает 100% входящих обращений за секунды.</span>
+                      <span>Интеграция с WhatsApp, Telegram, VK, сайтом и телефонией в единую систему.</span>
                     </li>
                     <li className="flex gap-2 items-start">
                       <span className="mt-1 text-primary">●</span>
-                      <span>Отвечает на частые вопросы, презентует продукты и собирает данные для CRM.</span>
+                      <span>Естественная речь и диалоги в тоне бренда, с учётом вашего стиля и сценариев.</span>
                     </li>
                     <li className="flex gap-2 items-start">
                       <span className="mt-1 text-primary">●</span>
-                      <span>Передаёт «горячие» заявки менеджеру или полностью доводит сделку до конца включая.</span>
-                    </li>
-                    <li className="flex gap-2 items-start">
-                      <span className="mt-1 text-primary">●</span>
-                      <span>Работает в тоне бренда и поддерживает сценарии продаж, согласованные с вами.</span>
+                      <span>Сбор и передача лидов в CRM‑систему с комментариями и историей общения.</span>
                     </li>
                   </ul>
                 </div>
@@ -759,7 +755,7 @@ export default function HomePage() {
                     className="w-full sm:w-auto text-sm sm:text-base px-4 sm:px-8 py-3 sm:py-4"
                     onClick={() => setIsModalOpen(true)}
                   >
-                    Подробнее про ИИ‑продавца
+                    Подробнее про чат‑ботов
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                   <Button
@@ -807,28 +803,28 @@ export default function HomePage() {
                 <CardContent className="p-5 sm:p-6 flex flex-col justify-between h-full space-y-5">
                   <div className="space-y-3 sm:space-y-4">
                     <p className="uppercase tracking-[0.18em] text-xs sm:text-sm text-primary font-semibold">
-                      Автоматизация продаж
+                      Голосовые и текстовые боты
                     </p>
                     <h3 className="text-xl sm:text-2xl font-bold text-balance">
-                      Автоматизация и&nbsp;увеличение продаж на&nbsp;30% с&nbsp;помощью ИИ‑продавца
+                      Голосовые и текстовые чат‑боты для 24/7‑коммуникаций
                     </h3>
                     <p className="text-sm sm:text-base text-muted-foreground">
-                      Умный чат‑бот на базе нейросети, который ведёт полноценные продающие диалоги с вашими лидами
-                      24/7 во всех основных каналах: сайт, мессенджеры, соцсети.
+                      ИИ‑боты, которые не пропускают звонки и сообщения, консультируют по скриптам и передают сложные
+                      вопросы человеку.
                     </p>
 
                     <ul className="space-y-2 text-sm sm:text-base text-muted-foreground">
                       <li className="flex gap-2 items-start">
                         <span className="mt-1 text-primary">●</span>
-                        <span>Обрабатывает 100% входящих обращений за секунды, не теряя ни одного лида.</span>
+                        <span>Интеграция с WhatsApp, Telegram, VK, сайтом и телефонией в единую систему.</span>
                       </li>
                       <li className="flex gap-2 items-start">
                         <span className="mt-1 text-primary">●</span>
-                        <span>Отвечает на частые вопросы, презентует продукты и собирает данные для CRM.</span>
+                        <span>Естественная речь и диалоги в тоне бренда, с учётом вашего стиля и сценариев.</span>
                       </li>
                       <li className="flex gap-2 items-start">
                         <span className="mt-1 text-primary">●</span>
-                        <span>Передаёт «горячие» заявки менеджеру, фиксируя ключевые детали сделки.</span>
+                        <span>Сбор и передача лидов в CRM‑систему с комментариями и историей общения.</span>
                       </li>
                     </ul>
                   </div>
@@ -839,7 +835,7 @@ export default function HomePage() {
                       className="w-full text-sm sm:text-base"
                       onClick={() => setIsModalOpen(true)}
                     >
-                      Подробнее про ИИ‑продавца
+                      Подробнее про чат‑ботов
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                     <Button

@@ -1121,7 +1121,7 @@ export function DemoChat({ onClose, isMobile = false, storagePrefix = 'demo-chat
                       </div>
                     )}
                     {message.text && (
-                      <div className={`text-sm leading-relaxed ${isMobile ? 'pr-8' : 'pr-8'}`}>{formatMessageText(message.text)}</div>
+                      <div className={`text-sm leading-relaxed ${isMobile ? 'pr-8' : 'pr-8'}`} style={{ wordBreak: 'break-word' }}>{formatMessageText(message.text)}</div>
                     )}
                     <p className={`text-xs mt-2 text-gray-500`}>
                       {formatTime(message.timestamp)}
