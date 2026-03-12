@@ -200,11 +200,17 @@ export function Footer() {
         </AnimateOnScroll>
 
         <div className="mt-6 flex justify-start">
-          <img
-            src="/arda-arda-badge.png"
-            alt="ARDA — участник ассоциации развития digital-агентств"
-            className="h-10 w-auto"
-          />
+          <a
+            href="https://arda.digital/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/arda-arda-badge.png"
+              alt="ARDA — участник ассоциации развития digital-агентств"
+              className="h-10 w-auto"
+            />
+          </a>
         </div>
       </div>
     </footer>
