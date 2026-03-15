@@ -247,7 +247,7 @@ const planResults = [
   {
     id: "lite",
     name: "Lite",
-    price: "15 000",
+    price: "25 000",
     minScore: 0,
     maxScore: 5,
     description: "Простой старт — идеально для тестирования ИИ-ассистента без больших вложений.",
@@ -267,7 +267,7 @@ const planResults = [
   {
     id: "business",
     name: "Business",
-    price: "100 000",
+    price: "150 000",
     minScore: 12,
     maxScore: 18,
     description: "Оптимальный для роста — мультиканальность, аналитика и продвинутый ИИ.",
@@ -277,7 +277,7 @@ const planResults = [
   {
     id: "enterprise",
     name: "Enterprise",
-    price: "170 000",
+    price: "250 000",
     minScore: 19,
     maxScore: Infinity,
     description: "Для крупного бизнеса — полная интеграция, телефония и премиум-поддержка.",
