@@ -34,8 +34,8 @@ export interface MetaTags {
 }
 
 const DEFAULT_META: MetaTags = {
-  title: 'Автоматизация бизнеса с ИИ | Создать ИИ-агента и чат-бота | Интеллектуальная автоматизация процессов | NEURONIC LABS',
-  description: 'Создаем ИИ-агентов и чат-ботов для автоматизации бизнеса. Интеллектуальная автоматизация процессов, интеграция ИИ в работу, автоматизация рутинных задач, счетов и отчётов. Нейросеть для бизнеса, генерация контента ИИ. Внедрение за 7-14 дней без кодинга.',
+  title: 'Автоматизация бизнеса с ИИ | NEURONIC LABS',
+  description: 'Создаем ИИ-продавцов для вашего бизнеса. Подключение телефонии и чат-ботов на искусственном интеллекте что бы вы перестали терять клиентов.',
   keywords: 'автоматизация, чат бот, создать ИИ-помощника, интеллектуальная автоматизация, ИИ в работу, ИИ агенты, автоматизация бизнеса, автоматизация бизнес процессов, автоматизация с ИИ, интеграция ИИ, ИИ в бизнес, автоматизация счетов, автоматизация рутинных задач, нейросеть для бизнеса, генерация контента ИИ, автоматизация отчётов, создать ИИ агента, ИИ продавец, нейро-продавец, чат-бот для продаж, автоматизация продаж, Telegram бот, WhatsApp автоматизация, Avito автоматизация, AI для бизнеса, внедрение ИИ, автоматизация в Москве, автоматизация в СПб, n8n автоматизация, ИИ-сотрудник, виртуальный продавец',
   author: 'NEURONIC LABS',
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
@@ -178,26 +178,6 @@ export function setMetaTags(meta: Partial<MetaTags>) {
     setPropertyTag('og:locale', merged.ogLocale)
   }
   
-  // Twitter
-  const twitterTitle = merged.twitterTitle || merged.title || DEFAULT_META.twitterTitle
-  const twitterDescription = merged.twitterDescription || merged.description || DEFAULT_META.twitterDescription
-  const twitterImage = merged.twitterImage || merged.image || DEFAULT_META.twitterImage
-  
-  if (merged.twitterCard) {
-    setMetaTag('twitter:card', merged.twitterCard)
-  }
-  if (twitterTitle) {
-    setMetaTag('twitter:title', twitterTitle)
-  }
-  if (twitterDescription) {
-    setMetaTag('twitter:description', twitterDescription)
-  }
-  if (twitterImage) {
-    setMetaTag('twitter:image', twitterImage)
-  }
-  if (merged.ogUrl || merged.url) {
-    setMetaTag('twitter:url', merged.ogUrl || merged.url || DEFAULT_META.ogUrl || '')
-  }
   
   // Мобильные мета-теги
   if (merged.themeColor) {
@@ -332,75 +312,6 @@ export function createContactsMetaTags(): MetaTags {
     ogType: 'website',
     twitterTitle: 'Контакты | NEURONIC LABS',
     twitterDescription: 'Свяжитесь с нами любым удобным способом. Телефон, email, Telegram.',
-    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
-    url: fullUrl,
-  }
-}
-
-/**
- * Хелпер для создания мета-тегов для страницы участников конференции
- */
-export function createConferenceMetaTags(): MetaTags {
-  const fullUrl = `${BASE_URL}/conference`
-  
-  return {
-    title: 'Для участников конференции | NEURONIC LABS',
-    description: 'Специальные предложения для участников AI-Fest. Бесплатный аудит бизнеса и эксклюзивные материалы.',
-    keywords: 'конференция, AI-Fest, участники, бесплатный аудит, автоматизация, ИИ',
-    canonical: fullUrl,
-    ogTitle: 'Для участников конференции | NEURONIC LABS',
-    ogDescription: 'Специальные предложения для участников AI-Fest. Бесплатный аудит бизнеса и эксклюзивные материалы.',
-    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
-    ogUrl: fullUrl,
-    ogType: 'website',
-    twitterTitle: 'Для участников конференции | NEURONIC LABS',
-    twitterDescription: 'Специальные предложения для участников AI-Fest. Бесплатный аудит бизнеса и эксклюзивные материалы.',
-    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
-    url: fullUrl,
-  }
-}
-
-/**
- * Хелпер для создания мета-тегов для страницы политики конфиденциальности
- */
-export function createPrivacyPolicyMetaTags(): MetaTags {
-  const fullUrl = `${BASE_URL}/politika-konfidentsialnosti`
-  
-  return {
-    title: 'Политика конфиденциальности | NEURONIC LABS',
-    description: 'Политика конфиденциальности и обработки персональных данных в соответствии с Федеральным законом № 152-ФЗ. Информация о сборе, использовании и защите персональных данных.',
-    keywords: 'политика конфиденциальности, персональные данные, 152-ФЗ, защита данных, обработка данных',
-    canonical: fullUrl,
-    ogTitle: 'Политика конфиденциальности | NEURONIC LABS',
-    ogDescription: 'Политика конфиденциальности и обработки персональных данных в соответствии с Федеральным законом № 152-ФЗ.',
-    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
-    ogUrl: fullUrl,
-    ogType: 'website',
-    twitterTitle: 'Политика конфиденциальности | NEURONIC LABS',
-    twitterDescription: 'Политика конфиденциальности и обработки персональных данных в соответствии с Федеральным законом № 152-ФЗ.',
-    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
-    url: fullUrl,
-  }
-}
-
-/**
- * Хелпер для создания мета-тегов для страницы публичной оферты
- */
-export function createOfferMetaTags(): MetaTags {
-  const fullUrl = `${BASE_URL}/publichnaya-oferta`
-  
-  return {
-    title: 'Публичная оферта | Условия использования | NEURONIC LABS',
-    description: 'Публичная оферта и условия предоставления услуг NEURONIC LABS. Описание услуг, условия оплаты, ответственность сторон, возврат средств.',
-    keywords: 'публичная оферта, условия использования, договор оферты, услуги, NEURONIC LABS',
-    canonical: fullUrl,
-    ogTitle: 'Публичная оферта | Условия использования | NEURONIC LABS',
-    ogDescription: 'Публичная оферта и условия предоставления услуг NEURONIC LABS. Описание услуг, условия оплаты.',
-    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
-    ogUrl: fullUrl,
-    ogType: 'website',
-    twitterTitle: 'Публичная оферта | Условия использования | NEURONIC LABS',
-    twitterDescription: 'Публичная оферта и условия предоставления услуг NEURONIC LABS.',
     twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
     url: fullUrl,
   }
