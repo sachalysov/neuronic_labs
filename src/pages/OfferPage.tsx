@@ -3,14 +3,13 @@ import { useLocation, Link } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { Footer } from "@/components/footer"
-import { useMeta } from "@/hooks/useMeta"
-import { createOfferMetaTags } from "@/lib/meta"
+
 import { FileText, Shield, Mail } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 
 export default function OfferPage() {
   const location = useLocation()
-  useMeta(createOfferMetaTags())
+
 
   useEffect(() => {
     const hash = location.hash.substring(1)

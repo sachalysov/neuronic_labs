@@ -5,8 +5,8 @@ import { ChatWidget } from "@/components/chat-widget"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { useMeta } from "@/hooks/useMeta"
-import { createConferenceMetaTags } from "@/lib/meta"
+
+
 import {
   Calendar,
   MessageCircle,
@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 
 export default function ConferencePage() {
-  useMeta(createConferenceMetaTags())
+
 
   return (
     <main className="min-h-screen">

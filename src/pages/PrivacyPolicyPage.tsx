@@ -3,15 +3,13 @@ import { useLocation } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { Footer } from "@/components/footer"
-import { useMeta } from "@/hooks/useMeta"
-import { createPrivacyPolicyMetaTags } from "@/lib/meta"
 import { Shield, FileText, Mail } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Card, CardContent } from "@/components/ui/card"
 
 export default function PrivacyPolicyPage() {
   const location = useLocation()
-  useMeta(createPrivacyPolicyMetaTags())
+
 
   useEffect(() => {
     const hash = location.hash.substring(1)
