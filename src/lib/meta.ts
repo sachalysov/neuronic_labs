@@ -41,7 +41,7 @@ const DEFAULT_META: MetaTags = {
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   canonical: 'https://neuroniclabs.ru',
   ogTitle: 'Автоматизация бизнеса с ИИ | Создать ИИ-агента и чат-бота | NEURONIC LABS',
-  ogDescription: 'Создаем ИИ-агентов и чат-ботов для автоматизации бизнеса. Интеллектуальная автоматизация процессов, интеграция ИИ в работу, автоматизация рутинных задач. Внедрение за 7-14 дней.',
+  ogDescription: 'Создаем ИИ-продавцов для вашего бизнеса. Подключение телефонии и чат-ботов на искусственном интеллекте что бы вы перестали терять клиентов.',
   ogImage: 'https://neuroniclabs.ru/images/robot-hero-2.jpeg',
   ogUrl: 'https://neuroniclabs.ru',
   ogType: 'website',

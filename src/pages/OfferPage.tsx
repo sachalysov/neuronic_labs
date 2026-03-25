@@ -3,7 +3,6 @@ import { useLocation, Link } from "react-router-dom"
 import { StickyHeader } from "@/components/sticky-header"
 import { SpaceDust } from "@/components/space-dust"
 import { Footer } from "@/components/footer"
-
 import { FileText, Shield, Mail } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 
