@@ -295,6 +295,29 @@ export function createPartnerMetaTags(): MetaTags {
 }
 
 /**
+ * Хелпер для создания мета-тегов для лендинга ИИ-Продавец Чат-Бот
+ */
+export function createChatBotMetaTags(): MetaTags {
+  const fullUrl = `${BASE_URL}/chatbot`
+  
+  return {
+    title: 'ИИ-Продавец Чат-Бот — автоматизация продаж в мессенджерах | NEURONIC LABS',
+    description: 'ИИ чат-бот для продаж: автоматическая обработка заявок в WhatsApp, Telegram, VK, на сайте. Отвечает за 2 секунды, увеличивает конверсию в 2-3 раза. Внедрение за 7 дней.',
+    keywords: 'ИИ продавец, чат-бот для продаж, автоматизация продаж, бот для мессенджеров, чат-бот WhatsApp, чат-бот Telegram, ИИ для бизнеса, автоматизация заявок, бот-продавец, нейро-продавец, чат-бот для сайта, автоматизация лидов, NEURONIC LABS',
+    canonical: fullUrl,
+    ogTitle: 'ИИ-Продавец Чат-Бот — продаёт 24/7 в мессенджерах',
+    ogDescription: 'Текстовый ИИ-агент, который консультирует, продаёт и квалифицирует лиды в WhatsApp, Telegram, VK и на сайте. Без участия менеджера.',
+    ogImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    ogUrl: fullUrl,
+    ogType: 'website',
+    twitterTitle: 'ИИ-Продавец Чат-Бот — продаёт 24/7 в мессенджерах | NEURONIC LABS',
+    twitterDescription: 'Текстовый ИИ-агент, который консультирует, продаёт и квалифицирует лиды в WhatsApp, Telegram, VK и на сайте.',
+    twitterImage: `${BASE_URL}/images/robot-hero-2.jpeg`,
+    url: fullUrl,
+  }
+}
+
+/**
  * Хелпер для создания мета-тегов для страницы контактов
  */
 export function createContactsMetaTags(): MetaTags {

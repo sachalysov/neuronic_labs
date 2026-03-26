@@ -96,6 +96,12 @@ export function Footer() {
               >
                 Тарифы и цены
               </button>
+              <Link
+                to="/chatbot"
+                className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
+              >
+                Про Чат-бот
+              </Link>
             </nav>
           </div>
 

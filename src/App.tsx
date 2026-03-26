@@ -17,6 +17,7 @@ const PartnerPage = lazy(() => import('./pages/PartnerPage'))
 const ContactsPage = lazy(() => import('./pages/ContactsPage'))
 const ConferencePage = lazy(() => import('./pages/ConferencePage'))
 const CalculatorPage = lazy(() => import('./pages/CalculatorPage'))
+const ChatBotLandingPage = lazy(() => import('./pages/ChatBotLandingPage'))
 
 // Админ-страницы: lazy loading для уменьшения начального бандла
 const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage'))
@@ -169,6 +170,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <CalculatorPage />
+              </Suspense>
+            } 
+          />
+          <Route 
+            path="/chatbot" 
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ChatBotLandingPage />
               </Suspense>
             } 
           />
