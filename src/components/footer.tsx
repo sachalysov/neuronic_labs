@@ -100,7 +100,7 @@ export function Footer() {
                 to="/chatbot"
                 className="text-foreground/80 hover:text-primary transition-colors text-sm text-left"
               >
-                Про Чат-бот
+                ИИ Чат-бот
               </Link>
             </nav>
           </div>
