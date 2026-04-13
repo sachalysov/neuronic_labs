@@ -6,12 +6,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { StickyHeader } from "@/components/sticky-header"
 import { ConsultationModal } from "@/components/consultation-modal"
 import { SliderPagination } from "@/components/slider-pagination"
-import { submitFormData } from "@/services/form"
-import { useEffect, useState, useRef, lazy, Suspense, useMemo, useCallback } from "react"
+import { useEffect, useState, useRef, lazy, Suspense } from "react"
 import { useMeta } from "@/hooks/useMeta"
+import { useContactForm } from "@/hooks/useContactForm"
+import { useScrollLock } from "@/hooks/useScrollLock"
 import { createChatBotMetaTags } from "@/lib/meta"
 import { addSchemaToHead, generateBreadcrumbList } from "@/lib/schema-org"
-import { validatePhone, validateName, CIS_COUNTRIES, type Country } from "@/lib/phone-validation"
 import {
   Bot,
   Zap,
@@ -72,23 +72,117 @@ const chatBotFaqData = [
   }
 ]
 
+// Статичные данные — на уровне модуля, не нужен useMemo с пустыми deps
+const BENEFITS_DATA = [
+  { icon: Zap, text: "Отвечает за 2 секунды" },
+  { icon: MessageCircle, text: "Работает в любых мессенджерах" },
+  { icon: TrendingUp, text: "Увеличивает конверсию в 2-3 раза" },
+]
+
+const FUNCTIONS_DATA = [
+  { icon: MessageCircle, title: "Консультировать", description: "Отвечает на любые вопросы по продукту и услугам" },
+  { icon: Target, title: "Продавать", description: "Ведёт диалог по скрипту продаж до закрытия сделки" },
+  { icon: Sparkles, title: "Квалифицировать", description: "Собирает данные, определяет горячность лида" },
+  { icon: ArrowRight, title: "Возвращать", description: "Дожимает незавершённые диалоги, отправляет follow-up" },
+]
+
+const SCENARIOS_DATA = [
+  {
+    icon: Bot,
+    title: "Продавец-консультант",
+    description: "Ведёт клиента от первого сообщения до оплаты. Презентует продукт, отрабатывает возражения, закрывает сделку."
+  },
+  {
+    icon: Target,
+    title: "Квалификатор лидов",
+    description: "Массово обрабатывает входящие заявки, определяет горячих клиентов и передаёт их менеджерам."
+  },
+  {
+    icon: Sparkles,
+    title: "Реаниматор базы",
+    description: "Пишет по старой базе, возвращает ушедших клиентов, предлагает персональные спецусловия."
+  },
+]
+
+const HUMAN_FACTOR_DATA = [
+  { icon: Clock, text: "Обработка 100% обращений мгновенно, в любых каналах" },
+  { icon: ShieldCheck, text: "Без больничных, выходных и перепадов настроения 24/7" },
+  { icon: Users, text: "Без кадровой текучки и постоянного обучения новичков" },
+  { icon: Monitor, text: "Единый стандарт общения — каждый клиент получает идеальный скрипт" },
+  { icon: Scale, text: "Масштабирование без найма — 1 бот = 50 менеджеров" },
+  { icon: BarChart3, text: "Полная аналитика каждого диалога в CRM" },
+]
+
+const STEPS_DATA = [
+  {
+    label: "Этап 1",
+    title: "Фаза «обучение продукту»",
+    description: "Собираем данные о продукте, прайсы, FAQ, скрипты. Формируем базу знаний бота."
+  },
+  {
+    label: "Этап 2",
+    title: "Фаза «песочница»",
+    description: "Настраиваем бота, тестируем на реальных сценариях, проводим пробные диалоги."
+  },
+  {
+    label: "Этап 3",
+    title: "Фаза «выход в эфир»",
+    description: "Запускаем на реальных клиентах, фиксируем метрики, переходим в рабочий режим."
+  },
+]
+
+const CHAT_EXAMPLES = [
+  {
+    title: "Консультация по продукту",
+    messages: [
+      { from: "client", text: "Здравствуйте, сколько стоит базовый тариф?" },
+      { from: "bot", text: "Добрый день! Базовый тариф —  25 000 ₽/мес. Включает подключение к 1 каналу продаж. Какой у вас бизнес? Подберу оптимальный вариант." },
+      { from: "client", text: "Интернет-магазин одежды" },
+      { from: "bot", text: "Для интернет-магазина рекомендую тариф Business — он включает интеграцию с вашим каталогом и автоматические рекомендации. Показать подробнее?" },
+    ]
+  },
+  {
+    title: "Отработка возражения «дорого»",
+    messages: [
+      { from: "client", text: "Это слишком дорого" },
+      { from: "bot", text: "Один менеджер обходится в 80-120 тыс./мес с налогами. Бот заменяет 3-5 менеджеров на первой линии. Экономия — от 200 тыс./мес. Окупаемость за первый же месяц. Думаю выгода очевидна" },
+      { from: "client", text: "Хм, а если не сработает?" },
+      { from: "bot", text: "Мы даём гарантию результата. Если за месяц конверсия не вырастет — доработаем бесплатно. Могу записать вас на бесплатную демо-экскурсию — увидите всё изнутри." },
+    ]
+  },
+  {
+    title: "Дожим до заявки",
+    messages: [
+      { from: "client", text: "Я подумаю и напишу позже" },
+      { from: "bot", text: "Конечно! Кстати, до конца недели действует спецпредложение — бесплатный аудит ваших процессов на 50 000₽. Могу забронировать для вас слот?" },
+      { from: "client", text: "А что входит в аудит?" },
+      { from: "bot", text: "Полный анализ ваших каналов продаж, скриптов и воронки + стратегия автоматизации. Займёт 30 минут. Какое время удобно — завтра утром или после обеда?" },
+    ]
+  },
+]
+
+const CHATBOT_META = createChatBotMetaTags()
+
 export default function ChatBotLandingPage() {
-  useMeta(createChatBotMetaTags())
+  useMeta(CHATBOT_META)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDemoChatOpen, setIsDemoChatOpen] = useState(false)
-  const [name, setName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [consentAccepted, setConsentAccepted] = useState(false)
-  const [selectedCountry, setSelectedCountry] = useState<Country>(CIS_COUNTRIES[0])
-  const [errors, setErrors] = useState<{ name?: string; phone?: string; consent?: string }>({})
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(0)
   const [faqShowAll, setFaqShowAll] = useState(false)
 
   const scenariosScrollRef = useRef<HTMLDivElement>(null)
   const stepsScrollRef = useRef<HTMLDivElement>(null)
   const chatExamplesScrollRef = useRef<HTMLDivElement>(null)
+
+  const {
+    name, phone,
+    isSubmitted, consentAccepted, errors,
+    handleNameChange, handlePhoneChange,
+    handleSubmit, setConsentAccepted, setSelectedCountry,
+  } = useContactForm({ extraComment: "[chatbot-landing]" })
+
+  useScrollLock(isDemoChatOpen)
 
   // Schema.org structured data
   useEffect(() => {
@@ -140,176 +234,6 @@ export default function ChatBotLandingPage() {
     }
   }, [])
 
-  // Lock scroll when mobile demo chat is open
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const isMobile = window.innerWidth < 768
-
-    if (isDemoChatOpen && isMobile) {
-      const scrollY = window.scrollY
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollY}px`
-      document.body.style.width = '100%'
-      document.body.style.overflow = 'hidden'
-
-      return () => {
-        document.body.style.position = ''
-        document.body.style.top = ''
-        document.body.style.width = ''
-        document.body.style.overflow = ''
-        window.scrollTo(0, scrollY)
-      }
-    }
-  }, [isDemoChatOpen])
-
-  const benefitsData = useMemo(() => [
-    { icon: Zap, text: "Отвечает за 2 секунды" },
-    { icon: MessageCircle, text: "Работает в любых мессенджерах" },
-    { icon: TrendingUp, text: "Увеличивает конверсию в 2-3 раза" },
-  ], [])
-
-  const functionsData = useMemo(() => [
-    { icon: MessageCircle, title: "Консультировать", description: "Отвечает на любые вопросы по продукту и услугам" },
-    { icon: Target, title: "Продавать", description: "Ведёт диалог по скрипту продаж до закрытия сделки" },
-    { icon: Sparkles, title: "Квалифицировать", description: "Собирает данные, определяет горячность лида" },
-    { icon: ArrowRight, title: "Возвращать", description: "Дожимает незавершённые диалоги, отправляет follow-up" },
-  ], [])
-
-  const scenariosData = useMemo(() => [
-    {
-      icon: Bot,
-      title: "Продавец-консультант",
-      description: "Ведёт клиента от первого сообщения до оплаты. Презентует продукт, отрабатывает возражения, закрывает сделку."
-    },
-    {
-      icon: Target,
-      title: "Квалификатор лидов",
-      description: "Массово обрабатывает входящие заявки, определяет горячих клиентов и передаёт их менеджерам."
-    },
-    {
-      icon: Sparkles,
-      title: "Реаниматор базы",
-      description: "Пишет по старой базе, возвращает ушедших клиентов, предлагает персональные спецусловия."
-    },
-  ], [])
-
-  const humanFactorData = useMemo(() => [
-    { icon: Clock, text: "Обработка 100% обращений мгновенно, в любых каналах" },
-    { icon: ShieldCheck, text: "Без больничных, выходных и перепадов настроения 24/7" },
-    { icon: Users, text: "Без кадровой текучки и постоянного обучения новичков" },
-    { icon: Monitor, text: "Единый стандарт общения — каждый клиент получает идеальный скрипт" },
-    { icon: Scale, text: "Масштабирование без найма — 1 бот = 50 менеджеров" },
-    { icon: BarChart3, text: "Полная аналитика каждого диалога в CRM" },
-  ], [])
-
-  const stepsData = useMemo(() => [
-    {
-      label: "Этап 1",
-      title: "Фаза «обучение продукту»",
-      description: "Собираем данные о продукте, прайсы, FAQ, скрипты. Формируем базу знаний бота."
-    },
-    {
-      label: "Этап 2",
-      title: "Фаза «песочница»",
-      description: "Настраиваем бота, тестируем на реальных сценариях, проводим пробные диалоги."
-    },
-    {
-      label: "Этап 3",
-      title: "Фаза «выход в эфир»",
-      description: "Запускаем на реальных клиентах, фиксируем метрики, переходим в рабочий режим."
-    },
-  ], [])
-
-  const chatExamples = useMemo(() => [
-    {
-      title: "Консультация по продукту",
-      messages: [
-        { from: "client", text: "Здравствуйте, сколько стоит базовый тариф?" },
-        { from: "bot", text: "Добрый день! Базовый тариф —  25 000 ₽/мес. Включает подключение к 1 каналу продаж. Какой у вас бизнес? Подберу оптимальный вариант." },
-        { from: "client", text: "Интернет-магазин одежды" },
-        { from: "bot", text: "Для интернет-магазина рекомендую тариф Business — он включает интеграцию с вашим каталогом и автоматические рекомендации. Показать подробнее?" },
-      ]
-    },
-    {
-      title: "Отработка возражения «дорого»",
-      messages: [
-        { from: "client", text: "Это слишком дорого" },
-        { from: "bot", text: "Один менеджер обходится в 80-120 тыс./мес с налогами. Бот заменяет 3-5 менеджеров на первой линии. Экономия — от 200 тыс./мес. Окупаемость за первый же месяц. Думаю выгода очевидна" },
-        { from: "client", text: "Хм, а если не сработает?" },
-        { from: "bot", text: "Мы даём гарантию результата. Если за месяц конверсия не вырастет — доработаем бесплатно. Могу записать вас на бесплатную демо-экскурсию — увидите всё изнутри." },
-      ]
-    },
-    {
-      title: "Дожим до заявки",
-      messages: [
-        { from: "client", text: "Я подумаю и напишу позже" },
-        { from: "bot", text: "Конечно! Кстати, до конца недели действует спецпредложение — бесплатный аудит ваших процессов на 50 000₽. Могу забронировать для вас слот?" },
-        { from: "client", text: "А что входит в аудит?" },
-        { from: "bot", text: "Полный анализ ваших каналов продаж, скриптов и воронки + стратегия автоматизации. Займёт 30 минут. Какое время удобно — завтра утром или после обеда?" },
-      ]
-    },
-  ], [])
-
-  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setName(value)
-    if (value) {
-      const validation = validateName(value)
-      if (!validation.valid) {
-        setErrors(prev => ({ ...prev, name: validation.error }))
-      } else {
-        setErrors(prev => { const n = { ...prev }; delete n.name; return n })
-      }
-    } else {
-      setErrors(prev => { const n = { ...prev }; delete n.name; return n })
-    }
-  }, [])
-
-  const handlePhoneChange = useCallback((value: string) => {
-    setPhone(value)
-    if (value && value !== selectedCountry.dialCode) {
-      const validation = validatePhone(value, selectedCountry)
-      if (!validation.valid) {
-        setErrors(prev => ({ ...prev, phone: validation.error }))
-      } else {
-        setErrors(prev => { const n = { ...prev }; delete n.phone; return n })
-      }
-    } else {
-      setErrors(prev => { const n = { ...prev }; delete n.phone; return n })
-    }
-  }, [selectedCountry])
-
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const nameValidation = validateName(name)
-    const phoneValidation = validatePhone(phone, selectedCountry)
-    const newErrors: typeof errors = {}
-    if (!nameValidation.valid) newErrors.name = nameValidation.error
-    if (!phoneValidation.valid) newErrors.phone = phoneValidation.error
-    if (!consentAccepted) newErrors.consent = "Необходимо согласие на обработку персональных данных"
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
-
-    try {
-      await submitFormData({ name, phone, email: '', username: '', comment: '[chatbot-landing]' })
-      setIsSubmitted(true)
-      setTimeout(() => {
-        setIsSubmitted(false)
-        setName("")
-        setPhone("")
-        setConsentAccepted(false)
-        setErrors({})
-        setSelectedCountry(CIS_COUNTRIES[0])
-      }, 5000)
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "Не удалось отправить форму. Пожалуйста, попробуйте позже.")
-    }
-  }, [name, phone, consentAccepted, selectedCountry])
-
   const faqVisibleItems = chatBotFaqData.slice(0, 4)
   const faqHiddenItems = chatBotFaqData.slice(4)
 
@@ -326,7 +250,7 @@ export default function ChatBotLandingPage() {
           <div className="max-w-3xl mx-auto text-center space-y-6 sm:space-y-8">
             <AnimateOnScroll animation="fade-down" duration={500} delay={200}>
               <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-                {benefitsData.map((b, i) => {
+                {BENEFITS_DATA.map((b, i) => {
                   const Icon = b.icon
                   return (
                     <div key={i} className="flex items-center gap-2 bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5">
@@ -400,7 +324,7 @@ export default function ChatBotLandingPage() {
         <div className="container mx-auto">
           <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 id="how-heading" className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
-              Обработка заявок и продажи через <span className="italic text-primary">текстовые каналы</span>
+              Обработка заявок и продажи через <span className="text-primary">текстовые каналы</span>
             </h2>
           </AnimateOnScroll>
 
@@ -425,7 +349,7 @@ export default function ChatBotLandingPage() {
                 <CardContent className="p-5 sm:p-8">
                   <h3 className="text-lg sm:text-xl font-bold mb-6">Функции ИИ-Продавца:</h3>
                   <div className="grid grid-cols-2 gap-4 sm:gap-6">
-                    {functionsData.map((func, i) => {
+                    {FUNCTIONS_DATA.map((func, i) => {
                       const Icon = func.icon
                       return (
                         <div key={i} className="space-y-2">
@@ -450,7 +374,7 @@ export default function ChatBotLandingPage() {
         <div className="container mx-auto">
           <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 id="crm-heading" className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
-              Не ломаем ваши процессы, <span className="italic text-primary">а совершенствуем их</span>
+              Не ломаем ваши процессы, <span className="text-primary">а совершенствуем их</span>
             </h2>
             <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mt-4">
               Бот работает внутри вашей CRM-системы как штатный сотрудник, но соблюдает все регламенты и скрипты, <strong>в отличие от ваших сотрудников</strong>
@@ -499,7 +423,7 @@ export default function ChatBotLandingPage() {
         <div className="container mx-auto">
           <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 id="dialog-heading" className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
-              Общается как <span className="italic text-primary">живой продавец</span>, а не как тупой бот
+              Общается как <span className="text-primary">живой продавец</span>, а не как тупой бот
             </h2>
             <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mt-4">
               В среднем лишь 3 человека из 100 понимают, что общаются с ботом
@@ -508,7 +432,7 @@ export default function ChatBotLandingPage() {
 
           {/* Desktop grid */}
           <StaggerChildren staggerDelay={120} animation="fade-up" className="hidden md:grid md:grid-cols-3 gap-6">
-            {chatExamples.map((example, i) => (
+            {CHAT_EXAMPLES.map((example, i) => (
               <Card key={i} className="bg-card/80 backdrop-blur-sm border-border/50 card-hover-lift">
                 <CardContent className="p-5 sm:p-6">
                   <h3 className="font-bold text-sm sm:text-base mb-4 text-primary">{example.title}</h3>
@@ -535,7 +459,7 @@ export default function ChatBotLandingPage() {
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
               style={{ scrollPaddingLeft: '0.5rem', scrollPaddingRight: '0.5rem' }}
             >
-              {chatExamples.map((example, i) => (
+              {CHAT_EXAMPLES.map((example, i) => (
                 <Card key={i} className="flex-shrink-0 w-[85vw] max-w-sm snap-center bg-card/80 backdrop-blur-sm border-border/50">
                   <CardContent className="p-5">
                     <h3 className="font-bold text-sm mb-4 text-primary">{example.title}</h3>
@@ -554,7 +478,7 @@ export default function ChatBotLandingPage() {
                 </Card>
               ))}
             </div>
-            <SliderPagination containerRef={chatExamplesScrollRef} itemCount={chatExamples.length} />
+            <SliderPagination containerRef={chatExamplesScrollRef} itemCount={CHAT_EXAMPLES.length} />
           </div>
         </div>
       </section>
@@ -564,7 +488,7 @@ export default function ChatBotLandingPage() {
         <div className="container mx-auto">
           <AnimateOnScroll animation="fade-up" duration={700} className="max-w-4xl mx-auto text-center space-y-4 mb-12">
             <h2 id="demo-heading" className="text-3xl sm:text-4xl md:text-5xl font-bold text-balance section-title">
-              Напишите нашему боту и <span className="italic text-primary">оцените качество диалога</span>
+              Напишите нашему боту и <span className="text-primary">оцените качество диалога</span>
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground">
               Это не ChatGPT — это обученный продавец, который знает продукт, следует скриптам и не отклоняется от темы
@@ -620,7 +544,7 @@ export default function ChatBotLandingPage() {
         <div className="container mx-auto">
           <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 id="scenarios-heading" className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
-              Сценарии использования <span className="italic text-primary">под любые задачи</span>
+              Сценарии использования <span className="text-primary">под любые задачи</span>
             </h2>
             <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mt-4">
               Идеально подходит для бизнесов, где важно не упустить ни одного клиента
@@ -629,7 +553,7 @@ export default function ChatBotLandingPage() {
 
           {/* Desktop */}
           <StaggerChildren staggerDelay={120} animation="fade-up" className="hidden md:grid md:grid-cols-3 gap-6 lg:gap-8">
-            {scenariosData.map((scenario, i) => {
+            {SCENARIOS_DATA.map((scenario, i) => {
               const Icon = scenario.icon
               return (
                 <Card key={i} className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
@@ -652,7 +576,7 @@ export default function ChatBotLandingPage() {
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
               style={{ scrollPaddingLeft: '0.5rem', scrollPaddingRight: '0.5rem' }}
             >
-              {scenariosData.map((scenario, i) => {
+              {SCENARIOS_DATA.map((scenario, i) => {
                 const Icon = scenario.icon
                 return (
                   <Card key={i} className="flex-shrink-0 w-[85vw] max-w-sm snap-center bg-card/10 border-border">
@@ -667,7 +591,7 @@ export default function ChatBotLandingPage() {
                 )
               })}
             </div>
-            <SliderPagination containerRef={scenariosScrollRef} itemCount={scenariosData.length} />
+            <SliderPagination containerRef={scenariosScrollRef} itemCount={SCENARIOS_DATA.length} />
           </div>
         </div>
       </section>
@@ -677,12 +601,12 @@ export default function ChatBotLandingPage() {
         <div className="container mx-auto">
           <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 id="factor-heading" className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
-              Уберите <span className="italic text-primary">человеческий фактор</span> из ваших продаж
+              Уберите <span className="text-primary">человеческий фактор</span> из ваших продаж
             </h2>
           </AnimateOnScroll>
 
           <StaggerChildren staggerDelay={80} animation="fade-up" className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
-            {humanFactorData.map((item, i) => {
+            {HUMAN_FACTOR_DATA.map((item, i) => {
               const Icon = item.icon
               return (
                 <Card key={i} className="bg-card/80 backdrop-blur-sm border-border/50 card-hover-lift">
@@ -718,7 +642,7 @@ export default function ChatBotLandingPage() {
         <div className="container mx-auto">
           <AnimateOnScroll animation="fade-up" duration={700} className="text-center mb-10 sm:mb-16">
             <h2 id="steps-heading" className="text-2xl sm:text-4xl md:text-5xl font-bold section-title">
-              Подключаем, обучаем, запускаем <span className="italic text-primary">и отвечаем за результат</span>
+              Подключаем, обучаем, запускаем <span className="text-primary">и отвечаем за результат</span>
             </h2>
             <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto mt-4">
               Простое подключение в 3 этапа:
@@ -729,12 +653,12 @@ export default function ChatBotLandingPage() {
           <div className="hidden md:block max-w-5xl mx-auto">
             <AnimateOnScroll animation="fade-up" duration={700}>
               <div className="flex items-center justify-between mb-8">
-                {stepsData.map((_, i) => (
+                {STEPS_DATA.map((_, i) => (
                   <div key={i} className="flex items-center flex-1">
                     <div className="flex flex-col items-center">
                       <div className="w-4 h-4 rounded-full bg-primary" />
                     </div>
-                    {i < stepsData.length - 1 && (
+                    {i < STEPS_DATA.length - 1 && (
                       <div className="flex-1 h-0.5 bg-border mx-2" />
                     )}
                   </div>
@@ -743,7 +667,7 @@ export default function ChatBotLandingPage() {
             </AnimateOnScroll>
 
             <StaggerChildren staggerDelay={150} animation="fade-up" className="grid grid-cols-3 gap-6">
-              {stepsData.map((step, i) => (
+              {STEPS_DATA.map((step, i) => (
                 <Card key={i} className="bg-card/80 backdrop-blur-sm border-border/50">
                   <CardContent className="p-6 space-y-3">
                     <span className="inline-block bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full">
@@ -764,7 +688,7 @@ export default function ChatBotLandingPage() {
               className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 px-2"
               style={{ scrollPaddingLeft: '0.5rem', scrollPaddingRight: '0.5rem' }}
             >
-              {stepsData.map((step, i) => (
+              {STEPS_DATA.map((step, i) => (
                 <Card key={i} className="flex-shrink-0 w-[85vw] max-w-sm snap-center bg-card/80 backdrop-blur-sm border-border/50">
                   <CardContent className="p-6 space-y-3">
                     <span className="inline-block bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full">
@@ -776,7 +700,7 @@ export default function ChatBotLandingPage() {
                 </Card>
               ))}
             </div>
-            <SliderPagination containerRef={stepsScrollRef} itemCount={stepsData.length} />
+            <SliderPagination containerRef={stepsScrollRef} itemCount={STEPS_DATA.length} />
           </div>
         </div>
       </section>
@@ -874,7 +798,7 @@ export default function ChatBotLandingPage() {
             <AnimateOnScroll animation="fade-right" duration={700}>
               <div className="space-y-4 sm:space-y-6">
                 <h2 id="contact-heading" className="text-2xl sm:text-3xl md:text-4xl font-bold">
-                  Ответим на все <span className="italic text-primary">ваши вопросы</span>
+                  Ответим на все <span className="text-primary">ваши вопросы</span>
                 </h2>
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
                   А также покажем, как вся система устроена «под капотом», чтобы у вас было чёткое понимание, какую выгоду вы получите от внедрения
@@ -934,9 +858,6 @@ export default function ChatBotLandingPage() {
                             checked={consentAccepted}
                             onCheckedChange={(checked) => {
                               setConsentAccepted(checked === true)
-                              if (checked) {
-                                setErrors(prev => { const n = { ...prev }; delete n.consent; return n })
-                              }
                             }}
                             className="mt-1"
                           />

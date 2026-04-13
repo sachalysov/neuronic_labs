@@ -1,7 +1,5 @@
-"use client"
-
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useEffect, useCallback } from "react"
+import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -9,212 +7,33 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { X, Send, CheckCircle } from "lucide-react"
-import { submitFormData } from "@/services/form"
-import { validatePhone, validateName, validateComment, CIS_COUNTRIES, type Country } from "@/lib/phone-validation"
+import { useContactForm } from "@/hooks/useContactForm"
 
 interface ConsultationModalProps {
   isOpen: boolean
   onClose: () => void
+  /** Предзаполняет поле "Комментарий" при открытии модалки */
   initialComment?: string
 }
 
-export function ConsultationModal({ isOpen, onClose, initialComment = "" }: ConsultationModalProps) {
-  const [name, setName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [email, setEmail] = useState("")
-  const [telegram, setTelegram] = useState("")
-  const [comment, setComment] = useState("")
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selectedCountry, setSelectedCountry] = useState<Country>(CIS_COUNTRIES[0])
-  const [consentAccepted, setConsentAccepted] = useState(false)
-  const [errors, setErrors] = useState<{
-    name?: string
-    phone?: string
-    comment?: string
-    consent?: string
-  }>({})
-  const navigate = useNavigate()
+export function ConsultationModal({ isOpen, onClose, initialComment }: ConsultationModalProps) {
+  const {
+    name, phone, email, telegram, comment,
+    isSubmitted, isSubmitting, consentAccepted, errors,
+    handleNameChange, handlePhoneChange, handleCommentChange, handleTelegramChange,
+    handleSubmit, setConsentAccepted, setSelectedCountry, setEmail, reset, setComment,
+  } = useContactForm({ onSuccess: () => setTimeout(onClose, 3000) })
 
-  // Устанавливаем начальный комментарий при открытии модального окна
   useEffect(() => {
-    if (isOpen && initialComment) {
-      setComment(initialComment)
-    }
-  }, [isOpen, initialComment])
+    if (!isOpen) { reset(); return }
+    if (initialComment) setComment(initialComment)
+  }, [isOpen, initialComment, reset, setComment])
 
-  // Сброс формы при закрытии
-  useEffect(() => {
-    if (!isOpen) {
-      setName("")
-      setPhone("")
-      setEmail("")
-      setTelegram("")
-      setComment("")
-      setConsentAccepted(false)
-      setIsSubmitted(false)
-      setErrors({})
-    }
-  }, [isOpen])
+  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) onClose()
+  }, [onClose])
 
   if (!isOpen) return null
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setName(value)
-    
-    // Валидация в реальном времени
-    if (value) {
-      const validation = validateName(value)
-      if (!validation.valid) {
-        setErrors(prev => ({ ...prev, name: validation.error }))
-      } else {
-        setErrors(prev => {
-          const newErrors = { ...prev }
-          delete newErrors.name
-          return newErrors
-        })
-      }
-    } else {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors.name
-        return newErrors
-      })
-    }
-  }
-
-  const handlePhoneChange = (value: string) => {
-    setPhone(value)
-    
-    // Валидация в реальном времени
-    if (value && value !== selectedCountry.dialCode) {
-      const validation = validatePhone(value, selectedCountry)
-      if (!validation.valid) {
-        setErrors(prev => ({ ...prev, phone: validation.error }))
-      } else {
-        setErrors(prev => {
-          const newErrors = { ...prev }
-          delete newErrors.phone
-          return newErrors
-        })
-      }
-    } else {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors.phone
-        return newErrors
-      })
-    }
-  }
-
-  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    setComment(value)
-    
-    // Валидация в реальном времени
-    if (value) {
-      const validation = validateComment(value, 1500)
-      if (!validation.valid) {
-        setErrors(prev => ({ ...prev, comment: validation.error }))
-      } else {
-        setErrors(prev => {
-          const newErrors = { ...prev }
-          delete newErrors.comment
-          return newErrors
-        })
-      }
-    } else {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors.comment
-        return newErrors
-      })
-    }
-  }
-
-  const handleTelegramChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value
-    
-    // Если значение не пустое и не начинается с @, добавляем @ в начале
-    if (value && !value.startsWith("@")) {
-      value = "@" + value
-    }
-    
-    setTelegram(value)
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
-    if (isSubmitting) return
-    
-    // Валидация всех полей
-    const nameValidation = validateName(name)
-    const phoneValidation = validatePhone(phone, selectedCountry)
-    const commentValidation = validateComment(comment, 1500)
-    
-    const newErrors: typeof errors = {}
-    if (!nameValidation.valid) {
-      newErrors.name = nameValidation.error
-    }
-    if (!phoneValidation.valid) {
-      newErrors.phone = phoneValidation.error
-    }
-    if (!commentValidation.valid) {
-      newErrors.comment = commentValidation.error
-    }
-    if (!consentAccepted) {
-      newErrors.consent = "Необходимо согласие на обработку персональных данных"
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
-    
-    console.log('Начало отправки формы:', { name, phone, email, telegram, comment })
-    
-    setIsSubmitting(true)
-    
-    try {
-      await submitFormData({
-        name: name,
-        phone: phone,
-        email: email,
-        username: telegram,
-        comment: comment,
-      })
-      
-      console.log('Форма успешно отправлена')
-      setIsSubmitted(true)
-      
-      // Закрыть модальное окно через 3 секунды после успешной отправки
-      setTimeout(() => {
-        onClose()
-        setIsSubmitted(false)
-        setIsSubmitting(false)
-        setName("")
-        setPhone("")
-        setEmail("")
-        setTelegram("")
-        setComment("")
-        setErrors({})
-        setSelectedCountry(CIS_COUNTRIES[0])
-      }, 3000)
-    } catch (error) {
-      console.error("Ошибка при отправке формы:", error)
-      setIsSubmitting(false)
-      alert(error instanceof Error ? error.message : "Не удалось отправить форму. Пожалуйста, попробуйте позже.")
-    }
-  }
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose()
-    }
-  }
 
   return (
     <div
@@ -297,7 +116,7 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
 
               <div className="space-y-1.5 sm:space-y-2">
                 <label htmlFor="telegram" className="text-xs sm:text-sm font-medium text-foreground">
-                  Ник в Telegram <span className="text-muted-foreground text-xs"></span>
+                  Ник в Telegram
                 </label>
                 <Input
                   id="telegram"
@@ -340,16 +159,7 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
                   <Checkbox
                     id="consent"
                     checked={consentAccepted}
-                    onCheckedChange={(checked) => {
-                      setConsentAccepted(checked === true)
-                      if (checked) {
-                        setErrors(prev => {
-                          const newErrors = { ...prev }
-                          delete newErrors.consent
-                          return newErrors
-                        })
-                      }
-                    }}
+                    onCheckedChange={(checked) => setConsentAccepted(checked === true)}
                     className="mt-1"
                   />
                   <label
@@ -357,16 +167,9 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
                     className="text-xs sm:text-sm text-foreground cursor-pointer leading-relaxed"
                   >
                     Я согласен(а) на обработку персональных данных в соответствии с{" "}
-                    <a
-                      href="/politika-konfidentsialnosti"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        navigate('/politika-konfidentsialnosti')
-                      }}
-                      className="text-primary hover:underline"
-                    >
+                    <Link to="/politika-konfidentsialnosti" className="text-primary hover:underline">
                       Политикой конфиденциальности
-                    </a>
+                    </Link>
                     {" "}*
                   </label>
                 </div>
@@ -403,4 +206,3 @@ export function ConsultationModal({ isOpen, onClose, initialComment = "" }: Cons
     </div>
   )
 }
-

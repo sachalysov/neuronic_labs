@@ -8,13 +8,13 @@ import { StickyHeader } from "@/components/sticky-header"
 import { ConsultationModal } from "@/components/consultation-modal"
 import { CountdownTimer } from "@/components/countdown-timer"
 import { SliderPagination } from "@/components/slider-pagination"
-import { submitFormData } from "@/services/form"
-import { useEffect, useState, useRef, lazy, Suspense, useMemo, useCallback } from "react"
+import { useEffect, useState, useRef, lazy, Suspense } from "react"
 import { useLocation } from "react-router-dom"
 import { useMeta } from "@/hooks/useMeta"
+import { useContactForm } from "@/hooks/useContactForm"
+import { useScrollLock } from "@/hooks/useScrollLock"
 import { getAdminSettings, subscribeToAdminSettings, type AdminSettings } from "@/services/admin-settings"
 import { createHomeMetaTags } from "@/lib/meta"
-import { validatePhone, validateName, validateComment, CIS_COUNTRIES, type Country } from "@/lib/phone-validation"
 import {
   Bot,
   Clock,
@@ -91,26 +91,38 @@ function LazyVideoEmbed() {
   )
 }
 
+// Статичные данные вынесены на уровень модуля — нет смысла пересоздавать в useMemo с пустым deps
+const BENEFITS_DATA = [
+  {
+    icon: Bot,
+    title: "ИИ-сотрудник работает 24/7, пока конкуренты спят",
+    description: "Мгновенно отвечает на любые вопросы, 24/7 - круглосуточная коммуникация."
+  },
+  {
+    icon: TrendingUp,
+    title: "В 2-3 раза больше клиентов",
+    description: "Грамотно внедренный ИИ-продавец + Яндекс. Директ может увеличить конверсию в заявку в 2-3 раза"
+  },
+  {
+    icon: DollarSign,
+    title: "Сокращение фонда оплаты труда",
+    description: "Один ИИ-продавец способен полностью заменить линейных менеджеров, которые занимаются первичной обработкой лидов и справляется с любым объемом заявок"
+  },
+  {
+    icon: Clock,
+    title: "Мгновенные ответы клиентам",
+    description: "ИИ отвечает мгновенно, не заставляя клиентов ждать. Быстрая реакция повышает доверие и увеличивает конверсию"
+  }
+]
+
+const HOME_META = createHomeMetaTags()
+
 export default function HomePage() {
-  useMeta(createHomeMetaTags())
+  useMeta(HOME_META)
   const location = useLocation()
   
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDemoChatOpen, setIsDemoChatOpen] = useState(false)
-  const [name, setName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [email, setEmail] = useState("")
-  const [telegram, setTelegram] = useState("")
-  const [comment, setComment] = useState("")
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [consentAccepted, setConsentAccepted] = useState(false)
-  const [selectedCountry, setSelectedCountry] = useState<Country>(CIS_COUNTRIES[0])
-  const [errors, setErrors] = useState<{
-    name?: string
-    phone?: string
-    comment?: string
-    consent?: string
-  }>({})
   const benefitsScrollRef = useRef<HTMLDivElement>(null)
   const examplesScrollRef = useRef<HTMLDivElement>(null)
   const stagesScrollRef = useRef<HTMLDivElement>(null)
@@ -118,30 +130,15 @@ export default function HomePage() {
   const [testimonialsEnabled, setTestimonialsEnabled] = useState(true)
   const [expandedDirections, setExpandedDirections] = useState<number | null>(null)
   const [expandedProductInfo, setExpandedProductInfo] = useState(false)
-  
-  // Мемоизация данных для оптимизации производительности
-  const benefitsData = useMemo(() => [
-    {
-      icon: Bot,
-      title: "ИИ-сотрудник работает 24/7, пока конкуренты спят",
-      description: "Мгновенно отвечает на любые вопросы, 24/7 - круглосуточная коммуникация."
-    },
-    {
-      icon: TrendingUp,
-      title: "В 2-3 раза больше клиентов",
-      description: "Грамотно внедренный ИИ-продавец + Яндекс. Директ может увеличить конверсию в заявку в 2-3 раза"
-    },
-    {
-      icon: DollarSign,
-      title: "Сокращение фонда оплаты труда",
-      description: "Один ИИ-продавец способен полностью заменить линейных менеджеров, которые занимаются первичной обработкой лидов и справляется с любым объемом заявок"
-    },
-    {
-      icon: Clock,
-      title: "Мгновенные ответы клиентам",
-      description: "ИИ отвечает мгновенно, не заставляя клиентов ждать. Быстрая реакция повышает доверие и увеличивает конверсию"
-    }
-  ], [])
+
+  const {
+    name, phone, email, telegram, comment,
+    isSubmitted, consentAccepted, errors,
+    handleNameChange, handlePhoneChange, handleCommentChange, handleTelegramChange,
+    handleSubmit, setConsentAccepted, setSelectedCountry, setEmail,
+  } = useContactForm()
+
+  useScrollLock(isDemoChatOpen)
 
   useEffect(() => {
     // Обрабатываем hash из URL (если есть)
@@ -197,208 +194,6 @@ export default function HomePage() {
     }
   }, [])
 
-  // Блокировка скролла при открытии демо-чата на мобильных устройствах
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const isMobile = window.innerWidth < 768 // md breakpoint в Tailwind
-
-    if (isDemoChatOpen && isMobile) {
-      // Сохраняем текущую позицию скролла
-      const scrollY = window.scrollY
-      
-      // Блокируем скролл
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollY}px`
-      document.body.style.width = '100%'
-      document.body.style.overflow = 'hidden'
-
-      return () => {
-        // Восстанавливаем скролл при закрытии
-        document.body.style.position = ''
-        document.body.style.top = ''
-        document.body.style.width = ''
-        document.body.style.overflow = ''
-        window.scrollTo(0, scrollY)
-      }
-    }
-  }, [isDemoChatOpen])
-
-  // Отслеживание активного слайда (без клонов и бесконечной прокрутки)
-  useEffect(() => {
-    const container = benefitsScrollRef.current
-    if (!container) return
-
-    const handleScroll = () => {
-      const scrollLeft = container.scrollLeft
-
-      // Пробегаемся по карточкам, чтобы обеспечить корректный расчёт позиций.
-      let closestDistance = Infinity
-
-      Array.from(container.children).forEach((child) => {
-        const card = child as HTMLElement
-        const cardLeft = card.offsetLeft
-        const cardCenter = cardLeft + card.offsetWidth / 2
-        const distance = Math.abs(scrollLeft + container.offsetWidth / 2 - cardCenter)
-        
-        if (distance < closestDistance) {
-          closestDistance = distance
-        }
-      })
-    }
-
-    // Небольшая задержка для правильного расчета размеров и установки стартового индекса
-    setTimeout(() => {
-      handleScroll()
-    }, 100)
-    
-    container.addEventListener('scroll', handleScroll, { passive: true })
-    return () => container.removeEventListener('scroll', handleScroll)
-  }, [benefitsData.length])
-
-  const handleNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setName(value)
-    
-    // Валидация в реальном времени
-    if (value) {
-      const validation = validateName(value)
-      if (!validation.valid) {
-        setErrors(prev => ({ ...prev, name: validation.error }))
-      } else {
-        setErrors(prev => {
-          const newErrors = { ...prev }
-          delete newErrors.name
-          return newErrors
-        })
-      }
-    } else {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors.name
-        return newErrors
-      })
-    }
-  }, [])
-
-  const handlePhoneChange = useCallback((value: string) => {
-    setPhone(value)
-    
-    // Валидация в реальном времени
-    if (value && value !== selectedCountry.dialCode) {
-      const validation = validatePhone(value, selectedCountry)
-      if (!validation.valid) {
-        setErrors(prev => ({ ...prev, phone: validation.error }))
-      } else {
-        setErrors(prev => {
-          const newErrors = { ...prev }
-          delete newErrors.phone
-          return newErrors
-        })
-      }
-    } else {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors.phone
-        return newErrors
-      })
-    }
-  }, [selectedCountry])
-
-  const handleCommentChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value
-    setComment(value)
-    
-    // Валидация в реальном времени
-    if (value) {
-      const validation = validateComment(value, 1500)
-      if (!validation.valid) {
-        setErrors(prev => ({ ...prev, comment: validation.error }))
-      } else {
-        setErrors(prev => {
-          const newErrors = { ...prev }
-          delete newErrors.comment
-          return newErrors
-        })
-      }
-    } else {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors.comment
-        return newErrors
-      })
-    }
-  }, [])
-
-  const handleTelegramChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value
-    
-    // Если значение не пустое и не начинается с @, добавляем @ в начале
-    if (value && !value.startsWith("@")) {
-      value = "@" + value
-    }
-    
-    setTelegram(value)
-  }, [])
-
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    // Валидация всех полей
-    const nameValidation = validateName(name)
-    const phoneValidation = validatePhone(phone, selectedCountry)
-    const commentValidation = validateComment(comment, 1500)
-    
-    const newErrors: typeof errors = {}
-    if (!nameValidation.valid) {
-      newErrors.name = nameValidation.error
-    }
-    if (!phoneValidation.valid) {
-      newErrors.phone = phoneValidation.error
-    }
-    if (!commentValidation.valid) {
-      newErrors.comment = commentValidation.error
-    }
-    if (!consentAccepted) {
-      newErrors.consent = "Необходимо согласие на обработку персональных данных"
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      return
-    }
-    
-    console.log('Начало отправки формы (HomePage):', { name, phone, email, telegram, comment })
-    
-    try {
-      await submitFormData({
-        name: name,
-        phone: phone,
-        email: email,
-        username: telegram,
-        comment: comment,
-      })
-      
-      console.log('Форма успешно отправлена (HomePage)')
-      setIsSubmitted(true)
-      
-      // Сбросить форму через 5 секунд после успешной отправки
-      setTimeout(() => {
-        setIsSubmitted(false)
-        setName("")
-        setPhone("")
-        setEmail("")
-        setTelegram("")
-        setComment("")
-        setConsentAccepted(false)
-        setErrors({})
-        setSelectedCountry(CIS_COUNTRIES[0])
-      }, 5000)
-    } catch (error) {
-      console.error("Ошибка при отправке формы (HomePage):", error)
-      alert(error instanceof Error ? error.message : "Не удалось отправить форму. Пожалуйста, попробуйте позже.")
-    }
-  }, [name, phone, email, telegram, comment, consentAccepted, selectedCountry, errors])
 
   return (
     <main className="min-h-screen">
@@ -646,7 +441,7 @@ export default function HomePage() {
 
           {/* Desktop Grid */}
           <StaggerChildren staggerDelay={120} animation="fade-up" className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
-            {benefitsData.map((benefit, index) => {
+            {BENEFITS_DATA.map((benefit, index) => {
               const Icon = benefit.icon
               return (
                 <Card key={index} className="bg-card/10 border-border hover:border-primary card-hover-lift gradient-border-animated">
@@ -674,7 +469,7 @@ export default function HomePage() {
                 scrollPaddingRight: '0.5rem'
               }}
             >
-              {benefitsData.map((benefit, index) => {
+              {BENEFITS_DATA.map((benefit, index) => {
                 const Icon = benefit.icon
                 return (
                   <Card
@@ -696,7 +491,7 @@ export default function HomePage() {
             </div>
             <SliderPagination 
               containerRef={benefitsScrollRef} 
-              itemCount={benefitsData.length}
+              itemCount={BENEFITS_DATA.length}
             />
           </div>
         </div>
@@ -1870,13 +1665,6 @@ export default function HomePage() {
                           checked={consentAccepted}
                           onCheckedChange={(checked) => {
                             setConsentAccepted(checked === true)
-                            if (checked) {
-                              setErrors(prev => {
-                                const newErrors = { ...prev }
-                                delete newErrors.consent
-                                return newErrors
-                              })
-                            }
                           }}
                           className="mt-1"
                         />

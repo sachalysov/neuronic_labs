@@ -28,11 +28,14 @@ const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const OfferPage = lazy(() => import('./pages/OfferPage'))
 const ConsentRequiredPage = lazy(() => import('./pages/ConsentRequiredPage'))
 
-// Fallback компонент для загрузки (минимальный, чтобы не блокировать рендер)
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="animate-pulse text-muted-foreground">Загрузка...</div>
   </div>
+)
+
+const S = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<PageLoader />}>{children}</Suspense>
 )
 
 // При смене страницы — прокрутка вверх (ссылки в хедере/футере)
@@ -44,40 +47,23 @@ function ScrollToTop() {
   return null
 }
 
-// Компонент для управления темой в зависимости от пути
+function applyThemeFromStorage(storageKey: string) {
+  const saved = localStorage.getItem(storageKey) as "light" | "dark" | null
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+  const theme = saved ?? (prefersDark ? "dark" : "light")
+  if (theme === "dark") {
+    document.documentElement.dataset.theme = "dark"
+  } else {
+    delete document.documentElement.dataset.theme
+  }
+}
+
 function ThemeManager() {
   const location = useLocation()
 
   useEffect(() => {
-    const applyTheme = () => {
-      const isAdminPage = location.pathname.startsWith('/admin')
-      
-      if (isAdminPage) {
-        // Применяем тему админки
-        const adminTheme = localStorage.getItem(ADMIN_THEME_STORAGE_KEY) as "light" | "dark" | null
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-        const theme = adminTheme || (prefersDark ? "dark" : "light")
-        
-        if (theme === "dark") {
-          document.documentElement.dataset.theme = "dark"
-        } else {
-          delete document.documentElement.dataset.theme
-        }
-      } else {
-        // Применяем тему пользователя
-        const userTheme = localStorage.getItem(USER_THEME_STORAGE_KEY) as "light" | "dark" | null
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-        const theme = userTheme || (prefersDark ? "dark" : "light")
-        
-        if (theme === "dark") {
-          document.documentElement.dataset.theme = "dark"
-        } else {
-          delete document.documentElement.dataset.theme
-        }
-      }
-    }
-
-    applyTheme()
+    const isAdminPage = location.pathname.startsWith('/admin')
+    applyThemeFromStorage(isAdminPage ? ADMIN_THEME_STORAGE_KEY : USER_THEME_STORAGE_KEY)
 
     // Слушаем изменения темы админки
     const handleAdminThemeChange = (e: Event) => {
@@ -108,137 +94,23 @@ function App() {
       <ScrollToTop />
       <ConsentGate>
         <Routes>
-          <Route path="/" element={<Suspense fallback={<PageLoader />}><HomePage /></Suspense>} />
-          <Route 
-            path="/blog" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <BlogPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/blog/:slug" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <BlogPostPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/business-cases" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <BusinessCasesPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/business-cases/:id" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <BusinessCasePage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/partners" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <PartnerPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/contacts" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <ContactsPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/conference" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <ConferencePage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/calculator" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <CalculatorPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/chatbot" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <ChatBotLandingPage />
-              </Suspense>
-            } 
-          />
-          {/* Страницы, доступные без согласия */}
-          <Route 
-            path="/politika-konfidentsialnosti" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <PrivacyPolicyPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/publichnaya-oferta" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <OfferPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/consent-required" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <ConsentRequiredPage />
-              </Suspense>
-            } 
-          />
-          {/* Админ-панель доступна без согласия */}
-          <Route 
-            path="/admin" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AdminDashboardPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/admin/login" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AdminLoginPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/admin/blog" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AdminBlogPage />
-              </Suspense>
-            } 
-          />
-          <Route 
-            path="/admin/business-cases" 
-            element={
-              <Suspense fallback={<PageLoader />}>
-                <AdminBusinessCasesPage />
-              </Suspense>
-            } 
-          />
+          <Route path="/" element={<S><HomePage /></S>} />
+          <Route path="/blog" element={<S><BlogPage /></S>} />
+          <Route path="/blog/:slug" element={<S><BlogPostPage /></S>} />
+          <Route path="/business-cases" element={<S><BusinessCasesPage /></S>} />
+          <Route path="/business-cases/:id" element={<S><BusinessCasePage /></S>} />
+          <Route path="/partners" element={<S><PartnerPage /></S>} />
+          <Route path="/contacts" element={<S><ContactsPage /></S>} />
+          <Route path="/conference" element={<S><ConferencePage /></S>} />
+          <Route path="/calculator" element={<S><CalculatorPage /></S>} />
+          <Route path="/chatbot" element={<S><ChatBotLandingPage /></S>} />
+          <Route path="/politika-konfidentsialnosti" element={<S><PrivacyPolicyPage /></S>} />
+          <Route path="/publichnaya-oferta" element={<S><OfferPage /></S>} />
+          <Route path="/consent-required" element={<S><ConsentRequiredPage /></S>} />
+          <Route path="/admin" element={<S><AdminDashboardPage /></S>} />
+          <Route path="/admin/login" element={<S><AdminLoginPage /></S>} />
+          <Route path="/admin/blog" element={<S><AdminBlogPage /></S>} />
+          <Route path="/admin/business-cases" element={<S><AdminBusinessCasesPage /></S>} />
         </Routes>
       </ConsentGate>
     </BrowserRouter>

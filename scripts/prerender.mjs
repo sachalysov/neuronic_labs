@@ -14,7 +14,8 @@ import puppeteer from 'puppeteer'
 import { spawn, execSync } from 'child_process'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import { existsSync, mkdirSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs'
+import { createClient } from '@supabase/supabase-js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -32,6 +33,72 @@ const PUBLIC_ROUTES = [
   '/politika-konfidentsialnosti',
   '/publichnaya-oferta',
 ]
+
+/**
+ * Загружает переменные окружения из .env файла
+ */
+function loadEnvFile() {
+  const envPath = join(rootDir, '.env')
+  if (!existsSync(envPath)) return {}
+
+  const envContent = readFileSync(envPath, 'utf-8')
+  const envVars = {}
+
+  envContent.split('\n').forEach(line => {
+    const trimmedLine = line.trim()
+    if (!trimmedLine || trimmedLine.startsWith('#')) return
+    const match = trimmedLine.match(/^([^=]+)=(.*)$/)
+    if (match) {
+      const key = match[1].trim()
+      let value = match[2].trim()
+      if ((value.startsWith('"') && value.endsWith('"')) ||
+          (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1)
+      }
+      envVars[key] = value
+    }
+  })
+
+  return envVars
+}
+
+/**
+ * Загружает роуты динамических страниц бизнес-кейсов из Supabase
+ */
+async function fetchCaseRoutes() {
+  try {
+    const envVars = loadEnvFile()
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || envVars.VITE_SUPABASE_URL || envVars.SUPABASE_URL
+    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || envVars.VITE_SUPABASE_ANON_KEY || envVars.SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.warn('  ⚠️  Supabase env не заданы — динамические кейсы не будут преренедрены')
+      return []
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    const { data, error } = await supabase
+      .from('business_cases')
+      .select('id')
+      .order('published_at', { ascending: false })
+
+    if (error) {
+      console.warn(`  ⚠️  Ошибка Supabase при загрузке кейсов: ${error.message}`)
+      return []
+    }
+
+    if (!data || data.length === 0) {
+      console.log('  ℹ️  Бизнес-кейсы в Supabase не найдены')
+      return []
+    }
+
+    console.log(`  📋 Найдено кейсов для пре-рендера: ${data.length}`)
+    return data.map(c => `/business-cases/${c.id}`)
+  } catch (err) {
+    console.warn(`  ⚠️  Не удалось загрузить кейсы из Supabase: ${err.message}`)
+    return []
+  }
+}
 
 /**
  * Pre-render страницу и сохранить HTML
@@ -86,19 +153,35 @@ async function prerenderPage(browser, route, baseUrl, outputDir) {
     
     // Ждем дополнительное время для загрузки динамического контента и мета-тегов
     await new Promise(resolve => setTimeout(resolve, 3000))
-    
-    // Ждем, пока мета-теги будут установлены
-    try {
-      await page.waitForFunction(
-        () => {
-          const title = document.querySelector('title')
-          const metaDescription = document.querySelector('meta[name="description"]')
-          return title && title.textContent && metaDescription
-        },
-        { timeout: 10000 }
-      )
-    } catch (e) {
-      console.warn(`    ⚠️  Предупреждение: мета-теги могут быть не полностью загружены для ${route}`)
+
+    // Для страниц конкретных кейсов ждем загрузки контента из Supabase
+    const isCasePage = route.startsWith('/business-cases/') && route !== '/business-cases'
+    if (isCasePage) {
+      try {
+        await page.waitForFunction(
+          () => {
+            const h1 = document.querySelector('article h1')
+            return h1 && h1.textContent && !h1.textContent.includes('Загрузка')
+          },
+          { timeout: 15000 }
+        )
+      } catch (e) {
+        console.warn(`    ⚠️  Контент кейса не загрузился вовремя для ${route} — сохраняем что есть`)
+      }
+    } else {
+      // Для статических страниц ждем мета-теги
+      try {
+        await page.waitForFunction(
+          () => {
+            const title = document.querySelector('title')
+            const metaDescription = document.querySelector('meta[name="description"]')
+            return title && title.textContent && metaDescription
+          },
+          { timeout: 10000 }
+        )
+      } catch (e) {
+        console.warn(`    ⚠️  Предупреждение: мета-теги могут быть не полностью загружены для ${route}`)
+      }
     }
     
     // Получаем HTML
@@ -191,7 +274,14 @@ async function main() {
     previewServer = await startPreviewServer()
     
     const baseUrl = 'http://localhost:4173'
-    const routes = PUBLIC_ROUTES
+
+    console.log('🔍 Загрузка динамических роутов из Supabase...')
+    const caseRoutes = await fetchCaseRoutes()
+    const routes = [...PUBLIC_ROUTES, ...caseRoutes]
+
+    console.log(`\n📊 Итого страниц для пре-рендера: ${routes.length}`)
+    console.log(`   - Статические: ${PUBLIC_ROUTES.length}`)
+    console.log(`   - Кейсы: ${caseRoutes.length}\n`)
     
     console.log(`🔄 Начало pre-rendering ${routes.length} страниц...\n`)
     
