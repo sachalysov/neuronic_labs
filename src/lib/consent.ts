@@ -19,7 +19,7 @@ export function getCookiesConsentStatus(): ConsentStatus {
       return stored
     }
     return null
-  } catch (e) {
+  } catch {
     return null
   }
 }
@@ -49,7 +49,7 @@ export function getPersonalDataConsentStatus(): ConsentStatus {
       return stored
     }
     return null
-  } catch (e) {
+  } catch {
     return null
   }
 }

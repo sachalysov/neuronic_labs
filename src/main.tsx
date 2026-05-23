@@ -13,15 +13,12 @@ if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual'
 }
 
-// Очищаем hash из URL перед загрузкой
-if (window.location.hash) {
-  window.history.replaceState(null, '', window.location.pathname)
+// Прокручиваем в начало только без якоря (hash обрабатывают страницы)
+if (!window.location.hash) {
+  window.scrollTo(0, 0)
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
 }
-
-// Прокручиваем в начало при загрузке
-window.scrollTo(0, 0)
-document.documentElement.scrollTop = 0
-document.body.scrollTop = 0
 
 // Некритичную инициализацию откладываем, чтобы не блокировать main thread (Lighthouse)
 function defer(fn: () => void) {

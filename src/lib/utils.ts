@@ -10,7 +10,7 @@ export const getLocalStorage = (key: string): string | null => {
   if (typeof window === 'undefined' || !window.localStorage) return null
   try {
     return localStorage.getItem(key)
-  } catch (e) {
+  } catch {
     return null
   }
 }
@@ -19,7 +19,7 @@ export const setLocalStorage = (key: string, value: string): void => {
   if (typeof window === 'undefined' || !window.localStorage) return
   try {
     localStorage.setItem(key, value)
-  } catch (e) {
+  } catch {
     // Игнорируем ошибки (например, переполнение хранилища)
   }
 }
@@ -28,7 +28,7 @@ export const removeLocalStorage = (key: string): void => {
   if (typeof window === 'undefined' || !window.localStorage) return
   try {
     localStorage.removeItem(key)
-  } catch (e) {
+  } catch {
     // Игнорируем ошибки
   }
 }

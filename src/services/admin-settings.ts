@@ -19,6 +19,14 @@ export interface AdminSettings {
 
 const SETTINGS_KEY = 'main'
 
+const ADMIN_SETTINGS_DEFAULTS = {
+  maintenance_banner_enabled: false,
+  maintenance_banner_text: 'На сайте ведутся технические работы. Возможны временные сбои в работе.',
+  webhooks_enabled: true,
+  testimonials_enabled: true,
+  business_cases_enabled: true,
+} as const
+
 /**
  * Получить настройки админ-панели из Supabase
  */
@@ -60,8 +68,7 @@ async function createDefaultSettings(): Promise<AdminSettings | null> {
   try {
     const defaultSettings = {
       key: SETTINGS_KEY,
-      maintenance_banner_enabled: false,
-      maintenance_banner_text: 'На сайте ведутся технические работы. Возможны временные сбои в работе.',
+      ...ADMIN_SETTINGS_DEFAULTS,
     }
 
     const { data, error } = await supabase
@@ -101,8 +108,8 @@ export async function updateAdminSettings(
       // Если записи нет, создаем её
       const defaultSettings = {
         key: SETTINGS_KEY,
-        maintenance_banner_enabled: updates.maintenance_banner_enabled ?? false,
-        maintenance_banner_text: updates.maintenance_banner_text ?? 'На сайте ведутся технические работы. Возможны временные сбои в работе.',
+        ...ADMIN_SETTINGS_DEFAULTS,
+        ...updates,
       }
 
       const { data, error } = await supabase

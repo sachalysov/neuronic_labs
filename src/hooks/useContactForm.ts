@@ -160,6 +160,7 @@ export function useContactForm(options: UseContactFormOptions = {}): ContactForm
       })
 
       setIsSubmitted(true)
+      setIsSubmitting(false)
       onSuccess?.()
 
       setTimeout(() => {

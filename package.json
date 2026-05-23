@@ -14,7 +14,7 @@
     "convert:webp": "node scripts/convert-to-webp.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "ping:index": "node scripts/ping-search-engines.mjs",
-    "lint": "eslint .",
+    "lint": "eslint src",
     "deploy": "bash deploy.sh",
     "deploy:preview": "HOSTING=timeweb bash deploy.sh"
   },
@@ -69,13 +69,18 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
     "express": "^5.2.1",
+    "globals": "^16.5.0",
     "postcss": "^8.5",
     "puppeteer": "^24.37.2",
     "sharp": "^0.34.5",
@@ -84,6 +89,7 @@
     "tsx": "^4.21.0",
     "tw-animate-css": "1.3.3",
     "typescript": "^5",
+    "typescript-eslint": "^8.46.4",
     "vite": "^6.0.5"
   }
 }
