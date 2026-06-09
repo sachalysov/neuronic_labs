@@ -19,7 +19,7 @@ interface ConsultationModalProps {
 export function ConsultationModal({ isOpen, onClose, initialComment }: ConsultationModalProps) {
   const {
     name, phone, email, telegram, comment,
-    isSubmitted, isSubmitting, consentAccepted, errors,
+    isSubmitted, isSubmitting, submitError, consentAccepted, errors,
     handleNameChange, handlePhoneChange, handleCommentChange, handleTelegramChange,
     handleSubmit, setConsentAccepted, setSelectedCountry, setEmail, reset, setComment,
   } = useContactForm({ onSuccess: () => setTimeout(onClose, 3000) })
@@ -178,6 +178,11 @@ export function ConsultationModal({ isOpen, onClose, initialComment }: Consultat
                 )}
               </div>
 
+              {submitError && (
+                <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+                  {submitError}
+                </p>
+              )}
               <Button 
                 type="submit" 
                 size="lg" 

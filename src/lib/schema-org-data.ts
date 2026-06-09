@@ -67,7 +67,7 @@ export const serviceData: ServiceSchema = {
     taxID: '130102424667',
   },
   areaServed: [
-    { type: 'City', name: 'Санкт-Петербург' },
+    { type: 'City', name: 'Москва' },
     { type: 'City', name: 'Санкт-Петербург' },
     { type: 'City', name: 'Краснодар' },
     { type: 'City', name: 'Екатеринбург' },

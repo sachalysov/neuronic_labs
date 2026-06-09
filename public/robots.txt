@@ -30,8 +30,9 @@ Allow: /
 # Sitemap
 Sitemap: https://neuroniclabs.ru/sitemap.xml
 
-# Disallow admin and private areas (если будут)
-# Disallow: /admin/
-# Disallow: /private/
+# Закрываем административный раздел от индексации
+Disallow: /admin
+Disallow: /admin/
+Disallow: /consent-required
 
 

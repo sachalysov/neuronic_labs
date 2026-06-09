@@ -68,9 +68,6 @@ export async function sendChatMessage(
       requestBody.replyToId = replyToId
     }
     
-    console.log('Отправка запроса на webhook:', webhookUrl)
-    console.log('Тело запроса:', { ...requestBody, image: imageBase64 ? '[base64 image]' : undefined })
-    
     const response = await fetch(webhookUrl, {
       method: "POST",
       headers: {
@@ -78,8 +75,6 @@ export async function sendChatMessage(
       },
       body: JSON.stringify(requestBody),
     })
-
-    console.log('Статус ответа:', response.status, response.statusText)
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => '')
@@ -95,8 +90,6 @@ export async function sendChatMessage(
       console.error('Webhook вернул не JSON:', raw.slice(0, 200))
       throw new Error("Сервер вернул некорректный ответ")
     }
-    console.log('Webhook response:', data)
-
     const pickString = (...values: unknown[]): string | undefined => {
       for (const value of values) {
         if (typeof value === "string" && value.trim()) return value

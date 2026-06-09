@@ -177,7 +177,7 @@ export default function ChatBotLandingPage() {
 
   const {
     name, phone,
-    isSubmitted, consentAccepted, errors,
+    isSubmitted, consentAccepted, errors, submitError,
     handleNameChange, handlePhoneChange,
     handleSubmit, setConsentAccepted, setSelectedCountry,
   } = useContactForm({ extraComment: "[chatbot-landing]" })
@@ -869,6 +869,11 @@ export default function ChatBotLandingPage() {
                         {errors.consent && <p className="text-xs text-destructive">{errors.consent}</p>}
                       </div>
 
+                      {submitError && (
+                        <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+                          {submitError}
+                        </p>
+                      )}
                       <Button
                         type="submit"
                         size="lg"

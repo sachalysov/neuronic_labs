@@ -133,7 +133,7 @@ export default function HomePage() {
 
   const {
     name, phone, email, telegram, comment,
-    isSubmitted, consentAccepted, errors,
+    isSubmitted, consentAccepted, errors, submitError,
     handleNameChange, handlePhoneChange, handleCommentChange, handleTelegramChange,
     handleSubmit, setConsentAccepted, setSelectedCountry, setEmail,
   } = useContactForm()
@@ -1691,6 +1691,11 @@ export default function HomePage() {
                       )}
                     </div>
 
+                    {submitError && (
+                      <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+                        {submitError}
+                      </p>
+                    )}
                     <Button 
                       type="submit" 
                       size="lg" 

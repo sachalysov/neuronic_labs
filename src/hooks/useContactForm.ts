@@ -18,6 +18,7 @@ export interface ContactFormFields {
   }
   isSubmitted: boolean
   isSubmitting: boolean
+  submitError: string | null
 }
 
 export interface ContactFormActions {
@@ -62,6 +63,7 @@ export function useContactForm(options: UseContactFormOptions = {}): ContactForm
   const [comment, setComment] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [consentAccepted, _setConsentAccepted] = useState(false)
   const [selectedCountry, setSelectedCountry] = useState<Country>(CIS_COUNTRIES[0])
   const [errors, setErrors] = useState<ContactFormFields["errors"]>({})
@@ -83,6 +85,7 @@ export function useContactForm(options: UseContactFormOptions = {}): ContactForm
     _setConsentAccepted(false)
     setIsSubmitted(false)
     setIsSubmitting(false)
+    setSubmitError(null)
     setErrors({})
     setSelectedCountry(CIS_COUNTRIES[0])
   }, [])
@@ -150,6 +153,7 @@ export function useContactForm(options: UseContactFormOptions = {}): ContactForm
     }
 
     setIsSubmitting(true)
+    setSubmitError(null)
     try {
       await submitFormData({
         name,
@@ -168,13 +172,13 @@ export function useContactForm(options: UseContactFormOptions = {}): ContactForm
       }, resetDelay)
     } catch (error) {
       setIsSubmitting(false)
-      alert(error instanceof Error ? error.message : "Не удалось отправить форму. Пожалуйста, попробуйте позже.")
+      setSubmitError(error instanceof Error ? error.message : "Не удалось отправить форму. Пожалуйста, попробуйте позже.")
     }
   }, [isSubmitting, name, phone, selectedCountry, comment, consentAccepted, email, telegram, extraComment, resetDelay, onSuccess, reset])
 
   return {
     name, phone, email, telegram, comment,
-    isSubmitted, isSubmitting, consentAccepted, selectedCountry, errors,
+    isSubmitted, isSubmitting, submitError, consentAccepted, selectedCountry, errors,
     handleNameChange, handlePhoneChange, handleCommentChange, handleTelegramChange,
     handleSubmit,
     setConsentAccepted,
